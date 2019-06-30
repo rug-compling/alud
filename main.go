@@ -250,9 +250,18 @@ func inspect(q *Context) {
 
 	var walk func(*NodeType)
 	walk = func(node *NodeType) {
+
+		// bug in Alpino: missing pt
+		if node.Word != "" && node.Pt == "" {
+			node.Pt = strings.ToLower(strings.Split(node.Postag, "(")[0])
+			if node.Pt == "" {
+				node.Pt = "na"
+			}
+		}
+
 		allnodes = append(allnodes, node)
 		varallnodes = append(varallnodes, node)
-		if node.Pt != "" || node.Word != "" { // bug in Alpino: missing pt
+		if node.Pt != "" {
 			ptnodes = append(ptnodes, node)
 		}
 		if node.Index > 0 {
