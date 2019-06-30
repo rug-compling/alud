@@ -663,7 +663,7 @@ declare function local:dependency_relation($node as element(node)) as attribute(
 (: used for debugging, but also nice as readable alternative for selecting by [1] or by means of @begin position :)
 declare function local:leftmost($nodes as element(node)*) as element(node) {
 	let $sorted :=	for $node in $nodes
-		  let $bi := number($node/@begin)
+		  let $bi := 10000000 * number($node/@begin) + 1000 * number($node/@end) - number($node/@id)
 			order by $bi (: solve cases where begin is identical (hij is en blijft omstreden)?? :)
 			return $node
 	return
@@ -1102,7 +1102,7 @@ declare function local:dependency_label($node as element(node)) as xs:string
 				  else "fixed"	 (: v2 mwe-> fixed :)
 
     else if ($node[@rel="cnj"])
-	  then if   (deep-equal($node,$node/../node[@rel="cnj"][1]))
+	  then if   (deep-equal($node,local:leftmost($node/../node[@rel="cnj"])))
 		then local:dependency_label($node/..)
 		else "conj"
 
@@ -1178,7 +1178,7 @@ declare function local:dependency_label($node as element(node)) as xs:string
 
     else if ( $node[@rel=("rhd","whd")] )
 	 then if ( $node/../node[@rel="body"]//node/number(@index) = $node/number(@index) )
-	      then local:non_local_dependency_label($node,($node/../node[@rel="body"]//node[number(@index) = $node/number(@index)])[1])
+	      then local:non_local_dependency_label($node,local:leftmost($node/../node[@rel="body"]//node[number(@index) = $node/number(@index)]))
               else if ($node[@cat="pp"])
                    then "nmod" (: onder wie michael boogerd :)
 	      else "advmod"  (: [whq waarom jij] :)
@@ -1340,7 +1340,7 @@ declare function local:det_label($node as element(node)) as xs:string
 	    else if ( $node/@ud:pos = ("NUM","SYM") )
 		 then "nummod"
 		 else if ( $node[@cat="conj"])
-		      then if ($node/node[@rel="cnj"][1]/@ud:pos="NUM" )
+		      then if (local:leftmost($node/node[@rel="cnj"])/@ud:pos="NUM" )
 			   then "nummod"
 			   else "det"
 		      else "ERROR_NO_LABEL_DET"
@@ -1385,9 +1385,9 @@ declare function local:subject_label($subj as element(node)) as xs:string
 };
 
 declare function local:passive_subject($subj as element(node)) as xs:string
-{   if ( local:auxiliary(($subj/../node[@rel="hd"])[1]) eq "aux:pass" ) (: de carriere had gered kunnen worden :)
+{   if ( local:auxiliary(local:leftmost($subj/../node[@rel="hd"])) eq "aux:pass" ) (: de carriere had gered kunnen worden :)
     then ":pass"
-    else if (local:auxiliary(($subj/../node[@rel="hd"])[1]) eq "aux"  and
+    else if (local:auxiliary(local:leftmost($subj/../node[@rel="hd"])) eq "aux"  and
 	     $subj/@index = $subj/../node[@rel="vc"]/node[@rel="su"]/@index
 	    )
 	 then local:passive_subject($subj/../node[@rel="vc"]/node[@rel="su"])

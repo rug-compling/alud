@@ -356,10 +356,10 @@ func conll(q *Context) string {
 		q.sentence)
 
 	for i, d := range q.debugs {
-		fmt.Fprintf(&buf, "# debug%d = %s\n", i+1, d)
+		fmt.Fprintf(&buf, "# debug_%d = %s\n", i+1, d)
 	}
 	for i, w := range q.warnings {
-		fmt.Fprintf(&buf, "# warning%d = %s\n", i+1, w)
+		fmt.Fprintf(&buf, "# warning_%d = %s\n", i+1, w)
 	}
 
 	u := func(s string) string {

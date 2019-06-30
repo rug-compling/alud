@@ -1327,12 +1327,14 @@ func leftmost(nodes []interface{}) *NodeType {
 		if ii.End != jj.End {
 			return ii.End < jj.End // ints
 		}
-		return ii.Id < jj.Id // ints
+		return ii.Id > jj.Id // ints, omgekeerd
 	})
 	return nodes[0].(*NodeType)
 }
 
 func firstnode(nodes []interface{}) *NodeType {
+	//return leftmost(nodes)
+
 	if len(nodes) > 0 {
 		return nodes[0].(*NodeType)
 	}

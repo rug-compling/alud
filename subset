@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 while(<>) {
-    if (/^# (comment|debug|warning)/) {
+    if (/^# (sent_id|debug)/) {
 	next;
     }
     @a = split /\t/, $_;
