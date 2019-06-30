@@ -1,0 +1,16 @@
+#!/usr/bin/env perl
+
+while(<>) {
+    @a = split /\t/, $_;
+    if ($#a > 1) {
+	#$a[1] = "*"; # FORM
+	#$a[2] = "*"; # LEMMA
+	$a[6] = "*"; # HEAD
+	# $a[7] = "*"; # DEPREL
+	$a[8] = "*"; # DEPS
+	$a[9] = "*"; # MISC
+	print(join("\t", @a),"\n") if ($a[0] !~ /\./);
+    } else {
+	print;
+    }
+}
