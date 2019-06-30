@@ -61,7 +61,7 @@ type NodeType struct {
 	Getal string `xml:"getal,attr,omitempty"`
 	// GetalN       string      `xml:"getal-n,attr,omitempty"`
 	Graad string `xml:"graad,attr,omitempty"`
-	Id    string `xml:"id,attr,omitempty"`
+	Id    int    `xml:"id,attr,omitempty"`
 	// Iets         string      `xml:"iets,attr,omitempty"`
 	Index int `xml:"index,attr,omitempty"`
 	// Infl         string      `xml:"infl,attr,omitempty"`
@@ -138,13 +138,14 @@ var (
 	noNode = &NodeType{
 		Begin:               -1000,
 		End:                 -1000,
+		Id:                  -1,
 		Node:                []*NodeType{},
-		udHeadPosition:      ERROR_NO_EXTERNAL_HEAD,
 		axParent:            []interface{}{},
 		axAncestors:         []interface{}{},
 		axChildren:          []interface{}{},
 		axDescendants:       []interface{}{},
 		axDescendantsOrSelf: []interface{}{},
+		udHeadPosition:      ERROR_NO_EXTERNAL_HEAD,
 	}
 
 	x = util.CheckErr

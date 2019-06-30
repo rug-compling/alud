@@ -1293,7 +1293,7 @@ func leftmost(nodes []interface{}) *NodeType {
 		if ii.End != jj.End {
 			return ii.End < jj.End // ints
 		}
-		return ii.Index < jj.Index // ints
+		return ii.Id < jj.Id // ints
 	})
 	return nodes[0].(*NodeType)
 }
