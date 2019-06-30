@@ -19,12 +19,6 @@ type Parent interface {
 }
 
 const (
-	ERROR_NO_VALUE = -1000 * (iota + 1)
-	ERROR_NO_EXTERNAL_HEAD
-	TODO
-)
-
-const (
 	cmp__lt = iota
 	collect__ancestors__node
 	collect__attributes__begin
@@ -349,13 +343,13 @@ func (d *Cmp) Do(subdoc []interface{}, q *Context) []interface{} {
 						return TRUE
 					}
 				default:
-					panic(fmt.Sprintf("Missing case for type %T", a1))
+					panic(fmt.Sprintf("Missing case for type %T in %s", a1, q.filename))
 				}
 			}
 		}
 		return FALSE
 	default:
-		panic("Missing case")
+		panic("Missing case in " + q.filename)
 	}
 }
 
@@ -435,7 +429,7 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 		case collect__self__all__node, collect__self__node:
 			result1 = append(result1, r) // TODO: correct?
 		default:
-			panic("Missing case")
+			panic("Missing case in " + q.filename)
 		}
 	}
 	if d.arg2 == nil {
@@ -468,7 +462,7 @@ func (d *Elem) Do(subdoc []interface{}, q *Context) []interface{} {
 		r = []interface{}{1000}
 	default:
 		if r, ok = elements[d.ARG]; !ok {
-			panic("Missing case")
+			panic("Missing case in " + q.filename)
 		}
 	}
 
@@ -529,7 +523,7 @@ func (d *Equal) Do(subdoc []interface{}, q *Context) []interface{} {
 		}
 		return FALSE
 	default:
-		panic("Missing case")
+		panic("Missing case in " + q.filename)
 	}
 }
 
@@ -607,7 +601,7 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 		}
 		return FALSE
 	default:
-		panic("Missing case")
+		panic("Missing case in " + q.filename)
 	}
 }
 
@@ -661,7 +655,7 @@ func (d *Plus) Do(subdoc []interface{}, q *Context) []interface{} {
 		}
 		return result
 	default:
-		panic("Missing case")
+		panic("Missing case in " + q.filename)
 	}
 }
 
@@ -753,7 +747,7 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 	default:
-		panic(fmt.Sprintf("Missing case for type %T", result[0]))
+		panic(fmt.Sprintf("Missing case for type %T in %s", result[0], q.filename))
 	}
 
 	return result
@@ -802,7 +796,7 @@ func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
 	case variable__subj:
 		return q.varsubj
 	default:
-		panic("Missing case")
+		panic("Missing case in " + q.filename)
 	}
 }
 

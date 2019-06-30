@@ -4,6 +4,7 @@ import (
 	//	"github.com/kr/pretty"
 	"github.com/pebbe/util"
 
+	"bufio"
 	"bytes"
 	"encoding/xml"
 	"fmt"
@@ -14,11 +15,21 @@ import (
 	"strings"
 )
 
+const (
+	ERROR_NO_VALUE = -1000 * (iota + 1)
+	ERROR_NO_EXTERNAL_HEAD
+	ERROR_NO_INTERNAL_HEAD
+	TODO
+)
+
 type Context struct {
 	alpino        *Alpino_ds
 	filename      string
 	sentence      string
 	sentid        string
+	debugs        []string
+	warnings      []string
+	depth         int
 	allnodes      []*NodeType
 	ptnodes       []*NodeType
 	varallnodes   []interface{}
@@ -164,6 +175,17 @@ func main() {
 		doDoc(doc, filename)
 	}
 
+	if !util.IsTerminal(os.Stdin) {
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			filename := scanner.Text()
+			doc, err := ioutil.ReadFile(filename)
+			x(err)
+
+			doDoc(doc, filename)
+		}
+	}
+
 }
 
 func doDoc(doc []byte, filename string) {
@@ -203,6 +225,7 @@ func doDoc(doc []byte, filename string) {
 		sentence: alpino.Sentence.Sent,
 		sentid:   alpino.Sentence.SentId,
 		varroot:  []interface{}{alpino.Node},
+		warnings: []string{},
 	}
 
 	inspect(q)
@@ -262,7 +285,7 @@ func inspect(q *Context) {
 			node.axAncestors = append(node.axAncestors, node.parent)
 			if node.axAncestors[0] != q.alpino.Node {
 				// zou niet mogelijk moeten zijn
-				panic("Missing ancestors")
+				panic("Missing ancestors in " + q.filename)
 			}
 		}
 	}
@@ -290,6 +313,8 @@ func number(n int) string {
 			return "ERROR_NO_VALUE"
 		case ERROR_NO_EXTERNAL_HEAD:
 			return "ERROR_NO_EXTERNAL_HEAD"
+		case ERROR_NO_INTERNAL_HEAD:
+			return "ERROR_NO_INTERNAL_HEAD"
 		case TODO:
 			return "TODO"
 		default:
@@ -320,6 +345,13 @@ func conll(q *Context) string {
 		q.filename,
 		q.sentid,
 		q.sentence)
+
+	for i, d := range q.debugs {
+		fmt.Fprintf(&buf, "# debug%d = %s\n", i+1, d)
+	}
+	for i, w := range q.warnings {
+		fmt.Fprintf(&buf, "# warning%d = %s\n", i+1, w)
+	}
 
 	u := func(s string) string {
 		if s == "" {

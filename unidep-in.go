@@ -3,7 +3,8 @@ package main
 import (
 	//	"github.com/kr/pretty"
 
-	//	"fmt"
+	"fmt"
+	"os"
 	"sort"
 )
 
@@ -13,6 +14,8 @@ func fixMisplacedHeadsInCoordination(q *Context) {
 	if len(q.varindexnodes) == 0 {
 		return
 	}
+
+	counter := 0
 
 START:
 	for true {
@@ -41,6 +44,12 @@ $node[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
                                      )]`) {
 					node3 := n3.(*NodeType)
 					if node2.Index == node3.Index {
+						counter++
+						if counter == 100 {
+							q.warnings = append(q.warnings, "Swap limit for fixMisplacedHeadsInCoordination")
+							fmt.Fprintln(os.Stderr, "WARNING: Swap limit for fixMisplacedHeadsInCoordination in "+q.filename)
+							break START
+						}
 						// kopieer inhoud van node2 (niet leeg) naar node3 (leeg)
 						id, rel := node3.Id, node3.Rel
 						*node3 = *node2
@@ -62,6 +71,9 @@ $node[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
 			}
 		}
 		break
+	}
+	if counter > 0 {
+		q.debugs = append(q.debugs, fmt.Sprintf("fixMisplacedHeadsInCoordination: %d swaps", counter))
 	}
 }
 
@@ -359,12 +371,19 @@ func specialFeatures(node *NodeType, q *Context) {
 
 func addDependencyRelations(q *Context) {
 	for _, node := range q.ptnodes {
+		q.depth = 0
 		node.udRelation = dependencyLabel(node, q)
+		q.depth = 0
 		node.udHeadPosition = externalHeadPosition(node, q)
 	}
 }
 
+// recursive
 func dependencyLabel(node *NodeType, q *Context) string {
+	if depthCheck(q, "dependencyLabel") {
+		return "ERROR_NO_LABEL"
+	}
+
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
 	}
@@ -715,7 +734,12 @@ func subjectLabel(subj *NodeType, q *Context) string {
 	return "nsubj" + pass
 }
 
+// recursive
 func passiveSubject(subj *NodeType, q *Context) string {
+	if depthCheck(q, "passiveSubject") {
+		return "ERROR_NO_PASSIVE_SUBJECT"
+	}
+
 	aux := auxiliary1(firstnode(SUFIND(subj, q, `$subj/../node[@rel="hd"]`)), q)
 	if aux == "aux:pass" { // de carriere had gered kunnen worden
 		return ":pass"
@@ -907,7 +931,11 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 	return "ERROR_NO_LABEL_INDEX"
 }
 
+// recursive
 func externalHeadPosition(node *NodeType, q *Context) int {
+	if depthCheck(q, "externalHeadPosition") {
+		return ERROR_NO_EXTERNAL_HEAD
+	}
 
 	if node.Rel == "hd" && (node.udPos == "ADP" || node.parent.Cat == "pp") {
 		// vol vertrouwen
@@ -1106,7 +1134,11 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	return TODO
 }
 
+// recursive
 func internalHeadPosition(node *NodeType, q *Context) int {
+	if depthCheck(q, "internalHeadPosition") {
+		return ERROR_NO_INTERNAL_HEAD
+	}
 
 	if node.Cat == "pp" {
 		// if ($node/node[@rel="hd" and @pt=("bw","n")] )  ( n --> TEMPORARY HACK to fix error where NP is erroneously tagged as PP )
@@ -1183,10 +1215,12 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 	return TODO
 }
 
+// recursive ??
 func internalHeadPositionWithGapping(node *NodeType, q *Context) int {
 	return TODO
 }
 
+// recursive ??
 func enhancedDependencies(q *Context) {
 	// TODO
 
@@ -1310,4 +1344,14 @@ func firstint(ii []interface{}) int {
 		return ii[0].(int)
 	}
 	return ERROR_NO_VALUE
+}
+
+func depthCheck(q *Context, s string) bool {
+	q.depth++
+	if q.depth < 1000 {
+		return false
+	}
+	q.warnings = append(q.warnings, "Recursion depth limit for "+s)
+	fmt.Fprintln(os.Stderr, "WARNING: Recursion depth limit for %s in %s", s, q.filename)
+	return true
 }

@@ -1,6 +1,9 @@
 #!/usr/bin/env perl
 
 while(<>) {
+    if (/^# (comment|debug|warning)/) {
+	next;
+    }
     @a = split /\t/, $_;
     if ($#a > 1) {
 	#$a[1] = "*"; # FORM
