@@ -1,5 +1,21 @@
 
-SRC = main.go unidep.go xpath.go fixpunct.go
+SRC = \
+	auxiliary.go \
+	conllu.go \
+	depheads.go \
+	deplabels.go \
+	deprels.go \
+	document.go \
+	enhanced.go \
+	features.go \
+	fixpunct.go \
+	helpers.go \
+	main.go \
+	misplacedheads.go \
+	postags.go \
+	xpath.go \
+
+
 
 %.go : %-in.go compile
 	rm -f $@

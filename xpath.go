@@ -281,6 +281,16 @@ var (
 	elements = map[int][]interface{}{}
 )
 
+func init() {
+	for key, val := range elemstrings {
+		words := strings.Fields(val)
+		elements[key] = make([]interface{}, len(words))
+		for i, w := range words {
+			elements[key][i] = w
+		}
+	}
+}
+
 type And struct {
 	arg1 Doer
 	arg2 Doer
@@ -314,16 +324,6 @@ type Cmp struct {
 	ARG  int
 	arg1 Doer
 	arg2 Doer
-}
-
-func init() {
-	for key, val := range elemstrings {
-		words := strings.Fields(val)
-		elements[key] = make([]interface{}, len(words))
-		for i, w := range words {
-			elements[key][i] = w
-		}
-	}
 }
 
 func (d *Cmp) Do(subdoc []interface{}, q *Context) []interface{} {
