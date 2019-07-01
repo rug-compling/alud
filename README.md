@@ -92,7 +92,7 @@ Hoe vaak moet de functie `fix_misplaced_heads_in_coordination`
 gebruikt worden? In het XQuery-script wordt het twee keer gedaan voor
 uitvoer naar conll-formaat, en één keer voor uitvoer naar XML-formaat.
 
-In mijn programma gebruik de functie zo vaak tot er geen verschillen
+In mijn programma gebruik ik de functie zo vaak als nodig tot er geen verschillen
 meer optreden. Voor sommige zinnen gaat dat niet goed omdat dingen
 blijvend heen en weer worden geschoven. Dan breek ik het af, en hoop
 op het beste.
@@ -100,18 +100,18 @@ op het beste.
 Zinnen waarbij dit het geval is leveren nogal eens ongeldige
 resultaten, ook bij verwerking door XQilla.
 
-Dit komt niet voor in het Eindhovencorpus, maar wel vaak in het corpus
-Lassy Klein Treebank, zo'n 13 keer:
+Dit komt niet voor in het Eindhoven-corpus, maar wel vaak in het corpus
+LassySmall, zo'n 13 keer:
 
- 1. WR-P-E-I-0000006366.p.8.s.4 --- Invalid HEAD value ERROR\_NO\_INTERNAL\_HEAD\_IN\_GAPPED\_CONSTITUENT
- 1. WR-P-E-I-0000020972.p.4.s.143 --- An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000006366.p.8.s.4 — Invalid HEAD value ERROR\_NO\_INTERNAL\_HEAD\_IN\_GAPPED\_CONSTITUENT
+ 1. WR-P-E-I-0000020972.p.4.s.143 — An element has two attributes with the same expanded name
  1. WR-P-E-I-0000020972.p.4.s.150
- 1. WR-P-E-I-0000020972.p.4.s.164 --- An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.177 --- An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.192 --- An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.200 --- An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.215 --- An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000050211.p.1.s.188 --- Unordered ID numbers 20.1, 20.1
+ 1. WR-P-E-I-0000020972.p.4.s.164 — An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.177 — An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.192 — An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.200 — An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.215 — An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000050211.p.1.s.188 — Unordered ID numbers 20.1, 20.1
  1. WR-P-E-I-0000050381.p.1.s.682.2
  1. WR-P-P-I-0000000098.p.4.s.2
  1. WR-P-P-I-0000000106.p.17.s.4
@@ -122,14 +122,14 @@ Lassy Klein Treebank, zo'n 13 keer:
 ## Verschillen tussen XQilla en Go
 
 De Go-versie geeft momenteel zes verschillen voor DEPREL ten opzichte van XQilla
-voor het Eindhovencorpus.
+voor het Eindhoven-corpus.
 
 In drie gevallen gaat het om verwisseling. Dit blijkt terug te voeren
-te zijn op nemen van het eerste element uit een lijst van resultaten.
+te zijn op het nemen van het eerste element uit een lijst van resultaten.
 Die resultaten staan niet altijd in dezelfde volgorde. De volgorde is
 afhankelijk van de implementatie.
 
-Wanneer ik het gebruik van iets als `resultaat[1]` overal vervang door
+Wanneer ik het gebruik van iets zoals `resultaat[1]` overal vervang door
 `leftmost(resultaat)`, dan verdwijnen de verschillen.
 
 Hiervoor heb ik de sorteermethode in de functie `leftmost()`
