@@ -1,7 +1,6 @@
 package main
 
 import (
-	//	"github.com/kr/pretty"
 	"github.com/pebbe/util"
 
 	"bufio"
@@ -10,28 +9,30 @@ import (
 	"os"
 )
 
+var (
+	x = util.CheckErr
+)
+
 func main() {
 
-	for _, filename := range os.Args[1:] {
-		doc, err := ioutil.ReadFile(filename)
-		x(err)
-
-		doDoc(doc, filename)
-	}
-
+	filenames := []string{}
+	filenames = append(filenames, os.Args[1:]...)
 	if !util.IsTerminal(os.Stdin) {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			filename := scanner.Text()
-			doc, err := ioutil.ReadFile(filename)
-			x(err)
+			filenames = append(filenames, scanner.Text())
+		}
+		x(scanner.Err())
+	}
 
-			result, err := doDoc(doc, filename)
-			if err != nil {
-				fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
-			} else {
-				fmt.Print(result)
-			}
+	for _, filename := range filenames {
+		doc, err := ioutil.ReadFile(filename)
+		x(err)
+		result, err := doDoc(doc, filename)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
+		} else {
+			fmt.Print(result)
 		}
 	}
 

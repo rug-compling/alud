@@ -2,10 +2,8 @@ package main
 
 import (
 	//	"github.com/kr/pretty"
-	"github.com/pebbe/util"
 
 	"encoding/xml"
-	"fmt"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -154,8 +152,6 @@ var (
 		axDescendantsOrSelf: []interface{}{},
 		udHeadPosition:      ERROR_NO_EXTERNAL_HEAD,
 	}
-
-	x = util.CheckErr
 )
 
 func init() {
@@ -284,11 +280,4 @@ func inspect(q *Context) {
 	q.ptnodes = ptnodes
 	q.varptnodes = varptnodes
 
-}
-
-func dump(alpino *Alpino_ds) {
-	b, err := xml.MarshalIndent(alpino, "", "  ")
-	x(err)
-	s := strings.Replace(string(b), "000", "", -1)
-	fmt.Println("<?xml version=\"1.0\"?>\n" + s)
 }
