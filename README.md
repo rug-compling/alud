@@ -1,3 +1,172 @@
+# Van Alpino naar Universal Dependencies
+
 Een poging
 [universal_dependencies.xq](https://github.com/gossebouma/lassy2ud) om
 te zetten naar Go.
+
+----
+
+Met het programma `testXPath` (zit bij de bronbestanden van libxml2) kun je xpath-expressies compileren en
+het resultaat printen. Voorbeeld:
+
+```
+testXPath --tree '$doc/aap[@noot]'
+```
+
+Resultaat:
+
+```
+  SORT
+    COLLECT  'child' 'name' 'node' aap
+      VARIABLE doc
+      PREDICATE
+        COLLECT  'attributes' 'name' 'node' noot
+          NODE
+```
+
+Zie functie `xmlXPathDebugDumpStepOp` in `libxml2-`_*_`/xpath.c`
+
+Die uitvoer laat zich makkelijk omzetten naar code in Go:
+
+```go
+func process(doc *Obj) (interface{}, error) {
+    xpath := &XPath{
+        arg1: &Sort{
+            arg1: &Collect{
+                ARG: collect_child_name_node_aap,
+                arg1: &Variable{
+                    ARG: variable_doc,
+                },
+                arg2: &Predicate{
+                    arg1: &Collect{
+                        ARG:  collect_attributes_name_node_noot,
+                        arg1: &Node{},
+                    },
+                },
+            },
+        },
+    }
+    return xpath.Do(doc)
+}
+```
+
+Vergelijk
+[invoer](https://github.com/pebbe/unidep/blob/master/auxiliary-in.go)
+met
+[uitvoer](https://github.com/pebbe/unidep/blob/master/auxiliary.go)
+
+
+
+----
+
+## Tests
+
+taak \ tijd | XQilla | Go
+------- | ------:| -----:
+Eindhoven-corpus, fix misplaced heads + add postags + add features | 8:06 | 0:29
+
+----
+
+## Verschillen tussen Saxon en XQilla
+
+De resultaten van Saxon en XQilla verschillen van elkaar, in de
+toevoeging die enhanced UDs krijgen. Bijvoorbeeld, bestand
+`1057.xml` uit het corpus Alpino Treebank, daarin krijgt het woord
+*parlementsverkiezingen* van Saxon de DEPS `9:advcl:evenals` en van XQilla
+`9:advcl:bij`. 
+
+Nog een paar bestanden die verschillen opleveren, uit hetzelde corpus:
+
+ * 1017.xml
+ * 1022.xml
+ * 1024.xml
+ * 1055.xml
+
+In totaal levert dit corpus 525 verschillen.
+
+----
+
+## fix\_misplaced\_heads\_in\_coordination
+
+Hoe vaak moet de functie `fix_misplaced_heads_in_coordination`
+gebruikt worden? In het XQuery-script wordt het twee keer gedaan voor
+uitvoer naar conll-formaat, en één keer voor uitvoer naar XML-formaat.
+
+In mijn programma gebruik de functie zo vaak tot er geen verschillen
+meer optreden. Voor sommige zinnen gaat dat niet goed omdat dingen
+blijvend heen en weer worden geschoven. Dan breek ik het af, en hoop
+op het beste.
+
+Zinnen waarbij dit het geval is leveren nogal eens ongeldige
+resultaten, ook bij verwerking door XQilla.
+
+Dit komt niet voor in het Eindhovencorpus, maar wel vaak in het corpus
+Lassy Klein Treebank, zo'n 13 keer:
+
+ 1. WR-P-E-I-0000006366.p.8.s.4 --- Invalid HEAD value ERROR\_NO\_INTERNAL\_HEAD\_IN\_GAPPED\_CONSTITUENT
+ 1. WR-P-E-I-0000020972.p.4.s.143 --- An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.150
+ 1. WR-P-E-I-0000020972.p.4.s.164 --- An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.177 --- An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.192 --- An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.200 --- An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000020972.p.4.s.215 --- An element has two attributes with the same expanded name
+ 1. WR-P-E-I-0000050211.p.1.s.188 --- Unordered ID numbers 20.1, 20.1
+ 1. WR-P-E-I-0000050381.p.1.s.682.2
+ 1. WR-P-P-I-0000000098.p.4.s.2
+ 1. WR-P-P-I-0000000106.p.17.s.4
+ 1. dpc-ibm-001316-nl-sen.p.37.s.1
+
+----
+
+## Verschillen tussen XQilla en Go
+
+De Go-versie geeft momenteel zes verschillen voor DEPREL ten opzichte van XQilla
+voor het Eindhovencorpus.
+
+In drie gevallen gaat het om verwisseling. Dit blijkt terug te voeren
+te zijn op nemen van het eerste element uit een lijst van resultaten.
+Die resultaten staan niet altijd in dezelfde volgorde. De volgorde is
+afhankelijk van de implementatie.
+
+Wanneer ik het gebruik van iets als `resultaat[1]` overal vervang door
+`leftmost(resultaat)`, dan verdwijnen de verschillen.
+
+Hiervoor heb ik de sorteermethode in de functie `leftmost()`
+specifieker gemaakt, zodat er ook een unieke volgorde is als de
+waardes van `@begin` identiek zijn. Let op de waarde van de variablele `$bi`:
+
+```
+declare function local:leftmost($nodes as element(node)*) as element(node) {
+	let $sorted :=	for $node in $nodes
+		  let $bi := 10000000 * number($node/@begin) + 1000 * number($node/@end) - number($node/@id)
+			order by $bi
+			return $node
+	return
+	    $sorted[1]
+};
+```
+
+Voor drie andere verschillen heb ik nog geen oorzaak kunnen vinden.
+Het gaat om zinnen met deze `sent_id`:
+
+ * cdb-6322
+ * gbl-5437
+ * obl-594
+ 
+Hierin komen deze kombinaties voor:
+
+ * zestig- a zeventigduizend katholieken
+ * vijf- tot zeshonderd bladzijden
+ * een stuk of 6 , 7
+
+De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
+`det`. Van de Go-versie krijgen ze de waarde `nummod`.
+
+----
+
+## Te doen
+
+ * `HEAD`
+ * `DEPS`
+ * fixpunct
