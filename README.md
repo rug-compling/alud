@@ -150,7 +150,7 @@ declare function local:leftmost($nodes as element(node)*) as element(node) {
 Voor drie andere verschillen heb ik nog geen oorzaak kunnen vinden.
 Het gaat om zinnen met deze `sent_id`:
 
- * [cdb-6322](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D"cdb-6322"%5D
+ * [cdb-6322](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D"cdb-6322"%5D)
  * [gbl-5437](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D"gbl-5437"%5D)
  * [obl-594](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D"obl-594"%5D)
  
