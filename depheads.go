@@ -4,13 +4,15 @@
 
 package main
 
+//
+// TODO: dit kan allemaal efficiënter: meerdere keren zoeken naar zelfde set nodes
+//
+
 // recursive
 func externalHeadPosition(node *NodeType, q *Context) int {
 	if depthCheck(q, "externalHeadPosition") {
 		return ERROR_NO_EXTERNAL_HEAD
 	}
-
-	// TODO: dit kan allemaal efficiënter: meerdere keren zoeken naar zelfde set nodes
 
 	/*
 	   if ($node[@rel="hd" and (@ud:pos="ADP" or ../@cat="pp") ] )  (: vol vertrouwen :)
@@ -649,7 +651,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}) {
-			return internalHeadPosition(firstnode(Find(node, q /* $node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -714,7 +716,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q)
+			})[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q) // gapping, but could it??
 	}
@@ -791,7 +793,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}) {
-			return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@rel="hd" and @begin < $node/@begin] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/../node[@rel="hd" and @begin < $node/@begin] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -834,7 +836,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q) // dan moet je moet
+			})[0].(*NodeType), q) // dan moet je moet
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -974,7 +976,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			}) {
 				return externalHeadPosition(node.parent, q) // met als presentator Bruno W , met als gevolg [vc dat ...]
 			}
-			return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@rel="hd"] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/../node[@rel="hd"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -1002,7 +1004,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q)
+			})[0].(*NodeType), q)
 		}
 		if Test(node, q /* $node/../self::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ] */, &XPath{
 			arg1: &Sort{
@@ -1094,7 +1096,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 		}) {
 			//reduced relatives , make sure head is not empty (ellipsis)
 			// also : ap with predc: actief als schrijver
-			return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@rel="hd"] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/../node[@rel="hd"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -1122,7 +1124,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q)
+			})[0].(*NodeType), q)
 		}
 		if Test(node, q /* $node/../node[@rel="hd" and (@pt or @cat) and not(@ud:pos=("AUX","ADP"))] */, &XPath{
 			arg1: &Sort{
@@ -1190,7 +1192,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}) { // [met als titel] -- obj1/vc missing
-			return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@rel="hd"] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/../node[@rel="hd"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -1218,7 +1220,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q)
+			})[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q) // covers gapping as well?
 	}
@@ -1348,7 +1350,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}) {
-			return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@rel="predc"] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/../node[@rel="predc"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -1376,7 +1378,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q)
+			})[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -1506,7 +1508,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}) {
-			return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@rel="vc"] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/../node[@rel="vc"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -1534,7 +1536,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q)
+			})[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -1800,7 +1802,7 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 		}) {
 			// if ($node/@cat="mwu")  ( mede [op grond hiervan] )
 			//     local:internal_head_position($node/node[@rel="hd"] )
-			return internalHeadPosition(firstnode(Find(node, q /* $node/node[@rel="hd"] */, &XPath{
+			return internalHeadPosition(Find(node, q /* $node/node[@rel="hd"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -1825,7 +1827,7 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 				},
-			})), q)
+			})[0].(*NodeType), q)
 		}
 		if len(node.Node) > 0 {
 			return internalHeadPosition(node.Node[0], q)
@@ -1838,7 +1840,7 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 	  then    $node/node[@rel="mwp" and not(../node/number(@begin) < number(@begin))]/@end
 	*/
 	if node.Cat == "mwu" {
-		return firstint(Find(node, q /* $node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end */, &XPath{
+		return Find(node, q /* $node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__attributes__end,
@@ -1892,7 +1894,7 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 					},
 				},
 			},
-		}))
+		})[0].(int)
 	}
 
 	/*

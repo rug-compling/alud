@@ -1,12 +1,14 @@
 package main
 
+//
+// TODO: dit kan allemaal efficiënter: meerdere keren zoeken naar zelfde set nodes
+//
+
 // recursive
 func externalHeadPosition(node *NodeType, q *Context) int {
 	if depthCheck(q, "externalHeadPosition") {
 		return ERROR_NO_EXTERNAL_HEAD
 	}
-
-	// TODO: dit kan allemaal efficiënter: meerdere keren zoeken naar zelfde set nodes
 
 	/*
 	   if ($node[@rel="hd" and (@ud:pos="ADP" or ../@cat="pp") ] )  (: vol vertrouwen :)
@@ -85,7 +87,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			return internalHeadPositionWithGapping(firstnode(FIND(node, q, `$node/../node[@rel="predc"]`)), q)
 		}
 		if TEST(node, q, `$node/../node[@rel="predc"]/@index = $node/ancestor::node/node[@rel=("rhd","whd")]/@index`) {
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index]`)), q)
+			return internalHeadPosition(FIND(node, q, `$node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index]`)[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q) // gapping, but could it??
 	}
@@ -98,7 +100,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if TEST(node, q, `$node[@rel=("hd","nucl","body") ]`) {
 		if TEST(node, q, `$node/../node[@rel="hd"]/@begin < $node/@begin`) {
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@rel="hd" and @begin < $node/@begin]`)), q) // dan moet je moet
+			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="hd" and @begin < $node/@begin]`)[0].(*NodeType), q) // dan moet je moet
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -122,15 +124,15 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			if TEST(node, q, `$node/../node[@rel="hd" and @ud:pos="ADP"]`) {
 				return externalHeadPosition(node.parent, q) // met als presentator Bruno W , met als gevolg [vc dat ...]
 			}
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@rel="hd"]`)), q)
+			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="hd"]`)[0].(*NodeType), q)
 		}
 		if TEST(node, q, `$node/../self::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ]`) {
 			//reduced relatives , make sure head is not empty (ellipsis)
 			// also : ap with predc: actief als schrijver
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@rel="hd"]`)), q)
+			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="hd"]`)[0].(*NodeType), q)
 		}
 		if TEST(node, q, `$node/../node[@rel="hd" and (@pt or @cat) and not(@ud:pos=("AUX","ADP"))]`) { // [met als titel] -- obj1/vc missing
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@rel="hd"]`)), q)
+			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="hd"]`)[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q) // covers gapping as well?
 	}
@@ -143,7 +145,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if TEST(node, q, `$node[@rel=("obj1","se","me") and (../@cat="pp" or ../node[@ud:pos="ADP" and @rel="hd"])]`) {
 		if TEST(node, q, `$node/../node[@rel="predc"]`) {
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@rel="predc"]`)), q)
+			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="predc"]`)[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -156,7 +158,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if TEST(node, q, `$node[@rel="pobj1" and (../@cat="pp" or ../node[@ud:pos="ADP" and @rel="hd"])]`) {
 		if TEST(node, q, `$node/../node[@rel="vc"]`) {
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@rel="vc"]`)), q)
+			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="vc"]`)[0].(*NodeType), q)
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -347,7 +349,7 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 		if TEST(node, q, `$node/node[@rel="hd"]`) {
 			// if ($node/@cat="mwu")  ( mede [op grond hiervan] )
 			//     local:internal_head_position($node/node[@rel="hd"] )
-			return internalHeadPosition(firstnode(FIND(node, q, `$node/node[@rel="hd"]`)), q)
+			return internalHeadPosition(FIND(node, q, `$node/node[@rel="hd"]`)[0].(*NodeType), q)
 		}
 		if len(node.Node) > 0 {
 			return internalHeadPosition(node.Node[0], q)
@@ -360,7 +362,7 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 	  then    $node/node[@rel="mwp" and not(../node/number(@begin) < number(@begin))]/@end
 	*/
 	if node.Cat == "mwu" {
-		return firstint(FIND(node, q, `$node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end`))
+		return FIND(node, q, `$node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end`)[0].(int)
 	}
 
 	/*
