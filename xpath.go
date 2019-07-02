@@ -99,6 +99,7 @@ const (
 	elem__string__hd__body
 	elem__string__hd__ld
 	elem__string__hd__ld__vc
+	elem__string__hd__nucl__body
 	elem__string__krijgen
 	elem__string__me
 	elem__string__mod
@@ -107,10 +108,12 @@ const (
 	elem__string__mwu
 	elem__string__mwu__np__pp__ap__detp__smain
 	elem__string__np
+	elem__string__np__ap
 	elem__string__np__conj
 	elem__string__np__pp
 	elem__string__obj1
 	elem__string__obj1__se
+	elem__string__obj1__se__me
 	elem__string__obj1__se__vc
 	elem__string__obj1__vc__se__me
 	elem__string__obj1__pobj1__se
@@ -228,6 +231,7 @@ var (
 		elem__string__hd__body:                     "hd body",
 		elem__string__hd__ld:                       "hd ld",
 		elem__string__hd__ld__vc:                   "hd ld vc",
+		elem__string__hd__nucl__body:               "hd nucl body",
 		elem__string__me:                           "me",
 		elem__string__mod:                          "mod",
 		elem__string__mod__pc__ld:                  "mod pc ld",
@@ -235,11 +239,13 @@ var (
 		elem__string__mwu:                          "mwu",
 		elem__string__mwu__np__pp__ap__detp__smain: "mwu np pp ap detp smain",
 		elem__string__np:                           "np",
+		elem__string__np__ap:                       "np ap",
 		elem__string__np__conj:                     "np conj",
 		elem__string__np__pp:                       "np pp",
 		elem__string__krijgen:                      "krijgen",
 		elem__string__obj1:                         "obj1",
 		elem__string__obj1__se:                     "obj1 se",
+		elem__string__obj1__se__me:                 "obj1 se me",
 		elem__string__obj1__se__vc:                 "obj1 se vc",
 		elem__string__obj1__vc__se__me:             "obj1 vc se me",
 		elem__string__obj1__pobj1__se:              "obj1 pobj1 se",
