@@ -20,6 +20,7 @@ type Parent interface {
 
 const (
 	cmp__lt = iota
+	cmp__gt
 	collect__ancestors__node
 	collect__attributes__begin
 	collect__attributes__end
@@ -67,6 +68,8 @@ const (
 	elem__string__PUNCT
 	elem__string__PUNCT__SYM
 	elem__string__PUNCT__SYM__X
+	elem__string__PUNCT__SYM__X__CONJ__NOUN__ADP__ADV__DET__PROPN___2e_2e_2e
+	elem__string__PUNCT__SYM__X__CONJ__NOUN__PROPN__NUM__ADP__ADV___2e_2e_2e
 	elem__string__SCONJ
 	elem__string__VERB
 	elem__string__aan
@@ -80,7 +83,9 @@ const (
 	elem__string__body
 	elem__string__bw
 	elem__string__cleft
+	elem__string__cmp
 	elem__string__cnj
+	elem__string__cnj__dp__mwp
 	elem__string__conj
 	elem__string__copula
 	elem__string__cp
@@ -100,8 +105,10 @@ const (
 	elem__string__hd__ld
 	elem__string__hd__ld__vc
 	elem__string__hd__nucl__body
+	elem__string__hd__su__obj1__vc
 	elem__string__krijgen
 	elem__string__me
+	elem__string__minmin
 	elem__string__mod
 	elem__string__mod__pc__ld
 	elem__string__mwp
@@ -111,12 +118,14 @@ const (
 	elem__string__np__ap
 	elem__string__np__conj
 	elem__string__np__pp
+	elem__string__nucl
 	elem__string__obj1
 	elem__string__obj1__se
 	elem__string__obj1__se__me
 	elem__string__obj1__se__vc
 	elem__string__obj1__vc__se__me
 	elem__string__obj1__pobj1__se
+	elem__string__obj1__pobj1__se__me
 	elem__string__obj2
 	elem__string__ontbreken
 	elem__string__oti
@@ -148,6 +157,7 @@ const (
 	elem__string__zijn__worden
 	equal__is
 	function__contains__2__args
+	function__count__1__args
 	// function__deep__equal__2__args
 	function__ends__with__2__args
 	function__not__1__args
@@ -193,25 +203,31 @@ var (
 		elem__string__PUNCT:                                  "PUNCT",
 		elem__string__PUNCT__SYM:                             "PUNCT SYM",
 		elem__string__PUNCT__SYM__X:                          "PUNCT SYM X",
-		elem__string__SCONJ:                                  "SCONJ",
-		elem__string__VERB:                                   "VERB",
-		elem__string__aan:                                    "aan",
-		elem__string__advp:                                   "advp",
-		elem__string__advp__ap:                               "advp ap",
-		elem__string__advp__ap__mwu__conj:                    "advp ap mwu conj",
-		elem__string__aux:                                    "aux",
-		elem__string__ap:                                     "ap",
-		elem__string__bez:                                    "bez",
+
+		elem__string__PUNCT__SYM__X__CONJ__NOUN__ADP__ADV__DET__PROPN___2e_2e_2e: "PUNCT SYM X CONJ NOUN ADP ADV DET PROPN NUM PRON",
+		elem__string__PUNCT__SYM__X__CONJ__NOUN__PROPN__NUM__ADP__ADV___2e_2e_2e: "PUNCT SYM X CONJ NOUN PROPN NUM ADP ADV DET PRON",
+
+		elem__string__SCONJ:               "SCONJ",
+		elem__string__VERB:                "VERB",
+		elem__string__aan:                 "aan",
+		elem__string__advp:                "advp",
+		elem__string__advp__ap:            "advp ap",
+		elem__string__advp__ap__mwu__conj: "advp ap mwu conj",
+		elem__string__aux:                 "aux",
+		elem__string__ap:                  "ap",
+		elem__string__bez:                 "bez",
 
 		elem__string__blijken__hebben__hoeven__kunnen__moeten__moge_2e_2e_2e: "blijken hebben hoeven kunnen moeten mogen zijn zullen",
 
-		elem__string__body:   "body",
-		elem__string__bw:     "bw",
-		elem__string__cleft:  "cleft",
-		elem__string__cnj:    "cnj",
-		elem__string__conj:   "conj",
-		elem__string__copula: "copula",
-		elem__string__cp:     "cp",
+		elem__string__body:         "body",
+		elem__string__bw:           "bw",
+		elem__string__cleft:        "cleft",
+		elem__string__cmp:          "cmp",
+		elem__string__cnj:          "cnj",
+		elem__string__cnj__dp__mwp: "cnj dp mwp",
+		elem__string__conj:         "conj",
+		elem__string__copula:       "copula",
+		elem__string__cp:           "cp",
 
 		elem__string__cp__sv1__smain__ppres__ppart__inf__ti__oti__du__w_2e_2e_2e: "cp sv1 smain ppres ppart inf ti oti du whq",
 		elem__string__cp__sv1__smain__ssub__ppres__ppart__ti__oti__inf_2e_2e_2e:  "cp sv1 smain ssub ppres ppart ti oti inf du whq whrel rel",
@@ -232,7 +248,10 @@ var (
 		elem__string__hd__ld:                       "hd ld",
 		elem__string__hd__ld__vc:                   "hd ld vc",
 		elem__string__hd__nucl__body:               "hd nucl body",
+		elem__string__hd__su__obj1__vc:             "hd su obj1 vc",
+		elem__string__krijgen:                      "krijgen",
 		elem__string__me:                           "me",
+		elem__string__minmin:                       "--",
 		elem__string__mod:                          "mod",
 		elem__string__mod__pc__ld:                  "mod pc ld",
 		elem__string__mwp:                          "mwp",
@@ -242,13 +261,14 @@ var (
 		elem__string__np__ap:                       "np ap",
 		elem__string__np__conj:                     "np conj",
 		elem__string__np__pp:                       "np pp",
-		elem__string__krijgen:                      "krijgen",
+		elem__string__nucl:                         "nucl",
 		elem__string__obj1:                         "obj1",
 		elem__string__obj1__se:                     "obj1 se",
 		elem__string__obj1__se__me:                 "obj1 se me",
 		elem__string__obj1__se__vc:                 "obj1 se vc",
 		elem__string__obj1__vc__se__me:             "obj1 vc se me",
 		elem__string__obj1__pobj1__se:              "obj1 pobj1 se",
+		elem__string__obj1__pobj1__se__me:          "obj1 pobj1 se me",
 		elem__string__obj2:                         "obj2",
 		elem__string__ontbreken:                    "ontbreken",
 		elem__string__oti:                          "oti",
@@ -346,6 +366,24 @@ func (d *Cmp) Do(subdoc []interface{}, q *Context) []interface{} {
 					}
 				case string:
 					if a1t < a2.(string) {
+						return TRUE
+					}
+				default:
+					panic(fmt.Sprintf("Missing case for type %T in %s", a1, q.filename))
+				}
+			}
+		}
+		return FALSE
+	case cmp__gt: // >
+		for _, a1 := range arg1 {
+			for _, a2 := range arg2 {
+				switch a1t := a1.(type) {
+				case int:
+					if a1t > a2.(int) {
+						return TRUE
+					}
+				case string:
+					if a1t > a2.(string) {
 						return TRUE
 					}
 				default:
@@ -567,6 +605,8 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 		return FALSE
+	case function__count__1__args:
+		return []interface{}{len(r[0].([]interface{}))}
 		/*
 			case function__deep__equal__2__args:
 				// Nodes zijn pointers. Als de pointers niet gelijk zijn zijn de nodes niet gelijk,

@@ -97,12 +97,14 @@ func featuresToString(node *NodeType) string {
 func number(n int) string {
 	if n < 0 {
 		switch n {
-		case ERROR_NO_VALUE:
-			return "ERROR_NO_VALUE"
+		case ERROR_NO_HEAD_FOUND:
+			return "ERROR_NO_HEAD_FOUND"
 		case ERROR_NO_EXTERNAL_HEAD:
 			return "ERROR_NO_EXTERNAL_HEAD"
 		case ERROR_NO_INTERNAL_HEAD:
 			return "ERROR_NO_INTERNAL_HEAD"
+		case ERROR_NO_VALUE:
+			return "ERROR_NO_VALUE"
 		case TODO:
 			return "TODO"
 		default:

@@ -1548,6 +1548,176 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	               then local:internal_head_position_with_gapping($node/..)
 	               else local:external_head_position($node/..) (: gapping :)
 	*/
+	if Test(node, q /* $node[@rel="mod" and not(../node[@rel=("obj1","pobj1","se","me")]) and (../@cat="pp" or ../node[@rel="hd" and @ud:pos="ADP"])] */, &XPath{
+		arg1: &Sort{
+			arg1: &Filter{
+				arg1: &Variable{
+					ARG: variable__node,
+				},
+				arg2: &Sort{
+					arg1: &And{
+						arg1: &And{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									ARG: elem__string__mod,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+								},
+							},
+							arg2: &Function{
+								ARG: function__not__1__args,
+								arg1: &Arg{
+									arg1: &Sort{
+										arg1: &Collect{
+											ARG: collect__child__node,
+											arg1: &Collect{
+												ARG:  collect__parent__type__node,
+												arg1: &Node{},
+											},
+											arg2: &Predicate{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														ARG: elem__string__obj1__pobj1__se__me,
+														arg1: &Collect{
+															ARG:  collect__attributes__rel,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+						arg2: &Sort{
+							arg1: &Or{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG: collect__attributes__cat,
+										arg1: &Collect{
+											ARG:  collect__parent__type__node,
+											arg1: &Node{},
+										},
+									},
+									arg2: &Elem{
+										ARG: elem__string__pp,
+										arg1: &Collect{
+											ARG: collect__attributes__cat,
+											arg1: &Collect{
+												ARG:  collect__parent__type__node,
+												arg1: &Node{},
+											},
+										},
+									},
+								},
+								arg2: &Collect{
+									ARG: collect__child__node,
+									arg1: &Collect{
+										ARG:  collect__parent__type__node,
+										arg1: &Node{},
+									},
+									arg2: &Predicate{
+										arg1: &And{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													ARG: elem__string__hd,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+												},
+											},
+											arg2: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													ARG: elem__string__ADP,
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) { // mede op grond hiervan
+		// daarom dus
+		if Test(node, q /* $node/../node[@rel=("hd","su","obj1","vc") and (@pt or @cat)] */, &XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__parent__type__node,
+						arg1: &Variable{
+							ARG: variable__node,
+						},
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									ARG: elem__string__hd__su__obj1__vc,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+								},
+							},
+							arg2: &Sort{
+								arg1: &Or{
+									arg1: &Collect{
+										ARG:  collect__attributes__pt,
+										arg1: &Node{},
+									},
+									arg2: &Collect{
+										ARG:  collect__attributes__cat,
+										arg1: &Node{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return internalHeadPositionWithGapping(node.parent, q)
+		}
+		return externalHeadPosition(node.parent, q) // gapping
+	}
 
 	/*
 	   else if ($node[@rel=("cnj","dp","mwp")])
@@ -1557,11 +1727,152 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	               then local:head_position_of_conjunction($node)
 	               else local:internal_head_position_with_gapping($node/..)
 	*/
+	if Test(node, q /* $node[@rel=("cnj","dp","mwp")] */, &XPath{
+		arg1: &Sort{
+			arg1: &Filter{
+				arg1: &Variable{
+					ARG: variable__node,
+				},
+				arg2: &Sort{
+					arg1: &Equal{
+						ARG: equal__is,
+						arg1: &Collect{
+							ARG:  collect__attributes__rel,
+							arg1: &Node{},
+						},
+						arg2: &Elem{
+							ARG: elem__string__cnj__dp__mwp,
+							arg1: &Collect{
+								ARG:  collect__attributes__rel,
+								arg1: &Node{},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		if node == leftmost(Find(node, q /* $node/../node[@rel=("cnj","dp","mwp")] */, &XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__parent__type__node,
+						arg1: &Variable{
+							ARG: variable__node,
+						},
+					},
+					arg2: &Predicate{
+						arg1: &Equal{
+							ARG: equal__is,
+							arg1: &Collect{
+								ARG:  collect__attributes__rel,
+								arg1: &Node{},
+							},
+							arg2: &Elem{
+								ARG: elem__string__cnj__dp__mwp,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+							},
+						},
+					},
+				},
+			},
+		})) {
+			return externalHeadPosition(node.parent, q)
+		}
+		if node.Rel == "cnj" {
+			return headPositionOfConjunction(node, q)
+		}
+		return internalHeadPositionWithGapping(node.parent, q)
+	}
 
 	/*
 	   else if ($node[@rel="cmp" and ../node[@rel="body"]])
 	    then local:internal_head_position_with_gapping($node/../node[@rel="body"][1])
 	*/
+	if Test(node, q /* $node[@rel="cmp" and ../node[@rel="body"]] */, &XPath{
+		arg1: &Sort{
+			arg1: &Filter{
+				arg1: &Variable{
+					ARG: variable__node,
+				},
+				arg2: &Sort{
+					arg1: &And{
+						arg1: &Equal{
+							ARG: equal__is,
+							arg1: &Collect{
+								ARG:  collect__attributes__rel,
+								arg1: &Node{},
+							},
+							arg2: &Elem{
+								ARG: elem__string__cmp,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+							},
+						},
+						arg2: &Collect{
+							ARG: collect__child__node,
+							arg1: &Collect{
+								ARG:  collect__parent__type__node,
+								arg1: &Node{},
+							},
+							arg2: &Predicate{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+									arg2: &Elem{
+										ARG: elem__string__body,
+										arg1: &Collect{
+											ARG:  collect__attributes__rel,
+											arg1: &Node{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		return internalHeadPositionWithGapping(firstnode(Find(node, q /* $node/../node[@rel="body"] */, &XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__parent__type__node,
+						arg1: &Variable{
+							ARG: variable__node,
+						},
+					},
+					arg2: &Predicate{
+						arg1: &Equal{
+							ARG: equal__is,
+							arg1: &Collect{
+								ARG:  collect__attributes__rel,
+								arg1: &Node{},
+							},
+							arg2: &Elem{
+								ARG: elem__string__body,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+							},
+						},
+					},
+				},
+			},
+		})), q)
+	}
 
 	/*
 	   else if ($node[@rel="--" and @cat] )
@@ -1571,25 +1882,467 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	                 else local:external_head_position($node/..)
 	     else local:external_head_position($node/..)
 	*/
+	if node.Rel == "--" && node.Cat != "" {
+		if node.Cat == "mwu" {
+			if Test(node, q /* $node/../node[@cat and not(@cat="mwu")] */, &XPath{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__child__node,
+						arg1: &Collect{
+							ARG: collect__parent__type__node,
+							arg1: &Variable{
+								ARG: variable__node,
+							},
+						},
+						arg2: &Predicate{
+							arg1: &And{
+								arg1: &Collect{
+									ARG:  collect__attributes__cat,
+									arg1: &Node{},
+								},
+								arg2: &Function{
+									ARG: function__not__1__args,
+									arg1: &Arg{
+										arg1: &Sort{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__cat,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													ARG: elem__string__mwu,
+													arg1: &Collect{
+														ARG:  collect__attributes__cat,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) { // fix for multiword punctuation in Alpino output
+				return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@cat and not(@cat="mwu")] */, &XPath{
+					arg1: &Sort{
+						arg1: &Collect{
+							ARG: collect__child__node,
+							arg1: &Collect{
+								ARG: collect__parent__type__node,
+								arg1: &Variable{
+									ARG: variable__node,
+								},
+							},
+							arg2: &Predicate{
+								arg1: &And{
+									arg1: &Collect{
+										ARG:  collect__attributes__cat,
+										arg1: &Node{},
+									},
+									arg2: &Function{
+										ARG: function__not__1__args,
+										arg1: &Arg{
+											arg1: &Sort{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__cat,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														ARG: elem__string__mwu,
+														arg1: &Collect{
+															ARG:  collect__attributes__cat,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				})), q)
+			}
+			return externalHeadPosition(node.parent, q)
+		}
+		return externalHeadPosition(node.parent, q)
+	}
 
 	/*
-	   else if ( $node[@rel="--" and @ud:pos] )
-	    then if ($node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
+	   else 1if ( $node[@rel="--" and @ud:pos] )
+	    1then 2if ($node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
 	                   and ../node[@rel="--" and
 	                               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
 	                  ] )
-	          then local:internal_head_position_with_gapping($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))][1])
-	          else if ( $node/../node[@cat]  )
-	                then local:internal_head_position($node/../node[@cat][1])
-	                else if ($node[@ud:pos="PUNCT" and count(../node) > 1])
-	                      then if ($node/../node[not(@ud:pos="PUNCT")] )
-	                            then local:internal_head_position($node/../node[not(@ud:pos="PUNCT")][1])
-	                            else if ( deep-equal($node,local:leftmost($node/../node[@rel="--" and (@cat or @pt)]) ) )
-	                                  then local:external_head_position($node/..)
-	                                  else "1" (: ie end of first punct token :)
-	                      else if ($node/..) then local:external_head_position($node/..)
-	     else "ERROR_NO_HEAD_FOUND"
+	          2then local:internal_head_position_with_gapping($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))][1])
+	          2else 3if ( $node/../node[@cat]  )
+	                3then local:internal_head_position($node/../node[@cat][1])
+	                3else 4if ($node[@ud:pos="PUNCT" and count(../node) > 1])
+	                      4then 5if ($node/../node[not(@ud:pos="PUNCT")] )
+	                            5then local:internal_head_position($node/../node[not(@ud:pos="PUNCT")][1])
+	                            5else 6if ( deep-equal($node,local:leftmost($node/../node[@rel="--" and (@cat or @pt)]) ) )
+	                                  6then local:external_head_position($node/..)
+	                                  6else "1" (: ie end of first punct token :)
+	                      4else 7if ($node/..) 7then local:external_head_position($node/..)
+	     7else "ERROR_NO_HEAD_FOUND" (: TODO: juiste else ??? ")
 	*/
+	if node.Rel == "--" && node.udPos != "" {
+		if Test(node, q, /* $node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
+			   and ../node[@rel="--" and
+			               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
+			  ] */&XPath{
+				arg1: &Sort{
+					arg1: &Filter{
+						arg1: &Variable{
+							ARG: variable__node,
+						},
+						arg2: &Sort{
+							arg1: &And{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &Node{},
+									},
+									arg2: &Elem{
+										ARG: elem__string__PUNCT__SYM__X__CONJ__NOUN__PROPN__NUM__ADP__ADV___2e_2e_2e,
+										arg1: &Collect{
+											ARG:  collect__attributes__ud_3apos,
+											arg1: &Node{},
+										},
+									},
+								},
+								arg2: &Collect{
+									ARG: collect__child__node,
+									arg1: &Collect{
+										ARG:  collect__parent__type__node,
+										arg1: &Node{},
+									},
+									arg2: &Predicate{
+										arg1: &And{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													ARG: elem__string__minmin,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+												},
+											},
+											arg2: &Function{
+												ARG: function__not__1__args,
+												arg1: &Arg{
+													arg1: &Sort{
+														arg1: &Equal{
+															ARG: equal__is,
+															arg1: &Collect{
+																ARG:  collect__attributes__ud_3apos,
+																arg1: &Node{},
+															},
+															arg2: &Elem{
+																ARG: elem__string__PUNCT__SYM__X__CONJ__NOUN__PROPN__NUM__ADP__ADV___2e_2e_2e,
+																arg1: &Collect{
+																	ARG:  collect__attributes__ud_3apos,
+																	arg1: &Node{},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+			return internalHeadPositionWithGapping(firstnode(Find(node, q /* $node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))] */, &XPath{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__child__node,
+						arg1: &Collect{
+							ARG: collect__parent__type__node,
+							arg1: &Variable{
+								ARG: variable__node,
+							},
+						},
+						arg2: &Predicate{
+							arg1: &And{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+									arg2: &Elem{
+										ARG: elem__string__minmin,
+										arg1: &Collect{
+											ARG:  collect__attributes__rel,
+											arg1: &Node{},
+										},
+									},
+								},
+								arg2: &Function{
+									ARG: function__not__1__args,
+									arg1: &Arg{
+										arg1: &Sort{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													ARG: elem__string__PUNCT__SYM__X__CONJ__NOUN__ADP__ADV__DET__PROPN___2e_2e_2e,
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			})), q)
+		}
+		if Test(node, q /* $node/../node[@cat] */, &XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__parent__type__node,
+						arg1: &Variable{
+							ARG: variable__node,
+						},
+					},
+					arg2: &Predicate{
+						arg1: &Collect{
+							ARG:  collect__attributes__cat,
+							arg1: &Node{},
+						},
+					},
+				},
+			},
+		}) {
+			return internalHeadPosition(firstnode(Find(node, q /* $node/../node[@cat] */, &XPath{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__child__node,
+						arg1: &Collect{
+							ARG: collect__parent__type__node,
+							arg1: &Variable{
+								ARG: variable__node,
+							},
+						},
+						arg2: &Predicate{
+							arg1: &Collect{
+								ARG:  collect__attributes__cat,
+								arg1: &Node{},
+							},
+						},
+					},
+				},
+			})), q)
+		}
+		if Test(node, q /* $node[@ud:pos="PUNCT" and count(../node) > 1] */, &XPath{
+			arg1: &Sort{
+				arg1: &Filter{
+					arg1: &Variable{
+						ARG: variable__node,
+					},
+					arg2: &Sort{
+						arg1: &And{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									ARG: elem__string__PUNCT,
+									arg1: &Collect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &Node{},
+									},
+								},
+							},
+							arg2: &Cmp{
+								ARG: cmp__gt,
+								arg1: &Function{
+									ARG: function__count__1__args,
+									arg1: &Arg{
+										arg1: &Collect{
+											ARG: collect__child__node,
+											arg1: &Collect{
+												ARG:  collect__parent__type__node,
+												arg1: &Node{},
+											},
+										},
+									},
+								},
+								arg2: &Elem{
+									ARG: elem__number__1,
+									arg1: &Function{
+										ARG: function__count__1__args,
+										arg1: &Arg{
+											arg1: &Collect{
+												ARG: collect__child__node,
+												arg1: &Collect{
+													ARG:  collect__parent__type__node,
+													arg1: &Node{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			if Test(node, q /* $node/../node[not(@ud:pos="PUNCT")] */, &XPath{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__child__node,
+						arg1: &Collect{
+							ARG: collect__parent__type__node,
+							arg1: &Variable{
+								ARG: variable__node,
+							},
+						},
+						arg2: &Predicate{
+							arg1: &Function{
+								ARG: function__not__1__args,
+								arg1: &Arg{
+									arg1: &Sort{
+										arg1: &Equal{
+											ARG: equal__is,
+											arg1: &Collect{
+												ARG:  collect__attributes__ud_3apos,
+												arg1: &Node{},
+											},
+											arg2: &Elem{
+												ARG: elem__string__PUNCT,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &Node{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+				return internalHeadPosition(firstnode(Find(node, q /* $node/../node[not(@ud:pos="PUNCT")] */, &XPath{
+					arg1: &Sort{
+						arg1: &Collect{
+							ARG: collect__child__node,
+							arg1: &Collect{
+								ARG: collect__parent__type__node,
+								arg1: &Variable{
+									ARG: variable__node,
+								},
+							},
+							arg2: &Predicate{
+								arg1: &Function{
+									ARG: function__not__1__args,
+									arg1: &Arg{
+										arg1: &Sort{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													ARG: elem__string__PUNCT,
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				})), q)
+			}
+			if node == leftmost(Find(node, q /* $node/../node[@rel="--" and (@cat or @pt)] */, &XPath{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__child__node,
+						arg1: &Collect{
+							ARG: collect__parent__type__node,
+							arg1: &Variable{
+								ARG: variable__node,
+							},
+						},
+						arg2: &Predicate{
+							arg1: &And{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+									arg2: &Elem{
+										ARG: elem__string__minmin,
+										arg1: &Collect{
+											ARG:  collect__attributes__rel,
+											arg1: &Node{},
+										},
+									},
+								},
+								arg2: &Sort{
+									arg1: &Or{
+										arg1: &Collect{
+											ARG:  collect__attributes__cat,
+											arg1: &Node{},
+										},
+										arg2: &Collect{
+											ARG:  collect__attributes__pt,
+											arg1: &Node{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			})) {
+				return externalHeadPosition(node.parent, q)
+			}
+			return 1000 // ie end of first punct token
+		}
+		if node.parent.Begin >= 0 {
+			return externalHeadPosition(node.parent, q)
+		}
+		return ERROR_NO_HEAD_FOUND
+	}
 
 	/*
 	   else if ($node[@rel=("dlink","sat","tag")])
@@ -1597,6 +2350,68 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	          then local:internal_head_position_with_gapping($node/../node[@rel="nucl"])
 	          else "ERROR_NO_EXTERNAL_HEAD"
 	*/
+	if node.Rel == "dlink" || node.Rel == "sat" || node.Rel == "tag" {
+		if Test(node, q /* $node/../node[@rel="nucl"] */, &XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__parent__type__node,
+						arg1: &Variable{
+							ARG: variable__node,
+						},
+					},
+					arg2: &Predicate{
+						arg1: &Equal{
+							ARG: equal__is,
+							arg1: &Collect{
+								ARG:  collect__attributes__rel,
+								arg1: &Node{},
+							},
+							arg2: &Elem{
+								ARG: elem__string__nucl,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return internalHeadPositionWithGapping(Find(node, q /* $node/../node[@rel="nucl"] */, &XPath{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__child__node,
+						arg1: &Collect{
+							ARG: collect__parent__type__node,
+							arg1: &Variable{
+								ARG: variable__node,
+							},
+						},
+						arg2: &Predicate{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									ARG: elem__string__nucl,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+								},
+							},
+						},
+					},
+				},
+			})[0].(*NodeType), q)
+		}
+		return ERROR_NO_EXTERNAL_HEAD
+	}
 
 	/*
 	   else if ($node[@rel="vc"])
@@ -1972,5 +2787,9 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 
 // recursive ??
 func internalHeadPositionWithGapping(node *NodeType, q *Context) int {
+	return TODO
+}
+
+func headPositionOfConjunction(node *NodeType, q *Context) int {
 	return TODO
 }

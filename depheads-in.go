@@ -170,6 +170,13 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	               then local:internal_head_position_with_gapping($node/..)
 	               else local:external_head_position($node/..) (: gapping :)
 	*/
+	if TEST(node, q, `$node[@rel="mod" and not(../node[@rel=("obj1","pobj1","se","me")]) and (../@cat="pp" or ../node[@rel="hd" and @ud:pos="ADP"])]`) { // mede op grond hiervan
+		// daarom dus
+		if TEST(node, q, `$node/../node[@rel=("hd","su","obj1","vc") and (@pt or @cat)]`) {
+			return internalHeadPositionWithGapping(node.parent, q)
+		}
+		return externalHeadPosition(node.parent, q) // gapping
+	}
 
 	/*
 	   else if ($node[@rel=("cnj","dp","mwp")])
@@ -179,11 +186,23 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	               then local:head_position_of_conjunction($node)
 	               else local:internal_head_position_with_gapping($node/..)
 	*/
+	if TEST(node, q, `$node[@rel=("cnj","dp","mwp")]`) {
+		if node == leftmost(FIND(node, q, `$node/../node[@rel=("cnj","dp","mwp")]`)) {
+			return externalHeadPosition(node.parent, q)
+		}
+		if node.Rel == "cnj" {
+			return headPositionOfConjunction(node, q)
+		}
+		return internalHeadPositionWithGapping(node.parent, q)
+	}
 
 	/*
 	   else if ($node[@rel="cmp" and ../node[@rel="body"]])
 	    then local:internal_head_position_with_gapping($node/../node[@rel="body"][1])
 	*/
+	if TEST(node, q, `$node[@rel="cmp" and ../node[@rel="body"]]`) {
+		return internalHeadPositionWithGapping(firstnode(FIND(node, q, `$node/../node[@rel="body"]`)), q)
+	}
 
 	/*
 	   else if ($node[@rel="--" and @cat] )
@@ -193,25 +212,58 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	                 else local:external_head_position($node/..)
 	     else local:external_head_position($node/..)
 	*/
+	if node.Rel == "--" && node.Cat != "" {
+		if node.Cat == "mwu" {
+			if TEST(node, q, `$node/../node[@cat and not(@cat="mwu")]`) { // fix for multiword punctuation in Alpino output
+				return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@cat and not(@cat="mwu")]`)), q)
+			}
+			return externalHeadPosition(node.parent, q)
+		}
+		return externalHeadPosition(node.parent, q)
+	}
 
 	/*
-	   else if ( $node[@rel="--" and @ud:pos] )
-	    then if ($node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
+	   else 1if ( $node[@rel="--" and @ud:pos] )
+	    1then 2if ($node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
 	                   and ../node[@rel="--" and
 	                               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
 	                  ] )
-	          then local:internal_head_position_with_gapping($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))][1])
-	          else if ( $node/../node[@cat]  )
-	                then local:internal_head_position($node/../node[@cat][1])
-	                else if ($node[@ud:pos="PUNCT" and count(../node) > 1])
-	                      then if ($node/../node[not(@ud:pos="PUNCT")] )
-	                            then local:internal_head_position($node/../node[not(@ud:pos="PUNCT")][1])
-	                            else if ( deep-equal($node,local:leftmost($node/../node[@rel="--" and (@cat or @pt)]) ) )
-	                                  then local:external_head_position($node/..)
-	                                  else "1" (: ie end of first punct token :)
-	                      else if ($node/..) then local:external_head_position($node/..)
-	     else "ERROR_NO_HEAD_FOUND"
+	          2then local:internal_head_position_with_gapping($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))][1])
+	          2else 3if ( $node/../node[@cat]  )
+	                3then local:internal_head_position($node/../node[@cat][1])
+	                3else 4if ($node[@ud:pos="PUNCT" and count(../node) > 1])
+	                      4then 5if ($node/../node[not(@ud:pos="PUNCT")] )
+	                            5then local:internal_head_position($node/../node[not(@ud:pos="PUNCT")][1])
+	                            5else 6if ( deep-equal($node,local:leftmost($node/../node[@rel="--" and (@cat or @pt)]) ) )
+	                                  6then local:external_head_position($node/..)
+	                                  6else "1" (: ie end of first punct token :)
+	                      4else 7if ($node/..) 7then local:external_head_position($node/..)
+	     7else "ERROR_NO_HEAD_FOUND" (: TODO: juiste else ??? ")
 	*/
+	if node.Rel == "--" && node.udPos != "" {
+		if TEST(node, q, `$node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
+	                   and ../node[@rel="--" and
+	                               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
+	                  ]`) {
+			return internalHeadPositionWithGapping(firstnode(FIND(node, q, `$node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))]`)), q)
+		}
+		if TEST(node, q, `$node/../node[@cat]`) {
+			return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[@cat]`)), q)
+		}
+		if TEST(node, q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) {
+			if TEST(node, q, `$node/../node[not(@ud:pos="PUNCT")]`) {
+				return internalHeadPosition(firstnode(FIND(node, q, `$node/../node[not(@ud:pos="PUNCT")]`)), q)
+			}
+			if node == leftmost(FIND(node, q, `$node/../node[@rel="--" and (@cat or @pt)]`)) {
+				return externalHeadPosition(node.parent, q)
+			}
+			return 1000 // ie end of first punct token
+		}
+		if node.parent.Begin >= 0 {
+			return externalHeadPosition(node.parent, q)
+		}
+		return ERROR_NO_HEAD_FOUND
+	}
 
 	/*
 	   else if ($node[@rel=("dlink","sat","tag")])
@@ -219,6 +271,12 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	          then local:internal_head_position_with_gapping($node/../node[@rel="nucl"])
 	          else "ERROR_NO_EXTERNAL_HEAD"
 	*/
+	if node.Rel == "dlink" || node.Rel == "sat" || node.Rel == "tag" {
+		if TEST(node, q, `$node/../node[@rel="nucl"]`) {
+			return internalHeadPositionWithGapping(FIND(node, q, `$node/../node[@rel="nucl"]`)[0].(*NodeType), q)
+		}
+		return ERROR_NO_EXTERNAL_HEAD
+	}
 
 	/*
 	   else if ($node[@rel="vc"])
@@ -440,5 +498,9 @@ func internalHeadPosition(node *NodeType, q *Context) int {
 
 // recursive ??
 func internalHeadPositionWithGapping(node *NodeType, q *Context) int {
+	return TODO
+}
+
+func headPositionOfConjunction(node *NodeType, q *Context) int {
 	return TODO
 }
