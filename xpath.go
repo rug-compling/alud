@@ -78,6 +78,7 @@ const (
 	elem__string__advp__ap__mwu__conj
 	elem__string__aux
 	elem__string__ap
+	elem__string__app
 	elem__string__bez
 	elem__string__blijken__hebben__hoeven__kunnen__moeten__moge_2e_2e_2e
 	elem__string__body
@@ -93,10 +94,12 @@ const (
 	elem__string__cp__sv1__smain__ssub__ppres__ppart__ti__oti__inf_2e_2e_2e
 	elem__string__cp__whrel__whq__whsub
 	elem__string__deeleigen
+	elem__string__det
 	elem__string__detp
 	elem__string__dooien__gieten__hagelen__miezeren__misten__mo_2e_2e_2e
 	elem__string__door
 	elem__string__dp
+	elem__string__du
 	elem__string__du__smain
 	elem__string__gen
 	elem__string__het
@@ -104,7 +107,11 @@ const (
 	elem__string__hd__body
 	elem__string__hd__ld
 	elem__string__hd__ld__vc
+	elem__string__hd__mod
 	elem__string__hd__nucl__body
+	elem__string__hd__su
+	elem__string__hd__su__obj1
+	elem__string__hd__su__obj1__pc__predc__body
 	elem__string__hd__su__obj1__vc
 	elem__string__krijgen
 	elem__string__me
@@ -152,6 +159,7 @@ const (
 	elem__string__ti
 	elem__string__vc
 	elem__string__vc__predc
+	elem__string__whd__rhd
 	elem__string__whsub__ssub__ti__cp__oti
 	elem__string__zijn__lijken__blijken__blijven__schijnen__het_2e_2e_2e
 	elem__string__zijn__worden
@@ -169,6 +177,7 @@ const (
 	variable__head
 	variable__indexnodes
 	variable__node
+	variable__tmp
 	variable__subj
 )
 
@@ -215,6 +224,7 @@ var (
 		elem__string__advp__ap__mwu__conj: "advp ap mwu conj",
 		elem__string__aux:                 "aux",
 		elem__string__ap:                  "ap",
+		elem__string__app:                 "app",
 		elem__string__bez:                 "bez",
 
 		elem__string__blijken__hebben__hoeven__kunnen__moeten__moge_2e_2e_2e: "blijken hebben hoeven kunnen moeten mogen zijn zullen",
@@ -234,62 +244,68 @@ var (
 
 		elem__string__cp__whrel__whq__whsub: "cp whrel whq whsub",
 		elem__string__deeleigen:             "deeleigen",
+		elem__string__det:                   "det",
 		elem__string__detp:                  "detp",
 
 		elem__string__dooien__gieten__hagelen__miezeren__misten__mo_2e_2e_2e: "dooien gieten hagelen miezeren misten motregenen onweren plenzen regenen sneeuwen stormen stortregenen ijzelen vriezen weerlichten winteren zomeren",
 
-		elem__string__door:                         "door",
-		elem__string__dp:                           "dp",
-		elem__string__du__smain:                    "du smain",
-		elem__string__gen:                          "gen",
-		elem__string__het:                          "het",
-		elem__string__hd:                           "hd",
-		elem__string__hd__body:                     "hd body",
-		elem__string__hd__ld:                       "hd ld",
-		elem__string__hd__ld__vc:                   "hd ld vc",
-		elem__string__hd__nucl__body:               "hd nucl body",
-		elem__string__hd__su__obj1__vc:             "hd su obj1 vc",
-		elem__string__krijgen:                      "krijgen",
-		elem__string__me:                           "me",
-		elem__string__minmin:                       "--",
-		elem__string__mod:                          "mod",
-		elem__string__mod__pc__ld:                  "mod pc ld",
-		elem__string__mwp:                          "mwp",
-		elem__string__mwu:                          "mwu",
-		elem__string__mwu__np__pp__ap__detp__smain: "mwu np pp ap detp smain",
-		elem__string__np:                           "np",
-		elem__string__np__ap:                       "np ap",
-		elem__string__np__conj:                     "np conj",
-		elem__string__np__pp:                       "np pp",
-		elem__string__nucl:                         "nucl",
-		elem__string__obj1:                         "obj1",
-		elem__string__obj1__se:                     "obj1 se",
-		elem__string__obj1__se__me:                 "obj1 se me",
-		elem__string__obj1__se__vc:                 "obj1 se vc",
-		elem__string__obj1__vc__se__me:             "obj1 vc se me",
-		elem__string__obj1__pobj1__se:              "obj1 pobj1 se",
-		elem__string__obj1__pobj1__se__me:          "obj1 pobj1 se me",
-		elem__string__obj2:                         "obj2",
-		elem__string__ontbreken:                    "ontbreken",
-		elem__string__oti:                          "oti",
-		elem__string__passive:                      "passive",
-		elem__string__pc:                           "pc",
-		elem__string__pc__ld:                       "pc ld",
-		elem__string__pobj1:                        "pobj1",
-		elem__string__pp:                           "pp",
-		elem__string__pp__detp__advp:               "pp detp advp",
-		elem__string__pp__np:                       "pp np",
-		elem__string__pp__np__conj__mwu:            "pp np conj mwu",
-		elem__string__ppart:                        "ppart",
-		elem__string__ppart__inf__ti:               "ppart inf ti",
-		elem__string__pred:                         "pred",
-		elem__string__predc:                        "predc",
-		elem__string__rhd__whd:                     "rhd whd",
-		elem__string__smain:                        "smain",
-		elem__string__su:                           "su",
-		elem__string__su__obj1:                     "su obj1",
-		elem__string__su__obj1__predc__vc:          "su obj1 predc vc",
-		elem__string__sup:                          "sup",
+		elem__string__door:                          "door",
+		elem__string__dp:                            "dp",
+		elem__string__du:                            "ud",
+		elem__string__du__smain:                     "du smain",
+		elem__string__gen:                           "gen",
+		elem__string__hd:                            "hd",
+		elem__string__hd__body:                      "hd body",
+		elem__string__hd__ld:                        "hd ld",
+		elem__string__hd__ld__vc:                    "hd ld vc",
+		elem__string__hd__mod:                       "hd mod",
+		elem__string__hd__nucl__body:                "hd nucl body",
+		elem__string__hd__su:                        "hd su",
+		elem__string__hd__su__obj1:                  "hd su obj1",
+		elem__string__hd__su__obj1__pc__predc__body: "hd su obj1 pc predc body",
+		elem__string__hd__su__obj1__vc:              "hd su obj1 vc",
+		elem__string__het:                           "het",
+		elem__string__krijgen:                       "krijgen",
+		elem__string__me:                            "me",
+		elem__string__minmin:                        "--",
+		elem__string__mod:                           "mod",
+		elem__string__mod__pc__ld:                   "mod pc ld",
+		elem__string__mwp:                           "mwp",
+		elem__string__mwu:                           "mwu",
+		elem__string__mwu__np__pp__ap__detp__smain:  "mwu np pp ap detp smain",
+		elem__string__np:                            "np",
+		elem__string__np__ap:                        "np ap",
+		elem__string__np__conj:                      "np conj",
+		elem__string__np__pp:                        "np pp",
+		elem__string__nucl:                          "nucl",
+		elem__string__obj1:                          "obj1",
+		elem__string__obj1__se:                      "obj1 se",
+		elem__string__obj1__se__me:                  "obj1 se me",
+		elem__string__obj1__se__vc:                  "obj1 se vc",
+		elem__string__obj1__vc__se__me:              "obj1 vc se me",
+		elem__string__obj1__pobj1__se:               "obj1 pobj1 se",
+		elem__string__obj1__pobj1__se__me:           "obj1 pobj1 se me",
+		elem__string__obj2:                          "obj2",
+		elem__string__ontbreken:                     "ontbreken",
+		elem__string__oti:                           "oti",
+		elem__string__passive:                       "passive",
+		elem__string__pc:                            "pc",
+		elem__string__pc__ld:                        "pc ld",
+		elem__string__pobj1:                         "pobj1",
+		elem__string__pp:                            "pp",
+		elem__string__pp__detp__advp:                "pp detp advp",
+		elem__string__pp__np:                        "pp np",
+		elem__string__pp__np__conj__mwu:             "pp np conj mwu",
+		elem__string__ppart:                         "ppart",
+		elem__string__ppart__inf__ti:                "ppart inf ti",
+		elem__string__pred:                          "pred",
+		elem__string__predc:                         "predc",
+		elem__string__rhd__whd:                      "rhd whd",
+		elem__string__smain:                         "smain",
+		elem__string__su:                            "su",
+		elem__string__su__obj1:                      "su obj1",
+		elem__string__su__obj1__predc__vc:           "su obj1 predc vc",
+		elem__string__sup:                           "sup",
 
 		elem__string__sv1__smain__ssub__inf__ppres__ppart__oti__ap__ad_2e_2e_2e: "sv1 smain ssub inf ppres ppart oti ap advp",
 
@@ -297,6 +313,7 @@ var (
 		elem__string__ti:                       "ti",
 		elem__string__vc:                       "vc",
 		elem__string__vc__predc:                "vc predc",
+		elem__string__whd__rhd:                 "whd rhd",
 		elem__string__whsub__ssub__ti__cp__oti: "whsub ssub ti cp oti",
 
 		elem__string__zijn__lijken__blijken__blijven__schijnen__het_2e_2e_2e: "zijn lijken blijken blijven schijnen heten voorkomen worden dunken",
@@ -839,6 +856,8 @@ func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
 		return q.varhead
 	case variable__indexnodes:
 		return q.varindexnodes
+	case variable__tmp:
+		return q.vartmp
 	case variable__subj:
 		return q.varsubj
 	default:

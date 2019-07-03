@@ -101,12 +101,16 @@ func number(n int) string {
 			return "ERROR_NO_HEAD_FOUND"
 		case ERROR_NO_EXTERNAL_HEAD:
 			return "ERROR_NO_EXTERNAL_HEAD"
+		case ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT:
+			return "ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT"
 		case ERROR_NO_INTERNAL_HEAD:
 			return "ERROR_NO_INTERNAL_HEAD"
 		case ERROR_NO_VALUE:
 			return "ERROR_NO_VALUE"
 		case TODO:
 			return "TODO"
+		case empty_head:
+			return "empty head"
 		default:
 			panic("Missing case")
 		}

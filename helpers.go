@@ -6,6 +6,14 @@ import (
 	"sort"
 )
 
+func left(nodes []interface{}) []interface{} {
+	n := leftmost(nodes)
+	if n == noNode {
+		return []interface{}{}
+	}
+	return []interface{}{n}
+}
+
 func leftmost(nodes []interface{}) *NodeType {
 	switch len(nodes) {
 	case 0:
@@ -28,11 +36,32 @@ func leftmost(nodes []interface{}) *NodeType {
 	return nodes[0].(*NodeType)
 }
 
+func first(nodes []interface{}) []interface{} {
+	if len(nodes) > 1 {
+		return nodes[:1]
+	}
+	return nodes
+}
+
 func firstnode(nodes []interface{}) *NodeType {
 	//return leftmost(nodes)
 
 	if len(nodes) > 0 {
 		return nodes[0].(*NodeType)
+	}
+	return noNode
+}
+
+func last(nodes []interface{}) []interface{} {
+	if len(nodes) > 0 {
+		return nodes[len(nodes)-1:]
+	}
+	return []interface{}{}
+}
+
+func lastnode(nodes []interface{}) *NodeType {
+	if len(nodes) > 0 {
+		return nodes[len(nodes)-1].(*NodeType)
 	}
 	return noNode
 }

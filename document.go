@@ -13,8 +13,10 @@ const (
 	ERROR_NO_VALUE = -1000 * (iota + 1)
 	ERROR_NO_HEAD_FOUND
 	ERROR_NO_EXTERNAL_HEAD
+	ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
 	ERROR_NO_INTERNAL_HEAD
 	TODO
+	empty_head
 )
 
 type Context struct {
@@ -33,6 +35,7 @@ type Context struct {
 	vargap        []interface{}
 	varhead       []interface{}
 	varnode       []interface{}
+	vartmp        []interface{}
 	varroot       []interface{}
 	varsubj       []interface{}
 }
