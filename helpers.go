@@ -28,10 +28,10 @@ func leftmost(nodes []interface{}) *NodeType {
 		if ii.Begin != jj.Begin {
 			return ii.Begin < jj.Begin // ints
 		}
-		if ii.End != jj.End {
-			return ii.End < jj.End // ints
-		}
-		return ii.Id > jj.Id // ints, omgekeerd
+		//if ii.End != jj.End {
+		return ii.End < jj.End // ints
+		//}
+		//return ii.Id > jj.Id // ints, omgekeerd
 	})
 	return nodes[0].(*NodeType)
 }

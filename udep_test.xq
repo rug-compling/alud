@@ -667,7 +667,11 @@ declare function local:leftmost($nodes as element(node)*) as element(node) {
 			order by $bi (: solve cases where begin is identical (hij is en blijft omstreden)?? :)
 			return $node
 	return
-	    $sorted[1]
+	    if (count($sorted) > 0)
+	    then
+		$sorted[1]
+	    else
+		element {"node"} { }
 };
 
 declare function local:following-cnj-sister($node as element(node)) as element(node)

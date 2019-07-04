@@ -136,6 +136,7 @@ type NodeType struct {
 	udRelation          string
 	udTense             string
 	udVerbForm          string
+	udFirstWordBegin    int
 	axParent            []interface{}
 	axAncestors         []interface{}
 	axChildren          []interface{}

@@ -5809,14 +5809,41 @@ func followingCnjSister(node *NodeType, q *Context) []interface{} {
 	sisters := []*NodeType{}
 	for _, n := range node.parent.Node {
 		if n.Rel == "cnj" /* && n.Begin > node.Begin */ {
+			b := Find(n, q /* $node/descendant-or-self::node[@word]/@begin */, &XPath{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__attributes__begin,
+						arg1: &Collect{
+							ARG: collect__descendant__or__self__node,
+							arg1: &Variable{
+								ARG: variable__node,
+							},
+							arg2: &Predicate{
+								arg1: &Collect{
+									ARG:  collect__attributes__word,
+									arg1: &Node{},
+								},
+							},
+						},
+					},
+				},
+			})
+			if len(b) == 0 {
+				n.udFirstWordBegin = 1000000
+			} else {
+				sort.Slice(b, func(i, j int) bool {
+					return b[i].(int) < b[j].(int)
+				})
+				n.udFirstWordBegin = b[0].(int)
+			}
 			sisters = append(sisters, n)
 		}
 	}
 	sort.Slice(sisters, func(i, j int) bool {
-		return sisters[i].Begin < sisters[j].Begin
+		return sisters[i].udFirstWordBegin < sisters[j].udFirstWordBegin
 	})
 	for _, n := range sisters {
-		if n.Begin > node.Begin {
+		if n.udFirstWordBegin > node.Begin {
 			return []interface{}{n}
 		}
 	}

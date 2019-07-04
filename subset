@@ -4,16 +4,20 @@ while(<>) {
     if (/^# (sent_id|debug)/) {
 	next;
     }
+    chomp;
     @a = split /\t/, $_;
     if ($#a > 1) {
-	#$a[1] = "*"; # FORM
-	#$a[2] = "*"; # LEMMA
-	$a[6] = "*"; # HEAD
-	# $a[7] = "*"; # DEPREL
-	$a[8] = "*"; # DEPS
-	$a[9] = "*"; # MISC
+	while($#a < 9) {
+	    push @a, "_";
+	}
+	#$a[1] = "_"; # FORM
+	#$a[2] = "_"; # LEMMA
+	#$a[6] = "_"; # HEAD
+	#$a[7] = "_"; # DEPREL
+	$a[8] = "_"; # DEPS
+	$a[9] = "_"; # MISC
 	print(join("\t", @a),"\n") if ($a[0] !~ /\./);
     } else {
-	print;
+	print "$_\n";
     }
 }
