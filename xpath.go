@@ -809,6 +809,16 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 				}
 			}
 		}
+	case int:
+		// alleen ontdubbelen
+		for i := 0; i < len(result); i++ {
+			for j := i + 1; j < len(result); j++ {
+				if result[i].(int) == result[j].(int) {
+					result = append(result[:j], result[j+1:]...)
+					j--
+				}
+			}
+		}
 	default:
 		panic(fmt.Sprintf("Missing case for type %T in %s", result[0], q.filename))
 	}

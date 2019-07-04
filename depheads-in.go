@@ -1,5 +1,9 @@
 package main
 
+import (
+	"sort"
+)
+
 //
 // TODO: dit kan allemaal efficiënter: meerdere keren zoeken naar zelfde set nodes
 //
@@ -596,7 +600,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   then    $node/@end
 	*/
 	if TEST(node, q, `$node[@word]`) {
-		return firstint(FIND(node, q, `$node/@end`))
+		return i1(FIND(node, q, `$node/@end`))
 	}
 
 	/*
@@ -744,11 +748,93 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	return ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
 }
 
+/*
+brute force method to be compliant with conj points to the left rule:
+if interhdpos($node) < internalhdpos($node/..) then do something ad hoc
+because even fixing misplaced heads fails in cases like
+Het front der activisten vertoont dan wel een beeld van lusteloosheid , " aan de basis " is en wordt toch veel werk verzet .
+*/
 func headPositionOfConjunction(node *NodeType, q *Context) int {
-	return TODO
+	/*
+	   declare function local:head_position_of_conjunction($node as element(node)) as xs:string
+	   { let $internal_head := local:internal_head_position_with_gapping($node)
+	     let $leftmost_conj_daughter := local:leftmost($node/../node[@rel="cnj"])
+	     let $leftmost_internal_head := local:internal_head_position_with_gapping($leftmost_conj_daughter)
+	     let $endpos_of_leftmost_conj_constituents :=
+	                   for $e in $leftmost_conj_daughter/node/@end
+	                   where number($e) < number($internal_head)
+	                   order by number($e)
+	                   return $e
+	     return
+	     if (number($leftmost_internal_head) < number($internal_head))  (: business as usual :)
+	     then $leftmost_internal_head
+	     else if ( $endpos_of_leftmost_conj_constituents )
+	          then $endpos_of_leftmost_conj_constituents[last()]
+	          else ( $leftmost_conj_daughter/node/@end)[1]  (: this should not happen really -- give error msg? :)
+
+	   };
+	*/
+
+	internal_head := internalHeadPositionWithGapping([]interface{}{node}, q)
+	leftmost_conj_daughter := leftmost(FIND(node, q, `$node/../node[@rel="cnj"]`))
+	leftmost_internal_head := internalHeadPositionWithGapping([]interface{}{leftmost_conj_daughter}, q)
+
+	if leftmost_internal_head < internal_head {
+		return leftmost_internal_head
+	}
+
+	endpos_of_leftmost_conj_constituents := []int{}
+	for _, e := range leftmost_conj_daughter.Node {
+		if e.End < internal_head {
+			endpos_of_leftmost_conj_constituents = append(endpos_of_leftmost_conj_constituents, e.End)
+		}
+	}
+	if len(endpos_of_leftmost_conj_constituents) == 0 {
+		return leftmost_conj_daughter.Node[0].End // this should not happen really -- give error msg?
+	}
+	sort.Ints(endpos_of_leftmost_conj_constituents)
+	return endpos_of_leftmost_conj_constituents[len(endpos_of_leftmost_conj_constituents)-1]
 }
 
 func followingCnjSister(node *NodeType, q *Context) []interface{} {
-	// TODO
+	/*
+	   declare function local:following-cnj-sister($node as element(node)) as element(node)
+	   { let $annotated-sisters :=
+	         for $sister in $node/../node[@rel="cnj"]
+	         return
+	            <begin-node begin="{local:begin-position-of-first-word($sister)}">
+	              {$sister}
+	            </begin-node>
+
+	     let $sorted-sisters :=
+	         for $sister in $annotated-sisters
+	         (: where $sister[number(@begin) > $node/number(@begin)] :)
+	         order by $sister/number(@begin)
+	         return $sister
+	     return
+	         if  ($sorted-sisters[number(@begin) > $node/number(@begin)] )
+	         then ($sorted-sisters[number(@begin) > $node/number(@begin)]/node)[1]
+	         else $sorted-sisters[1]/node
+
+	   };
+	*/
+
+	sisters := []*NodeType{}
+	for _, n := range node.parent.Node {
+		if n.Rel == "cnj" /* && n.Begin > node.Begin */ {
+			sisters = append(sisters, n)
+		}
+	}
+	sort.Slice(sisters, func(i, j int) bool {
+		return sisters[i].Begin < sisters[j].Begin
+	})
+	for _, n := range sisters {
+		if n.Begin > node.Begin {
+			return []interface{}{n}
+		}
+	}
+	if len(sisters) > 0 {
+		return []interface{}{sisters[0]}
+	}
 	return []interface{}{}
 }
