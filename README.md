@@ -63,7 +63,8 @@ met
 
 taak \ tijd | XQilla | Go
 ------- | ------:| -----:
-Eindhoven-corpus, fix misplaced heads + add postags + add features | 8:06 | 0:29
+Eindhoven-corpus, fix misplaced heads + add postags + add features | 08:06 | 00:29
+Eindhoven-corpus, alles behalve enhanced dependencies en fixpunct | 23:00 | 01:24
 
 ----
 
@@ -162,6 +163,5 @@ De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
 
 ## Te doen
 
- * `HEAD`
- * `DEPS`
+ * enhanced dependencies
  * fixpunct
