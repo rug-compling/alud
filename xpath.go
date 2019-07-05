@@ -313,10 +313,19 @@ type Filter struct {
 }
 
 func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
+
 	result := make([]interface{}, 0)
-	for _, r := range d.arg1.Do(subdoc, q) {
-		if len(d.arg2.Do([]interface{}{r}, q)) > 0 {
-			result = append(result, r)
+	for i, r := range d.arg1.Do(subdoc, q) {
+		r2 := d.arg2.Do([]interface{}{r}, q)
+		if len(r2) > 0 {
+			if ii, ok := r2[0].(int); ok && len(r2) == 1 {
+				// arg2 is een index
+				if ii == i+1 {
+					result = append(result, r)
+				}
+			} else {
+				result = append(result, r)
+			}
 		}
 	}
 	return result
@@ -451,7 +460,7 @@ func (d *Predicate) Do(subdoc []interface{}, q *Context) []interface{} {
 	if d.arg2 == nil {
 		return result
 	}
-	i := d.arg2.Do(subdoc, q)[0].(int) - 1
+	i := d.arg2.Do(subdoc, q)[0].(int) - 1 // TODO: always an index?
 	if i >= 0 && i < len(result) {
 		return []interface{}{result[i]}
 	}
