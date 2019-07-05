@@ -4,6 +4,7 @@ import (
 	"github.com/pebbe/util"
 
 	"bytes"
+	"crypto/md5"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -23,10 +24,11 @@ var (
 	reTest    = regexp.MustCompile("(?s:(?:TEST|FIND)\\(.*?`.*?`\\))")
 	reComment = regexp.MustCompile("(?s:\\(:.*?:\\))")
 	reRemove  = regexp.MustCompile("[^a-zA-Z0-9]")
-	reSet     = regexp.MustCompile("(?s:=\\s*\\(\\s*\".*?\"\\s*\\))")
-	reSetSep  = regexp.MustCompile("\"\\s*,\\s*\"")
+	reSet     = regexp.MustCompile("(?s:=\\s*\\(\\s*(\".*?\")\\s*\\))")
 
 	program string
+
+	hash = make(map[string]string)
 )
 
 func main() {
@@ -52,13 +54,12 @@ func compile(s string) string {
 
 	s2 := reComment.ReplaceAllLiteralString(s, "")
 
-	// hack voor sets van strings in XPath versie 2
-	// =("aap","noot","mies")  ->  ="aap|noot|mies"
+	// =("aap","noot","mies")  ->  ="hashcode"
 	s2 = reSet.ReplaceAllStringFunc(s2, func(s string) string {
-		s = reSetSep.ReplaceAllLiteralString(s, " ")
-		s = strings.Replace(s, "(", "", 1)
-		s = s[:len(s)-1]
-		return s
+		mm := reSet.FindStringSubmatch(s)
+		h := fmt.Sprintf("%x", md5.Sum([]byte(mm[1])))
+		hash[h] = mm[1]
+		return `="` + h + `"`
 	})
 
 	cmd := exec.Command("testXPath", "--tree", s2)
@@ -124,29 +125,42 @@ func parse(s string) string {
 			cmd = fmt.Sprint("arg", prev[lvl])
 		}
 		out = append(out, fmt.Sprintf("%s: &%s{", cmd, str))
-		if len(words) > 1 {
-			args := strings.Join(words[1:], " ")
-			args = strings.Replace(args, "'", "", -1)
-			args = strings.Replace(args, " :", "", -1)
-			args = strings.Replace(args, "<", "lt", -1)
-			args = strings.Replace(args, ">", "gt", -1)
-			args = strings.Replace(args, "(", " ", -1)
-			args = strings.Replace(args, ")", "", -1)
-			args = strings.Replace(args, "=", "is", -1)
-			args = strings.Replace(args, "--", "minmin", -1)
-			args = strings.Replace(args, "deep-equal", "deep equal", -1)
-			args = strings.Replace(args, "-with", " with", -1)
-			args = strings.Replace(args, "-or-self", " or self", -1)
-			args = strings.Replace(args, "+", "plus", -1)
-			args = strings.Replace(args, "Object is a ", "", -1)
-			args = strings.Replace(args, " name node", "", -1)
-			args = strings.Replace(reRemove.ReplaceAllStringFunc(args, func(s string) string {
-				return fmt.Sprintf("_%02x", s[0])
-			}), "_20", "__", -1)
-			if args == "_2d" {
-				args = "minus"
+		if cmd0 == "elem" {
+			if words[4] == "string" {
+				data, ok := hash[words[6]]
+				if !ok {
+					data = `"` + words[6] + `"`
+				}
+				out = append(out, fmt.Sprintf("DATA: []interface{}{%s},", data))
+			} else if words[4] == "number" {
+				out = append(out, fmt.Sprintf("DATA: []interface{}{%s},", words[6]))
+			} else {
+				panic("Unknown elem type: " + strings.Join(words, " "))
 			}
-			out = append(out, fmt.Sprintf("ARG: %s__%s,", cmd0, args))
+		} else {
+			if len(words) > 1 {
+				args := strings.Join(words[1:], " ")
+				args = strings.Replace(args, "'", "", -1)
+				args = strings.Replace(args, " :", "", -1)
+				args = strings.Replace(args, "<", "lt", -1)
+				args = strings.Replace(args, ">", "gt", -1)
+				args = strings.Replace(args, "(", " ", -1)
+				args = strings.Replace(args, ")", "", -1)
+				args = strings.Replace(args, "=", "is", -1)
+				args = strings.Replace(args, "--", "minmin", -1)
+				args = strings.Replace(args, "deep-equal", "deep equal", -1)
+				args = strings.Replace(args, "-with", " with", -1)
+				args = strings.Replace(args, "-or-self", " or self", -1)
+				args = strings.Replace(args, "+", "plus", -1)
+				args = strings.Replace(args, " name node", "", -1)
+				args = strings.Replace(reRemove.ReplaceAllStringFunc(args, func(s string) string {
+					return fmt.Sprintf("_%02x", s[0])
+				}), "_20", "__", -1)
+				if args == "_2d" {
+					args = "minus"
+				}
+				out = append(out, fmt.Sprintf("ARG: %s__%s,", cmd0, args))
+			}
 		}
 	}
 	for lvl > 0 {

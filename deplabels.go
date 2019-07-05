@@ -33,7 +33,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -78,7 +78,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__mod,
+									DATA: []interface{}{"mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -127,7 +127,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__me,
+								DATA: []interface{}{"me"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -152,7 +152,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__ADP,
+													DATA: []interface{}{"ADP"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -204,7 +204,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__obj1__se,
+										DATA: []interface{}{"obj1", "se"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -244,7 +244,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__hd,
+											DATA: []interface{}{"hd"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -275,7 +275,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__AUX,
+													DATA: []interface{}{"AUX"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -305,7 +305,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							},
 						},
 						arg2: &Elem{
-							ARG: elem__string__pp,
+							DATA: []interface{}{"pp"},
 							arg1: &Collect{
 								ARG: collect__attributes__cat,
 								arg1: &Collect{
@@ -336,7 +336,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								},
 							},
 							arg2: &Elem{
-								ARG: elem__string__np,
+								DATA: []interface{}{"np"},
 								arg1: &Collect{
 									ARG: collect__attributes__cat,
 									arg1: &Collect{
@@ -389,7 +389,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									},
 								},
 								arg2: &Elem{
-									ARG: elem__string__cnj,
+									DATA: []interface{}{"cnj"},
 									arg1: &Collect{
 										ARG: collect__attributes__rel,
 										arg1: &Collect{
@@ -414,7 +414,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__hd,
+												DATA: []interface{}{"hd"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -468,7 +468,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 											},
 										},
 										arg2: &Elem{
-											ARG: elem__string__vc,
+											DATA: []interface{}{"vc"},
 											arg1: &Collect{
 												ARG: collect__attributes__rel,
 												arg1: &Collect{
@@ -493,7 +493,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__hd,
+														DATA: []interface{}{"hd"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -539,7 +539,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__cnj,
+													DATA: []interface{}{"cnj"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -558,7 +558,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 																arg1: &Node{},
 															},
 															arg2: &Elem{
-																ARG: elem__string__hd,
+																DATA: []interface{}{"hd"},
 																arg1: &Collect{
 																	ARG:  collect__attributes__rel,
 																	arg1: &Node{},
@@ -636,7 +636,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__su,
+														DATA: []interface{}{"su"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -678,7 +678,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__vc,
+														DATA: []interface{}{"vc"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -716,7 +716,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										},
 									},
 									arg2: &Elem{
-										ARG: elem__string__cnj,
+										DATA: []interface{}{"cnj"},
 										arg1: &Collect{
 											ARG: collect__attributes__rel,
 											arg1: &Collect{
@@ -761,7 +761,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -806,7 +806,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__mod,
+									DATA: []interface{}{"mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -850,7 +850,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							},
 						},
 						arg2: &Elem{
-							ARG: elem__string__pp,
+							DATA: []interface{}{"pp"},
 							arg1: &Collect{
 								ARG: collect__attributes__cat,
 								arg1: &Collect{
@@ -879,7 +879,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__hd,
+										DATA: []interface{}{"hd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -893,7 +893,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__ADP,
+										DATA: []interface{}{"ADP"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -924,7 +924,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -971,7 +971,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__su,
+												DATA: []interface{}{"su"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -1007,7 +1007,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1052,7 +1052,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__su,
+									DATA: []interface{}{"su"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1102,7 +1102,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__PROPN,
+								DATA: []interface{}{"PROPN"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},
@@ -1137,7 +1137,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cnj,
+								DATA: []interface{}{"cnj"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1171,7 +1171,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__dp,
+								DATA: []interface{}{"dp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1216,7 +1216,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__hd,
+										DATA: []interface{}{"hd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -1230,7 +1230,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__AUX__ADP,
+										DATA: []interface{}{"AUX", "ADP"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -1260,7 +1260,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__predc,
+												DATA: []interface{}{"predc"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -1296,7 +1296,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1342,7 +1342,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__su,
+														DATA: []interface{}{"su"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -1390,7 +1390,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__ti,
+														DATA: []interface{}{"ti"},
 														arg1: &Collect{
 															ARG:  collect__attributes__cat,
 															arg1: &Node{},
@@ -1407,7 +1407,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__body,
+													DATA: []interface{}{"body"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -1426,7 +1426,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__su,
+														DATA: []interface{}{"su"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -1477,7 +1477,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__oti,
+														DATA: []interface{}{"oti"},
 														arg1: &Collect{
 															ARG:  collect__attributes__cat,
 															arg1: &Node{},
@@ -1494,7 +1494,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__ti,
+													DATA: []interface{}{"ti"},
 													arg1: &Collect{
 														ARG:  collect__attributes__cat,
 														arg1: &Node{},
@@ -1511,7 +1511,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__body,
+												DATA: []interface{}{"body"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -1530,7 +1530,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__su,
+													DATA: []interface{}{"su"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -1581,7 +1581,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							},
 						},
 						arg2: &Elem{
-							ARG: elem__string__np,
+							DATA: []interface{}{"np"},
 							arg1: &Collect{
 								ARG: collect__attributes__cat,
 								arg1: &Collect{
@@ -1618,7 +1618,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__su__obj1,
+									DATA: []interface{}{"su", "obj1"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1668,7 +1668,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1713,7 +1713,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__mod,
+									DATA: []interface{}{"mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1756,7 +1756,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__mod__pc__ld,
+								DATA: []interface{}{"mod", "pc", "ld"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1773,7 +1773,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								},
 							},
 							arg2: &Elem{
-								ARG: elem__string__sv1__smain__ssub__inf__ppres__ppart__oti__ap__ad_2e_2e_2e,
+								DATA: []interface{}{"sv1", "smain", "ssub", "inf", "ppres", "ppart", "oti", "ap", "advp"},
 								arg1: &Collect{
 									ARG: collect__attributes__cat,
 									arg1: &Collect{
@@ -1810,7 +1810,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd__body,
+									DATA: []interface{}{"hd", "body"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1855,7 +1855,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__su__obj1__predc__vc,
+									DATA: []interface{}{"su", "obj1", "predc", "vc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1896,7 +1896,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__mod,
+									DATA: []interface{}{"mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1917,7 +1917,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__pc__ld,
+											DATA: []interface{}{"pc", "ld"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -1948,7 +1948,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__mod,
+									DATA: []interface{}{"mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1973,7 +1973,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__mod,
+													DATA: []interface{}{"mod"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -2012,7 +2012,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__mod,
+								DATA: []interface{}{"mod"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -2029,7 +2029,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								},
 							},
 							arg2: &Elem{
-								ARG: elem__string__pp__detp__advp,
+								DATA: []interface{}{"pp", "detp", "advp"},
 								arg1: &Collect{
 									ARG: collect__attributes__cat,
 									arg1: &Collect{
@@ -2061,7 +2061,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__mod,
+								DATA: []interface{}{"mod"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -2078,7 +2078,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cp__whrel__whq__whsub,
+								DATA: []interface{}{"cp", "whrel", "whq", "whsub"},
 								arg1: &Collect{
 									ARG: collect__attributes__cat,
 									arg1: &Collect{
@@ -2114,7 +2114,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__body,
+									DATA: []interface{}{"body"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -2132,7 +2132,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -2146,7 +2146,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__VERB,
+									DATA: []interface{}{"VERB"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -2202,7 +2202,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__body,
+											DATA: []interface{}{"body"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -2247,7 +2247,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__body,
+												DATA: []interface{}{"body"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -2317,7 +2317,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 																		arg1: &Node{},
 																	},
 																	arg2: &Elem{
-																		ARG: elem__string__PUNCT,
+																		DATA: []interface{}{"PUNCT"},
 																		arg1: &Collect{
 																			ARG:  collect__attributes__ud_3apos,
 																			arg1: &Node{},
@@ -2402,7 +2402,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__NUM,
+									DATA: []interface{}{"NUM"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -2444,7 +2444,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__CCONJ,
+									DATA: []interface{}{"CCONJ"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -2466,7 +2466,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__smain,
+												DATA: []interface{}{"smain"},
 												arg1: &Collect{
 													ARG:  collect__attributes__cat,
 													arg1: &Node{},
@@ -2480,7 +2480,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__conj,
+												DATA: []interface{}{"conj"},
 												arg1: &Collect{
 													ARG:  collect__attributes__cat,
 													arg1: &Node{},
@@ -2513,7 +2513,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__NOUN__PROPN__VERB,
+									DATA: []interface{}{"NOUN", "PROPN", "VERB"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -2534,7 +2534,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__du__smain,
+											DATA: []interface{}{"du", "smain"},
 											arg1: &Collect{
 												ARG:  collect__attributes__cat,
 												arg1: &Node{},
@@ -2572,7 +2572,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__PUNCT__SYM__X,
+											DATA: []interface{}{"PUNCT", "SYM", "X"},
 											arg1: &Collect{
 												ARG:  collect__attributes__ud_3apos,
 												arg1: &Node{},
@@ -2607,7 +2607,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__PUNCT__SYM,
+									DATA: []interface{}{"PUNCT", "SYM"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -2651,7 +2651,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__string__top,
+						DATA: []interface{}{"top"},
 						arg1: &Collect{
 							ARG: collect__attributes__rel,
 							arg1: &Collect{
@@ -2697,7 +2697,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__PROPN,
+									DATA: []interface{}{"PROPN"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -2745,7 +2745,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__ADP__ADV__ADJ__DET__PRON__CCONJ__NOUN__VERB__INT_2e_2e_2e,
+								DATA: []interface{}{"ADP", "ADV", "ADJ", "DET", "PRON", "CCONJ", "NOUN", "VERB", "INTJ"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},
@@ -2780,7 +2780,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -2815,7 +2815,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__pc,
+												DATA: []interface{}{"pc"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -2853,7 +2853,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__ADJ__X__ADV,
+													DATA: []interface{}{"ADJ", "X", "ADV"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -2867,7 +2867,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__mwu,
+													DATA: []interface{}{"mwu"},
 													arg1: &Collect{
 														ARG:  collect__attributes__cat,
 														arg1: &Node{},
@@ -2886,7 +2886,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 											},
 										},
 										arg2: &Elem{
-											ARG: elem__string__pp,
+											DATA: []interface{}{"pp"},
 											arg1: &Collect{
 												ARG: collect__attributes__cat,
 												arg1: &Collect{
@@ -2911,7 +2911,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__obj1__se__vc,
+												DATA: []interface{}{"obj1", "se", "vc"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -2943,7 +2943,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										},
 									},
 									arg2: &Elem{
-										ARG: elem__string__cnj,
+										DATA: []interface{}{"cnj"},
 										arg1: &Collect{
 											ARG: collect__attributes__rel,
 											arg1: &Collect{
@@ -2969,7 +2969,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__obj1,
+														DATA: []interface{}{"obj1"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -3032,7 +3032,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__hd,
+										DATA: []interface{}{"hd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -3078,7 +3078,7 @@ func determineNominalModLabel(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -3094,7 +3094,7 @@ func determineNominalModLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__VERB,
+										DATA: []interface{}{"VERB"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -3108,7 +3108,7 @@ func determineNominalModLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__ADJ,
+										DATA: []interface{}{"ADJ"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -3145,7 +3145,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__whsub__ssub__ti__cp__oti,
+									DATA: []interface{}{"whsub", "ssub", "ti", "cp", "oti"},
 									arg1: &Collect{
 										ARG:  collect__attributes__cat,
 										arg1: &Node{},
@@ -3167,7 +3167,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__conj,
+										DATA: []interface{}{"conj"},
 										arg1: &Collect{
 											ARG:  collect__attributes__cat,
 											arg1: &Node{},
@@ -3184,7 +3184,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 										},
 									},
 									arg2: &Elem{
-										ARG: elem__string__whsub__ssub__ti__cp__oti,
+										DATA: []interface{}{"whsub", "ssub", "ti", "cp", "oti"},
 										arg1: &Collect{
 											ARG: collect__attributes__cat,
 											arg1: &Collect{
@@ -3229,7 +3229,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__het,
+									DATA: []interface{}{"het"},
 									arg1: &Collect{
 										ARG:  collect__attributes__lemma,
 										arg1: &Node{},
@@ -3258,7 +3258,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__hd,
+													DATA: []interface{}{"hd"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -3272,7 +3272,11 @@ func subjectLabel(subj *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__dooien__gieten__hagelen__miezeren__misten__mo_2e_2e_2e,
+													DATA: []interface{}{"dooien", "gieten", "hagelen", "miezeren",
+														"misten", "motregenen", "onweren", "plenzen",
+														"regenen", "sneeuwen", "stormen", "stortregenen",
+														"ijzelen", "vriezen", "weerlichten", "winteren",
+														"zomeren"},
 													arg1: &Collect{
 														ARG:  collect__attributes__lemma,
 														arg1: &Node{},
@@ -3300,7 +3304,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__hd,
+														DATA: []interface{}{"hd"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -3314,7 +3318,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__ontbreken,
+														DATA: []interface{}{"ontbreken"},
 														arg1: &Collect{
 															ARG:  collect__attributes__lemma,
 															arg1: &Node{},
@@ -3337,7 +3341,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 																arg1: &Node{},
 															},
 															arg2: &Elem{
-																ARG: elem__string__pc,
+																DATA: []interface{}{"pc"},
 																arg1: &Collect{
 																	ARG:  collect__attributes__rel,
 																	arg1: &Node{},
@@ -3356,7 +3360,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 																			arg1: &Node{},
 																		},
 																		arg2: &Elem{
-																			ARG: elem__string__hd,
+																			DATA: []interface{}{"hd"},
 																			arg1: &Collect{
 																				ARG:  collect__attributes__rel,
 																				arg1: &Node{},
@@ -3370,7 +3374,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 																			arg1: &Node{},
 																		},
 																		arg2: &Elem{
-																			ARG: elem__string__aan,
+																			DATA: []interface{}{"aan"},
 																			arg1: &Collect{
 																				ARG:  collect__attributes__lemma,
 																				arg1: &Node{},
@@ -3420,7 +3424,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__sup,
+															DATA: []interface{}{"sup"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -3467,7 +3471,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__hd,
+							DATA: []interface{}{"hd"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -3511,7 +3515,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__vc,
+										DATA: []interface{}{"vc"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -3528,7 +3532,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__su,
+									DATA: []interface{}{"su"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3561,7 +3565,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__vc,
+									DATA: []interface{}{"vc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3578,7 +3582,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__su,
+								DATA: []interface{}{"su"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -3614,7 +3618,7 @@ func detLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__PRON,
+											DATA: []interface{}{"PRON"},
 											arg1: &Collect{
 												ARG:  collect__attributes__ud_3apos,
 												arg1: &Node{},
@@ -3628,7 +3632,7 @@ func detLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__bez,
+											DATA: []interface{}{"bez"},
 											arg1: &Collect{
 												ARG:  collect__attributes__vwtype,
 												arg1: &Node{},
@@ -3651,7 +3655,7 @@ func detLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__PRON__PROPN,
+											DATA: []interface{}{"PRON", "PROPN"},
 											arg1: &Collect{
 												ARG:  collect__attributes__ud_3apos,
 												arg1: &Node{},
@@ -3665,7 +3669,7 @@ func detLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__gen,
+											DATA: []interface{}{"gen"},
 											arg1: &Collect{
 												ARG:  collect__attributes__naamval,
 												arg1: &Node{},
@@ -3689,7 +3693,7 @@ func detLabel(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__mwu,
+										DATA: []interface{}{"mwu"},
 										arg1: &Collect{
 											ARG:  collect__attributes__cat,
 											arg1: &Node{},
@@ -3707,7 +3711,7 @@ func detLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__deeleigen,
+												DATA: []interface{}{"deeleigen"},
 												arg1: &Collect{
 													ARG:  collect__attributes__spectype,
 													arg1: &Node{},
@@ -3735,7 +3739,7 @@ func detLabel(node *NodeType, q *Context) string {
 					},
 				},
 				arg2: &Elem{
-					ARG: elem__string__DET__PROPN__NOUN__ADJ__PRON__ADV__X,
+					DATA: []interface{}{"DET", "PROPN", "NOUN", "ADJ", "PRON", "ADV", "X"},
 					arg1: &Collect{
 						ARG: collect__attributes__ud_3apos,
 						arg1: &Variable{
@@ -3759,7 +3763,7 @@ func detLabel(node *NodeType, q *Context) string {
 					},
 				},
 				arg2: &Elem{
-					ARG: elem__string__mwu__np__pp__ap__detp__smain,
+					DATA: []interface{}{"mwu", "np", "pp", "ap", "detp", "smain"},
 					arg1: &Collect{
 						ARG: collect__attributes__cat,
 						arg1: &Variable{
@@ -3800,7 +3804,7 @@ func detLabel(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__cnj,
+											DATA: []interface{}{"cnj"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -3809,13 +3813,13 @@ func detLabel(node *NodeType, q *Context) string {
 									},
 								},
 								arg2: &Elem{
-									ARG: elem__number__1,
+									DATA: []interface{}{1},
 								},
 							},
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__string__NUM,
+						DATA: []interface{}{"NUM"},
 						arg1: &Collect{
 							ARG: collect__attributes__ud_3apos,
 							arg1: &Collect{
@@ -3832,7 +3836,7 @@ func detLabel(node *NodeType, q *Context) string {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__cnj,
+												DATA: []interface{}{"cnj"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -3841,7 +3845,7 @@ func detLabel(node *NodeType, q *Context) string {
 										},
 									},
 									arg2: &Elem{
-										ARG: elem__number__1,
+										DATA: []interface{}{1},
 									},
 								},
 							},
@@ -3874,7 +3878,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__pp,
+								DATA: []interface{}{"pp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -3891,7 +3895,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__vc,
+							DATA: []interface{}{"vc"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -3920,7 +3924,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__ADJ,
+									DATA: []interface{}{"ADJ"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -3934,7 +3938,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__ap,
+									DATA: []interface{}{"ap"},
 									arg1: &Collect{
 										ARG:  collect__attributes__cat,
 										arg1: &Node{},
@@ -3954,7 +3958,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__conj,
+											DATA: []interface{}{"conj"},
 											arg1: &Collect{
 												ARG:  collect__attributes__cat,
 												arg1: &Node{},
@@ -3973,7 +3977,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__ADJ,
+														DATA: []interface{}{"ADJ"},
 														arg1: &Collect{
 															ARG:  collect__attributes__ud_3apos,
 															arg1: &Node{},
@@ -3987,7 +3991,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__ap,
+														DATA: []interface{}{"ap"},
 														arg1: &Collect{
 															ARG:  collect__attributes__cat,
 															arg1: &Node{},
@@ -4022,7 +4026,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__pp__np__conj__mwu,
+								DATA: []interface{}{"pp", "np", "conj", "mwu"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4036,7 +4040,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__NOUN__PRON__PROPN__X__PUNCT__SYM__INTJ,
+								DATA: []interface{}{"NOUN", "PRON", "PROPN", "X", "PUNCT", "SYM", "INTJ"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},
@@ -4069,7 +4073,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__detp,
+								DATA: []interface{}{"detp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4087,7 +4091,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4101,7 +4105,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__NUM,
+								DATA: []interface{}{"NUM"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},
@@ -4138,7 +4142,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cp,
+								DATA: []interface{}{"cp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4156,7 +4160,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__body,
+								DATA: []interface{}{"body"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4172,7 +4176,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__NOUN__PROPN,
+										DATA: []interface{}{"NOUN", "PROPN"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -4186,7 +4190,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__np__conj,
+										DATA: []interface{}{"np", "conj"},
 										arg1: &Collect{
 											ARG:  collect__attributes__cat,
 											arg1: &Node{},
@@ -4218,7 +4222,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cp__sv1__smain__ppres__ppart__inf__ti__oti__du__w_2e_2e_2e,
+								DATA: []interface{}{"cp", "sv1", "smain", "ppres", "ppart", "inf", "ti", "oti", "du", "whq"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4232,7 +4236,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__SCONJ,
+								DATA: []interface{}{"SCONJ"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},
@@ -4262,7 +4266,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__ADV__ADP__VERB__CCONJ,
+								DATA: []interface{}{"ADV", "ADP", "VERB", "CCONJ"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},
@@ -4276,7 +4280,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__advp,
+								DATA: []interface{}{"advp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4318,7 +4322,7 @@ func labelVmod(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__pp,
+								DATA: []interface{}{"pp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4335,7 +4339,7 @@ func labelVmod(node *NodeType, q *Context) string {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__vc,
+							DATA: []interface{}{"vc"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -4376,7 +4380,7 @@ func labelVmod(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__hd,
+															DATA: []interface{}{"hd"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -4390,7 +4394,7 @@ func labelVmod(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__door,
+															DATA: []interface{}{"door"},
 															arg1: &Collect{
 																ARG:  collect__attributes__lemma,
 																arg1: &Node{},
@@ -4409,7 +4413,7 @@ func labelVmod(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__bw,
+														DATA: []interface{}{"bw"},
 														arg1: &Collect{
 															ARG:  collect__attributes__pt,
 															arg1: &Node{},
@@ -4428,7 +4432,7 @@ func labelVmod(node *NodeType, q *Context) string {
 															},
 														},
 														arg2: &Elem{
-															ARG: elem__string__door,
+															DATA: []interface{}{"door"},
 														},
 													},
 												},
@@ -4454,7 +4458,7 @@ func labelVmod(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__ppart,
+														DATA: []interface{}{"ppart"},
 														arg1: &Collect{
 															ARG:  collect__attributes__cat,
 															arg1: &Node{},
@@ -4473,7 +4477,7 @@ func labelVmod(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__hd,
+													DATA: []interface{}{"hd"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -4487,7 +4491,7 @@ func labelVmod(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__zijn__worden,
+													DATA: []interface{}{"zijn", "worden"},
 													arg1: &Collect{
 														ARG:  collect__attributes__lemma,
 														arg1: &Node{},
@@ -4519,7 +4523,7 @@ func labelVmod(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__su,
+													DATA: []interface{}{"su"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -4545,7 +4549,7 @@ func labelVmod(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__obj1,
+													DATA: []interface{}{"obj1"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -4584,7 +4588,7 @@ func labelVmod(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__pp__np__conj__mwu,
+								DATA: []interface{}{"pp", "np", "conj", "mwu"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4598,7 +4602,7 @@ func labelVmod(node *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__NOUN__PRON__PROPN__X__PUNCT__SYM,
+								DATA: []interface{}{"NOUN", "PRON", "PROPN", "X", "PUNCT", "SYM"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},
@@ -4626,7 +4630,7 @@ func labelVmod(node *NodeType, q *Context) string {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__cp__sv1__smain__ssub__ppres__ppart__ti__oti__inf_2e_2e_2e,
+							DATA: []interface{}{"cp", "sv1", "smain", "ssub", "ppres", "ppart", "ti", "oti", "inf", "du", "whq", "whrel", "rel"},
 							arg1: &Collect{
 								ARG:  collect__attributes__cat,
 								arg1: &Node{},
@@ -4657,7 +4661,7 @@ func labelVmod(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__ADJ__ADV__ADP__VERB__SCONJ__INTJ,
+										DATA: []interface{}{"ADJ", "ADV", "ADP", "VERB", "SCONJ", "INTJ"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -4671,7 +4675,7 @@ func labelVmod(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__advp__ap,
+										DATA: []interface{}{"advp", "ap"},
 										arg1: &Collect{
 											ARG:  collect__attributes__cat,
 											arg1: &Node{},
@@ -4688,7 +4692,7 @@ func labelVmod(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__conj,
+											DATA: []interface{}{"conj"},
 											arg1: &Collect{
 												ARG:  collect__attributes__cat,
 												arg1: &Node{},
@@ -4705,7 +4709,7 @@ func labelVmod(node *NodeType, q *Context) string {
 											},
 										},
 										arg2: &Elem{
-											ARG: elem__string__ADV,
+											DATA: []interface{}{"ADV"},
 											arg1: &Collect{
 												ARG: collect__attributes__ud_3apos,
 												arg1: &Collect{
@@ -4773,7 +4777,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__obj1,
+								DATA: []interface{}{"obj1"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4801,7 +4805,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__ADV__ADP,
+									DATA: []interface{}{"ADV", "ADP"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -4815,7 +4819,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__advp__ap,
+									DATA: []interface{}{"advp", "ap"},
 									arg1: &Collect{
 										ARG:  collect__attributes__cat,
 										arg1: &Node{},
@@ -4855,7 +4859,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__mod,
+								DATA: []interface{}{"mod"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4872,7 +4876,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 								},
 							},
 							arg2: &Elem{
-								ARG: elem__string__np__pp,
+								DATA: []interface{}{"np", "pp"},
 								arg1: &Collect{
 									ARG: collect__attributes__cat,
 									arg1: &Collect{
@@ -4904,7 +4908,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__mod,
+								DATA: []interface{}{"mod"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4921,7 +4925,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 								},
 							},
 							arg2: &Elem{
-								ARG: elem__string__sv1__smain__ssub__inf__ppres__ppart__oti__ap__ad_2e_2e_2e,
+								DATA: []interface{}{"sv1", "smain", "ssub", "inf", "ppres", "ppart", "oti", "ap", "advp"},
 								arg1: &Collect{
 									ARG: collect__attributes__cat,
 									arg1: &Collect{
@@ -4954,7 +4958,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__pp__np,
+									DATA: []interface{}{"pp", "np"},
 									arg1: &Collect{
 										ARG:  collect__attributes__cat,
 										arg1: &Node{},
@@ -4968,7 +4972,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__NOUN__PRON,
+									DATA: []interface{}{"NOUN", "PRON"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -4997,7 +5001,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__ADV__ADP,
+									DATA: []interface{}{"ADV", "ADP"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -5011,7 +5015,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__advp__ap__mwu__conj,
+									DATA: []interface{}{"advp", "ap", "mwu", "conj"},
 									arg1: &Collect{
 										ARG:  collect__attributes__cat,
 										arg1: &Node{},
@@ -5045,7 +5049,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5066,7 +5070,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__ADV__ADP,
+								DATA: []interface{}{"ADV", "ADP"},
 								arg1: &Collect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &Node{},

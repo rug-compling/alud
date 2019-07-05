@@ -56,7 +56,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__predc,
+								DATA: []interface{}{"predc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -86,7 +86,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -116,7 +116,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__obj1__vc__se__me,
+								DATA: []interface{}{"obj1", "vc", "se", "me"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -147,7 +147,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__obj1__vc__se__me,
+										DATA: []interface{}{"obj1", "vc", "se", "me"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -189,7 +189,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__obj1__vc__se__me,
+										DATA: []interface{}{"obj1", "vc", "se", "me"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -220,7 +220,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__obj1__vc__se__me,
+										DATA: []interface{}{"obj1", "vc", "se", "me"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -249,7 +249,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__rhd__whd,
+														DATA: []interface{}{"rhd", "whd"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -285,7 +285,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__rhd__whd,
+												DATA: []interface{}{"rhd", "whd"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -316,7 +316,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 																arg1: &Node{},
 															},
 															arg2: &Elem{
-																ARG: elem__string__obj1__vc__se__me,
+																DATA: []interface{}{"obj1", "vc", "se", "me"},
 																arg1: &Collect{
 																	ARG:  collect__attributes__rel,
 																	arg1: &Node{},
@@ -351,7 +351,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__pobj1,
+									DATA: []interface{}{"pobj1"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -380,7 +380,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__pobj1,
+										DATA: []interface{}{"pobj1"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -430,7 +430,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__vc__predc,
+									DATA: []interface{}{"vc", "predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -493,7 +493,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__vc__predc,
+									DATA: []interface{}{"vc", "predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -538,7 +538,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -580,7 +580,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -614,7 +614,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__predc,
+										DATA: []interface{}{"predc"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -642,7 +642,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__rhd__whd,
+										DATA: []interface{}{"rhd", "whd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -674,7 +674,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__rhd__whd,
+										DATA: []interface{}{"rhd", "whd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -705,7 +705,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__predc,
+														DATA: []interface{}{"predc"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -745,7 +745,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__hd__nucl__body,
+							DATA: []interface{}{"hd", "nucl", "body"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -778,7 +778,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__hd,
+										DATA: []interface{}{"hd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -816,7 +816,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__hd,
+										DATA: []interface{}{"hd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -882,7 +882,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__obj1__se__vc,
+											DATA: []interface{}{"obj1", "se", "vc"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -906,7 +906,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__hd,
+												DATA: []interface{}{"hd"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -952,7 +952,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__hd,
+										DATA: []interface{}{"hd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -966,7 +966,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__ADP,
+										DATA: []interface{}{"ADP"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -998,7 +998,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1029,7 +1029,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__np__ap,
+									DATA: []interface{}{"np", "ap"},
 									arg1: &Collect{
 										ARG:  collect__attributes__cat,
 										arg1: &Node{},
@@ -1049,7 +1049,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__hd,
+													DATA: []interface{}{"hd"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -1080,7 +1080,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__AUX,
+															DATA: []interface{}{"AUX"},
 															arg1: &Collect{
 																ARG:  collect__attributes__ud_3apos,
 																arg1: &Node{},
@@ -1118,7 +1118,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1150,7 +1150,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__hd,
+										DATA: []interface{}{"hd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -1181,7 +1181,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__AUX__ADP,
+												DATA: []interface{}{"AUX", "ADP"},
 												arg1: &Collect{
 													ARG:  collect__attributes__ud_3apos,
 													arg1: &Node{},
@@ -1214,7 +1214,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1250,7 +1250,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__obj1__se__me,
+								DATA: []interface{}{"obj1", "se", "me"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1269,7 +1269,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										},
 									},
 									arg2: &Elem{
-										ARG: elem__string__pp,
+										DATA: []interface{}{"pp"},
 										arg1: &Collect{
 											ARG: collect__attributes__cat,
 											arg1: &Collect{
@@ -1294,7 +1294,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__ADP,
+													DATA: []interface{}{"ADP"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -1308,7 +1308,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__hd,
+													DATA: []interface{}{"hd"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -1343,7 +1343,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__predc,
+								DATA: []interface{}{"predc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1372,7 +1372,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1408,7 +1408,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__pobj1,
+								DATA: []interface{}{"pobj1"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1427,7 +1427,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										},
 									},
 									arg2: &Elem{
-										ARG: elem__string__pp,
+										DATA: []interface{}{"pp"},
 										arg1: &Collect{
 											ARG: collect__attributes__cat,
 											arg1: &Collect{
@@ -1452,7 +1452,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__ADP,
+													DATA: []interface{}{"ADP"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -1466,7 +1466,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__hd,
+													DATA: []interface{}{"hd"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -1501,7 +1501,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__vc,
+								DATA: []interface{}{"vc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1530,7 +1530,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__vc,
+									DATA: []interface{}{"vc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1568,7 +1568,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__mod,
+									DATA: []interface{}{"mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1593,7 +1593,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__obj1__pobj1__se__me,
+														DATA: []interface{}{"obj1", "pobj1", "se", "me"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -1618,7 +1618,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										},
 									},
 									arg2: &Elem{
-										ARG: elem__string__pp,
+										DATA: []interface{}{"pp"},
 										arg1: &Collect{
 											ARG: collect__attributes__cat,
 											arg1: &Collect{
@@ -1643,7 +1643,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__hd,
+													DATA: []interface{}{"hd"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -1657,7 +1657,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__ADP,
+													DATA: []interface{}{"ADP"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -1694,7 +1694,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd__su__obj1__vc,
+									DATA: []interface{}{"hd", "su", "obj1", "vc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -1745,7 +1745,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__cnj__dp__mwp,
+							DATA: []interface{}{"cnj", "dp", "mwp"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -1774,7 +1774,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cnj__dp__mwp,
+								DATA: []interface{}{"cnj", "dp", "mwp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1812,7 +1812,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cmp,
+								DATA: []interface{}{"cmp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1833,7 +1833,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__body,
+										DATA: []interface{}{"body"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -1865,7 +1865,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__body,
+								DATA: []interface{}{"body"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -1915,7 +1915,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__mwu,
+													DATA: []interface{}{"mwu"},
 													arg1: &Collect{
 														ARG:  collect__attributes__cat,
 														arg1: &Node{},
@@ -1957,7 +1957,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__mwu,
+														DATA: []interface{}{"mwu"},
 														arg1: &Collect{
 															ARG:  collect__attributes__cat,
 															arg1: &Node{},
@@ -2015,7 +2015,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__PUNCT__SYM__X__CONJ__NOUN__PROPN__NUM__ADP__ADV___2e_2e_2e,
+										DATA: []interface{}{"PUNCT", "SYM", "X", "CONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
 										arg1: &Collect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &Node{},
@@ -2037,7 +2037,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__minmin,
+													DATA: []interface{}{"--"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -2055,7 +2055,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 																arg1: &Node{},
 															},
 															arg2: &Elem{
-																ARG: elem__string__PUNCT__SYM__X__CONJ__NOUN__PROPN__NUM__ADP__ADV___2e_2e_2e,
+																DATA: []interface{}{"PUNCT", "SYM", "X", "CONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
 																arg1: &Collect{
 																	ARG:  collect__attributes__ud_3apos,
 																	arg1: &Node{},
@@ -2092,7 +2092,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__minmin,
+										DATA: []interface{}{"--"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -2110,7 +2110,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__PUNCT__SYM__X__CONJ__NOUN__ADP__ADV__DET__PROPN___2e_2e_2e,
+													DATA: []interface{}{"PUNCT", "SYM", "X", "CONJ", "NOUN", "ADP", "ADV", "DET", "PROPN", "NUM", "PRON"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -2180,7 +2180,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__PUNCT,
+									DATA: []interface{}{"PUNCT"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -2202,7 +2202,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									},
 								},
 								arg2: &Elem{
-									ARG: elem__number__1,
+									DATA: []interface{}{1},
 									arg1: &Function{
 										ARG: function__count__1__args,
 										arg1: &Arg{
@@ -2244,7 +2244,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__PUNCT,
+												DATA: []interface{}{"PUNCT"},
 												arg1: &Collect{
 													ARG:  collect__attributes__ud_3apos,
 													arg1: &Node{},
@@ -2280,7 +2280,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__PUNCT,
+													DATA: []interface{}{"PUNCT"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -2314,7 +2314,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__minmin,
+										DATA: []interface{}{"--"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -2373,7 +2373,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__nucl,
+								DATA: []interface{}{"nucl"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -2402,7 +2402,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__nucl,
+									DATA: []interface{}{"nucl"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -2458,7 +2458,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__hd,
+											DATA: []interface{}{"hd"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -2474,7 +2474,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__AUX,
+													DATA: []interface{}{"AUX"},
 													arg1: &Collect{
 														ARG:  collect__attributes__ud_3apos,
 														arg1: &Node{},
@@ -2502,7 +2502,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 																			arg1: &Node{},
 																		},
 																		arg2: &Elem{
-																			ARG: elem__string__top,
+																			DATA: []interface{}{"top"},
 																			arg1: &Collect{
 																				ARG:  collect__attributes__rel,
 																				arg1: &Node{},
@@ -2520,7 +2520,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 																	arg1: &Node{},
 																},
 																arg2: &Elem{
-																	ARG: elem__string__AUX,
+																	DATA: []interface{}{"AUX"},
 																	arg1: &Collect{
 																		ARG:  collect__attributes__ud_3apos,
 																		arg1: &Node{},
@@ -2560,7 +2560,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__predc,
+													DATA: []interface{}{"predc"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -2591,7 +2591,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__string__pp,
+						DATA: []interface{}{"pp"},
 						arg1: &Collect{
 							ARG: collect__attributes__cat,
 							arg1: &Collect{
@@ -2626,7 +2626,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd__su,
+									DATA: []interface{}{"hd", "su"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -2685,7 +2685,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__body,
+											DATA: []interface{}{"body"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -2732,7 +2732,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__body,
+								DATA: []interface{}{"body"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -2785,7 +2785,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__cnj,
+											DATA: []interface{}{"cnj"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -2855,7 +2855,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -2904,7 +2904,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__predc,
+											DATA: []interface{}{"predc"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -2931,7 +2931,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__hd,
+														DATA: []interface{}{"hd"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -2966,7 +2966,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3007,7 +3007,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd__su,
+									DATA: []interface{}{"hd", "su"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3062,7 +3062,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd__su__obj1,
+									DATA: []interface{}{"hd", "su", "obj1"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3125,7 +3125,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd__su__obj1__pc__predc__body,
+									DATA: []interface{}{"hd", "su", "obj1", "pc", "predc", "body"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3170,7 +3170,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__mod,
+									DATA: []interface{}{"mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3213,7 +3213,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__mod,
+										DATA: []interface{}{"mod"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -3263,7 +3263,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__su,
+									DATA: []interface{}{"su"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3308,7 +3308,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__su,
+									DATA: []interface{}{"su"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3351,7 +3351,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd__mod,
+									DATA: []interface{}{"hd", "mod"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3436,7 +3436,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__pp,
+							DATA: []interface{}{"pp"},
 							arg1: &Collect{
 								ARG:  collect__attributes__cat,
 								arg1: &Node{},
@@ -3464,7 +3464,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__obj1__pobj1__se,
+								DATA: []interface{}{"obj1", "pobj1", "se"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -3490,7 +3490,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__obj1__pobj1__se,
+									DATA: []interface{}{"obj1", "pobj1", "se"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3517,7 +3517,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -3545,7 +3545,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3587,7 +3587,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__mwu,
+							DATA: []interface{}{"mwu"},
 							arg1: &Collect{
 								ARG:  collect__attributes__cat,
 								arg1: &Node{},
@@ -3616,7 +3616,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__mwp,
+										DATA: []interface{}{"mwp"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -3673,7 +3673,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__conj,
+							DATA: []interface{}{"conj"},
 							arg1: &Collect{
 								ARG:  collect__attributes__cat,
 								arg1: &Node{},
@@ -3699,7 +3699,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cnj,
+								DATA: []interface{}{"cnj"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -3735,7 +3735,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__predc,
+							DATA: []interface{}{"predc"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -3762,7 +3762,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__hd,
+									DATA: []interface{}{"hd"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3776,7 +3776,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__AUX,
+									DATA: []interface{}{"AUX"},
 									arg1: &Collect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &Node{},
@@ -3803,7 +3803,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3834,7 +3834,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__hd,
+											DATA: []interface{}{"hd"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -3863,7 +3863,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__predc,
+									DATA: []interface{}{"predc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -3890,7 +3890,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -3939,7 +3939,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__vc,
+											DATA: []interface{}{"vc"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -3960,7 +3960,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 												arg1: &Node{},
 											},
 											arg2: &Elem{
-												ARG: elem__string__hd,
+												DATA: []interface{}{"hd"},
 												arg1: &Collect{
 													ARG:  collect__attributes__rel,
 													arg1: &Node{},
@@ -3976,7 +3976,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__AUX,
+														DATA: []interface{}{"AUX"},
 														arg1: &Collect{
 															ARG:  collect__attributes__ud_3apos,
 															arg1: &Node{},
@@ -4004,7 +4004,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 																				arg1: &Node{},
 																			},
 																			arg2: &Elem{
-																				ARG: elem__string__top,
+																				DATA: []interface{}{"top"},
 																				arg1: &Collect{
 																					ARG:  collect__attributes__rel,
 																					arg1: &Node{},
@@ -4022,7 +4022,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 																		arg1: &Node{},
 																	},
 																	arg2: &Elem{
-																		ARG: elem__string__AUX,
+																		DATA: []interface{}{"AUX"},
 																		arg1: &Collect{
 																			ARG:  collect__attributes__ud_3apos,
 																			arg1: &Node{},
@@ -4062,7 +4062,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__vc,
+								DATA: []interface{}{"vc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4094,7 +4094,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__hd,
+							DATA: []interface{}{"hd"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -4120,7 +4120,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4152,7 +4152,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__body,
+							DATA: []interface{}{"body"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -4178,7 +4178,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__body,
+								DATA: []interface{}{"body"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4211,7 +4211,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__dp,
+							DATA: []interface{}{"dp"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -4237,7 +4237,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__dp,
+								DATA: []interface{}{"dp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4270,7 +4270,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__nucl,
+							DATA: []interface{}{"nucl"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -4296,7 +4296,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__nucl,
+								DATA: []interface{}{"nucl"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4328,7 +4328,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__du,
+							DATA: []interface{}{"du"},
 							arg1: &Collect{
 								ARG:  collect__attributes__cat,
 								arg1: &Node{},
@@ -4354,7 +4354,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__du,
+								DATA: []interface{}{"du"},
 								arg1: &Collect{
 									ARG:  collect__attributes__cat,
 									arg1: &Node{},
@@ -4461,7 +4461,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__top,
+										DATA: []interface{}{"top"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -4481,7 +4481,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__whd__rhd,
+										DATA: []interface{}{"whd", "rhd"},
 										arg1: &Collect{
 											ARG:  collect__attributes__rel,
 											arg1: &Node{},
@@ -4538,7 +4538,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__top,
+											DATA: []interface{}{"top"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -4623,7 +4623,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4662,7 +4662,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__hd,
+								DATA: []interface{}{"hd"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4695,7 +4695,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__su,
+								DATA: []interface{}{"su"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4734,7 +4734,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__su,
+								DATA: []interface{}{"su"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4767,7 +4767,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__vc,
+								DATA: []interface{}{"vc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4789,7 +4789,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__su,
+											DATA: []interface{}{"su"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -4835,7 +4835,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__su,
+								DATA: []interface{}{"su"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4868,7 +4868,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__obj1,
+								DATA: []interface{}{"obj1"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4907,7 +4907,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__obj1,
+								DATA: []interface{}{"obj1"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4940,7 +4940,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__predc,
+								DATA: []interface{}{"predc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -4979,7 +4979,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__predc,
+								DATA: []interface{}{"predc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5012,7 +5012,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__vc,
+								DATA: []interface{}{"vc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5052,7 +5052,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__vc,
+									DATA: []interface{}{"vc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -5061,7 +5061,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 							},
 						},
 						arg2: &Elem{
-							ARG: elem__number__1,
+							DATA: []interface{}{1},
 						},
 					},
 				},
@@ -5089,7 +5089,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__pc,
+								DATA: []interface{}{"pc"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5129,7 +5129,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__pc,
+									DATA: []interface{}{"pc"},
 									arg1: &Collect{
 										ARG:  collect__attributes__rel,
 										arg1: &Node{},
@@ -5138,7 +5138,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 							},
 						},
 						arg2: &Elem{
-							ARG: elem__number__1,
+							DATA: []interface{}{1},
 						},
 					},
 				},
@@ -5166,7 +5166,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__mod,
+								DATA: []interface{}{"mod"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5208,7 +5208,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__mod,
+											DATA: []interface{}{"mod"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -5232,7 +5232,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__number__1,
+						DATA: []interface{}{1},
 					},
 				},
 			},
@@ -5259,7 +5259,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__app,
+								DATA: []interface{}{"app"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5301,7 +5301,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__app,
+											DATA: []interface{}{"app"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -5325,7 +5325,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__number__1,
+						DATA: []interface{}{1},
 					},
 				},
 			},
@@ -5352,7 +5352,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__det,
+								DATA: []interface{}{"det"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5394,7 +5394,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__det,
+											DATA: []interface{}{"det"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -5418,7 +5418,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__number__1,
+						DATA: []interface{}{1},
 					},
 				},
 			},
@@ -5445,7 +5445,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__body,
+								DATA: []interface{}{"body"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5487,7 +5487,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__body,
+											DATA: []interface{}{"body"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -5511,7 +5511,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__number__1,
+						DATA: []interface{}{1},
 					},
 				},
 			},
@@ -5538,7 +5538,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__cnj,
+								DATA: []interface{}{"cnj"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5580,7 +5580,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__cnj,
+											DATA: []interface{}{"cnj"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -5604,7 +5604,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__number__1,
+						DATA: []interface{}{1},
 					},
 				},
 			},
@@ -5631,7 +5631,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								ARG: elem__string__dp,
+								DATA: []interface{}{"dp"},
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
@@ -5673,7 +5673,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__dp,
+											DATA: []interface{}{"dp"},
 											arg1: &Collect{
 												ARG:  collect__attributes__rel,
 												arg1: &Node{},
@@ -5697,7 +5697,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 						},
 					},
 					arg2: &Elem{
-						ARG: elem__number__1,
+						DATA: []interface{}{1},
 					},
 				},
 			},
@@ -5753,7 +5753,7 @@ func headPositionOfConjunction(node *NodeType, q *Context) int {
 							arg1: &Node{},
 						},
 						arg2: &Elem{
-							ARG: elem__string__cnj,
+							DATA: []interface{}{"cnj"},
 							arg1: &Collect{
 								ARG:  collect__attributes__rel,
 								arg1: &Node{},
@@ -5805,6 +5805,8 @@ func followingCnjSister(node *NodeType, q *Context) []interface{} {
 
 	   };
 	*/
+
+	// TODO: klopt dit ???
 
 	sisters := []*NodeType{}
 	for _, n := range node.parent.Node {

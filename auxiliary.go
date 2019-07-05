@@ -56,7 +56,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__obj1__se__vc,
+															DATA: []interface{}{"obj1", "se", "vc"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -75,7 +75,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 										arg1: &Node{},
 									},
 									arg2: &Elem{
-										ARG: elem__string__zijn__lijken__blijken__blijven__schijnen__het_2e_2e_2e,
+										DATA: []interface{}{"zijn", "lijken", "blijken", "blijven", "schijnen", "heten", "voorkomen", "worden", "dunken"},
 										arg1: &Collect{
 											ARG:  collect__attributes__lemma,
 											arg1: &Node{},
@@ -99,7 +99,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 														},
 													},
 													arg2: &Elem{
-														ARG: elem__string__copula,
+														DATA: []interface{}{"copula"},
 													},
 												},
 											},
@@ -115,7 +115,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 														},
 													},
 													arg2: &Elem{
-														ARG: elem__string__pred,
+														DATA: []interface{}{"pred"},
 													},
 												},
 											},
@@ -132,7 +132,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 													},
 												},
 												arg2: &Elem{
-													ARG: elem__string__cleft,
+													DATA: []interface{}{"cleft"},
 												},
 											},
 										},
@@ -151,7 +151,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__predc,
+													DATA: []interface{}{"predc"},
 													arg1: &Collect{
 														ARG:  collect__attributes__rel,
 														arg1: &Node{},
@@ -195,7 +195,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__zijn__worden,
+									DATA: []interface{}{"zijn", "worden"},
 									arg1: &Collect{
 										ARG:  collect__attributes__lemma,
 										arg1: &Node{},
@@ -211,7 +211,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 											arg1: &Node{},
 										},
 										arg2: &Elem{
-											ARG: elem__string__passive,
+											DATA: []interface{}{"passive"},
 											arg1: &Collect{
 												ARG:  collect__attributes__sc,
 												arg1: &Node{},
@@ -234,7 +234,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__vc,
+															DATA: []interface{}{"vc"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -265,7 +265,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																					arg1: &Node{},
 																				},
 																				arg2: &Elem{
-																					ARG: elem__string__su,
+																					DATA: []interface{}{"su"},
 																					arg1: &Collect{
 																						ARG:  collect__attributes__rel,
 																						arg1: &Node{},
@@ -293,7 +293,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																						arg1: &Node{},
 																					},
 																					arg2: &Elem{
-																						ARG: elem__string__vc,
+																						DATA: []interface{}{"vc"},
 																						arg1: &Collect{
 																							ARG:  collect__attributes__rel,
 																							arg1: &Node{},
@@ -310,7 +310,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																					arg1: &Node{},
 																				},
 																				arg2: &Elem{
-																					ARG: elem__string__obj1,
+																					DATA: []interface{}{"obj1"},
 																					arg1: &Collect{
 																						ARG:  collect__attributes__rel,
 																						arg1: &Node{},
@@ -339,7 +339,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																					arg1: &Node{},
 																				},
 																				arg2: &Elem{
-																					ARG: elem__string__su,
+																					DATA: []interface{}{"su"},
 																					arg1: &Collect{
 																						ARG:  collect__attributes__rel,
 																						arg1: &Node{},
@@ -369,7 +369,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																							arg1: &Node{},
 																						},
 																						arg2: &Elem{
-																							ARG: elem__string__vc,
+																							DATA: []interface{}{"vc"},
 																							arg1: &Collect{
 																								ARG:  collect__attributes__rel,
 																								arg1: &Node{},
@@ -386,7 +386,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																						arg1: &Node{},
 																					},
 																					arg2: &Elem{
-																						ARG: elem__string__cnj,
+																						DATA: []interface{}{"cnj"},
 																						arg1: &Collect{
 																							ARG:  collect__attributes__rel,
 																							arg1: &Node{},
@@ -403,7 +403,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																					arg1: &Node{},
 																				},
 																				arg2: &Elem{
-																					ARG: elem__string__obj1,
+																					DATA: []interface{}{"obj1"},
 																					arg1: &Collect{
 																						ARG:  collect__attributes__rel,
 																						arg1: &Node{},
@@ -434,7 +434,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																					arg1: &Node{},
 																				},
 																				arg2: &Elem{
-																					ARG: elem__string__vc,
+																					DATA: []interface{}{"vc"},
 																					arg1: &Collect{
 																						ARG:  collect__attributes__rel,
 																						arg1: &Node{},
@@ -477,7 +477,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																					arg1: &Node{},
 																				},
 																				arg2: &Elem{
-																					ARG: elem__string__vc,
+																					DATA: []interface{}{"vc"},
 																					arg1: &Collect{
 																						ARG:  collect__attributes__rel,
 																						arg1: &Node{},
@@ -499,7 +499,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																									arg1: &Node{},
 																								},
 																								arg2: &Elem{
-																									ARG: elem__string__obj1,
+																									DATA: []interface{}{"obj1"},
 																									arg1: &Collect{
 																										ARG:  collect__attributes__rel,
 																										arg1: &Node{},
@@ -527,7 +527,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																									arg1: &Node{},
 																								},
 																								arg2: &Elem{
-																									ARG: elem__string__su,
+																									DATA: []interface{}{"su"},
 																									arg1: &Collect{
 																										ARG:  collect__attributes__rel,
 																										arg1: &Node{},
@@ -562,7 +562,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																				arg1: &Node{},
 																			},
 																			arg2: &Elem{
-																				ARG: elem__string__su,
+																				DATA: []interface{}{"su"},
 																				arg1: &Collect{
 																					ARG:  collect__attributes__rel,
 																					arg1: &Node{},
@@ -608,7 +608,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 									arg1: &Node{},
 								},
 								arg2: &Elem{
-									ARG: elem__string__krijgen,
+									DATA: []interface{}{"krijgen"},
 									arg1: &Collect{
 										ARG:  collect__attributes__lemma,
 										arg1: &Node{},
@@ -635,7 +635,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__su,
+															DATA: []interface{}{"su"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -663,7 +663,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																arg1: &Node{},
 															},
 															arg2: &Elem{
-																ARG: elem__string__vc,
+																DATA: []interface{}{"vc"},
 																arg1: &Collect{
 																	ARG:  collect__attributes__rel,
 																	arg1: &Node{},
@@ -680,7 +680,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__obj2,
+															DATA: []interface{}{"obj2"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -709,7 +709,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__su,
+															DATA: []interface{}{"su"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -739,7 +739,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																	arg1: &Node{},
 																},
 																arg2: &Elem{
-																	ARG: elem__string__vc,
+																	DATA: []interface{}{"vc"},
 																	arg1: &Collect{
 																		ARG:  collect__attributes__rel,
 																		arg1: &Node{},
@@ -756,7 +756,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																arg1: &Node{},
 															},
 															arg2: &Elem{
-																ARG: elem__string__cnj,
+																DATA: []interface{}{"cnj"},
 																arg1: &Collect{
 																	ARG:  collect__attributes__rel,
 																	arg1: &Node{},
@@ -773,7 +773,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__obj2,
+															DATA: []interface{}{"obj2"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -833,7 +833,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__predc,
+														DATA: []interface{}{"predc"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -859,7 +859,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 												},
 											},
 											arg2: &Elem{
-												ARG: elem__string__aux,
+												DATA: []interface{}{"aux"},
 											},
 										},
 									},
@@ -880,7 +880,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																arg1: &Node{},
 															},
 															arg2: &Elem{
-																ARG: elem__string__vc,
+																DATA: []interface{}{"vc"},
 																arg1: &Collect{
 																	ARG:  collect__attributes__rel,
 																	arg1: &Node{},
@@ -897,7 +897,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																			arg1: &Node{},
 																		},
 																		arg2: &Elem{
-																			ARG: elem__string__ppart__inf__ti,
+																			DATA: []interface{}{"ppart", "inf", "ti"},
 																			arg1: &Collect{
 																				ARG:  collect__attributes__cat,
 																				arg1: &Node{},
@@ -913,7 +913,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																					arg1: &Node{},
 																				},
 																				arg2: &Elem{
-																					ARG: elem__string__conj,
+																					DATA: []interface{}{"conj"},
 																					arg1: &Collect{
 																						ARG:  collect__attributes__cat,
 																						arg1: &Node{},
@@ -932,7 +932,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																								arg1: &Node{},
 																							},
 																							arg2: &Elem{
-																								ARG: elem__string__cnj,
+																								DATA: []interface{}{"cnj"},
 																								arg1: &Collect{
 																									ARG:  collect__attributes__rel,
 																									arg1: &Node{},
@@ -946,7 +946,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																								arg1: &Node{},
 																							},
 																							arg2: &Elem{
-																								ARG: elem__string__ppart__inf__ti,
+																								DATA: []interface{}{"ppart", "inf", "ti"},
 																								arg1: &Collect{
 																									ARG:  collect__attributes__cat,
 																									arg1: &Node{},
@@ -996,7 +996,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 													arg1: &Node{},
 												},
 												arg2: &Elem{
-													ARG: elem__string__blijken__hebben__hoeven__kunnen__moeten__moge_2e_2e_2e,
+													DATA: []interface{}{"blijken", "hebben", "hoeven", "kunnen", "moeten", "mogen", "zijn", "zullen"},
 													arg1: &Collect{
 														ARG:  collect__attributes__lemma,
 														arg1: &Node{},

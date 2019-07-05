@@ -53,7 +53,7 @@ START:
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__hd__ld,
+														DATA: []interface{}{"hd", "ld"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -89,7 +89,7 @@ START:
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__cnj,
+														DATA: []interface{}{"cnj"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -112,7 +112,7 @@ START:
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__conj,
+														DATA: []interface{}{"conj"},
 														arg1: &Collect{
 															ARG:  collect__attributes__cat,
 															arg1: &Node{},
@@ -130,7 +130,7 @@ START:
 														arg1: &Node{},
 													},
 													arg2: &Elem{
-														ARG: elem__string__cnj,
+														DATA: []interface{}{"cnj"},
 														arg1: &Collect{
 															ARG:  collect__attributes__rel,
 															arg1: &Node{},
@@ -151,7 +151,7 @@ START:
 																			arg1: &Node{},
 																		},
 																		arg2: &Elem{
-																			ARG: elem__string__hd__ld,
+																			DATA: []interface{}{"hd", "ld"},
 																			arg1: &Collect{
 																				ARG:  collect__attributes__rel,
 																				arg1: &Node{},
@@ -233,7 +233,7 @@ START:
 																				arg1: &Node{},
 																			},
 																			arg2: &Elem{
-																				ARG: elem__number__1000,
+																				DATA: []interface{}{1000},
 																				arg1: &Collect{
 																					ARG:  collect__attributes__begin,
 																					arg1: &Node{},
@@ -303,7 +303,7 @@ START:
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__hd__ld__vc,
+															DATA: []interface{}{"hd", "ld", "vc"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -344,7 +344,7 @@ START:
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__string__cnj,
+															DATA: []interface{}{"cnj"},
 															arg1: &Collect{
 																ARG:  collect__attributes__rel,
 																arg1: &Node{},
@@ -397,7 +397,7 @@ START:
 															arg1: &Node{},
 														},
 														arg2: &Elem{
-															ARG: elem__number__1000,
+															DATA: []interface{}{1000},
 															arg1: &Collect{
 																ARG:  collect__attributes__begin,
 																arg1: &Node{},
