@@ -38,17 +38,17 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			// met als titel
 			return internalHeadPosition(first(FIND(node, q, `$node/../node[@rel="predc"]`)), q)
 		}
-		if TEST(node, q, `$node/../node[@rel=("obj1","vc","se","me")]`) {
+		if obj1_vc_se_me := FIND(node, q, `$node/../node[@rel=("obj1","vc","se","me")]`); len(obj1_vc_se_me) > 0 {
 			// adding pt/cat enough for gapping cases?
-			if TEST(node, q, `$node/../node[@rel=("obj1","vc","se","me") and (@pt or @cat)]`) {
-				return internalHeadPositionWithGapping(first(FIND(node, q, `$node/../node[@rel=("obj1","vc","se","me")]`)), q)
+			if TEST(obj1_vc_se_me, q, `$node[@pt or @cat]`) {
+				return internalHeadPositionWithGapping(first(obj1_vc_se_me), q)
 			}
-			if TEST(node, q, `$node/../node[@rel=("obj1","vc","se","me") and @index = ancestor::node/node[@rel=("rhd","whd")]/@index]`) {
+			if TEST(obj1_vc_se_me, q, `$node[@index = ancestor::node/node[@rel=("rhd","whd")]/@index]`) {
 				return internalHeadPosition(first(FIND(node, q, `$node/ancestor::node/node[@rel=("rhd","whd")
 	                                                             and @index = $node/../node[@rel=("obj1","vc","se","me")]/@index]`)), q)
 			}
-			if TEST(node, q, `$node/../node[@rel="pobj1"]`) {
-				return internalHeadPosition(first(FIND(node, q, `$node/../node[@rel="pobj1"]`)), q)
+			if pobj1 := FIND(node, q, `$node/../node[@rel="pobj1"]`); len(pobj1) > 0 {
+				return internalHeadPosition(first(pobj1), q)
 			}
 			// in de eerste rond --> typo in LassySmall/Wiki , binnen en [advp later buiten ]
 			return externalHeadPosition(node.parent, q)
@@ -69,9 +69,11 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if node.Rel == "hd" && (aux == "aux" || aux == "aux:pass") {
 		// aux aux:pass cop
-		if TEST(node, q, `$node/../node[@rel=("vc","predc") and (@pt or (@cat and node[@pt or @cat]))]`) {
-			// skip vc with just empty nodes
-			return internalHeadPositionWithGapping(first(FIND(node, q, `$node/../node[@rel=("vc","predc")]`)), q)
+		if vc_predc := FIND(node, q, `$node/../node[@rel=("vc","predc")]`); len(vc_predc) > 0 {
+			if TEST(vc_predc, q, `$node[@pt or (@cat and node[@pt or @cat])]`) {
+				// skip vc with just empty nodes
+				return internalHeadPositionWithGapping(first(vc_predc), q)
+			}
 		}
 		// if ($node/../node[@rel="predc"]/@index = $node/../../node[@rel="whd"]/@index)
 		//     then local:internal_head_position($node/../../node[@rel="whd"])
@@ -87,8 +89,9 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	                              else local:external_head_position($node/..)  (: gapping, but could it??:)
 	*/
 	if node.Rel == "hd" && aux == "cop" {
-		if TEST(node, q, `$node/../node[@rel="predc" and (@pt or @cat)]`) {
-			return internalHeadPositionWithGapping(first(FIND(node, q, `$node/../node[@rel="predc"]`)), q)
+		predc := FIND(node, q, `$node/../node[@rel="predc"]`)
+		if len(predc) > 0 && TEST(predc, q, `$node[@pt or @cat]`) {
+			return internalHeadPositionWithGapping(first(predc), q)
 		}
 		if TEST(node, q, `$node/../node[@rel="predc"]/@index = $node/ancestor::node/node[@rel=("rhd","whd")]/@index`) {
 			return internalHeadPosition(FIND(node, q, `$node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index]`), q)
@@ -102,9 +105,9 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	          then local:internal_head_position($node/../node[@rel="hd" and number(@begin) < $node/number(@begin)] ) (: dan moet je moet :)
 	          else local:external_head_position($node/..)
 	*/
-	if TEST(node, q, `$node[@rel=("hd","nucl","body") ]`) {
-		if TEST(node, q, `$node/../node[@rel="hd"]/@begin < $node/@begin`) {
-			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="hd" and @begin < $node/@begin]`), q) // dan moet je moet
+	if node.Rel == "hd" || node.Rel == "nucl" || node.Rel == "body" {
+		if n := FIND(node, q, `$node/../node[@rel="hd" and @begin < $node/@begin]`); len(n) > 0 {
+			return internalHeadPosition(n, q) // dan moet je moet
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -148,8 +151,8 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	          else local:external_head_position($node/..)
 	*/
 	if TEST(node, q, `$node[@rel=("obj1","se","me") and (../@cat="pp" or ../node[@ud:pos="ADP" and @rel="hd"])]`) {
-		if TEST(node, q, `$node/../node[@rel="predc"]`) {
-			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="predc"]`), q)
+		if predc := FIND(node, q, `$node/../node[@rel="predc"]`); len(predc) > 0 {
+			return internalHeadPosition(predc, q)
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -161,8 +164,8 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	          else local:external_head_position($node/..)
 	*/
 	if TEST(node, q, `$node[@rel="pobj1" and (../@cat="pp" or ../node[@ud:pos="ADP" and @rel="hd"])]`) {
-		if TEST(node, q, `$node/../node[@rel="vc"]`) {
-			return internalHeadPosition(FIND(node, q, `$node/../node[@rel="vc"]`), q)
+		if vc := FIND(node, q, `$node/../node[@rel="vc"]`); len(vc) > 0 {
+			return internalHeadPosition(vc, q)
 		}
 		return externalHeadPosition(node.parent, q)
 	}
@@ -218,8 +221,8 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if node.Rel == "--" && node.Cat != "" {
 		if node.Cat == "mwu" {
-			if TEST(node, q, `$node/../node[@cat and not(@cat="mwu")]`) { // fix for multiword punctuation in Alpino output
-				return internalHeadPosition(first(FIND(node, q, `$node/../node[@cat and not(@cat="mwu")]`)), q)
+			if n := FIND(node, q, `$node/../node[@cat and not(@cat="mwu")]`); len(n) > 0 { // fix for multiword punctuation in Alpino output
+				return internalHeadPosition(first(n), q)
 			}
 			return externalHeadPosition(node.parent, q)
 		}
@@ -251,12 +254,12 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	                  ]`) {
 			return internalHeadPositionWithGapping(first(FIND(node, q, `$node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))]`)), q)
 		}
-		if TEST(node, q, `$node/../node[@cat]`) {
-			return internalHeadPosition(first(FIND(node, q, `$node/../node[@cat]`)), q)
+		if n := FIND(node, q, `$node/../node[@cat]`); len(n) > 0 {
+			return internalHeadPosition(first(n), q)
 		}
 		if TEST(node, q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) {
-			if TEST(node, q, `$node/../node[not(@ud:pos="PUNCT")]`) {
-				return internalHeadPosition(first(FIND(node, q, `$node/../node[not(@ud:pos="PUNCT")]`)), q)
+			if n := FIND(node, q, `$node/../node[not(@ud:pos="PUNCT")]`); len(n) > 0 {
+				return internalHeadPosition(first(n), q)
 			}
 			if node == leftmost(FIND(node, q, `$node/../node[@rel="--" and (@cat or @pt)]`)) {
 				return externalHeadPosition(node.parent, q)
@@ -276,8 +279,8 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	          else "ERROR_NO_EXTERNAL_HEAD"
 	*/
 	if node.Rel == "dlink" || node.Rel == "sat" || node.Rel == "tag" {
-		if TEST(node, q, `$node/../node[@rel="nucl"]`) {
-			return internalHeadPositionWithGapping(FIND(node, q, `$node/../node[@rel="nucl"]`), q)
+		if n := FIND(node, q, `$node/../node[@rel="nucl"]`); len(n) > 0 {
+			return internalHeadPositionWithGapping(n, q)
 		}
 		return ERROR_NO_EXTERNAL_HEAD
 	}
@@ -415,8 +418,8 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 		if TEST(node, q, `$node/../node[@rel=("hd","su","obj1","pc","predc","body") and (@pt or @cat)]`) { // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
-		if TEST(node, q, `$node/../node[@rel="mod" and (@cat or @pt)]`) {
-			if node == leftmost(FIND(node, q, `$node/../node[@rel="mod" and (@pt or @cat)]`)) { // gapping with multiple mods
+		if n := FIND(node, q, `$node/../node[@rel="mod" and (@cat or @pt)]`); len(n) > 0 {
+			if node == leftmost(n) { // gapping with multiple mods
 				return externalHeadPosition(node.parent, q)
 			}
 			return internalHeadPositionWithGapping(node.axParent, q)
@@ -487,13 +490,13 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	if TEST(node, q, `$node[@cat="pp"]`) {
 		// if ($node/node[@rel="hd" and @pt=("bw","n")] )  ( n --> TEMPORARY HACK to fix error where NP is erroneously tagged as PP )
 		// then $node/node[@rel="hd"]/@end
-		if TEST(node, q, `$node/node[@rel=("obj1","pobj1","se")]`) {
-			return internalHeadPosition(first(FIND(node, q, `$node/node[@rel=("obj1","pobj1","se")]`)), q)
+		if n := FIND(node, q, `$node/node[@rel=("obj1","pobj1","se")]`); len(n) > 0 {
+			return internalHeadPosition(first(n), q)
 		}
-		if TEST(node, q, `$node/node[@rel="hd"]`) {
+		if n := FIND(node, q, `$node/node[@rel="hd"]`); len(n) > 0 {
 			// if ($node/@cat="mwu")  ( mede [op grond hiervan] )
 			//     local:internal_head_position($node/node[@rel="hd"] )
-			return internalHeadPosition(FIND(node, q, `$node/node[@rel="hd"]`), q)
+			return internalHeadPosition(n, q)
 		}
 		return internalHeadPosition(first(FIND(node, q, `$node/node`)), q)
 	}
@@ -522,14 +525,15 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	                  then local:internal_head_position($node/node[@rel="predc"])
 	                  else local:internal_head_position($node/node[@rel="hd"])
 	*/
-	if TEST(node, q, `$node/node[@rel="predc"]`) {
+	if predc := FIND(node, q, `$node/node[@rel="predc"]`); len(predc) > 0 {
 		if TEST(node, q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
-			return internalHeadPosition(FIND(node, q, `$node/node[@rel="predc"]`), q)
+			return internalHeadPosition(predc, q)
 		}
-		if TEST(node, q, `not($node/node[@rel="hd"])`) {
-			return internalHeadPosition(FIND(node, q, `$node/node[@rel="predc"]`), q)
+		hd := FIND(node, q, `$node/node[@rel="hd"]`)
+		if len(hd) == 0 { // cases where copula is missing by accident (ungrammatical, not gapping)
+			return internalHeadPosition(predc, q)
 		}
-		return internalHeadPosition(FIND(node, q, `$node/node[@rel="hd"]`), q)
+		return internalHeadPosition(hd, q)
 	}
 
 	/*
@@ -557,16 +561,16 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   else if ( $node/node[@rel="hd"])
 	   then local:internal_head_position($node/node[@rel="hd"][1])
 	*/
-	if TEST(node, q, `$node/node[@rel="hd"]`) {
-		return internalHeadPosition(first(FIND(node, q, `$node/node[@rel="hd"]`)), q)
+	if n := FIND(node, q, `$node/node[@rel="hd"]`); len(n) > 0 {
+		return internalHeadPosition(first(n), q)
 	}
 
 	/*
 	   else if ( $node/node[@rel="body"])
 	   then    local:internal_head_position($node/node[@rel="body"][1])
 	*/
-	if TEST(node, q, `$node/node[@rel="body"]`) {
-		return internalHeadPosition(first(FIND(node, q, `$node/node[@rel="body"]`)), q)
+	if n := FIND(node, q, `$node/node[@rel="body"]`); len(n) > 0 {
+		return internalHeadPosition(first(n), q)
 	}
 
 	/*
@@ -574,8 +578,8 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   then    local:internal_head_position(local:leftmost($node/node[@rel="dp"]))
 	        (: sometimes co-indexing leads to du's starting at same position ... :)
 	*/
-	if TEST(node, q, `$node/node[@rel="dp"]`) {
-		return internalHeadPosition(left(FIND(node, q, `$node/node[@rel="dp"]`)), q)
+	if n := FIND(node, q, `$node/node[@rel="dp"]`); len(n) > 0 {
+		return internalHeadPosition(left(n), q)
 		// sometimes co-indexing leads to du's starting at same position ...
 	}
 
@@ -583,16 +587,16 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   else if ( $node/node[@rel="nucl"])
 	   then    local:internal_head_position($node/node[@rel="nucl"][1])
 	*/
-	if TEST(node, q, `$node/node[@rel="nucl"]`) {
-		return internalHeadPosition(first(FIND(node, q, `$node/node[@rel="nucl"]`)), q)
+	if n := FIND(node, q, `$node/node[@rel="nucl"]`); len(n) > 0 {
+		return internalHeadPosition(first(n), q)
 	}
 
 	/*
 	   else if ( $node/node[@cat="du"]) (: is this neccesary at all? , only one referring to cat, and causes problems if applied before @rel=dp case... :)
 	   then    local:internal_head_position($node/node[@cat ="du"][1])
 	*/
-	if TEST(node, q, `$node/node[@cat="du"]`) { // is this neccesary at all? , only one referring to cat, and causes problems if applied before @rel=dp case...
-		return internalHeadPosition(first(FIND(node, q, `$node/node[@cat ="du"]`)), q)
+	if n := FIND(node, q, `$node/node[@cat="du"]`); len(n) > 0 { // is this neccesary at all? , only one referring to cat, and causes problems if applied before @rel=dp case...
+		return internalHeadPosition(first(n), q)
 	}
 
 	/*
@@ -701,48 +705,48 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	   else if ( $node/node[@rel="mod" and (@pt or @cat)] )
 	         then local:internal_head_position_with_gapping(($node/node[@rel="mod" and (@pt or @cat)])[1])
 	*/
-	if TEST(node, q, `$node/node[@rel="mod" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(node, q, `($node/node[@rel="mod" and (@pt or @cat)])[1]`), q)
+	if n := FIND(node, q, `$node/node[@rel="mod" and (@pt or @cat)]`); len(n) > 0 {
+		return internalHeadPositionWithGapping(first(n), q)
 	}
 
 	/*
 	   else if ( $node/node[@rel="app" and (@pt or @cat)] )
 	     then local:internal_head_position_with_gapping(($node/node[@rel="app" and (@pt or @cat)])[1])
 	*/
-	if TEST(node, q, `$node/node[@rel="app" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(node, q, `($node/node[@rel="app" and (@pt or @cat)])[1]`), q)
+	if n := FIND(node, q, `$node/node[@rel="app" and (@pt or @cat)]`); len(n) > 0 {
+		return internalHeadPositionWithGapping(first(n), q)
 	}
 
 	/*
 	   else if ( $node/node[@rel="det" and (@pt or @cat)] )
 	     then local:internal_head_position_with_gapping(($node/node[@rel="det" and (@pt or @cat)])[1])
 	*/
-	if TEST(node, q, `$node/node[@rel="det" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(node, q, `($node/node[@rel="det" and (@pt or @cat)])[1]`), q)
+	if n := FIND(node, q, `$node/node[@rel="det" and (@pt or @cat)]`); len(n) > 0 {
+		return internalHeadPositionWithGapping(first(n), q)
 	}
 
 	/*
 	   else if ( $node/node[@rel="body" and (@pt or @cat)] )
 	     then local:internal_head_position_with_gapping(($node/node[@rel="body" and (@pt or @cat)])[1])
 	*/
-	if TEST(node, q, `$node/node[@rel="body" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(node, q, `($node/node[@rel="body" and (@pt or @cat)])[1]`), q)
+	if n := FIND(node, q, `$node/node[@rel="body" and (@pt or @cat)]`); len(n) > 0 {
+		return internalHeadPositionWithGapping(first(n), q)
 	}
 
 	/*
 	   else if ( $node/node[@rel="cnj" and (@pt or @cat)] )
 	     then local:internal_head_position_with_gapping(($node/node[@rel="cnj" and (@pt or @cat)])[1])
 	*/
-	if TEST(node, q, `$node/node[@rel="cnj" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(node, q, `($node/node[@rel="cnj" and (@pt or @cat)])[1]`), q)
+	if n := FIND(node, q, `$node/node[@rel="cnj" and (@pt or @cat)]`); len(n) > 0 {
+		return internalHeadPositionWithGapping(first(n), q)
 	}
 
 	/*
 	   else if ( $node/node[@rel="dp" and (@pt or @cat)] )
 	     then local:internal_head_position_with_gapping(($node/node[@rel="dp" and (@pt or @cat)])[1])
 	*/
-	if TEST(node, q, `$node/node[@rel="dp" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(node, q, `($node/node[@rel="dp" and (@pt or @cat)])[1]`), q)
+	if n := FIND(node, q, `$node/node[@rel="dp" and (@pt or @cat)]`); len(n) > 0 {
+		return internalHeadPositionWithGapping(first(n), q)
 	}
 
 	return ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
