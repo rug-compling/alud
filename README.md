@@ -140,7 +140,7 @@ waardes van `@begin` identiek zijn. Let op de waarde van de variablele `$bi`:
 ```
 declare function local:leftmost($nodes as element(node)*) as element(node) {
 	let $sorted :=	for $node in $nodes
-		  let $bi := 10000000 * number($node/@begin) + 1000 * number($node/@end) - number($node/@id)
+		  let $bi := 1000 * number($node/@begin) + number($node/@end)
 			order by $bi
 			return $node
 	return
