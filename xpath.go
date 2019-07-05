@@ -4,7 +4,7 @@ import (
 	//	"github.com/kr/pretty"
 
 	"fmt"
-	//"sort"
+	"sort"
 	"strings"
 )
 
@@ -476,72 +476,38 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 	}
 	switch result[0].(type) {
 	case *NodeType:
-		/*
-			sort.Slice(result, func(i, j int) bool {
-				ii := result[i].(*NodeType)
-				jj := result[j].(*NodeType)
-				if ii.Begin != jj.Begin {
-					return ii.Begin < jj.Begin
-				}
-				if ii.End != jj.End {
-					return ii.End < jj.End
-				}
-				if ii.Index != jj.Index {
-					return ii.Index < jj.Index
-				}
-				return ii.Id < jj.Id
-			})
-			for i := 1; i < len(result); i++ {
-				if result[i].(*NodeType).Id == result[i-1].(*NodeType).Id {
-					result = append(result[:i], result[i+1:]...)
-					i--
-				}
-			}
-		*/
-		// alleen ontdubbelen
-		for i := 0; i < len(result); i++ {
-			for j := i + 1; j < len(result); j++ {
-				if result[i].(*NodeType) == result[j].(*NodeType) {
-					result = append(result[:j], result[j+1:]...)
-					j--
-				}
+		sort.Slice(result, func(i, j int) bool {
+			return result[i].(*NodeType).Id < result[j].(*NodeType).Id
+		})
+		for i := 1; i < len(result); i++ {
+			if result[i].(*NodeType).Id == result[i-1].(*NodeType).Id {
+				result = append(result[:i], result[i+1:]...)
+				i--
 			}
 		}
 	case string:
-		/*
-			sort.Slice(result, func(i, j int) bool {
-				return result[i].(string) < result[j].(string)
-			})
-			for i := 1; i < len(result); i++ {
-				if result[i].(string) == result[i-1].(string) {
-					result = append(result[:i], result[i+1:]...)
-					i--
-				}
-			}
-		*/
-		// alleen ontdubbelen
-		for i := 0; i < len(result); i++ {
-			for j := i + 1; j < len(result); j++ {
-				if result[i].(string) == result[j].(string) {
-					result = append(result[:j], result[j+1:]...)
-					j--
-				}
+		sort.Slice(result, func(i, j int) bool {
+			return result[i].(string) < result[j].(string)
+		})
+		for i := 1; i < len(result); i++ {
+			if result[i].(string) == result[i-1].(string) {
+				result = append(result[:i], result[i+1:]...)
+				i--
 			}
 		}
 	case int:
-		// alleen ontdubbelen
-		for i := 0; i < len(result); i++ {
-			for j := i + 1; j < len(result); j++ {
-				if result[i].(int) == result[j].(int) {
-					result = append(result[:j], result[j+1:]...)
-					j--
-				}
+		sort.Slice(result, func(i, j int) bool {
+			return result[i].(int) < result[j].(int)
+		})
+		for i := 1; i < len(result); i++ {
+			if result[i].(int) == result[i-1].(int) {
+				result = append(result[:i], result[i+1:]...)
+				i--
 			}
 		}
 	default:
 		panic(fmt.Sprintf("Missing case for type %T in %s", result[0], q.filename))
 	}
-
 	return result
 }
 
@@ -669,9 +635,7 @@ func (a *Alpino_ds) Children() []interface{} {
 }
 
 func (a *Alpino_ds) DescendantsOrSelf() []interface{} {
-	r := []interface{}{a}
-	r = append(r, a.Node.axDescendantsOrSelf...)
-	return r
+	return a.Node.axDescendantsOrSelf
 }
 
 func (n *NodeType) Children() []interface{} {
