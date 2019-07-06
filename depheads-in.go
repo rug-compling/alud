@@ -32,19 +32,19 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 		// vol vertrouwen
 		if TEST(node, q, `$node/../node[@rel="predc"]`) {
 			// met als titel
-			return internalHeadPosition(first(FIND(node, q, `$node/../node[@rel="predc"]`)), q)
+			return internalHeadPosition(if1(FIND(node, q, `$node/../node[@rel="predc"]`)), q)
 		}
 		if obj1_vc_se_me := FIND(node, q, `$node/../node[@rel=("obj1","vc","se","me")]`); len(obj1_vc_se_me) > 0 {
 			// adding pt/cat enough for gapping cases?
 			if TEST(obj1_vc_se_me, q, `$node[@pt or @cat]`) {
-				return internalHeadPositionWithGapping(first(obj1_vc_se_me), q)
+				return internalHeadPositionWithGapping(if1(obj1_vc_se_me), q)
 			}
 			if TEST(obj1_vc_se_me, q, `$node[@index = ancestor::node/node[@rel=("rhd","whd")]/@index]`) {
-				return internalHeadPosition(first(FIND(node, q, `$node/ancestor::node/node[@rel=("rhd","whd")
+				return internalHeadPosition(if1(FIND(node, q, `$node/ancestor::node/node[@rel=("rhd","whd")
 	                                                             and @index = $node/../node[@rel=("obj1","vc","se","me")]/@index]`)), q)
 			}
 			if pobj1 := FIND(node, q, `$node/../node[@rel="pobj1"]`); len(pobj1) > 0 {
-				return internalHeadPosition(first(pobj1), q)
+				return internalHeadPosition(if1(pobj1), q)
 			}
 			// in de eerste rond --> typo in LassySmall/Wiki , binnen en [advp later buiten ]
 			return externalHeadPosition(node.parent, q)
@@ -68,7 +68,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 		if vc_predc := FIND(node, q, `$node/../node[@rel=("vc","predc")]`); len(vc_predc) > 0 {
 			if TEST(vc_predc, q, `$node[@pt or (@cat and node[@pt or @cat])]`) {
 				// skip vc with just empty nodes
-				return internalHeadPositionWithGapping(first(vc_predc), q)
+				return internalHeadPositionWithGapping(if1(vc_predc), q)
 			}
 		}
 		// if ($node/../node[@rel="predc"]/@index = $node/../../node[@rel="whd"]/@index)
@@ -87,7 +87,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	if node.Rel == "hd" && aux == "cop" {
 		predc := FIND(node, q, `$node/../node[@rel="predc"]`)
 		if len(predc) > 0 && TEST(predc, q, `$node[@pt or @cat]`) {
-			return internalHeadPositionWithGapping(first(predc), q)
+			return internalHeadPositionWithGapping(if1(predc), q)
 		}
 		if TEST(node, q, `$node/../node[@rel="predc"]/@index = $node/ancestor::node/node[@rel=("rhd","whd")]/@index`) {
 			return internalHeadPosition(FIND(node, q, `$node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index]`), q)
@@ -190,7 +190,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	               else local:internal_head_position_with_gapping($node/..)
 	*/
 	if TEST(node, q, `$node[@rel=("cnj","dp","mwp")]`) {
-		if node == leftmost(FIND(node, q, `$node/../node[@rel=("cnj","dp","mwp")]`)) {
+		if node == nLeft(FIND(node, q, `$node/../node[@rel=("cnj","dp","mwp")]`)) {
 			return externalHeadPosition(node.parent, q)
 		}
 		if node.Rel == "cnj" {
@@ -204,7 +204,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	    then local:internal_head_position_with_gapping($node/../node[@rel="body"][1])
 	*/
 	if TEST(node, q, `$node[@rel="cmp" and ../node[@rel="body"]]`) {
-		return internalHeadPositionWithGapping(first(FIND(node, q, `$node/../node[@rel="body"]`)), q)
+		return internalHeadPositionWithGapping(if1(FIND(node, q, `$node/../node[@rel="body"]`)), q)
 	}
 
 	/*
@@ -218,7 +218,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	if node.Rel == "--" && node.Cat != "" {
 		if node.Cat == "mwu" {
 			if n := FIND(node, q, `$node/../node[@cat and not(@cat="mwu")]`); len(n) > 0 { // fix for multiword punctuation in Alpino output
-				return internalHeadPosition(first(n), q)
+				return internalHeadPosition(if1(n), q)
 			}
 			return externalHeadPosition(node.parent, q)
 		}
@@ -248,16 +248,16 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	                   and ../node[@rel="--" and
 	                               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
 	                  ]`) {
-			return internalHeadPositionWithGapping(first(FIND(node, q, `$node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))]`)), q)
+			return internalHeadPositionWithGapping(if1(FIND(node, q, `$node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))]`)), q)
 		}
 		if n := FIND(node, q, `$node/../node[@cat]`); len(n) > 0 {
-			return internalHeadPosition(first(n), q)
+			return internalHeadPosition(if1(n), q)
 		}
 		if TEST(node, q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) {
 			if n := FIND(node, q, `$node/../node[not(@ud:pos="PUNCT")]`); len(n) > 0 {
-				return internalHeadPosition(first(n), q)
+				return internalHeadPosition(if1(n), q)
 			}
-			if node == leftmost(FIND(node, q, `$node/../node[@rel="--" and (@cat or @pt)]`)) {
+			if node == nLeft(FIND(node, q, `$node/../node[@rel="--" and (@cat or @pt)]`)) {
 				return externalHeadPosition(node.parent, q)
 			}
 			return 1000 // ie end of first punct token
@@ -322,7 +322,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if node.Rel == "whd" || node.Rel == "rhd" {
 		if node.Index > 0 {
-			return externalHeadPosition(firstnode(FIND(node, q, `$node/../node[@rel="body"]//node[@index = $node/@index ]`)), q)
+			return externalHeadPosition(n1(FIND(node, q, `$node/../node[@rel="body"]//node[@index = $node/@index ]`)), q)
 		}
 		return internalHeadPosition(FIND(node, q, `$node/../node[@rel="body"]`), q)
 	}
@@ -344,7 +344,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if node.Rel == "crd" {
 		q.vartmp = followingCnjSister(node, q)
-		return internalHeadPositionWithGapping(last(FIND(node, q, `$node/../node[@rel="cnj" and
+		return internalHeadPositionWithGapping(ifZ(FIND(node, q, `$node/../node[@rel="cnj" and
 	          	                 @begin=$tmp/@begin and
 	          	                 @end=$tmp/@end
 	          	                ]`)), q)
@@ -415,7 +415,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 		if n := FIND(node, q, `$node/../node[@rel="mod" and (@cat or @pt)]`); len(n) > 0 {
-			if node == leftmost(n) { // gapping with multiple mods
+			if node == nLeft(n) { // gapping with multiple mods
 				return externalHeadPosition(node.parent, q)
 			}
 			return internalHeadPositionWithGapping(node.axParent, q)
@@ -487,14 +487,14 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 		// if ($node/node[@rel="hd" and @pt=("bw","n")] )  ( n --> TEMPORARY HACK to fix error where NP is erroneously tagged as PP )
 		// then $node/node[@rel="hd"]/@end
 		if n := FIND(node, q, `$node/node[@rel=("obj1","pobj1","se")]`); len(n) > 0 {
-			return internalHeadPosition(first(n), q)
+			return internalHeadPosition(if1(n), q)
 		}
 		if n := FIND(node, q, `$node/node[@rel="hd"]`); len(n) > 0 {
 			// if ($node/@cat="mwu")  ( mede [op grond hiervan] )
 			//     local:internal_head_position($node/node[@rel="hd"] )
 			return internalHeadPosition(n, q)
 		}
-		return internalHeadPosition(first(FIND(node, q, `$node/node`)), q)
+		return internalHeadPosition(if1(FIND(node, q, `$node/node`)), q)
 	}
 
 	/*
@@ -510,7 +510,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   then    local:internal_head_position(local:leftmost($node/node[@rel="cnj"]))
 	*/
 	if TEST(node, q, `$node[@cat="conj"]`) {
-		return internalHeadPosition(left(FIND(node, q, `$node/node[@rel="cnj"]`)), q)
+		return internalHeadPosition(ifLeft(FIND(node, q, `$node/node[@rel="cnj"]`)), q)
 	}
 
 	/*
@@ -558,7 +558,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   then local:internal_head_position($node/node[@rel="hd"][1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="hd"]`); len(n) > 0 {
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -566,7 +566,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   then    local:internal_head_position($node/node[@rel="body"][1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="body"]`); len(n) > 0 {
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -575,7 +575,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	        (: sometimes co-indexing leads to du's starting at same position ... :)
 	*/
 	if n := FIND(node, q, `$node/node[@rel="dp"]`); len(n) > 0 {
-		return internalHeadPosition(left(n), q)
+		return internalHeadPosition(ifLeft(n), q)
 		// sometimes co-indexing leads to du's starting at same position ...
 	}
 
@@ -584,7 +584,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   then    local:internal_head_position($node/node[@rel="nucl"][1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="nucl"]`); len(n) > 0 {
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -592,7 +592,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 	   then    local:internal_head_position($node/node[@cat ="du"][1])
 	*/
 	if n := FIND(node, q, `$node/node[@cat="du"]`); len(n) > 0 { // is this neccesary at all? , only one referring to cat, and causes problems if applied before @rel=dp case...
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -702,7 +702,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	         then local:internal_head_position_with_gapping(($node/node[@rel="mod" and (@pt or @cat)])[1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="mod" and (@pt or @cat)]`); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -710,7 +710,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	     then local:internal_head_position_with_gapping(($node/node[@rel="app" and (@pt or @cat)])[1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="app" and (@pt or @cat)]`); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -718,7 +718,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	     then local:internal_head_position_with_gapping(($node/node[@rel="det" and (@pt or @cat)])[1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="det" and (@pt or @cat)]`); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -726,7 +726,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	     then local:internal_head_position_with_gapping(($node/node[@rel="body" and (@pt or @cat)])[1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="body" and (@pt or @cat)]`); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -734,7 +734,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	     then local:internal_head_position_with_gapping(($node/node[@rel="cnj" and (@pt or @cat)])[1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="cnj" and (@pt or @cat)]`); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -742,7 +742,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	     then local:internal_head_position_with_gapping(($node/node[@rel="dp" and (@pt or @cat)])[1])
 	*/
 	if n := FIND(node, q, `$node/node[@rel="dp" and (@pt or @cat)]`); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	return ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
@@ -776,7 +776,7 @@ func headPositionOfConjunction(node *NodeType, q *Context) int {
 	*/
 
 	internal_head := internalHeadPositionWithGapping([]interface{}{node}, q)
-	leftmost_conj_daughter := leftmost(FIND(node, q, `$node/../node[@rel="cnj"]`))
+	leftmost_conj_daughter := nLeft(FIND(node, q, `$node/../node[@rel="cnj"]`))
 	leftmost_internal_head := internalHeadPositionWithGapping([]interface{}{leftmost_conj_daughter}, q)
 
 	if leftmost_internal_head < internal_head {

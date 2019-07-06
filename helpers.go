@@ -6,15 +6,8 @@ import (
 	"sort"
 )
 
-func left(nodes []interface{}) []interface{} {
-	n := leftmost(nodes)
-	if n == noNode {
-		return []interface{}{}
-	}
-	return []interface{}{n}
-}
-
-func leftmost(nodes []interface{}) *NodeType {
+// meest linkse node
+func nLeft(nodes []interface{}) *NodeType {
 	switch len(nodes) {
 	case 0:
 		return noNode
@@ -36,15 +29,34 @@ func leftmost(nodes []interface{}) *NodeType {
 	return nodes[0].(*NodeType)
 }
 
-func first(nodes []interface{}) []interface{} {
+// meest linkse node als []interface{}, met lengte 0 of 1
+func ifLeft(nodes []interface{}) []interface{} {
+	n := nLeft(nodes)
+	if n == noNode {
+		return []interface{}{}
+	}
+	return []interface{}{n}
+}
+
+// eerste interface{} als []interface{}, met lengte 0 of 1
+func if1(nodes []interface{}) []interface{} {
 	if len(nodes) > 1 {
 		return nodes[:1]
 	}
 	return nodes
 }
 
-func firstnode(nodes []interface{}) *NodeType {
-	//return leftmost(nodes)
+// laatste interface{} als []interface{}, met lengte 0 of 1
+func ifZ(nodes []interface{}) []interface{} {
+	if len(nodes) > 0 {
+		return nodes[len(nodes)-1:]
+	}
+	return []interface{}{}
+}
+
+// eerste node
+func n1(nodes []interface{}) *NodeType {
+	//return nLeft(nodes)
 
 	if len(nodes) > 0 {
 		return nodes[0].(*NodeType)
@@ -52,20 +64,15 @@ func firstnode(nodes []interface{}) *NodeType {
 	return noNode
 }
 
-func last(nodes []interface{}) []interface{} {
-	if len(nodes) > 0 {
-		return nodes[len(nodes)-1:]
-	}
-	return []interface{}{}
-}
-
-func lastnode(nodes []interface{}) *NodeType {
+// laatste node
+func nZ(nodes []interface{}) *NodeType {
 	if len(nodes) > 0 {
 		return nodes[len(nodes)-1].(*NodeType)
 	}
 	return noNode
 }
 
+// eerste int
 func i1(ii []interface{}) int {
 	if len(ii) > 0 {
 		return ii[0].(int)
@@ -73,7 +80,8 @@ func i1(ii []interface{}) int {
 	return ERROR_NO_VALUE
 }
 
-func iLast(ii []interface{}) int {
+// laatste int
+func iZ(ii []interface{}) int {
 	if l := len(ii); l > 0 {
 		return ii[l-1].(int)
 	}

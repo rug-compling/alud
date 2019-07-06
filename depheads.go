@@ -64,7 +64,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			},
 		}) {
 			// met als titel
-			return internalHeadPosition(first(Find(node, q /* $node/../node[@rel="predc"] */, &XPath{
+			return internalHeadPosition(if1(Find(node, q /* $node/../node[@rel="predc"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -145,7 +145,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 					},
 				},
 			}) {
-				return internalHeadPositionWithGapping(first(obj1_vc_se_me), q)
+				return internalHeadPositionWithGapping(if1(obj1_vc_se_me), q)
 			}
 			if Test(obj1_vc_se_me, q /* $node[@index = ancestor::node/node[@rel=("rhd","whd")]/@index] */, &XPath{
 				arg1: &Sort{
@@ -191,7 +191,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 					},
 				},
 			}) {
-				return internalHeadPosition(first(Find(node, q, /* $node/ancestor::node/node[@rel=("rhd","whd")
+				return internalHeadPosition(if1(Find(node, q, /* $node/ancestor::node/node[@rel=("rhd","whd")
 					   and @index = $node/../node[@rel=("obj1","vc","se","me")]/@index] */&XPath{
 						arg1: &Sort{
 							arg1: &Collect{
@@ -288,7 +288,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 					},
 				},
 			}); len(pobj1) > 0 {
-				return internalHeadPosition(first(pobj1), q)
+				return internalHeadPosition(if1(pobj1), q)
 			}
 			// in de eerste rond --> typo in LassySmall/Wiki , binnen en [advp later buiten ]
 			return externalHeadPosition(node.parent, q)
@@ -380,7 +380,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			}) {
 				// skip vc with just empty nodes
-				return internalHeadPositionWithGapping(first(vc_predc), q)
+				return internalHeadPositionWithGapping(if1(vc_predc), q)
 			}
 		}
 		// if ($node/../node[@rel="predc"]/@index = $node/../../node[@rel="whd"]/@index)
@@ -447,7 +447,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}) {
-			return internalHeadPositionWithGapping(first(predc), q)
+			return internalHeadPositionWithGapping(if1(predc), q)
 		}
 		if Test(node, q /* $node/../node[@rel="predc"]/@index = $node/ancestor::node/node[@rel=("rhd","whd")]/@index */, &XPath{
 			arg1: &Sort{
@@ -1493,7 +1493,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			},
 		},
 	}) {
-		if node == leftmost(Find(node, q /* $node/../node[@rel=("cnj","dp","mwp")] */, &XPath{
+		if node == nLeft(Find(node, q /* $node/../node[@rel=("cnj","dp","mwp")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -1584,7 +1584,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			},
 		},
 	}) {
-		return internalHeadPositionWithGapping(first(Find(node, q /* $node/../node[@rel="body"] */, &XPath{
+		return internalHeadPositionWithGapping(if1(Find(node, q /* $node/../node[@rel="body"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -1667,7 +1667,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 					},
 				},
 			}); len(n) > 0 { // fix for multiword punctuation in Alpino output
-				return internalHeadPosition(first(n), q)
+				return internalHeadPosition(if1(n), q)
 			}
 			return externalHeadPosition(node.parent, q)
 		}
@@ -1769,7 +1769,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 					},
 				},
 			}) {
-			return internalHeadPositionWithGapping(first(Find(node, q /* $node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))] */, &XPath{
+			return internalHeadPositionWithGapping(if1(Find(node, q /* $node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -1841,7 +1841,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}); len(n) > 0 {
-			return internalHeadPosition(first(n), q)
+			return internalHeadPosition(if1(n), q)
 		}
 		if Test(node, q /* $node[@ud:pos="PUNCT" and count(../node) > 1] */, &XPath{
 			arg1: &Sort{
@@ -1936,9 +1936,9 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 					},
 				},
 			}); len(n) > 0 {
-				return internalHeadPosition(first(n), q)
+				return internalHeadPosition(if1(n), q)
 			}
-			if node == leftmost(Find(node, q /* $node/../node[@rel="--" and (@cat or @pt)] */, &XPath{
+			if node == nLeft(Find(node, q /* $node/../node[@rel="--" and (@cat or @pt)] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -2278,7 +2278,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if node.Rel == "whd" || node.Rel == "rhd" {
 		if node.Index > 0 {
-			return externalHeadPosition(firstnode(Find(node, q /* $node/../node[@rel="body"]//node[@index = $node/@index ] */, &XPath{
+			return externalHeadPosition(n1(Find(node, q /* $node/../node[@rel="body"]//node[@index = $node/@index ] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
@@ -2377,7 +2377,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 	*/
 	if node.Rel == "crd" {
 		q.vartmp = followingCnjSister(node, q)
-		return internalHeadPositionWithGapping(last(Find(node, q, /* $node/../node[@rel="cnj" and
+		return internalHeadPositionWithGapping(ifZ(Find(node, q, /* $node/../node[@rel="cnj" and
 			   @begin=$tmp/@begin and
 			   @end=$tmp/@end
 			  ] */&XPath{
@@ -2809,7 +2809,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			},
 		}); len(n) > 0 {
-			if node == leftmost(n) { // gapping with multiple mods
+			if node == nLeft(n) { // gapping with multiple mods
 				return externalHeadPosition(node.parent, q)
 			}
 			return internalHeadPositionWithGapping(node.axParent, q)
@@ -3048,7 +3048,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 				},
 			},
 		}); len(n) > 0 {
-			return internalHeadPosition(first(n), q)
+			return internalHeadPosition(if1(n), q)
 		}
 		if n := Find(node, q /* $node/node[@rel="hd"] */, &XPath{
 			arg1: &Sort{
@@ -3080,7 +3080,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 			//     local:internal_head_position($node/node[@rel="hd"] )
 			return internalHeadPosition(n, q)
 		}
-		return internalHeadPosition(first(Find(node, q /* $node/node */, &XPath{
+		return internalHeadPosition(if1(Find(node, q /* $node/node */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -3207,7 +3207,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 			},
 		},
 	}) {
-		return internalHeadPosition(left(Find(node, q /* $node/node[@rel="cnj"] */, &XPath{
+		return internalHeadPosition(ifLeft(Find(node, q /* $node/node[@rel="cnj"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -3547,7 +3547,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -3580,7 +3580,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -3614,7 +3614,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPosition(left(n), q)
+		return internalHeadPosition(ifLeft(n), q)
 		// sometimes co-indexing leads to du's starting at same position ...
 	}
 
@@ -3648,7 +3648,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -3681,7 +3681,7 @@ func internalHeadPosition(node []interface{}, q *Context) int {
 			},
 		},
 	}); len(n) > 0 { // is this neccesary at all? , only one referring to cat, and causes problems if applied before @rel=dp case...
-		return internalHeadPosition(first(n), q)
+		return internalHeadPosition(if1(n), q)
 	}
 
 	/*
@@ -4507,7 +4507,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -4554,7 +4554,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -4601,7 +4601,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -4648,7 +4648,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -4695,7 +4695,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	/*
@@ -4742,7 +4742,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}); len(n) > 0 {
-		return internalHeadPositionWithGapping(first(n), q)
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	return ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
@@ -4776,7 +4776,7 @@ func headPositionOfConjunction(node *NodeType, q *Context) int {
 	*/
 
 	internal_head := internalHeadPositionWithGapping([]interface{}{node}, q)
-	leftmost_conj_daughter := leftmost(Find(node, q /* $node/../node[@rel="cnj"] */, &XPath{
+	leftmost_conj_daughter := nLeft(Find(node, q /* $node/../node[@rel="cnj"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,

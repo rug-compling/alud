@@ -133,14 +133,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
-		// TODO als ik hier firstnode gebruik i.p.v. leftmost (wat zou moeten) gaat het vaak mis
-		if node == leftmost(FIND(node, q, `$node/../node[@rel="cnj"]`)) {
+		// TODO als ik hier n1 gebruik i.p.v. leftmost (wat zou moeten) gaat het vaak mis
+		if node == nLeft(FIND(node, q, `$node/../node[@rel="cnj"]`)) {
 			return dependencyLabel(node.parent, q)
 		}
 		return "conj"
 	}
 	if node.Rel == "dp" {
-		if node == leftmost(FIND(node, q, `$node/../node[@rel="dp"]`)) {
+		if node == nLeft(FIND(node, q, `$node/../node[@rel="dp"]`)) {
 			return dependencyLabel(node.parent, q)
 		}
 		return "parataxis"
@@ -181,7 +181,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		if TEST(node, q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
 			return modLabelInsideNp(node, q)
 		}
-		if node == leftmost(FIND(node, q, `$node/../node[@rel="mod" and (@pt or @cat)]`)) { // gapping with multiple mods
+		if node == nLeft(FIND(node, q, `$node/../node[@rel="mod" and (@pt or @cat)]`)) { // gapping with multiple mods
 			return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 		}
 		return "orphan"
@@ -234,7 +234,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			// index is een int groter dan 0
 			return nonLocalDependencyLabel(
 				node,
-				firstnode(FIND(node, q, `$node/../node[@rel="body"]//node[@index = $node/@index]`)),
+				n1(FIND(node, q, `$node/../node[@rel="body"]//node[@index = $node/@index]`)),
 				q)
 		}
 		if node.Cat == "pp" {
@@ -362,12 +362,12 @@ func passiveSubject(subj *NodeType, q *Context) string {
 		return "ERROR_NO_PASSIVE_SUBJECT"
 	}
 
-	aux := auxiliary1(firstnode(SUFIND(subj, q, `$subj/../node[@rel="hd"]`)), q)
+	aux := auxiliary1(n1(SUFIND(subj, q, `$subj/../node[@rel="hd"]`)), q)
 	if aux == "aux:pass" { // de carriere had gered kunnen worden
 		return ":pass"
 	}
 	if aux == "aux" && SUTEST(subj, q, `$subj/@index = $subj/../node[@rel="vc"]/node[@rel="su"]/@index`) {
-		return passiveSubject(firstnode(SUFIND(subj, q, `$subj/../node[@rel="vc"]/node[@rel="su"]`)), q)
+		return passiveSubject(n1(SUFIND(subj, q, `$subj/../node[@rel="vc"]/node[@rel="su"]`)), q)
 	}
 	return ""
 }

@@ -1118,8 +1118,8 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
-		// TODO als ik hier firstnode gebruik i.p.v. leftmost (wat zou moeten) gaat het vaak mis
-		if node == leftmost(Find(node, q /* $node/../node[@rel="cnj"] */, &XPath{
+		// TODO als ik hier n1 gebruik i.p.v. leftmost (wat zou moeten) gaat het vaak mis
+		if node == nLeft(Find(node, q /* $node/../node[@rel="cnj"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -1153,7 +1153,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "conj"
 	}
 	if node.Rel == "dp" {
-		if node == leftmost(Find(node, q /* $node/../node[@rel="dp"] */, &XPath{
+		if node == nLeft(Find(node, q /* $node/../node[@rel="dp"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -1694,7 +1694,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return modLabelInsideNp(node, q)
 		}
-		if node == leftmost(Find(node, q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
+		if node == nLeft(Find(node, q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -2225,7 +2225,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			// index is een int groter dan 0
 			return nonLocalDependencyLabel(
 				node,
-				firstnode(Find(node, q /* $node/../node[@rel="body"]//node[@index = $node/@index] */, &XPath{
+				n1(Find(node, q /* $node/../node[@rel="body"]//node[@index = $node/@index] */, &XPath{
 					arg1: &Sort{
 						arg1: &Collect{
 							ARG: collect__child__node,
@@ -3453,7 +3453,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 		return "ERROR_NO_PASSIVE_SUBJECT"
 	}
 
-	aux := auxiliary1(firstnode(SUFind(subj, q /* $subj/../node[@rel="hd"] */, &XPath{
+	aux := auxiliary1(n1(SUFind(subj, q /* $subj/../node[@rel="hd"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
@@ -3545,7 +3545,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 			},
 		},
 	}) {
-		return passiveSubject(firstnode(SUFind(subj, q /* $subj/../node[@rel="vc"]/node[@rel="su"] */, &XPath{
+		return passiveSubject(n1(SUFind(subj, q /* $subj/../node[@rel="vc"]/node[@rel="su"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,

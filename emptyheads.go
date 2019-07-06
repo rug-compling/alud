@@ -143,9 +143,9 @@ func reconstructEmptyHead(node *NodeType, q *Context) {
 					},
 				},
 			}) {
-				end = lastnode(others).End + 1
+				end = nZ(others).End + 1
 			} else {
-				end = leftEdge(firstnode(others), q) + 1
+				end = leftEdge(n1(others), q) + 1
 			}
 		} else {
 			end = i1(Find(node, q /* $node/../@end */, &XPath{
@@ -163,7 +163,7 @@ func reconstructEmptyHead(node *NodeType, q *Context) {
 			})) - 999 // covers cases where there is no sister with content
 		}
 		var copied int
-		antenode := firstnode(antecedent)
+		antenode := n1(antecedent)
 		if antenode.udCopiedFrom > 0 {
 			copied = antenode.udCopiedFrom
 		} else {
