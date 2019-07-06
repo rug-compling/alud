@@ -4,6 +4,7 @@ import (
 	"github.com/pebbe/util"
 
 	"bufio"
+	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -13,7 +14,18 @@ var (
 	x = util.CheckErr
 )
 
+type Collection struct {
+	XMLName xml.Name `xml:"collection"`
+	Doc     []Doc    `xml:"doc"`
+}
+
+type Doc struct {
+	Href string `xml:"href,attr"`
+}
+
 func main() {
+
+	var collection Collection
 
 	filenames := []string{}
 	filenames = append(filenames, os.Args[1:]...)
@@ -26,14 +38,27 @@ func main() {
 	}
 
 	for _, filename := range filenames {
-		doc, err := ioutil.ReadFile(filename)
+		b, err := ioutil.ReadFile(filename)
 		x(err)
-		result, err := doDoc(doc, filename)
-		if err != nil {
-			fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
-		} else {
-			fmt.Print(result)
+
+		if xml.Unmarshal(b, &collection) != nil {
+			doFile(b, filename)
+			continue
+		}
+
+		for _, f := range collection.Doc {
+			b, err := ioutil.ReadFile(f.Href)
+			x(err)
+			doFile(b, f.Href)
 		}
 	}
+}
 
+func doFile(doc []byte, filename string) {
+	result, err := doDoc(doc, filename)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
+	} else {
+		fmt.Print(result)
+	}
 }
