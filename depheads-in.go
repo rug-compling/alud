@@ -4,10 +4,6 @@ import (
 	"sort"
 )
 
-//
-// TODO: dit kan allemaal efficiënter: meerdere keren zoeken naar zelfde set nodes
-//
-
 // recursive
 func externalHeadPosition(node *NodeType, q *Context) int {
 	if depthCheck(q, "externalHeadPosition") {

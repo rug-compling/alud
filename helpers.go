@@ -59,6 +59,13 @@ func last(nodes []interface{}) []interface{} {
 	return []interface{}{}
 }
 
+func lastnode(nodes []interface{}) *NodeType {
+	if len(nodes) > 0 {
+		return nodes[len(nodes)-1].(*NodeType)
+	}
+	return noNode
+}
+
 func i1(ii []interface{}) int {
 	if len(ii) > 0 {
 		return ii[0].(int)

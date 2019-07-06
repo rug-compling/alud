@@ -15,6 +15,7 @@ const (
 	ERROR_NO_EXTERNAL_HEAD
 	ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
 	ERROR_NO_INTERNAL_HEAD
+	UNDERSCORE
 	TODO
 	empty_head
 )
@@ -114,29 +115,32 @@ type NodeType struct {
 	// Vztype       string      `xml:"vztype,attr,omitempty"`
 	// Wh           string      `xml:"wh,attr,omitempty"`
 	// Wk           string      `xml:"wk,attr,omitempty"`
-	Word                string      `xml:"word,attr,omitempty"`
-	Wvorm               string      `xml:"wvorm,attr,omitempty"`
-	Node                []*NodeType `xml:"node"`
-	parent              *NodeType
-	udAbbr              string
-	udCase              string
-	udCopiedFrom        string
-	udDefinite          string
-	udDegree            string
-	udEnhanced          string
-	udForeign           string
-	udGender            string
-	udHeadPosition      int
-	udNumber            string
-	udPerson            string
-	udPos               string
-	udPoss              string
-	udPronType          string
-	udReflex            string
-	udRelation          string
-	udTense             string
-	udVerbForm          string
-	udFirstWordBegin    int
+	Word   string      `xml:"word,attr,omitempty"`
+	Wvorm  string      `xml:"wvorm,attr,omitempty"`
+	Node   []*NodeType `xml:"node"`
+	parent *NodeType
+
+	// als je hier iets aan toevoegt, dan ook toevoegen in emptyheads-in.go in functie reconstructEmptyHead
+	udAbbr           string
+	udCase           string
+	udCopiedFrom     int
+	udDefinite       string
+	udDegree         string
+	udEnhanced       string
+	udForeign        string
+	udGender         string
+	udHeadPosition   int
+	udNumber         string
+	udPerson         string
+	udPos            string
+	udPoss           string
+	udPronType       string
+	udReflex         string
+	udRelation       string
+	udTense          string
+	udVerbForm       string
+	udFirstWordBegin int
+
 	axParent            []interface{}
 	axAncestors         []interface{}
 	axChildren          []interface{}
@@ -148,6 +152,7 @@ var (
 	noNode = &NodeType{
 		Begin:               -1000,
 		End:                 -1000,
+		udCopiedFrom:        -1000,
 		Id:                  -1,
 		Node:                []*NodeType{},
 		axParent:            []interface{}{},
@@ -208,7 +213,11 @@ func doDoc(doc []byte, filename string) (string, error) {
 	addPosTags(q)
 	addFeatures(q)
 	addDependencyRelations(q)
-	enhancedDependencies(q)
+
+	reconstructEmptyHead(alpino.Node, q)
+	addEdependencyRelations(q)
+	enhancedDependencies1(q)
+
 	fixpunct(q)
 
 	return conll(q), nil
@@ -272,7 +281,7 @@ func inspect(q *Context) {
 	}
 
 	sort.Slice(ptnodes, func(i, j int) bool {
-		return ptnodes[i].Begin < ptnodes[j].Begin
+		return ptnodes[i].End < ptnodes[j].End
 	})
 	varptnodes := make([]interface{}, len(ptnodes))
 	for i, node := range ptnodes {

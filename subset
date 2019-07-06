@@ -15,8 +15,9 @@ while(<>) {
 	#$a[6] = "_"; # HEAD
 	#$a[7] = "_"; # DEPREL
 	$a[8] = "_"; # DEPS
-	$a[9] = "_"; # MISC
-	print(join("\t", @a),"\n") if ($a[0] !~ /\./);
+	#$a[9] = "_"; # MISC
+	#print(join("\t", @a),"\n") if ($a[0] !~ /\./);
+	print(join("\t", @a),"\n");
     } else {
 	print "$_\n";
     }

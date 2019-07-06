@@ -12,7 +12,7 @@ func conll(q *Context) string {
 	var buf bytes.Buffer
 
 	sort.Slice(q.ptnodes, func(i, j int) bool {
-		return q.ptnodes[i].Begin < q.ptnodes[j].Begin
+		return q.ptnodes[i].End < q.ptnodes[j].End
 	})
 
 	// TODO: ontdubbelen
@@ -38,11 +38,11 @@ func conll(q *Context) string {
 		}
 		return s
 	}
-	uc := func(s string) string {
-		if s == "" {
-			return "_"
+	uc := func(i int) string {
+		if i > 0 {
+			return "CopiedFrom=" + number(i)
 		}
-		return "CopiedFrom=" + s
+		return "_"
 	}
 
 	postag := func(s string) string {
@@ -107,6 +107,8 @@ func number(n int) string {
 			return "ERROR_NO_INTERNAL_HEAD"
 		case ERROR_NO_VALUE:
 			return "ERROR_NO_VALUE"
+		case UNDERSCORE:
+			return "_"
 		case TODO:
 			return "TODO"
 		case empty_head:
