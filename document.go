@@ -214,7 +214,7 @@ func doDoc(doc []byte, filename string) (string, error) {
 	addFeatures(q)
 	addDependencyRelations(q)
 
-	reconstructEmptyHead(alpino.Node, q)
+	reconstructEmptyHead(q)
 	addEdependencyRelations(q)
 	enhancedDependencies1(q)
 

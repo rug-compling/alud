@@ -94,7 +94,7 @@ func depthCheck(q *Context, s string) bool {
 		return false
 	}
 	q.warnings = append(q.warnings, "Recursion depth limit for "+s)
-	fmt.Fprintln(os.Stderr, "WARNING: Recursion depth limit for %s in %s", s, q.filename)
+	fmt.Fprintf(os.Stderr, "WARNING: Recursion depth limit for %s in %s", s, q.filename)
 	return true
 }
 

@@ -1,3 +1,5 @@
+// +build compile
+
 package main
 
 import (
@@ -34,7 +36,7 @@ var (
 func main() {
 	b, err := ioutil.ReadFile(os.Args[1])
 	x(err)
-	program = string(b)
+	program = strings.Replace(string(b), "// +build ignore", "", 1)
 
 	program = reTest.ReplaceAllStringFunc(program, compile)
 

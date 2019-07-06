@@ -30,4 +30,4 @@ unidep: $(SRC)
 	go build -o $@ $^
 
 compile: compile.go
-	go build $^
+	go build -tags compile $^
