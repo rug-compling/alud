@@ -8,7 +8,6 @@ SRC = \
 	document.go \
 	edeps.go \
 	emptyheads.go \
-	erels.go \
 	features.go \
 	fixpunct.go \
 	helpers.go \
@@ -16,6 +15,7 @@ SRC = \
 	misplacedheads.go \
 	postags.go \
 	xpath.go \
+	untokenize.go \
 
 
 

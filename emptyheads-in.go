@@ -84,6 +84,8 @@ func reconstructEmptyHead(q *Context) {
 		node.udTense = antenode.udTense
 		node.udVerbForm = antenode.udVerbForm
 		node.udFirstWordBegin = antenode.udFirstWordBegin
+		node.udERelation = antenode.udERelation
+		node.udEHeadPosition = antenode.udEHeadPosition
 
 		q.ptnodes = append(q.ptnodes, node)
 		q.varptnodes = append(q.varptnodes, node)

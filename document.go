@@ -127,6 +127,8 @@ type NodeType struct {
 	udDefinite       string
 	udDegree         string
 	udEnhanced       string
+	udERelation      string
+	udEHeadPosition  int
 	udForeign        string
 	udGender         string
 	udHeadPosition   int
@@ -161,6 +163,7 @@ var (
 		axDescendants:       []interface{}{},
 		axDescendantsOrSelf: []interface{}{},
 		udHeadPosition:      ERROR_NO_EXTERNAL_HEAD,
+		udEHeadPosition:     ERROR_NO_EXTERNAL_HEAD,
 	}
 )
 
@@ -219,6 +222,8 @@ func doDoc(doc []byte, filename string) (string, error) {
 	enhancedDependencies1(q)
 
 	fixpunct(q)
+
+	untokenize(q)
 
 	return conll(q), nil
 }
