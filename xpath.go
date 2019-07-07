@@ -32,6 +32,7 @@ const (
 	collect__attributes__rel
 	collect__attributes__sc
 	collect__attributes__spectype
+	collect__attributes__ud_3aERelation
 	collect__attributes__ud_3apos
 	collect__attributes__vwtype
 	collect__attributes__word
@@ -47,6 +48,7 @@ const (
 	function__count__1__args
 	// function__deep__equal__2__args
 	function__ends__with__2__args
+	function__local_3ainternal_5fhead_5fposition__1__args
 	function__not__1__args
 	function__starts__with__2__args
 	plus__plus
@@ -55,6 +57,7 @@ const (
 	variable__gap
 	variable__head
 	variable__indexnodes
+	variable__rhd_5findex
 	variable__node
 	variable__tmp
 	variable__subj
@@ -196,6 +199,10 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		case collect__attributes__spectype:
 			if i := r.(*NodeType).Spectype; i != "" {
+				result1 = append(result1, i)
+			}
+		case collect__attributes__ud_3aERelation:
+			if i := r.(*NodeType).udERelation; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3apos:
@@ -377,6 +384,8 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 		return FALSE
+	case function__local_3ainternal_5fhead_5fposition__1__args:
+		return []interface{}{internalHeadPosition(r[0].([]interface{}), q)}
 	case function__not__1__args:
 		if len(r[0].([]interface{})) == 0 {
 			return TRUE
@@ -560,6 +569,8 @@ func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
 		return q.varhead
 	case variable__indexnodes:
 		return q.varindexnodes
+	case variable__rhd_5findex:
+		return q.varrhdindex
 	case variable__tmp:
 		return q.vartmp
 	case variable__subj:

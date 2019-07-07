@@ -30,6 +30,7 @@ type Context struct {
 	depth         int
 	allnodes      []*NodeType
 	ptnodes       []*NodeType
+	varrhdindex   []interface{}
 	varallnodes   []interface{}
 	varindexnodes []interface{}
 	varptnodes    []interface{}
@@ -216,15 +217,9 @@ func doDoc(doc []byte, filename string) (string, error) {
 	addPosTags(q)
 	addFeatures(q)
 	addDependencyRelations(q)
-
-	reconstructEmptyHead(q)
-	addEdependencyRelations(q)
-	enhancedDependencies1(q)
-
+	enhancedDependencies(q)
 	fixpunct(q)
-
 	untokenize(q)
-
 	return conll(q), nil
 }
 

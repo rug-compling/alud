@@ -6,8 +6,8 @@ SRC = \
 	deplabels.go \
 	deprels.go \
 	document.go \
-	edeps.go \
 	emptyheads.go \
+	enhanced.go \
 	features.go \
 	fixpunct.go \
 	helpers.go \
