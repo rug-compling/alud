@@ -73,23 +73,28 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 	   };
 	*/
 
+	// TODO: controleer dit heel goed
+
+	q.depth = 0
 	var enhanced []DepType
 	for {
 
-		so := FIND(node, q,
-			`$node/ancestor::node/node[@rel=("su","obj1","obj2") and local:internal_head_position(.) = $node/@end ]/@index`)
-		if len(so) > 0 && TEST(node, q, `$node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")]`) {
-			soIndex := i1(so)
-			enhanced = []DepType{
-				DepType{head: node.udEHeadPosition, rel: enhanceDependencyLabel(node, q)},
-				anaphoricRelpronoun(node, q),
-				distributeConjuncts(node, q),
-				distributeDependents(node, q),
-				xcompControl(node, q, soIndex),
-				upstairsControl(node, q, soIndex),
-				passiveVpControl(node, q, soIndex),
+		if TEST(node, q, `$node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")]`) { // TODO: klopt dit? exists binnen [ ]
+			so := FIND(node, q,
+				`$node/ancestor::node/node[@rel=("su","obj1","obj2") and local:internal_head_position(.) = $node/@end ]/@index`)
+			if len(so) > 0 {
+				soIndex := i1(so)
+				enhanced = []DepType{
+					DepType{head: node.udEHeadPosition, rel: enhanceDependencyLabel(node, q)},
+					anaphoricRelpronoun(node, q),
+					distributeConjuncts(node, q),
+					distributeDependents(node, q),
+					xcompControl(node, q, soIndex),
+					upstairsControl(node, q, soIndex),
+					passiveVpControl(node, q, soIndex),
+				}
+				break
 			}
-			break
 		}
 
 		rhd := FIND(node, q,

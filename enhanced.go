@@ -75,62 +75,13 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 	   };
 	*/
 
+	// TODO: controleer dit heel goed
+
+	q.depth = 0
 	var enhanced []DepType
 	for {
 
-		so := Find(node, q,
-			/* $node/ancestor::node/node[@rel=("su","obj1","obj2") and local:internal_head_position(.) = $node/@end ]/@index */ &XPath{
-				arg1: &Sort{
-					arg1: &Collect{
-						ARG: collect__attributes__index,
-						arg1: &Collect{
-							ARG: collect__child__node,
-							arg1: &Collect{
-								ARG: collect__ancestors__node,
-								arg1: &Variable{
-									ARG: variable__node,
-								},
-							},
-							arg2: &Predicate{
-								arg1: &And{
-									arg1: &Equal{
-										ARG: equal__is,
-										arg1: &Collect{
-											ARG:  collect__attributes__rel,
-											arg1: &Node{},
-										},
-										arg2: &Elem{
-											DATA: []interface{}{"su", "obj1", "obj2"},
-											arg1: &Collect{
-												ARG:  collect__attributes__rel,
-												arg1: &Node{},
-											},
-										},
-									},
-									arg2: &Equal{
-										ARG: equal__is,
-										arg1: &Function{
-											ARG: function__local_3ainternal_5fhead_5fposition__1__args,
-											arg1: &Arg{
-												arg1: &Sort{
-													arg1: &Node{},
-												},
-											},
-										},
-										arg2: &Collect{
-											ARG: collect__attributes__end,
-											arg1: &Variable{
-												ARG: variable__node,
-											},
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			})
-		if len(so) > 0 && Test(node, q /* $node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")] */, &XPath{
+		if Test(node, q /* $node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
@@ -154,18 +105,72 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 					},
 				},
 			},
-		}) {
-			soIndex := i1(so)
-			enhanced = []DepType{
-				DepType{head: node.udEHeadPosition, rel: enhanceDependencyLabel(node, q)},
-				anaphoricRelpronoun(node, q),
-				distributeConjuncts(node, q),
-				distributeDependents(node, q),
-				xcompControl(node, q, soIndex),
-				upstairsControl(node, q, soIndex),
-				passiveVpControl(node, q, soIndex),
+		}) { // TODO: klopt dit? exists binnen [ ]
+			so := Find(node, q,
+				/* $node/ancestor::node/node[@rel=("su","obj1","obj2") and local:internal_head_position(.) = $node/@end ]/@index */ &XPath{
+					arg1: &Sort{
+						arg1: &Collect{
+							ARG: collect__attributes__index,
+							arg1: &Collect{
+								ARG: collect__child__node,
+								arg1: &Collect{
+									ARG: collect__ancestors__node,
+									arg1: &Variable{
+										ARG: variable__node,
+									},
+								},
+								arg2: &Predicate{
+									arg1: &And{
+										arg1: &Equal{
+											ARG: equal__is,
+											arg1: &Collect{
+												ARG:  collect__attributes__rel,
+												arg1: &Node{},
+											},
+											arg2: &Elem{
+												DATA: []interface{}{"su", "obj1", "obj2"},
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+											},
+										},
+										arg2: &Equal{
+											ARG: equal__is,
+											arg1: &Function{
+												ARG: function__local_3ainternal_5fhead_5fposition__1__args,
+												arg1: &Arg{
+													arg1: &Sort{
+														arg1: &Node{},
+													},
+												},
+											},
+											arg2: &Collect{
+												ARG: collect__attributes__end,
+												arg1: &Variable{
+													ARG: variable__node,
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				})
+			if len(so) > 0 {
+				soIndex := i1(so)
+				enhanced = []DepType{
+					DepType{head: node.udEHeadPosition, rel: enhanceDependencyLabel(node, q)},
+					anaphoricRelpronoun(node, q),
+					distributeConjuncts(node, q),
+					distributeDependents(node, q),
+					xcompControl(node, q, soIndex),
+					upstairsControl(node, q, soIndex),
+					passiveVpControl(node, q, soIndex),
+				}
+				break
 			}
-			break
 		}
 
 		rhd := Find(node, q,
