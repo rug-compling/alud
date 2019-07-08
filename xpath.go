@@ -487,7 +487,7 @@ type Root struct {
 }
 
 func (d *Root) Do(subdoc []interface{}, q *Context) []interface{} {
-	return []interface{}{q.varroot}
+	return q.varroot
 }
 
 type Sort struct {
