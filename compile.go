@@ -157,6 +157,7 @@ func parse(s string) string {
 				args = strings.Replace(args, "-or-self", " or self", -1)
 				args = strings.Replace(args, "+", "plus", -1)
 				args = strings.Replace(args, " name node", "", -1)
+				args = strings.Replace(args, "local:internal_head_position", "local internal head position", -1)
 				args = strings.Replace(reRemove.ReplaceAllStringFunc(args, func(s string) string {
 					return fmt.Sprintf("_%02x", s[0])
 				}), "_20", "__", -1)

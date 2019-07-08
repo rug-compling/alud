@@ -51,7 +51,7 @@ const (
 	function__count__1__args
 	// function__deep__equal__2__args
 	function__ends__with__2__args
-	function__local_3ainternal_5fhead_5fposition__1__args
+	function__local__internal__head__position__1__args
 	function__not__1__args
 	function__starts__with__2__args
 	plus__plus
@@ -391,7 +391,7 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 		return FALSE
-	case function__local_3ainternal_5fhead_5fposition__1__args:
+	case function__local__internal__head__position__1__args:
 		return []interface{}{internalHeadPosition(r[0].([]interface{}), q)}
 	case function__not__1__args:
 		if len(r[0].([]interface{})) == 0 {

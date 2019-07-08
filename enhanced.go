@@ -94,7 +94,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 										arg2: &Equal{
 											ARG: equal__is,
 											arg1: &Function{
-												ARG: function__local_3ainternal_5fhead_5fposition__1__args,
+												ARG: function__local__internal__head__position__1__args,
 												arg1: &Arg{
 													arg1: &Sort{
 														arg1: &Node{},
@@ -159,7 +159,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 									arg2: &Equal{
 										ARG: equal__is,
 										arg1: &Function{
-											ARG: function__local_3ainternal_5fhead_5fposition__1__args,
+											ARG: function__local__internal__head__position__1__args,
 											arg1: &Arg{
 												arg1: &Sort{
 													arg1: &Node{},
@@ -718,7 +718,7 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 										arg2: &Equal{
 											ARG: equal__is,
 											arg1: &Function{
-												ARG: function__local_3ainternal_5fhead_5fposition__1__args,
+												ARG: function__local__internal__head__position__1__args,
 												arg1: &Arg{
 													arg1: &Sort{
 														arg1: &Node{},
