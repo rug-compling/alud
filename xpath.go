@@ -33,6 +33,9 @@ const (
 	collect__attributes__sc
 	collect__attributes__spectype
 	collect__attributes__ud_3aERelation
+	collect__attributes__ud_3aEHeadPosition
+	collect__attributes__ud_3aHeadPosition
+	collect__attributes__ud_3aRelation
 	collect__attributes__ud_3apos
 	collect__attributes__vwtype
 	collect__attributes__word
@@ -203,6 +206,18 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		case collect__attributes__ud_3aERelation:
 			if i := r.(*NodeType).udERelation; i != "" {
+				result1 = append(result1, i)
+			}
+		case collect__attributes__ud_3aEHeadPosition:
+			if i := r.(*NodeType).udEHeadPosition; i > 0 {
+				result1 = append(result1, i)
+			}
+		case collect__attributes__ud_3aHeadPosition:
+			if i := r.(*NodeType).udHeadPosition; i > 0 {
+				result1 = append(result1, i)
+			}
+		case collect__attributes__ud_3aRelation:
+			if i := r.(*NodeType).udRelation; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3apos:
