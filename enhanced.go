@@ -37,11 +37,11 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 	var enhanced []DepType
 	for {
 
-		if Test(node, q /* $node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")] */, &XPath{
+		if Test(q /* $node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -62,7 +62,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 				},
 			},
 		}) { // TODO: klopt dit? exists binnen [ ]
-			so := Find(node, q,
+			so := Find(q,
 				/* $node/ancestor::node/node[@rel=("su","obj1","obj2") and local:internal_head_position(.) = $node/@end ]/@index */ &XPath{
 					arg1: &Sort{
 						arg1: &Collect{
@@ -72,7 +72,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 								arg1: &Collect{
 									ARG: collect__ancestors__node,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 								arg2: &Predicate{
@@ -104,7 +104,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 											arg2: &Collect{
 												ARG: collect__attributes__end,
 												arg1: &Variable{
-													ARG: variable__node,
+													VAR: node,
 												},
 											},
 										},
@@ -127,7 +127,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			}
 		}
 
-		rhd := Find(node, q,
+		rhd := Find(q,
 			/* $node/ancestor::node/node[@rel="rhd" and local:internal_head_position(.) = $node/@end ]/@index */ &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
@@ -137,7 +137,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 							arg1: &Collect{
 								ARG: collect__ancestors__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 							arg2: &Predicate{
@@ -169,7 +169,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 										arg2: &Collect{
 											ARG: collect__attributes__end,
 											arg1: &Variable{
-												ARG: variable__node,
+												VAR: node,
 											},
 										},
 									},
@@ -181,13 +181,12 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			})
 		if len(rhd) > 0 {
 			rhdIndex := i1(rhd)
-			q.varrhdindex = []interface{}{rhdIndex}
-			rhdNp := Find(node, q /* $node/ancestor::node[@cat="np" and node[@rel="mod"]/node[@rel="rhd"]/@index = $rhd_index] */, &XPath{
+			rhdNp := Find(q /* $node/ancestor::node[@cat="np" and node[@rel="mod"]/node[@rel="rhd"]/@index = $rhdIndex] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__ancestors__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Predicate{
 							arg1: &And{
@@ -250,7 +249,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 										},
 									},
 									arg2: &Variable{
-										ARG: variable__rhd_5findex,
+										VAR: rhdIndex,
 									},
 								},
 							},
@@ -275,7 +274,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		relSister := Find(node, q /* $node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index */, &XPath{
+		relSister := Find(q /* $node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__attributes__index,
@@ -286,7 +285,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 							arg1: &Collect{
 								ARG: collect__parent__type__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 							arg2: &Predicate{
@@ -421,7 +420,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	*/
 	label := node.udERelation
 	if label == "conj" {
-		if crd := n1(Find(node, q, /* $node/ancestor::node[@cat="conj" and
+		if crd := n1(Find(q, /* $node/ancestor::node[@cat="conj" and
 			   not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"] */&XPath{
 				arg1: &Sort{
 					arg1: &Collect{
@@ -429,7 +428,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__ancestors__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 							arg2: &Predicate{
 								arg1: &And{
@@ -485,7 +484,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 													arg2: &Collect{
 														ARG: collect__attributes__begin,
 														arg1: &Variable{
-															ARG: variable__node,
+															VAR: node,
 														},
 													},
 												},
@@ -518,12 +517,12 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 				return join(label, enhancedLemmaString1(crd, q))
 			}
 			if crd.Cat == "mwu" {
-				return join(label, enhancedLemmaString1(n1(Find(crd, q /* $node/node[@rel="mwp"] */, &XPath{
+				return join(label, enhancedLemmaString1(n1(Find(q /* $crd/node[@rel="mwp"] */, &XPath{
 					arg1: &Sort{
 						arg1: &Collect{
 							ARG: collect__child__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: crd,
 							},
 							arg2: &Predicate{
 								arg1: &Equal{
@@ -550,7 +549,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	}
 
 	if label == "nmod" || label == "obl" {
-		if casee := n1(Find(node, q /* $node/ancestor::node//node[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end] */, &XPath{
+		if casee := n1(Find(q /* $node/ancestor::node//node[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -559,7 +558,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__ancestors__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 					},
@@ -588,7 +587,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 								arg2: &Collect{
 									ARG: collect__attributes__end,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 							},
@@ -602,7 +601,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	}
 
 	if label == "advcl" || label == "acl" {
-		if mark := n1(Find(node, q /* $node/ancestor::node//node[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end] */, &XPath{
+		if mark := n1(Find(q /* $node/ancestor::node//node[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -611,7 +610,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__ancestors__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 					},
@@ -640,7 +639,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 								arg2: &Collect{
 									ARG: collect__attributes__end,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 							},
@@ -686,7 +685,7 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 	// works voor waar, and last() picks waar in 'daar waar' cases
 	// dont add anything for hij werd voorzitter, wat hij nog steeds is (otherwise self-reference)
 	// for loop ensures correct result if N has 2 acl:relcl dependents
-	list := Find(node, q, /* $node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
+	list := Find(q, /* $node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
 		   node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)] */&XPath{
 			arg1: &Sort{
 				arg1: &Collect{
@@ -698,7 +697,7 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 							arg1: &Collect{
 								ARG: collect__ancestors__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 								arg2: &Predicate{
 									arg1: &And{
@@ -729,7 +728,7 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 											arg2: &Collect{
 												ARG: collect__attributes__end,
 												arg1: &Variable{
-													ARG: variable__node,
+													VAR: node,
 												},
 											},
 										},
@@ -799,7 +798,7 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 											arg2: &Collect{
 												ARG: collect__attributes__end,
 												arg1: &Variable{
-													ARG: variable__node,
+													VAR: node,
 												},
 											},
 										},
@@ -845,7 +844,7 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 	   };
 	*/
 	if node.udRelation == "conj" {
-		coordHead := n1(Find(node, q, /* $node/ancestor::node//node[@end = $node/@ud:HeadPosition
+		coordHead := n1(Find(q, /* $node/ancestor::node//node[@end = $node/@ud:HeadPosition
 			   and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")] */&XPath{
 				arg1: &Sort{
 					arg1: &Collect{
@@ -855,7 +854,7 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 							arg1: &Collect{
 								ARG: collect__ancestors__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 						},
@@ -870,7 +869,7 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 									arg2: &Collect{
 										ARG: collect__attributes__ud_3aHeadPosition,
 										arg1: &Variable{
-											ARG: variable__node,
+											VAR: node,
 										},
 									},
 								},
@@ -972,14 +971,14 @@ func enhancedLemmaString1(node *NodeType, q *Context) string {
 	default:
 		lemma = node.Lemma
 	}
-	if fixed := n1(Find(node, q /* $node/../node[@ud:ERelation="fixed"] */, &XPath{
+	if fixed := n1(Find(q /* $node/../node[@ud:ERelation="fixed"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
 				arg1: &Collect{
 					ARG: collect__parent__type__node,
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 				},
 				arg2: &Predicate{

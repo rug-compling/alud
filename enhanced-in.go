@@ -35,8 +35,8 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 	var enhanced []DepType
 	for {
 
-		if TEST(node, q, `$node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")]`) { // TODO: klopt dit? exists binnen [ ]
-			so := FIND(node, q,
+		if TEST(q, `$node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")]`) { // TODO: klopt dit? exists binnen [ ]
+			so := FIND(q,
 				`$node/ancestor::node/node[@rel=("su","obj1","obj2") and local:internal_head_position(.) = $node/@end ]/@index`)
 			if len(so) > 0 {
 				soIndex := i1(so)
@@ -51,12 +51,11 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			}
 		}
 
-		rhd := FIND(node, q,
+		rhd := FIND(q,
 			`$node/ancestor::node/node[@rel="rhd" and local:internal_head_position(.) = $node/@end ]/@index`)
 		if len(rhd) > 0 {
 			rhdIndex := i1(rhd)
-			q.varrhdindex = []interface{}{rhdIndex}
-			rhdNp := FIND(node, q, `$node/ancestor::node[@cat="np" and node[@rel="mod"]/node[@rel="rhd"]/@index = $rhd_index]`)
+			rhdNp := FIND(q, `$node/ancestor::node[@cat="np" and node[@rel="mod"]/node[@rel="rhd"]/@index = $rhdIndex]`)
 			// de enige _i die voldoet aan de eisen -- make sure empty heads are covered as well
 			if len(rhdNp) > 0 {
 				enhanced = []DepType{DepType{head: internalHeadPositionWithGapping(rhdNp, q), dep: "ref"}}
@@ -74,7 +73,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		relSister := FIND(node, q, `$node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index`)
+		relSister := FIND(q, `$node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index`)
 		if len(relSister) > 0 {
 			relSisterIndex := i1(relSister)
 			enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
@@ -154,26 +153,26 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	*/
 	label := node.udERelation
 	if label == "conj" {
-		if crd := n1(FIND(node, q, `$node/ancestor::node[@cat="conj" and
+		if crd := n1(FIND(q, `$node/ancestor::node[@cat="conj" and
 	       not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"]`)); crd != noNode {
 			if crd.Lemma != "" {
 				return join(label, enhancedLemmaString1(crd, q))
 			}
 			if crd.Cat == "mwu" {
-				return join(label, enhancedLemmaString1(n1(FIND(crd, q, `$node/node[@rel="mwp"]`)), q))
+				return join(label, enhancedLemmaString1(n1(FIND(q, `$crd/node[@rel="mwp"]`)), q))
 			}
 			return "ERROR_empty_eud_label"
 		}
 	}
 
 	if label == "nmod" || label == "obl" {
-		if casee := n1(FIND(node, q, `$node/ancestor::node//node[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end]`)); casee != noNode {
+		if casee := n1(FIND(q, `$node/ancestor::node//node[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end]`)); casee != noNode {
 			return join(label, enhancedLemmaString1(casee, q))
 		}
 	}
 
 	if label == "advcl" || label == "acl" {
-		if mark := n1(FIND(node, q, `$node/ancestor::node//node[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end]`)); mark != noNode {
+		if mark := n1(FIND(q, `$node/ancestor::node//node[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end]`)); mark != noNode {
 			return join(label, enhancedLemmaString1(mark, q))
 		}
 	}
@@ -211,7 +210,7 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 	// works voor waar, and last() picks waar in 'daar waar' cases
 	// dont add anything for hij werd voorzitter, wat hij nog steeds is (otherwise self-reference)
 	// for loop ensures correct result if N has 2 acl:relcl dependents
-	list := FIND(node, q, `$node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
+	list := FIND(q, `$node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
 	   			       node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)]`)
 	if len(list) > 0 {
 		anrel := nZ(list)
@@ -247,7 +246,7 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 	   };
 	*/
 	if node.udRelation == "conj" {
-		coordHead := n1(FIND(node, q, `$node/ancestor::node//node[@end = $node/@ud:HeadPosition
+		coordHead := n1(FIND(q, `$node/ancestor::node//node[@end = $node/@ud:HeadPosition
 	       and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")]`))
 		if coordHead != noNode {
 			// in A en B vs in A en naast B --> use enh_dep_label($node) in the latter case...
@@ -328,7 +327,7 @@ func enhancedLemmaString1(node *NodeType, q *Context) string {
 	default:
 		lemma = node.Lemma
 	}
-	if fixed := n1(FIND(node, q, `$node/../node[@ud:ERelation="fixed"]`)); fixed.Lemma != "" {
+	if fixed := n1(FIND(q, `$node/../node[@ud:ERelation="fixed"]`)); fixed.Lemma != "" {
 		lemma += "_" + fixed.Lemma
 	}
 	lemma = strings.Replace(lemma, "/", "schuine_streep", -1)

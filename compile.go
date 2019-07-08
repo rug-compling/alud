@@ -127,7 +127,9 @@ func parse(s string) string {
 			cmd = fmt.Sprint("arg", prev[lvl])
 		}
 		out = append(out, fmt.Sprintf("%s: &%s{", cmd, str))
-		if cmd0 == "elem" {
+		if cmd0 == "variable" {
+			out = append(out, fmt.Sprintf("VAR: %s,", words[1]))
+		} else if cmd0 == "elem" {
 			if words[4] == "string" {
 				data, ok := hash[words[6]]
 				if !ok {

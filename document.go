@@ -30,16 +30,10 @@ type Context struct {
 	depth         int
 	allnodes      []*NodeType
 	ptnodes       []*NodeType
-	varrhdindex   []interface{}
 	varallnodes   []interface{}
 	varindexnodes []interface{}
 	varptnodes    []interface{}
-	vargap        []interface{}
-	varhead       []interface{}
-	varnode       []interface{}
-	vartmp        []interface{}
 	varroot       []interface{}
-	varsubj       []interface{}
 }
 
 type Alpino_ds struct {

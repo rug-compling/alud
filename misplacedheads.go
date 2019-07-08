@@ -22,14 +22,14 @@ START:
 	for true {
 		for _, n1 := range q.varallnodes {
 			// FIND op varallnodes niet mogelijk omdat twee keer naar $node wordt verwezen, en dat moet dezelfde node zijn
-			for _, n2 := range Find(n1, q, /*
-				$node[@rel=("hd","ld") and
+			for _, n2 := range Find(q, /*
+				$n1[@rel=("hd","ld") and
 				      @index and
 				      (@pt or @cat) and
 				      ancestor::node[@rel="cnj"] and
 				      ancestor::node[@cat="conj"]/node[@rel="cnj" and
 				                                       descendant-or-self::node[@rel=("hd","ld") and
-				                                                                @index=$node/@index and
+				                                                                @index=$n1/@index and
 				                                                                not(@cat or @pt) and
 				                                                                ( @begin        = ..//node[@cat or @pt]/@end or
 				                                                                  @begin - 1000 = ..//node[@cat or @pt]/@end
@@ -39,7 +39,7 @@ START:
 					arg1: &Sort{
 						arg1: &Filter{
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: n1,
 							},
 							arg2: &Sort{
 								arg1: &And{
@@ -167,7 +167,7 @@ START:
 																		arg2: &Collect{
 																			ARG: collect__attributes__index,
 																			arg1: &Variable{
-																				ARG: variable__node,
+																				VAR: n1,
 																			},
 																		},
 																	},
@@ -280,8 +280,8 @@ START:
 					},
 				}) {
 				node2 := n2.(*NodeType)
-				for _, n3 := range Find(q.varallnodes, q, /*
-					$node[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
+				for _, n3 := range Find(q, /*
+					$q.varallnodes[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
 					                 ancestor::node[@rel="cnj"]  and
 					                                    ( @begin        = ..//node[@cat or @pt]/@end or
 					                                      @begin - 1000 = ..//node[@cat or @pt]/@end
@@ -289,7 +289,7 @@ START:
 						arg1: &Sort{
 							arg1: &Filter{
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: q.varallnodes,
 								},
 								arg2: &Sort{
 									arg1: &And{

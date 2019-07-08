@@ -14,14 +14,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "root"
 	}
 	if node.Rel == "app" {
-		if Test(node, q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -59,14 +59,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "appos"
 		}
-		if Test(node, q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -112,11 +112,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	if node.Rel == "crd" {
 		return "cc"
 	}
-	if node.Rel == "me" && Test(node, q /* $node[@rel="me" and not(../node[@ud:pos="ADP"]) ] */, &XPath{
+	if node.Rel == "me" && Test(q /* $node[@rel="me" and not(../node[@ud:pos="ADP"]) ] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &And{
@@ -184,7 +184,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "expl"
 	}
 	if node.Rel == "predc" {
-		if Test(node, q /* $node/../node[@rel=("obj1","se") and (@pt or @cat)] or $node/../node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX")] */, &XPath{
+		if Test(q /* $node/../node[@rel=("obj1","se") and (@pt or @cat)] or $node/../node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Or{
 					arg1: &Collect{
@@ -192,7 +192,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -231,7 +231,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -291,7 +291,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 				},
 			},
 		}) {
-			if Test(node, q /* $node/../@cat="pp" */, &XPath{
+			if Test(q /* $node/../@cat="pp" */, &XPath{
 				arg1: &Sort{
 					arg1: &Equal{
 						ARG: equal__is,
@@ -300,7 +300,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							arg1: &Collect{
 								ARG: collect__parent__type__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 						},
@@ -311,7 +311,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Collect{
 									ARG: collect__parent__type__node,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 							},
@@ -319,7 +319,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 					},
 				},
 			}) { // check for absolutive (met) constructions, https://github.com/UniversalDependencies/docs/issues/408
-				if Test(node, q /* $node/../../@cat="np" */, &XPath{
+				if Test(q /* $node/../../@cat="np" */, &XPath{
 					arg1: &Sort{
 						arg1: &Equal{
 							ARG: equal__is,
@@ -330,7 +330,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Collect{
 										ARG: collect__parent__type__node,
 										arg1: &Variable{
-											ARG: variable__node,
+											VAR: node,
 										},
 									},
 								},
@@ -344,7 +344,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										arg1: &Collect{
 											ARG: collect__parent__type__node,
 											arg1: &Variable{
-												ARG: variable__node,
+												VAR: node,
 											},
 										},
 									},
@@ -371,11 +371,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "expl:pv"
 	}
 	if node.Rel == "su" {
-		if Test(node, q /* $node[../@rel="cnj" and ../node[@rel="hd" and not(@pt or @cat)]] */, &XPath{
+		if Test(q /* $node[../@rel="cnj" and ../node[@rel="hd" and not(@pt or @cat)]] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -448,12 +448,12 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) { // gapping
 			return dependencyLabel(node.parent, q)
 		}
-		if Test(node, q, /* $node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
+		if Test(q, /* $node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
 			   and ../../self::node[@rel="cnj" and node[@rel="hd" and not(@pt or @cat)]]] */&XPath{
 				arg1: &Sort{
 					arg1: &Filter{
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Sort{
 							arg1: &And{
@@ -610,13 +610,13 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	}
 	aux := auxiliary1(node, q)
 	if aux == "aux:pass" {
-		if Test(node, q, /* $node[../node[@rel="su" and not(@pt or @cat)] and
+		if Test(q, /* $node[../node[@rel="su" and not(@pt or @cat)] and
 			   ../node[@rel="vc" and not(@pt or @cat)] and
 			   ../@rel="cnj"] */&XPath{
 				arg1: &Sort{
 					arg1: &Filter{
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Sort{
 							arg1: &And{
@@ -742,14 +742,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "cop"
 	}
 	if node.Rel == "det" {
-		if Test(node, q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -787,14 +787,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return detLabel(node, q)
 		}
-		if Test(node, q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -835,7 +835,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return dependencyLabel(node.parent, q) // gapping
 	}
 	if node.Rel == "obj1" || node.Rel == "me" {
-		if Test(node, q /* $node/../@cat="pp" or $node/../node[@rel="hd" and @ud:pos="ADP"] */, &XPath{
+		if Test(q /* $node/../@cat="pp" or $node/../node[@rel="hd" and @ud:pos="ADP"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Or{
 					arg1: &Equal{
@@ -845,7 +845,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							arg1: &Collect{
 								ARG: collect__parent__type__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 						},
@@ -856,7 +856,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Collect{
 									ARG: collect__parent__type__node,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 							},
@@ -867,7 +867,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -906,14 +906,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 				},
 			},
 		}) { // vol vertrouwen , heel de geschiedenis door (cat=ap!)
-			if Test(node, q /* $node/../node[@rel="predc"] */, &XPath{
+			if Test(q /* $node/../node[@rel="predc"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -939,11 +939,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			}
 			return dependencyLabel(node.parent, q)
 		}
-		if Test(node, q /* $node[@index = ../../node[@rel="su"]/@index ] */, &XPath{
+		if Test(q /* $node[@index = ../../node[@rel="su"]/@index ] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -988,14 +988,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "nsubj:pass" // trees where su (with extraposed material) is spelled out at position of obj1
 		}
-		if Test(node, q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1033,14 +1033,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "obj"
 		}
-		if Test(node, q /* $node/../node[@rel="su" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="su" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1084,14 +1084,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		if node.Begin >= 0 && node.Begin == node.parent.Begin {
 			return dependencyLabel(node.parent, q)
 		}
-		if Test(node, q /* $node/../node[@ud:pos="PROPN"] */, &XPath{
+		if Test(q /* $node/../node[@ud:pos="PROPN"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1119,14 +1119,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	}
 	if node.Rel == "cnj" {
 		// TODO als ik hier n1 gebruik i.p.v. leftmost (wat zou moeten) gaat het vaak mis
-		if node == nLeft(Find(node, q /* $node/../node[@rel="cnj"] */, &XPath{
+		if node == nLeft(Find(q /* $node/../node[@rel="cnj"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1153,14 +1153,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "conj"
 	}
 	if node.Rel == "dp" {
-		if node == nLeft(Find(node, q /* $node/../node[@rel="dp"] */, &XPath{
+		if node == nLeft(Find(q /* $node/../node[@rel="dp"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1196,7 +1196,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return dependencyLabel(node.parent, q)
 	}
 	if node.Rel == "vc" {
-		if Test(node, q /* $node/../node[@rel="hd" and @ud:pos=("AUX","ADP")] and not($node/../node[@rel="predc"]) */, &XPath{
+		if Test(q /* $node/../node[@rel="hd" and @ud:pos=("AUX","ADP")] and not($node/../node[@rel="predc"]) */, &XPath{
 			arg1: &Sort{
 				arg1: &And{
 					arg1: &Collect{
@@ -1204,7 +1204,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -1249,7 +1249,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Collect{
 										ARG: collect__parent__type__node,
 										arg1: &Variable{
-											ARG: variable__node,
+											VAR: node,
 										},
 									},
 									arg2: &Predicate{
@@ -1277,14 +1277,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return dependencyLabel(node.parent, q)
 		}
-		if Test(node, q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1320,7 +1320,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 				},
 			},
 		}) {
-			if Test(node, q, /* $node/node[@rel="su" and @index and not(@word or @cat)]
+			if Test(q, /* $node/node[@rel="su" and @index and not(@word or @cat)]
 				   (: or $node[@cat=("ti","oti")] :)
 				   or $node[@cat="ti"]/node[@rel="body"]/node[@rel="su" and @index and not(@word or @cat)]
 				   or $node[@cat="oti"]/node[@cat="ti"]/node[@rel="body"]/node[@rel="su" and @index and not(@word or @cat)] */&XPath{
@@ -1330,7 +1330,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Collect{
 									ARG: collect__child__node,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 									arg2: &Predicate{
 										arg1: &And{
@@ -1380,7 +1380,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										ARG: collect__child__node,
 										arg1: &Filter{
 											arg1: &Variable{
-												ARG: variable__node,
+												VAR: node,
 											},
 											arg2: &Sort{
 												arg1: &Equal{
@@ -1467,7 +1467,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 										ARG: collect__child__node,
 										arg1: &Filter{
 											arg1: &Variable{
-												ARG: variable__node,
+												VAR: node,
 											},
 											arg2: &Sort{
 												arg1: &Equal{
@@ -1567,7 +1567,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 				}) {
 				return "xcomp"
 			}
-			if Test(node, q /* $node/../@cat="np" */, &XPath{
+			if Test(q /* $node/../@cat="np" */, &XPath{
 				arg1: &Sort{
 					arg1: &Equal{
 						ARG: equal__is,
@@ -1576,7 +1576,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							arg1: &Collect{
 								ARG: collect__parent__type__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 						},
@@ -1587,7 +1587,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Collect{
 									ARG: collect__parent__type__node,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 							},
@@ -1599,14 +1599,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			}
 			return "ccomp"
 		}
-		if Test(node, q /* $node/../node[@rel=("su","obj1") and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel=("su","obj1") and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1649,14 +1649,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" { // [detp niet veel] meer
 		// modification of nomimal heads
 		// pc and ld occur in nominalizations
-		if Test(node, q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1694,14 +1694,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return modLabelInsideNp(node, q)
 		}
-		if node == nLeft(Find(node, q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
+		if node == nLeft(Find(q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1741,11 +1741,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}
 		return "orphan"
 	}
-	if Test(node, q /* $node[@rel=("mod","pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp")] */, &XPath{
+	if Test(q /* $node[@rel=("mod","pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp")] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &And{
@@ -1791,14 +1791,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		// modification of verbal, adjectival heads
 		// nb some oti's directly dominate (preceding) modifiers
 		// [advp weg ermee ]
-		if Test(node, q /* $node/../node[@rel=("hd","body") and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel=("hd","body") and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1836,14 +1836,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) { // body for mods dangling outside cmp/body: maar niet om ...
 			return labelVmod(node, q)
 		}
-		if Test(node, q /* $node/../node[@rel=("su","obj1","predc","vc") and (@pt or @cat)] */, &XPath{
+		if Test(q /* $node/../node[@rel=("su","obj1","predc","vc") and (@pt or @cat)] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -1881,11 +1881,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "orphan"
 		}
-		if Test(node, q /* $node[@rel="mod" and ../node[@rel=("pc","ld")]] */, &XPath{
+		if Test(q /* $node[@rel="mod" and ../node[@rel=("pc","ld")]] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -1933,11 +1933,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "orphan"
 		}
-		if Test(node, q /* $node[@rel="mod" and ../node[@rel="mod"]/@begin < @begin] */, &XPath{
+		if Test(q /* $node[@rel="mod" and ../node[@rel="mod"]/@begin < @begin] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -1997,11 +1997,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}
 		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 	}
-	if Test(node, q /* $node[@rel="mod" and ../@cat=("pp","detp","advp")] */, &XPath{
+	if Test(q /* $node[@rel="mod" and ../@cat=("pp","detp","advp")] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &And{
@@ -2046,11 +2046,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	}) {
 		return "amod"
 	}
-	if Test(node, q /* $node[@rel="mod" and ../@cat=("cp", "whrel", "whq", "whsub")] */, &XPath{
+	if Test(q /* $node[@rel="mod" and ../@cat=("cp", "whrel", "whq", "whsub")] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &And{
@@ -2094,7 +2094,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		},
 	}) {
 		// [cp net  [cmp als] [body de Belgische regering]], net wat het land nodig heeft
-		if Test(node, q /* $node/../node[@rel="body"]/node[@rel="hd" and @ud:pos="VERB"] */, &XPath{
+		if Test(q /* $node/../node[@rel="body"]/node[@rel="hd" and @ud:pos="VERB"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -2103,7 +2103,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -2178,7 +2178,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "advcl"
 	}
 	if node.Rel == "rhd" || node.Rel == "whd" {
-		if Test(node, q /* $node/../node[@rel="body"]//node/@index = $node/@index */, &XPath{
+		if Test(q /* $node/../node[@rel="body"]//node/@index = $node/@index */, &XPath{
 			arg1: &Sort{
 				arg1: &Equal{
 					ARG: equal__is,
@@ -2191,7 +2191,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								arg1: &Collect{
 									ARG: collect__parent__type__node,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 								arg2: &Predicate{
@@ -2216,7 +2216,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 					arg2: &Collect{
 						ARG: collect__attributes__index,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 				},
@@ -2225,7 +2225,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			// index is een int groter dan 0
 			return nonLocalDependencyLabel(
 				node,
-				n1(Find(node, q /* $node/../node[@rel="body"]//node[@index = $node/@index] */, &XPath{
+				n1(Find(q /* $node/../node[@rel="body"]//node[@index = $node/@index] */, &XPath{
 					arg1: &Sort{
 						arg1: &Collect{
 							ARG: collect__child__node,
@@ -2236,7 +2236,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Collect{
 										ARG: collect__parent__type__node,
 										arg1: &Variable{
-											ARG: variable__node,
+											VAR: node,
 										},
 									},
 									arg2: &Predicate{
@@ -2267,7 +2267,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg2: &Collect{
 										ARG: collect__attributes__index,
 										arg1: &Variable{
-											ARG: variable__node,
+											VAR: node,
 										},
 									},
 								},
@@ -2287,11 +2287,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	}
 	if node.Rel == "--" {
 		if node.udPos == "PUNCT" {
-			if Test(node, q /* $node[not(../node[not(@ud:pos="PUNCT")]) and @begin = ../@begin] */, &XPath{
+			if Test(q /* $node[not(../node[not(@ud:pos="PUNCT")]) and @begin = ../@begin] */, &XPath{
 				arg1: &Sort{
 					arg1: &Filter{
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Sort{
 							arg1: &And{
@@ -2356,14 +2356,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			return "punct"
 		}
 		if node.udPos == "SYM" || node.udPos == "X" {
-			if Test(node, q /* $node/../node[@cat] */, &XPath{
+			if Test(q /* $node/../node[@cat] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -2387,11 +2387,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 				return "punct" // hack for tagging errors in lassy small 250
 			}
 		*/
-		if Test(node, q /* $node[@ud:pos="NUM" and ../node[@cat] ] */, &XPath{
+		if Test(q /* $node[@ud:pos="NUM" and ../node[@cat] ] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -2429,11 +2429,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "parataxis" // dangling number 1.
 		}
-		if Test(node, q /* $node[@ud:pos="CCONJ" and ../node[@cat="smain" or @cat="conj"]] */, &XPath{
+		if Test(q /* $node[@ud:pos="CCONJ" and ../node[@cat="smain" or @cat="conj"]] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -2498,11 +2498,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			return "cc"
 		}
 		// sentence initial or final 'en'
-		if Test(node, q /* $node[@ud:pos=("NOUN","PROPN","VERB") and ../node[@cat=("du","smain")]] */, &XPath{
+		if Test(q /* $node[@ud:pos=("NOUN","PROPN","VERB") and ../node[@cat=("du","smain")]] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -2550,14 +2550,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "parataxis" // dangling words
 		}
-		if len(Find(node, q /* $node/../node[not(@ud:pos=("PUNCT","SYM","X"))] */, &XPath{
+		if len(Find(q /* $node/../node[not(@ud:pos=("PUNCT","SYM","X"))] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -2592,12 +2592,12 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			if node.Begin == node.parent.Begin && node.End == node.parent.End {
 				return "root"
 			}
-			if Test(node, q /* $node/node[@ud:pos=("PUNCT","SYM")] */, &XPath{
+			if Test(q /* $node/node[@ud:pos=("PUNCT","SYM")] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Predicate{
 							arg1: &Equal{
@@ -2622,7 +2622,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			}
 			return "ERROR_NO_LABEL_--"
 		}
-		if Test(node, q /* $node[not(@ud:pos)]/../@rel="top" */, &XPath{
+		if Test(q /* $node[not(@ud:pos)]/../@rel="top" */, &XPath{
 			arg1: &Sort{
 				arg1: &Equal{
 					ARG: equal__is,
@@ -2632,7 +2632,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							ARG: collect__parent__type__node,
 							arg1: &Filter{
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 								arg2: &Sort{
 									arg1: &Function{
@@ -2658,7 +2658,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 								ARG: collect__parent__type__node,
 								arg1: &Filter{
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 									arg2: &Sort{
 										arg1: &Function{
@@ -2682,11 +2682,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "root"
 		}
-		if Test(node, q /* $node[@ud:pos="PROPN" and not(../node[@cat]) ] */, &XPath{
+		if Test(q /* $node[@ud:pos="PROPN" and not(../node[@cat]) ] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -2731,11 +2731,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "root" // Arthur .
 		}
-		if Test(node, q /* $node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","VERB","INTJ")] */, &XPath{
+		if Test(q /* $node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","VERB","INTJ")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -2762,14 +2762,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	}
 	if node.Rel == "hd" {
 		if node.udPos == "ADP" {
-			if Test(node, q /* $node/../node[@rel="predc"] */, &XPath{
+			if Test(q /* $node/../node[@rel="predc"] */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__child__node,
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 						arg2: &Predicate{
@@ -2793,7 +2793,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			}) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
-			if Test(node, q /* not($node/../node[@rel="pc"]) */, &XPath{
+			if Test(q /* not($node/../node[@rel="pc"]) */, &XPath{
 				arg1: &Sort{
 					arg1: &Function{
 						ARG: function__not__1__args,
@@ -2804,7 +2804,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									arg1: &Collect{
 										ARG: collect__parent__type__node,
 										arg1: &Variable{
-											ARG: variable__node,
+											VAR: node,
 										},
 									},
 									arg2: &Predicate{
@@ -2833,13 +2833,13 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			}
 			return dependencyLabel(node.parent, q) // not sure about this one
 		}
-		if Test(node, q, /* $node[(@ud:pos=("ADJ","X","ADV") or @cat="mwu")
+		if Test(q, /* $node[(@ud:pos=("ADJ","X","ADV") or @cat="mwu")
 			   and ../@cat="pp"
 			   and ../node[@rel=("obj1","se","vc")]] */&XPath{
 				arg1: &Sort{
 					arg1: &Filter{
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Sort{
 							arg1: &And{
@@ -2925,11 +2925,11 @@ func dependencyLabel(node *NodeType, q *Context) string {
 					},
 				},
 			}) {
-			if Test(node, q /* $node[../@rel="cnj" and ../node[@rel="obj1" and @index and not(@pt or @cat)]] */, &XPath{
+			if Test(q /* $node[../@rel="cnj" and ../node[@rel="obj1" and @index and not(@pt or @cat)]] */, &XPath{
 				arg1: &Sort{
 					arg1: &Filter{
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Sort{
 							arg1: &And{
@@ -3010,7 +3010,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			}
 			return "case" // vol vertrouwen in, Ad U3... , op het gebied van
 		}
-		if Test(node, q /* $node/../node[@rel="hd"]/@begin < $node/@begin */, &XPath{
+		if Test(q /* $node/../node[@rel="hd"]/@begin < $node/@begin */, &XPath{
 			arg1: &Sort{
 				arg1: &Cmp{
 					ARG: cmp__lt,
@@ -3021,7 +3021,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 							arg1: &Collect{
 								ARG: collect__parent__type__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 							arg2: &Predicate{
@@ -3045,7 +3045,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 					arg2: &Collect{
 						ARG: collect__attributes__begin,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 				},
@@ -3059,14 +3059,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 }
 
 func determineNominalModLabel(node *NodeType, q *Context) string {
-	if Test(node, q /* $node/../node[@rel="hd" and (@ud:pos="VERB" or @ud:pos="ADJ")] */, &XPath{
+	if Test(q /* $node/../node[@rel="hd" and (@ud:pos="VERB" or @ud:pos="ADJ")] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
 				arg1: &Collect{
 					ARG: collect__parent__type__node,
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 				},
 				arg2: &Predicate{
@@ -3129,13 +3129,13 @@ func determineNominalModLabel(node *NodeType, q *Context) string {
 
 func subjectLabel(subj *NodeType, q *Context) string {
 	pass := passiveSubject(subj, q)
-	if SUTest(subj, q, /* $subj[@cat=("whsub","ssub","ti","cp","oti")] or
+	if Test(q, /* $subj[@cat=("whsub","ssub","ti","cp","oti")] or
 		   $subj[@cat="conj" and node/@cat=("whsub","ssub","ti","cp","oti")] */&XPath{
 			arg1: &Sort{
 				arg1: &Or{
 					arg1: &Filter{
 						arg1: &Variable{
-							ARG: variable__subj,
+							VAR: subj,
 						},
 						arg2: &Sort{
 							arg1: &Equal{
@@ -3156,7 +3156,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 					},
 					arg2: &Filter{
 						arg1: &Variable{
-							ARG: variable__subj,
+							VAR: subj,
 						},
 						arg2: &Sort{
 							arg1: &And{
@@ -3203,7 +3203,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 		return "csubj" + pass
 	}
 	// weather verbs and other expletive subject verbs
-	if SUTest(subj, q, /* $subj[@lemma="het"] and
+	if Test(q, /* $subj[@lemma="het"] and
 		   ( $subj/../node[@rel="hd" and
 		                   @lemma=("dooien", "gieten", "hagelen", "miezeren",
 		                           "misten", "motregenen", "onweren", "plenzen",
@@ -3219,7 +3219,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 				arg1: &And{
 					arg1: &Filter{
 						arg1: &Variable{
-							ARG: variable__subj,
+							VAR: subj,
 						},
 						arg2: &Sort{
 							arg1: &Equal{
@@ -3246,7 +3246,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 									arg1: &Collect{
 										ARG: collect__parent__type__node,
 										arg1: &Variable{
-											ARG: variable__subj,
+											VAR: subj,
 										},
 									},
 									arg2: &Predicate{
@@ -3291,7 +3291,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 									arg1: &Collect{
 										ARG: collect__parent__type__node,
 										arg1: &Variable{
-											ARG: variable__subj,
+											VAR: subj,
 										},
 									},
 									arg2: &Predicate{
@@ -3393,7 +3393,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 							},
 							arg2: &Filter{
 								arg1: &Variable{
-									ARG: variable__subj,
+									VAR: subj,
 								},
 								arg2: &Sort{
 									arg1: &Equal{
@@ -3453,14 +3453,14 @@ func passiveSubject(subj *NodeType, q *Context) string {
 		return "ERROR_NO_PASSIVE_SUBJECT"
 	}
 
-	aux := auxiliary1(n1(SUFind(subj, q /* $subj/../node[@rel="hd"] */, &XPath{
+	aux := auxiliary1(n1(Find(q /* $subj/../node[@rel="hd"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
 				arg1: &Collect{
 					ARG: collect__parent__type__node,
 					arg1: &Variable{
-						ARG: variable__subj,
+						VAR: subj,
 					},
 				},
 				arg2: &Predicate{
@@ -3485,14 +3485,14 @@ func passiveSubject(subj *NodeType, q *Context) string {
 	if aux == "aux:pass" { // de carriere had gered kunnen worden
 		return ":pass"
 	}
-	if aux == "aux" && SUTest(subj, q /* $subj/@index = $subj/../node[@rel="vc"]/node[@rel="su"]/@index */, &XPath{
+	if aux == "aux" && Test(q /* $subj/@index = $subj/../node[@rel="vc"]/node[@rel="su"]/@index */, &XPath{
 		arg1: &Sort{
 			arg1: &Equal{
 				ARG: equal__is,
 				arg1: &Collect{
 					ARG: collect__attributes__index,
 					arg1: &Variable{
-						ARG: variable__subj,
+						VAR: subj,
 					},
 				},
 				arg2: &Collect{
@@ -3504,7 +3504,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 							arg1: &Collect{
 								ARG: collect__parent__type__node,
 								arg1: &Variable{
-									ARG: variable__subj,
+									VAR: subj,
 								},
 							},
 							arg2: &Predicate{
@@ -3545,7 +3545,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 			},
 		},
 	}) {
-		return passiveSubject(n1(SUFind(subj, q /* $subj/../node[@rel="vc"]/node[@rel="su"] */, &XPath{
+		return passiveSubject(n1(Find(q /* $subj/../node[@rel="vc"]/node[@rel="su"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -3554,7 +3554,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__subj,
+								VAR: subj,
 							},
 						},
 						arg2: &Predicate{
@@ -3599,7 +3599,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 
 func detLabel(node *NodeType, q *Context) string {
 	// zijn boek, diens boek, ieders boek, aller landen, Ron's probleem, Fidel Castro's belang
-	if Test(node, q, /* $node[@ud:pos = "PRON" and @vwtype="bez"] or
+	if Test(q, /* $node[@ud:pos = "PRON" and @vwtype="bez"] or
 		   $node[@ud:pos = ("PRON","PROPN") and @naamval="gen"] or
 		   $node[@cat="mwu" and node[@spectype="deeleigen"]] */&XPath{
 			arg1: &Sort{
@@ -3607,7 +3607,7 @@ func detLabel(node *NodeType, q *Context) string {
 					arg1: &Or{
 						arg1: &Filter{
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 							arg2: &Sort{
 								arg1: &And{
@@ -3644,7 +3644,7 @@ func detLabel(node *NodeType, q *Context) string {
 						},
 						arg2: &Filter{
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 							arg2: &Sort{
 								arg1: &And{
@@ -3682,7 +3682,7 @@ func detLabel(node *NodeType, q *Context) string {
 					},
 					arg2: &Filter{
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 						arg2: &Sort{
 							arg1: &And{
@@ -3728,14 +3728,14 @@ func detLabel(node *NodeType, q *Context) string {
 		}) {
 		return "nmod:poss"
 	}
-	if Test(node, q /* $node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X") */, &XPath{
+	if Test(q /* $node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X") */, &XPath{
 		arg1: &Sort{
 			arg1: &Equal{
 				ARG: equal__is,
 				arg1: &Collect{
 					ARG: collect__attributes__ud_3apos,
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 				},
 				arg2: &Elem{
@@ -3743,7 +3743,7 @@ func detLabel(node *NodeType, q *Context) string {
 					arg1: &Collect{
 						ARG: collect__attributes__ud_3apos,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 				},
@@ -3752,14 +3752,14 @@ func detLabel(node *NodeType, q *Context) string {
 	}) {
 		return "det" // meer  genoeg the
 	}
-	if Test(node, q /* $node/@cat = ("mwu","np","pp","ap","detp","smain") */, &XPath{
+	if Test(q /* $node/@cat = ("mwu","np","pp","ap","detp","smain") */, &XPath{
 		arg1: &Sort{
 			arg1: &Equal{
 				ARG: equal__is,
 				arg1: &Collect{
 					ARG: collect__attributes__cat,
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 				},
 				arg2: &Elem{
@@ -3767,7 +3767,7 @@ func detLabel(node *NodeType, q *Context) string {
 					arg1: &Collect{
 						ARG: collect__attributes__cat,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 				},
@@ -3784,7 +3784,7 @@ func detLabel(node *NodeType, q *Context) string {
 		return "nummod"
 	}
 	if node.Cat == "conj" {
-		if Test(node, q /* $node/node[@rel="cnj"][1]/@ud:pos="NUM" */, &XPath{
+		if Test(q /* $node/node[@rel="cnj"][1]/@ud:pos="NUM" */, &XPath{
 			arg1: &Sort{
 				arg1: &Equal{
 					ARG: equal__is,
@@ -3793,7 +3793,7 @@ func detLabel(node *NodeType, q *Context) string {
 						arg1: &Collect{
 							ARG: collect__child__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 							arg2: &Predicate{
 								arg1: &Predicate{
@@ -3825,7 +3825,7 @@ func detLabel(node *NodeType, q *Context) string {
 							arg1: &Collect{
 								ARG: collect__child__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 								arg2: &Predicate{
 									arg1: &Predicate{
@@ -3862,13 +3862,13 @@ func detLabel(node *NodeType, q *Context) string {
 }
 
 func modLabelInsideNp(node *NodeType, q *Context) string {
-	if Test(node, q /* $node[@cat="pp"]/node[@rel="vc"] */, &XPath{
+	if Test(q /* $node[@cat="pp"]/node[@rel="vc"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -3908,11 +3908,11 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 	}) {
 		return "acl" // pp containing a clause
 	}
-	if Test(node, q /* $node[@ud:pos="ADJ" or @cat="ap" or node[@cat="conj" and node[@ud:pos="ADJ" or @cat="ap"] ]] */, &XPath{
+	if Test(q /* $node[@ud:pos="ADJ" or @cat="ap" or node[@cat="conj" and node[@ud:pos="ADJ" or @cat="ap"] ]] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &Or{
@@ -4011,11 +4011,11 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 	}) {
 		return "amod"
 	}
-	if Test(node, q /* $node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","PRON","PROPN","X","PUNCT","SYM","INTJ") ] */, &XPath{
+	if Test(q /* $node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","PRON","PROPN","X","PUNCT","SYM","INTJ") ] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &Or{
@@ -4057,13 +4057,13 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 	if node.udPos == "NUM" {
 		return "nummod"
 	}
-	if Test(node, q /* $node[@cat="detp"]/node[@rel="hd" and @ud:pos="NUM"] */, &XPath{
+	if Test(q /* $node[@cat="detp"]/node[@rel="hd" and @ud:pos="NUM"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -4126,13 +4126,13 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 		return "acl:relcl"
 	}
 	// v2 added relcl -- whrel= met name waar ...
-	if Test(node, q /* $node[@cat="cp"]/node[@rel="body" and (@ud:pos = ("NOUN","PROPN") or @cat=("np","conj"))] */, &XPath{
+	if Test(q /* $node[@cat="cp"]/node[@rel="body" and (@ud:pos = ("NOUN","PROPN") or @cat=("np","conj"))] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -4207,11 +4207,11 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 		return "nmod"
 	}
 	// zijn loopbaan [CP als schrijver]
-	if Test(node, q /* $node[@cat=("cp","sv1","smain","ppres","ppart","inf","ti","oti","du","whq") or @ud:pos="SCONJ"] */, &XPath{
+	if Test(q /* $node[@cat=("cp","sv1","smain","ppres","ppart","inf","ti","oti","du","whq") or @ud:pos="SCONJ"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &Or{
@@ -4251,11 +4251,11 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 		return "acl"
 	}
 	// oa zinnen tussen haakjes
-	if Test(node, q /* $node[@ud:pos= ("ADV","ADP","VERB","CCONJ") or @cat="advp"] */, &XPath{
+	if Test(q /* $node[@ud:pos= ("ADV","ADP","VERB","CCONJ") or @cat="advp"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &Or{
@@ -4306,13 +4306,13 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 }
 
 func labelVmod(node *NodeType, q *Context) string {
-	if Test(node, q /* $node[@cat="pp"]/node[@rel="vc"] */, &XPath{
+	if Test(q /* $node[@cat="pp"]/node[@rel="vc"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -4352,7 +4352,7 @@ func labelVmod(node *NodeType, q *Context) string {
 	}) {
 		return "advcl"
 	}
-	if Test(node, q, /* $node[ (  node[@rel="hd" and @lemma="door"]
+	if Test(q, /* $node[ (  node[@rel="hd" and @lemma="door"]
 		    or (@pt="bw" and ends-with(@lemma,"door"))
 		    )
 		    and ../self::*[@cat="ppart"]/../node[@rel="hd" and @lemma=("zijn","worden")]
@@ -4361,7 +4361,7 @@ func labelVmod(node *NodeType, q *Context) string {
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -4573,11 +4573,11 @@ func labelVmod(node *NodeType, q *Context) string {
 			NO/YES: hierdoor werd Prince door het grote publiek ontdekt
 		*/
 	}
-	if Test(node, q /* $node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","PRON","PROPN","X","PUNCT","SYM") ] */, &XPath{
+	if Test(q /* $node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","PRON","PROPN","X","PUNCT","SYM") ] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &Or{
@@ -4616,11 +4616,11 @@ func labelVmod(node *NodeType, q *Context) string {
 	}) {
 		return "obl"
 	}
-	if Test(node, q /* $node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")] */, &XPath{
+	if Test(q /* $node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Sort{
 					arg1: &Equal{
@@ -4643,13 +4643,13 @@ func labelVmod(node *NodeType, q *Context) string {
 	}) {
 		return "advcl"
 	}
-	if Test(node, q, /* $node[@ud:pos= ("ADJ","ADV","ADP","VERB","SCONJ","INTJ")
+	if Test(q, /* $node[@ud:pos= ("ADJ","ADV","ADP","VERB","SCONJ","INTJ")
 		   or @cat=("advp","ap")
 		   or (@cat="conj" and node/@ud:pos="ADV")] */&XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &Or{
@@ -4762,12 +4762,12 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 		return dependencyLabel(gap, q)
 	}
 	if gap.Rel == "pc" || gap.Rel == "ld" {
-		if HGTest(head, gap, q /* $head/node[@rel="obj1"] */, &XPath{
+		if Test(q /* $head/node[@rel="obj1"] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Variable{
-						ARG: variable__head,
+						VAR: head,
 					},
 					arg2: &Predicate{
 						arg1: &Equal{
@@ -4790,11 +4790,11 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 		}) {
 			return "nmod"
 		}
-		if HGTest(head, gap, q /* $head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")] */, &XPath{
+		if Test(q /* $head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__head,
+						VAR: head,
 					},
 					arg2: &Sort{
 						arg1: &Or{
@@ -4844,11 +4844,11 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 	if gap.Rel == "vc" {
 		return "ccomp" // wat ik me afvraag is of hij komt -- CLEFT
 	}
-	if HGTest(head, gap, q /* $gap[@rel="mod" and ../@cat=("np","pp")] */, &XPath{
+	if Test(q /* $gap[@rel="mod" and ../@cat=("np","pp")] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__gap,
+					VAR: gap,
 				},
 				arg2: &Sort{
 					arg1: &And{
@@ -4893,11 +4893,11 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 	}) { // voornamelijk in kloosters en door vrouwen
 		return modLabelInsideNp(head, q)
 	}
-	if HGTest(head, gap, q /* $gap[@rel="mod" and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp")] */, &XPath{
+	if Test(q /* $gap[@rel="mod" and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp")] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Variable{
-					ARG: variable__gap,
+					VAR: gap,
 				},
 				arg2: &Sort{
 					arg1: &And{
@@ -4943,11 +4943,11 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 		return labelVmod(head, q)
 	}
 	if gap.Rel == "mod" || gap.Rel == "spec" { // spec only used for funny coord
-		if HGTest(head, gap, q /* $head[@cat=("pp","np") or @ud:pos=("NOUN","PRON")] */, &XPath{
+		if Test(q /* $head[@cat=("pp","np") or @ud:pos=("NOUN","PRON")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__head,
+						VAR: head,
 					},
 					arg2: &Sort{
 						arg1: &Or{
@@ -4986,11 +4986,11 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 		}) {
 			return "nmod"
 		}
-		if HGTest(head, gap, q /* $head[@ud:pos=("ADV","ADP") or @cat= ("advp","ap","mwu","conj")] */, &XPath{
+		if Test(q /* $head[@ud:pos=("ADV","ADP") or @cat= ("advp","ap","mwu","conj")] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__head,
+						VAR: head,
 					},
 					arg2: &Sort{
 						arg1: &Or{
@@ -5034,12 +5034,12 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 	if gap.Rel == "det" {
 		return detLabel(head, q)
 	}
-	if HGTest(head, gap, q /* $gap[@rel="hd"] and $head[@ud:pos=("ADV","ADP")] */, &XPath{
+	if Test(q /* $gap[@rel="hd"] and $head[@ud:pos=("ADV","ADP")] */, &XPath{
 		arg1: &Sort{
 			arg1: &And{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__gap,
+						VAR: gap,
 					},
 					arg2: &Sort{
 						arg1: &Equal{
@@ -5060,7 +5060,7 @@ func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
 				},
 				arg2: &Filter{
 					arg1: &Variable{
-						ARG: variable__head,
+						VAR: head,
 					},
 					arg2: &Sort{
 						arg1: &Equal{

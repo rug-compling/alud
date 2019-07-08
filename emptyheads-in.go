@@ -23,24 +23,24 @@ func reconstructEmptyHead(q *Context) {
 		}
 
 		// let $antecedent := $node/ancestor::node//node[(@pt or @cat) and @index = $node/@index ]
-		antecedent := FIND(node, q, `$indexnodes[(@pt or @cat) and @index = $node/@index ]`)
-		if !TEST(antecedent, q, `$node/@word (: onder andere as hd... :)
-		        (: and not(local:auxiliary($node) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
+		antecedent := FIND(q, `$q.varindexnodes[(@pt or @cat) and @index = $node/@index ]`)
+		if !TEST(q, `$antecedent/@word (: onder andere as hd... :)
+		        (: and not(local:auxiliary($antecedent) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
                    `) {
 			continue
 		}
 		found = true
 
-		others := FIND(node, q, `$node/../node[@pt or @cat]`)
+		others := FIND(q, `$node/../node[@pt or @cat]`)
 		var end int
 		if len(others) > 0 {
-			if TEST(node, q, `$node/../node[@pt or @cat]/@begin = $node/../@begin`) {
+			if TEST(q, `$node/../node[@pt or @cat]/@begin = $node/../@begin`) {
 				end = nZ(others).End + 1 // + 0.1
 			} else {
 				end = leftEdge(n1(others), q) + 1 // + 0.1
 			}
 		} else {
-			end = i1(FIND(node, q, `$node/../@end`)) - 999 // - 0.9 // covers cases where there is no sister with content
+			end = i1(FIND(q, `$node/../@end`)) - 999 // - 0.9 // covers cases where there is no sister with content
 		}
 		for seen[end] {
 			end++
@@ -102,7 +102,7 @@ func reconstructEmptyHead(q *Context) {
 
 func leftEdge(node *NodeType, q *Context) int {
 	left := 1000000
-	for _, n := range FIND(node, q, `$node/descendant-or-self::node[@pt]`) {
+	for _, n := range FIND(q, `$node/descendant-or-self::node[@pt]`) {
 		if begin := n.(*NodeType).Begin; begin < left {
 			left = begin
 		}

@@ -25,11 +25,11 @@ func reconstructEmptyHead(q *Context) {
 		}
 
 		// let $antecedent := $node/ancestor::node//node[(@pt or @cat) and @index = $node/@index ]
-		antecedent := Find(node, q /* $indexnodes[(@pt or @cat) and @index = $node/@index ] */, &XPath{
+		antecedent := Find(q /* $q.varindexnodes[(@pt or @cat) and @index = $node/@index ] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__indexnodes,
+						VAR: q.varindexnodes,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -54,7 +54,7 @@ func reconstructEmptyHead(q *Context) {
 								arg2: &Collect{
 									ARG: collect__attributes__index,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 							},
@@ -63,14 +63,14 @@ func reconstructEmptyHead(q *Context) {
 				},
 			},
 		})
-		if !Test(antecedent, q, /* $node/@word (: onder andere as hd... :)
-			   (: and not(local:auxiliary($node) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
+		if !Test(q, /* $antecedent/@word (: onder andere as hd... :)
+			   (: and not(local:auxiliary($antecedent) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
 			*/&XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__attributes__word,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: antecedent,
 						},
 					},
 				},
@@ -79,14 +79,14 @@ func reconstructEmptyHead(q *Context) {
 		}
 		found = true
 
-		others := Find(node, q /* $node/../node[@pt or @cat] */, &XPath{
+		others := Find(q /* $node/../node[@pt or @cat] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
 					arg1: &Collect{
 						ARG: collect__parent__type__node,
 						arg1: &Variable{
-							ARG: variable__node,
+							VAR: node,
 						},
 					},
 					arg2: &Predicate{
@@ -106,7 +106,7 @@ func reconstructEmptyHead(q *Context) {
 		})
 		var end int
 		if len(others) > 0 {
-			if Test(node, q /* $node/../node[@pt or @cat]/@begin = $node/../@begin */, &XPath{
+			if Test(q /* $node/../node[@pt or @cat]/@begin = $node/../@begin */, &XPath{
 				arg1: &Sort{
 					arg1: &Equal{
 						ARG: equal__is,
@@ -117,7 +117,7 @@ func reconstructEmptyHead(q *Context) {
 								arg1: &Collect{
 									ARG: collect__parent__type__node,
 									arg1: &Variable{
-										ARG: variable__node,
+										VAR: node,
 									},
 								},
 								arg2: &Predicate{
@@ -139,7 +139,7 @@ func reconstructEmptyHead(q *Context) {
 							arg1: &Collect{
 								ARG: collect__parent__type__node,
 								arg1: &Variable{
-									ARG: variable__node,
+									VAR: node,
 								},
 							},
 						},
@@ -151,14 +151,14 @@ func reconstructEmptyHead(q *Context) {
 				end = leftEdge(n1(others), q) + 1 // + 0.1
 			}
 		} else {
-			end = i1(Find(node, q /* $node/../@end */, &XPath{
+			end = i1(Find(q /* $node/../@end */, &XPath{
 				arg1: &Sort{
 					arg1: &Collect{
 						ARG: collect__attributes__end,
 						arg1: &Collect{
 							ARG: collect__parent__type__node,
 							arg1: &Variable{
-								ARG: variable__node,
+								VAR: node,
 							},
 						},
 					},
@@ -225,12 +225,12 @@ func reconstructEmptyHead(q *Context) {
 
 func leftEdge(node *NodeType, q *Context) int {
 	left := 1000000
-	for _, n := range Find(node, q /* $node/descendant-or-self::node[@pt] */, &XPath{
+	for _, n := range Find(q /* $node/descendant-or-self::node[@pt] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__descendant__or__self__node,
 				arg1: &Variable{
-					ARG: variable__node,
+					VAR: node,
 				},
 				arg2: &Predicate{
 					arg1: &Collect{

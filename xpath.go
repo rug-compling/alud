@@ -56,14 +56,6 @@ const (
 	function__starts__with__2__args
 	plus__plus
 	plus__minus
-	variable__allnodes
-	variable__gap
-	variable__head
-	variable__indexnodes
-	variable__rhd_5findex
-	variable__node
-	variable__tmp
-	variable__subj
 )
 
 var (
@@ -569,29 +561,25 @@ func (d *Union) Do(subdoc []interface{}, q *Context) []interface{} {
 */
 
 type Variable struct {
-	ARG int
+	VAR interface{}
 }
 
 func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
-	switch d.ARG {
-	case variable__node:
-		return q.varnode
-	case variable__allnodes:
-		return q.varallnodes
-	case variable__gap:
-		return q.vargap
-	case variable__head:
-		return q.varhead
-	case variable__indexnodes:
-		return q.varindexnodes
-	case variable__rhd_5findex:
-		return q.varrhdindex
-	case variable__tmp:
-		return q.vartmp
-	case variable__subj:
-		return q.varsubj
+	switch t := d.VAR.(type) {
+	case []interface{}:
+		return t
+	case *NodeType:
+		return []interface{}{t}
+	case []*NodeType:
+		ii := make([]interface{}, len(t))
+		for i, v := range t {
+			ii[i] = v
+		}
+		return ii
+	case int:
+		return []interface{}{t}
 	default:
-		panic("Missing case in " + q.filename)
+		panic(fmt.Sprintf("Missing case for type %T in %s", t, q.filename))
 	}
 }
 
@@ -604,6 +592,14 @@ func (d *XPath) Do(q *Context) []interface{} {
 }
 
 ////////////////////////////////////////////////////////////////
+
+func Test(q *Context, xpath *XPath) bool {
+	return len(xpath.Do(q)) > 0
+}
+
+func Find(q *Context, xpath *XPath) []interface{} {
+	return xpath.Do(q)
+}
 
 func list(i interface{}) []interface{} {
 	switch ii := i.(type) {
@@ -618,38 +614,6 @@ func list(i interface{}) []interface{} {
 	default:
 		return []interface{}{ii}
 	}
-}
-
-func Test(node interface{}, q *Context, xpath *XPath) bool {
-	q.varnode = list(node)
-	return len(xpath.Do(q)) > 0
-}
-
-func Find(node interface{}, q *Context, xpath *XPath) []interface{} {
-	q.varnode = list(node)
-	return xpath.Do(q)
-}
-
-func SUTest(subj interface{}, q *Context, xpath *XPath) bool {
-	q.varsubj = list(subj)
-	return len(xpath.Do(q)) > 0
-}
-
-func SUFind(subj interface{}, q *Context, xpath *XPath) []interface{} {
-	q.varsubj = list(subj)
-	return xpath.Do(q)
-}
-
-func HGTest(head, gap interface{}, q *Context, xpath *XPath) bool {
-	q.varhead = list(head)
-	q.vargap = list(gap)
-	return len(xpath.Do(q)) > 0
-}
-
-func HGFind(head, gap interface{}, q *Context, xpath *XPath) []interface{} {
-	q.varhead = list(head)
-	q.vargap = list(gap)
-	return xpath.Do(q)
 }
 
 func flatten(aa []interface{}) []interface{} {

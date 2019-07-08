@@ -22,7 +22,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "verb"
 	}
 
-	if Test(node, q, /* $node[not(../node[@rel=("obj1","se","vc")]) and
+	if Test(q, /* $node[not(../node[@rel=("obj1","se","vc")]) and
 			        (: ud documentation suggests 1 cop per lg, van Eynde suggests much more, compromise: the traditional ones :)
 			        @lemma=("zijn","lijken","blijken","blijven","schijnen","heten","voorkomen","worden","dunken") and
 		                 ( contains(@sc,'copula') or
@@ -33,7 +33,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -170,13 +170,13 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "cop"
 	}
 
-	if Test(node, q, /* $node[@lemma=("zijn","worden") and
+	if Test(q, /* $node[@lemma=("zijn","worden") and
 		   ( @sc="passive"  or
 		   	 ( ../node[@rel="vc"] and
 		         ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj1"]/@index or
 		           ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="cnj"]/node[@rel="obj1"]/@index or
 		           ../node[@rel="vc" and not(@pt or @cat)]/@index =
-		               $indexnodes[@rel="vc" and node[@rel="obj1"]/@index = $node/../node[@rel="su"]/@index]/@index
+		               $q.varindexnodes[@rel="vc" and node[@rel="obj1"]/@index = $node/../node[@rel="su"]/@index]/@index
 		          or not(../node[@rel="su"])
 		          )
 		      )
@@ -184,7 +184,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -466,7 +466,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																ARG: collect__attributes__index,
 																arg1: &Filter{
 																	arg1: &Variable{
-																		ARG: variable__indexnodes,
+																		VAR: q.varindexnodes,
 																	},
 																	arg2: &Sort{
 																		arg1: &And{
@@ -516,7 +516,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 																						arg1: &Collect{
 																							ARG: collect__parent__type__node,
 																							arg1: &Variable{
-																								ARG: variable__node,
+																								VAR: node,
 																							},
 																						},
 																						arg2: &Predicate{
@@ -588,7 +588,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "aux:pass"
 	}
 
-	if Test(node, q, /*
+	if Test(q, /*
 		  (: krijgen passive with iobj control :)
 		            $node[@lemma="krijgen" and
 		  	              ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj2"]/@index or
@@ -597,7 +597,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
@@ -794,7 +794,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "aux:pass"
 	}
 
-	if Test(node, q, /*
+	if Test(q, /*
 		  (: alpino has no principled distinction between AUX and VERB, should be TAME verbs semantically, we follow ENGLISH :)
 		          $node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  :)
 		                 ( starts-with(@sc,'aux') or
@@ -811,7 +811,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
-						ARG: variable__node,
+						VAR: node,
 					},
 					arg2: &Sort{
 						arg1: &And{
