@@ -85,6 +85,8 @@ Nog een paar bestanden die verschillen opleveren, uit hetzelde corpus:
 
 In totaal levert dit corpus 525 verschillen.
 
+De Go-versie geeft op dit punt dezelfde resultaten als Saxon.
+
 ----
 
 ## fix\_misplaced\_heads\_in\_coordination
