@@ -5,6 +5,10 @@ while(<>) {
 	next;
     }
     chomp;
+    s/\&lt;/</g;
+    s/\&gt;/>/g;
+    s/\&quot;/"/g;
+    s/\&amp;/&/g;
     @a = split /\t/, $_;
     if ($#a > 1) {
 	while($#a < 9) {
@@ -14,7 +18,7 @@ while(<>) {
 	#$a[2] = "_"; # LEMMA
 	#$a[6] = "_"; # HEAD
 	#$a[7] = "_"; # DEPREL
-	$a[8] = "_"; # DEPS
+	#$a[8] = "_"; # DEPS
 	#$a[9] = "_"; # MISC
 	#print(join("\t", @a),"\n") if ($a[0] !~ /\./);
 	print(join("\t", @a),"\n");

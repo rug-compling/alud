@@ -352,7 +352,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		if node.udHeadPosition > 0 {
+		if node.udHeadPosition >= 0 {
 			enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
 			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)
 			enhanced = append(enhanced, distributeConjuncts(node, q)...)
@@ -680,13 +680,12 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 	   };
 	*/
 
-	// TODO: for-loop over 1 element (last)?
-
 	// works voor waar, and last() picks waar in 'daar waar' cases
 	// dont add anything for hij werd voorzitter, wat hij nog steeds is (otherwise self-reference)
 	// for loop ensures correct result if N has 2 acl:relcl dependents
-	list := Find(q, /* $node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
-		   node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)] */&XPath{
+	result := []DepType{}
+	for _, a := range Find(q, /* $node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
+		   node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)][last()] */&XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__descendant__or__self__node,
@@ -770,35 +769,37 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 						},
 					},
 					arg2: &Predicate{
-						arg1: &And{
-							arg1: &Equal{
-								ARG: equal__is,
-								arg1: &Collect{
-									ARG:  collect__attributes__pt,
-									arg1: &Node{},
-								},
-								arg2: &Elem{
-									DATA: []interface{}{"vnw"},
+						arg1: &Predicate{
+							arg1: &And{
+								arg1: &Equal{
+									ARG: equal__is,
 									arg1: &Collect{
 										ARG:  collect__attributes__pt,
 										arg1: &Node{},
 									},
+									arg2: &Elem{
+										DATA: []interface{}{"vnw"},
+										arg1: &Collect{
+											ARG:  collect__attributes__pt,
+											arg1: &Node{},
+										},
+									},
 								},
-							},
-							arg2: &Function{
-								ARG: function__not__1__args,
-								arg1: &Arg{
-									arg1: &Sort{
-										arg1: &Equal{
-											ARG: equal__is,
-											arg1: &Collect{
-												ARG:  collect__attributes__ud_3aHeadPosition,
-												arg1: &Node{},
-											},
-											arg2: &Collect{
-												ARG: collect__attributes__end,
-												arg1: &Variable{
-													VAR: node,
+								arg2: &Function{
+									ARG: function__not__1__args,
+									arg1: &Arg{
+										arg1: &Sort{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3aHeadPosition,
+													arg1: &Node{},
+												},
+												arg2: &Collect{
+													ARG: collect__attributes__end,
+													arg1: &Variable{
+														VAR: node,
+													},
 												},
 											},
 										},
@@ -806,23 +807,25 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 								},
 							},
 						},
+						arg2: &Function{
+							ARG: function__last__0__args,
+						},
 					},
 				},
 			},
-		})
-	if len(list) > 0 {
-		anrel := nZ(list)
+		}) {
+		anrel := a.(*NodeType)
 		var label string
 		if r := anrel.udRelation; r == "nsubj" || r == "nsubj:pass" {
-			label = r + "relsubj"
+			label = r + ":relsubj"
 		} else if r == "obj" || r == "obl" {
 			label = r + ":relobj"
 		} else {
 			label = r
 		}
-		return []DepType{DepType{head: anrel.udHeadPosition, dep: label}}
+		result = append(result, DepType{head: anrel.udHeadPosition, dep: label})
 	}
-	return []DepType{}
+	return result
 }
 
 func distributeConjuncts(node *NodeType, q *Context) []DepType {
@@ -902,32 +905,1379 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 }
 
 func distributeDependents(node *NodeType, q *Context) []DepType {
-	// TODO
-	return []DepType{}
+	/*
+	   (: de onrust kan een reis vertragen of frustreren  --> obj(vertragen,reis) obj(frustreren,reis) :)
+	   (: todo: passives ze werd ontmanteld en verkocht  su coindexed with two obj1 :)
+	   (: done: phrases [np_i [een scoutskameraad] werd .. en _i zocht hem op] :)
+	   (: idem: de hond was gebaseerd op Lassy en verscheen onder de naam Wirel nsubj:pass in conj1, nsubj in conj 2 :)
+	   declare function local:distribute_dependents($node as node()) as node()* {
+	   	let $phrase := 1if ($node[@rel="hd"])
+	   		 1then 2if ($node/../../@cat="pp")   (: door het schilderij :)
+	   		      2then $node/../..
+	   		      2else $node/..
+	   		 1else 3if  ($node[@rel="mwp" and @begin = ../@begin] )
+	   		      3then 4if ($node[ ../@rel="obj1" and ../../@cat="pp"] )
+	   			   4then $node/../..
+	   			   4else 5if ( $node[../@rel="hd" and ../../@rel="obj1" and ../../../@cat="pp"] )
+	   				5then $node/../../.. (:in en rond het Hoofstedelijk Gewest --> do not distribute Hoofdstedelijk:)
+	   				5else 6if ($node[ ../@rel="hd" and not( ../../@cat="pp") ] )   (: mwu as head, but not complex P :)
+	   				     6then $node/../..
+	   				     6else $node/..
+	   		      3else 7if ($node[@rel="obj1" and ../@cat="pp"] )
+	   			   7then $node/..
+	   			   7else $node
+	   			   (: do not apply to prepositions and auxiliaries, ever. Too strict? :)
+	*/
+	var phrase *NodeType
+	if node.Rel == "hd" { //1
+		if Test(q /* $node/../../@cat="pp" */, &XPath{
+			arg1: &Sort{
+				arg1: &Equal{
+					ARG: equal__is,
+					arg1: &Collect{
+						ARG: collect__attributes__cat,
+						arg1: &Collect{
+							ARG: collect__parent__type__node,
+							arg1: &Collect{
+								ARG: collect__parent__type__node,
+								arg1: &Variable{
+									VAR: node,
+								},
+							},
+						},
+					},
+					arg2: &Elem{
+						DATA: []interface{}{"pp"},
+						arg1: &Collect{
+							ARG: collect__attributes__cat,
+							arg1: &Collect{
+								ARG: collect__parent__type__node,
+								arg1: &Collect{
+									ARG: collect__parent__type__node,
+									arg1: &Variable{
+										VAR: node,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // door het schilderij //2
+			phrase = node.parent.parent
+		} else { //2
+			phrase = node.parent
+		}
+	} else { //1
+		if Test(q /* $node[@rel="mwp" and @begin = ../@begin] */, &XPath{
+			arg1: &Sort{
+				arg1: &Filter{
+					arg1: &Variable{
+						VAR: node,
+					},
+					arg2: &Sort{
+						arg1: &And{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									DATA: []interface{}{"mwp"},
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+								},
+							},
+							arg2: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__begin,
+									arg1: &Node{},
+								},
+								arg2: &Collect{
+									ARG: collect__attributes__begin,
+									arg1: &Collect{
+										ARG:  collect__parent__type__node,
+										arg1: &Node{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { //3
+			if Test(q /* $node[ ../@rel="obj1" and ../../@cat="pp"] */, &XPath{
+				arg1: &Sort{
+					arg1: &Filter{
+						arg1: &Variable{
+							VAR: node,
+						},
+						arg2: &Sort{
+							arg1: &And{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG: collect__attributes__rel,
+										arg1: &Collect{
+											ARG:  collect__parent__type__node,
+											arg1: &Node{},
+										},
+									},
+									arg2: &Elem{
+										DATA: []interface{}{"obj1"},
+										arg1: &Collect{
+											ARG: collect__attributes__rel,
+											arg1: &Collect{
+												ARG:  collect__parent__type__node,
+												arg1: &Node{},
+											},
+										},
+									},
+								},
+								arg2: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG: collect__attributes__cat,
+										arg1: &Collect{
+											ARG: collect__parent__type__node,
+											arg1: &Collect{
+												ARG:  collect__parent__type__node,
+												arg1: &Node{},
+											},
+										},
+									},
+									arg2: &Elem{
+										DATA: []interface{}{"pp"},
+										arg1: &Collect{
+											ARG: collect__attributes__cat,
+											arg1: &Collect{
+												ARG: collect__parent__type__node,
+												arg1: &Collect{
+													ARG:  collect__parent__type__node,
+													arg1: &Node{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) { //4
+				phrase = node.parent.parent
+			} else { //4
+				if Test(q /* $node[../@rel="hd" and ../../@rel="obj1" and ../../../@cat="pp"] */, &XPath{
+					arg1: &Sort{
+						arg1: &Filter{
+							arg1: &Variable{
+								VAR: node,
+							},
+							arg2: &Sort{
+								arg1: &And{
+									arg1: &And{
+										arg1: &Equal{
+											ARG: equal__is,
+											arg1: &Collect{
+												ARG: collect__attributes__rel,
+												arg1: &Collect{
+													ARG:  collect__parent__type__node,
+													arg1: &Node{},
+												},
+											},
+											arg2: &Elem{
+												DATA: []interface{}{"hd"},
+												arg1: &Collect{
+													ARG: collect__attributes__rel,
+													arg1: &Collect{
+														ARG:  collect__parent__type__node,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+										arg2: &Equal{
+											ARG: equal__is,
+											arg1: &Collect{
+												ARG: collect__attributes__rel,
+												arg1: &Collect{
+													ARG: collect__parent__type__node,
+													arg1: &Collect{
+														ARG:  collect__parent__type__node,
+														arg1: &Node{},
+													},
+												},
+											},
+											arg2: &Elem{
+												DATA: []interface{}{"obj1"},
+												arg1: &Collect{
+													ARG: collect__attributes__rel,
+													arg1: &Collect{
+														ARG: collect__parent__type__node,
+														arg1: &Collect{
+															ARG:  collect__parent__type__node,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+									arg2: &Equal{
+										ARG: equal__is,
+										arg1: &Collect{
+											ARG: collect__attributes__cat,
+											arg1: &Collect{
+												ARG: collect__parent__type__node,
+												arg1: &Collect{
+													ARG: collect__parent__type__node,
+													arg1: &Collect{
+														ARG:  collect__parent__type__node,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+										arg2: &Elem{
+											DATA: []interface{}{"pp"},
+											arg1: &Collect{
+												ARG: collect__attributes__cat,
+												arg1: &Collect{
+													ARG: collect__parent__type__node,
+													arg1: &Collect{
+														ARG: collect__parent__type__node,
+														arg1: &Collect{
+															ARG:  collect__parent__type__node,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}) { //5
+					phrase = node.parent.parent.parent // in en rond het Hoofstedelijk Gewest --> do not distribute Hoofdstedelijk
+				} else { //5
+					if Test(q /* $node[ ../@rel="hd" and not( ../../@cat="pp") ] */, &XPath{
+						arg1: &Sort{
+							arg1: &Filter{
+								arg1: &Variable{
+									VAR: node,
+								},
+								arg2: &Sort{
+									arg1: &And{
+										arg1: &Equal{
+											ARG: equal__is,
+											arg1: &Collect{
+												ARG: collect__attributes__rel,
+												arg1: &Collect{
+													ARG:  collect__parent__type__node,
+													arg1: &Node{},
+												},
+											},
+											arg2: &Elem{
+												DATA: []interface{}{"hd"},
+												arg1: &Collect{
+													ARG: collect__attributes__rel,
+													arg1: &Collect{
+														ARG:  collect__parent__type__node,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+										arg2: &Function{
+											ARG: function__not__1__args,
+											arg1: &Arg{
+												arg1: &Sort{
+													arg1: &Equal{
+														ARG: equal__is,
+														arg1: &Collect{
+															ARG: collect__attributes__cat,
+															arg1: &Collect{
+																ARG: collect__parent__type__node,
+																arg1: &Collect{
+																	ARG:  collect__parent__type__node,
+																	arg1: &Node{},
+																},
+															},
+														},
+														arg2: &Elem{
+															DATA: []interface{}{"pp"},
+															arg1: &Collect{
+																ARG: collect__attributes__cat,
+																arg1: &Collect{
+																	ARG: collect__parent__type__node,
+																	arg1: &Collect{
+																		ARG:  collect__parent__type__node,
+																		arg1: &Node{},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					}) { // mwu as head, but not complex P //6
+						phrase = node.parent.parent
+					} else { //6
+						phrase = node.parent
+					}
+				}
+			}
+		} else { //3
+			if Test(q /* $node[@rel="obj1" and ../@cat="pp"] */, &XPath{
+				arg1: &Sort{
+					arg1: &Filter{
+						arg1: &Variable{
+							VAR: node,
+						},
+						arg2: &Sort{
+							arg1: &And{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+									arg2: &Elem{
+										DATA: []interface{}{"obj1"},
+										arg1: &Collect{
+											ARG:  collect__attributes__rel,
+											arg1: &Node{},
+										},
+									},
+								},
+								arg2: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG: collect__attributes__cat,
+										arg1: &Collect{
+											ARG:  collect__parent__type__node,
+											arg1: &Node{},
+										},
+									},
+									arg2: &Elem{
+										DATA: []interface{}{"pp"},
+										arg1: &Collect{
+											ARG: collect__attributes__cat,
+											arg1: &Collect{
+												ARG:  collect__parent__type__node,
+												arg1: &Node{},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) { //7
+				phrase = node.parent
+			} else { //7
+				phrase = node
+			}
+		}
+	}
+
+	/*
+		where $phrase[@rel=("obj1","su","mod","pc","det") and @index]
+	*/
+	if !Test(q /* $phrase[@rel=("obj1","su","mod","pc","det") and @index] */, &XPath{
+		arg1: &Sort{
+			arg1: &Filter{
+				arg1: &Variable{
+					VAR: phrase,
+				},
+				arg2: &Sort{
+					arg1: &And{
+						arg1: &Equal{
+							ARG: equal__is,
+							arg1: &Collect{
+								ARG:  collect__attributes__rel,
+								arg1: &Node{},
+							},
+							arg2: &Elem{
+								DATA: []interface{}{"obj1", "su", "mod", "pc", "det"},
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+							},
+						},
+						arg2: &Collect{
+							ARG:  collect__attributes__index,
+							arg1: &Node{},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		return []DepType{}
+	}
+
+	/*
+		for $conj_head in $node[not(@ud:pos=("ADP","AUX"))]/ancestor::node//node[@rel="cnj"
+							     and node[
+							    (: @rel=$phrase/@rel
+								and -- this constraint is too strict for coord of passives:)
+								not(@pt or @cat)]/@index = $phrase/@index
+							     and node[@rel=("hd","predc") and not(@ud:pos="AUX") and (@pt or @cat) and	 (: bekende cafes zijn A en B :)
+								(: not(@ud:pos=("ADP","AUX")) and not(@cat="mwu") :)
+								not(local:internal_head_position(..) = @end and (@ud:pos=("ADP","AUX") or @cat="mwu") )
+								]
+						      ]
+							      (: not coordination of AUX or (complex) Ps :)
+	*/
+
+	conj_heads := Find(q, /* $node[not(@ud:pos=("ADP","AUX"))]/ancestor::node//node[@rel="cnj"
+			     and node[
+			    (: @rel=$phrase/@rel
+				and -- this constraint is too strict for coord of passives:)
+				not(@pt or @cat)]/@index = $phrase/@index
+			     and node[@rel=("hd","predc") and not(@ud:pos="AUX") and (@pt or @cat) and	 (: bekende cafes zijn A en B :)
+				(: not(@ud:pos=("ADP","AUX")) and not(@cat="mwu") :)
+				not(local:internal_head_position(..) = @end and (@ud:pos=("ADP","AUX") or @cat="mwu") )
+				]
+		      ]
+			      (: not coordination of AUX or (complex) Ps :) */&XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__descendant__or__self__type__node,
+						arg1: &Collect{
+							ARG: collect__ancestors__node,
+							arg1: &Filter{
+								arg1: &Variable{
+									VAR: node,
+								},
+								arg2: &Sort{
+									arg1: &Function{
+										ARG: function__not__1__args,
+										arg1: &Arg{
+											arg1: &Sort{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"ADP", "AUX"},
+														arg1: &Collect{
+															ARG:  collect__attributes__ud_3apos,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &And{
+								arg1: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+									arg2: &Elem{
+										DATA: []interface{}{"cnj"},
+										arg1: &Collect{
+											ARG:  collect__attributes__rel,
+											arg1: &Node{},
+										},
+									},
+								},
+								arg2: &Equal{
+									ARG: equal__is,
+									arg1: &Collect{
+										ARG: collect__attributes__index,
+										arg1: &Collect{
+											ARG:  collect__child__node,
+											arg1: &Node{},
+											arg2: &Predicate{
+												arg1: &Function{
+													ARG: function__not__1__args,
+													arg1: &Arg{
+														arg1: &Sort{
+															arg1: &Or{
+																arg1: &Collect{
+																	ARG:  collect__attributes__pt,
+																	arg1: &Node{},
+																},
+																arg2: &Collect{
+																	ARG:  collect__attributes__cat,
+																	arg1: &Node{},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+									arg2: &Collect{
+										ARG: collect__attributes__index,
+										arg1: &Variable{
+											VAR: phrase,
+										},
+									},
+								},
+							},
+							arg2: &Collect{
+								ARG:  collect__child__node,
+								arg1: &Node{},
+								arg2: &Predicate{
+									arg1: &And{
+										arg1: &And{
+											arg1: &And{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"hd", "predc"},
+														arg1: &Collect{
+															ARG:  collect__attributes__rel,
+															arg1: &Node{},
+														},
+													},
+												},
+												arg2: &Function{
+													ARG: function__not__1__args,
+													arg1: &Arg{
+														arg1: &Sort{
+															arg1: &Equal{
+																ARG: equal__is,
+																arg1: &Collect{
+																	ARG:  collect__attributes__ud_3apos,
+																	arg1: &Node{},
+																},
+																arg2: &Elem{
+																	DATA: []interface{}{"AUX"},
+																	arg1: &Collect{
+																		ARG:  collect__attributes__ud_3apos,
+																		arg1: &Node{},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+											arg2: &Sort{
+												arg1: &Or{
+													arg1: &Collect{
+														ARG:  collect__attributes__pt,
+														arg1: &Node{},
+													},
+													arg2: &Collect{
+														ARG:  collect__attributes__cat,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+										arg2: &Function{
+											ARG: function__not__1__args,
+											arg1: &Arg{
+												arg1: &Sort{
+													arg1: &And{
+														arg1: &Equal{
+															ARG: equal__is,
+															arg1: &Function{
+																ARG: function__local__internal__head__position__1__args,
+																arg1: &Arg{
+																	arg1: &Sort{
+																		arg1: &Collect{
+																			ARG:  collect__parent__type__node,
+																			arg1: &Node{},
+																		},
+																	},
+																},
+															},
+															arg2: &Collect{
+																ARG:  collect__attributes__end,
+																arg1: &Node{},
+															},
+														},
+														arg2: &Sort{
+															arg1: &Or{
+																arg1: &Equal{
+																	ARG: equal__is,
+																	arg1: &Collect{
+																		ARG:  collect__attributes__ud_3apos,
+																		arg1: &Node{},
+																	},
+																	arg2: &Elem{
+																		DATA: []interface{}{"ADP", "AUX"},
+																		arg1: &Collect{
+																			ARG:  collect__attributes__ud_3apos,
+																			arg1: &Node{},
+																		},
+																	},
+																},
+																arg2: &Equal{
+																	ARG: equal__is,
+																	arg1: &Collect{
+																		ARG:  collect__attributes__cat,
+																		arg1: &Node{},
+																	},
+																	arg2: &Elem{
+																		DATA: []interface{}{"mwu"},
+																		arg1: &Collect{
+																			ARG:  collect__attributes__cat,
+																			arg1: &Node{},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})
+	if len(conj_heads) == 0 {
+		return []DepType{}
+	}
+
+	/*
+	       let $udRelation := local:non_local_dependency_label($phrase,($node/ancestor::node//node[@rel="cnj"]/
+	   			    node[
+	   			    (: @rel=$phrase/@rel and :)
+	   				not(@pt or @cat) and @index=$phrase/@index],element {"node"} { })[1])
+	*/
+	udRelation := nonLocalDependencyLabel(phrase, n1(Find(q, /* $node/ancestor::node//node[@rel="cnj"]/
+		    node[
+		    (: @rel=$phrase/@rel and :)
+			not(@pt or @cat) and @index=$phrase/@index] */&XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__child__node,
+						arg1: &Collect{
+							ARG: collect__descendant__or__self__type__node,
+							arg1: &Collect{
+								ARG: collect__ancestors__node,
+								arg1: &Variable{
+									VAR: node,
+								},
+							},
+						},
+						arg2: &Predicate{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									DATA: []interface{}{"cnj"},
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+								},
+							},
+						},
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &Function{
+								ARG: function__not__1__args,
+								arg1: &Arg{
+									arg1: &Sort{
+										arg1: &Or{
+											arg1: &Collect{
+												ARG:  collect__attributes__pt,
+												arg1: &Node{},
+											},
+											arg2: &Collect{
+												ARG:  collect__attributes__cat,
+												arg1: &Node{},
+											},
+										},
+									},
+								},
+							},
+							arg2: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__index,
+									arg1: &Node{},
+								},
+								arg2: &Collect{
+									ARG: collect__attributes__index,
+									arg1: &Variable{
+										VAR: phrase,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})), q)
+
+	/*
+	   let $EudRelation :=
+	     if    ($udRelation = ("nmod","obl") and $phrase[@cat="pp"]//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end])
+	     then  string-join(($udRelation,local:enhanced_lemma_string($phrase//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end])),':')
+	     else  $udRelation
+	*/
+	EudRelation := udRelation
+	if Test(q /* $udRelation = ("nmod","obl") and $phrase[@cat="pp"]/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end] */, &XPath{
+		arg1: &Sort{
+			arg1: &And{
+				arg1: &Equal{
+					ARG: equal__is,
+					arg1: &Variable{
+						VAR: udRelation,
+					},
+					arg2: &Elem{
+						DATA: []interface{}{"nmod", "obl"},
+						arg1: &Variable{
+							VAR: udRelation,
+						},
+					},
+				},
+				arg2: &Collect{
+					ARG: collect__descendant__node,
+					arg1: &Filter{
+						arg1: &Variable{
+							VAR: phrase,
+						},
+						arg2: &Sort{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__cat,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									DATA: []interface{}{"pp"},
+									arg1: &Collect{
+										ARG:  collect__attributes__cat,
+										arg1: &Node{},
+									},
+								},
+							},
+						},
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__ud_3aRelation,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									DATA: []interface{}{"case"},
+									arg1: &Collect{
+										ARG:  collect__attributes__ud_3aRelation,
+										arg1: &Node{},
+									},
+								},
+							},
+							arg2: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__ud_3aHeadPosition,
+									arg1: &Node{},
+								},
+								arg2: &Collect{
+									ARG: collect__attributes__end,
+									arg1: &Variable{
+										VAR: node,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		EudRelation = udRelation + ":" + enhancedLemmaString(Find(q /* $phrase/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end] */, &XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__descendant__node,
+					arg1: &Variable{
+						VAR: phrase,
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__ud_3aRelation,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									DATA: []interface{}{"case"},
+									arg1: &Collect{
+										ARG:  collect__attributes__ud_3aRelation,
+										arg1: &Node{},
+									},
+								},
+							},
+							arg2: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__ud_3aHeadPosition,
+									arg1: &Node{},
+								},
+								arg2: &Collect{
+									ARG: collect__attributes__end,
+									arg1: &Variable{
+										VAR: node,
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}), q)
+	}
+
+	result := []DepType{}
+	for _, conj_head := range conj_heads {
+		/*
+			return <headdep head="{local:internal_head_position($conj_head)}" dep="{$EudRelation}"/>
+		*/
+		result = append(result, DepType{head: internalHeadPosition([]interface{}{conj_head.(*NodeType)}, q), dep: EudRelation})
+
+	}
+	return result
 }
 
-func xcompControl(node *NodeType, q *Context, idx int) []DepType {
-	// TODO
-	return []DepType{}
+func xcompControl(node *NodeType, q *Context, so_index int) []DepType {
+	/*
+	   (: should work in coordinations like te laten reizen en te laten beleven,
+	      and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
+	   		  .. of hij ook voor hen wilde komen tekenen :)
+	   declare function local:xcomp-control($node as node(), $so_index as xs:string) as node()* {
+	   	for $xcomp in
+	   	    $node[not(@ud:PronType="Rel")]/ancestor::node//node[(@rel="vc" or (@cat="inf" and @rel="body")) (: covers inf ti oti :)
+	   					   and node[@rel=("hd","predc") and @ud:Relation="xcomp"]  (: vrouwen moeten vertegenwoordigd zijn :)
+	   					   and node[@rel="su" and @index]/@index = $so_index
+	   					  ]
+	   	return
+	   	<headdep head="{local:internal_head_position($xcomp)}" dep="nsubj:xsubj"/>
+	   };
+	*/
+
+	/*
+	   should work in coordinations like te laten reizen en te laten beleven,
+	   and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
+	       .. of hij ook voor hen wilde komen tekenen :)
+	*/
+	result := []DepType{}
+	for _, xcomp := range Find(q, /* $node[not(@ud:PronType="Rel")]/ancestor::node//node[(@rel="vc" or (@cat="inf" and @rel="body")) (: covers inf ti oti :)
+		   and node[@rel=("hd","predc") and @ud:Relation="xcomp"]  (: vrouwen moeten vertegenwoordigd zijn :)
+		   and node[@rel="su" and @index]/@index = $so_index
+		  ] */&XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__descendant__or__self__type__node,
+						arg1: &Collect{
+							ARG: collect__ancestors__node,
+							arg1: &Filter{
+								arg1: &Variable{
+									VAR: node,
+								},
+								arg2: &Sort{
+									arg1: &Function{
+										ARG: function__not__1__args,
+										arg1: &Arg{
+											arg1: &Sort{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3aPronType,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"Rel"},
+														arg1: &Collect{
+															ARG:  collect__attributes__ud_3aPronType,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &And{
+								arg1: &Sort{
+									arg1: &Or{
+										arg1: &Equal{
+											ARG: equal__is,
+											arg1: &Collect{
+												ARG:  collect__attributes__rel,
+												arg1: &Node{},
+											},
+											arg2: &Elem{
+												DATA: []interface{}{"vc"},
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+											},
+										},
+										arg2: &Sort{
+											arg1: &And{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__cat,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"inf"},
+														arg1: &Collect{
+															ARG:  collect__attributes__cat,
+															arg1: &Node{},
+														},
+													},
+												},
+												arg2: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"body"},
+														arg1: &Collect{
+															ARG:  collect__attributes__rel,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								arg2: &Collect{
+									ARG:  collect__child__node,
+									arg1: &Node{},
+									arg2: &Predicate{
+										arg1: &And{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													DATA: []interface{}{"hd", "predc"},
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+												},
+											},
+											arg2: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3aRelation,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													DATA: []interface{}{"xcomp"},
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3aRelation,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG: collect__attributes__index,
+									arg1: &Collect{
+										ARG:  collect__child__node,
+										arg1: &Node{},
+										arg2: &Predicate{
+											arg1: &And{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"su"},
+														arg1: &Collect{
+															ARG:  collect__attributes__rel,
+															arg1: &Node{},
+														},
+													},
+												},
+												arg2: &Collect{
+													ARG:  collect__attributes__index,
+													arg1: &Node{},
+												},
+											},
+										},
+									},
+								},
+								arg2: &Variable{
+									VAR: so_index,
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+		result = append(result, DepType{head: internalHeadPosition([]interface{}{xcomp.(*NodeType)}, q), dep: "nsubj:xsubj"})
+	}
+	return result
 }
 
-func upstairsControl(node *NodeType, q *Context, idx int) []DepType {
-	// TODO
-	return []DepType{}
+func upstairsControl(node *NodeType, q *Context, so_index int) []DepType {
+	/*
+	   (: alpino NF specific case, controllers with extraposed content are realized downstairs :)
+	   declare function local:upstairs-control($node as node(), $so_index as xs:string) as node()* {
+	       for $upstairs in
+	   		$node/ancestor::node[node[@rel="hd" and @ud:pos="VERB"]
+	   						  and node[@rel="vc"]
+	   						  and node[@rel=("su","obj1","obj2") and not(@pt or @cat)]/@index = $so_index
+	   						 ]
+	   	return
+	   	<headdep head="{local:internal_head_position($upstairs)}" dep="nsubj:xsubj"/>
+	   };
+	*/
+
+	result := []DepType{}
+	for _, upstairs := range Find(q, /* $node/ancestor::node[node[@rel="hd" and @ud:pos="VERB"]
+		 and node[@rel="vc"]
+		 and node[@rel=("su","obj1","obj2") and not(@pt or @cat)]/@index = $so_index
+		] */&XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__ancestors__node,
+					arg1: &Variable{
+						VAR: node,
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &And{
+								arg1: &Collect{
+									ARG:  collect__child__node,
+									arg1: &Node{},
+									arg2: &Predicate{
+										arg1: &And{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													DATA: []interface{}{"hd"},
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+												},
+											},
+											arg2: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													DATA: []interface{}{"VERB"},
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+									},
+								},
+								arg2: &Collect{
+									ARG:  collect__child__node,
+									arg1: &Node{},
+									arg2: &Predicate{
+										arg1: &Equal{
+											ARG: equal__is,
+											arg1: &Collect{
+												ARG:  collect__attributes__rel,
+												arg1: &Node{},
+											},
+											arg2: &Elem{
+												DATA: []interface{}{"vc"},
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG: collect__attributes__index,
+									arg1: &Collect{
+										ARG:  collect__child__node,
+										arg1: &Node{},
+										arg2: &Predicate{
+											arg1: &And{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"su", "obj1", "obj2"},
+														arg1: &Collect{
+															ARG:  collect__attributes__rel,
+															arg1: &Node{},
+														},
+													},
+												},
+												arg2: &Function{
+													ARG: function__not__1__args,
+													arg1: &Arg{
+														arg1: &Sort{
+															arg1: &Or{
+																arg1: &Collect{
+																	ARG:  collect__attributes__pt,
+																	arg1: &Node{},
+																},
+																arg2: &Collect{
+																	ARG:  collect__attributes__cat,
+																	arg1: &Node{},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								arg2: &Variable{
+									VAR: so_index,
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+		result = append(result, DepType{head: internalHeadPosition([]interface{}{upstairs.(*NodeType)}, q), dep: "nsubj:xsubj"})
+	}
+	return result
+
 }
 
-func passiveVpControl(node *NodeType, q *Context, idx int) []DepType {
+func passiveVpControl(node *NodeType, q *Context, so_index int) []DepType {
+	/*
+	   (: een koers waarin de Alsemberg moet worden beklommen :)
+	   declare function local:passive-vp-control($node as node(), $so_index as xs:string) as node()* {
+	       for $passive_vp in
+	   	$node/ancestor::node//node[@rel="vc" and @cat="ppart"
+	   				       and node[@rel="hd" and @ud:Relation="xcomp"]
+	   				       and node[@rel="obj1" and @index]/@index = $so_index ]
+	   	return
+	   	<headdep head="{local:internal_head_position($passive_vp)}" dep="nsubj:pass:xsubj"/>
+	   };
+	*/
 	// TODO
-	return []DepType{}
+
+	result := []DepType{}
+	for _, passive_vp := range Find(q, /* $node/ancestor::node//node[@rel="vc" and @cat="ppart"
+		   and node[@rel="hd" and @ud:Relation="xcomp"]
+		   and node[@rel="obj1" and @index]/@index = $so_index ] */&XPath{
+			arg1: &Sort{
+				arg1: &Collect{
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__descendant__or__self__type__node,
+						arg1: &Collect{
+							ARG: collect__ancestors__node,
+							arg1: &Variable{
+								VAR: node,
+							},
+						},
+					},
+					arg2: &Predicate{
+						arg1: &And{
+							arg1: &And{
+								arg1: &And{
+									arg1: &Equal{
+										ARG: equal__is,
+										arg1: &Collect{
+											ARG:  collect__attributes__rel,
+											arg1: &Node{},
+										},
+										arg2: &Elem{
+											DATA: []interface{}{"vc"},
+											arg1: &Collect{
+												ARG:  collect__attributes__rel,
+												arg1: &Node{},
+											},
+										},
+									},
+									arg2: &Equal{
+										ARG: equal__is,
+										arg1: &Collect{
+											ARG:  collect__attributes__cat,
+											arg1: &Node{},
+										},
+										arg2: &Elem{
+											DATA: []interface{}{"ppart"},
+											arg1: &Collect{
+												ARG:  collect__attributes__cat,
+												arg1: &Node{},
+											},
+										},
+									},
+								},
+								arg2: &Collect{
+									ARG:  collect__child__node,
+									arg1: &Node{},
+									arg2: &Predicate{
+										arg1: &And{
+											arg1: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__rel,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													DATA: []interface{}{"hd"},
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+												},
+											},
+											arg2: &Equal{
+												ARG: equal__is,
+												arg1: &Collect{
+													ARG:  collect__attributes__ud_3aRelation,
+													arg1: &Node{},
+												},
+												arg2: &Elem{
+													DATA: []interface{}{"xcomp"},
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3aRelation,
+														arg1: &Node{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG: collect__attributes__index,
+									arg1: &Collect{
+										ARG:  collect__child__node,
+										arg1: &Node{},
+										arg2: &Predicate{
+											arg1: &And{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"obj1"},
+														arg1: &Collect{
+															ARG:  collect__attributes__rel,
+															arg1: &Node{},
+														},
+													},
+												},
+												arg2: &Collect{
+													ARG:  collect__attributes__index,
+													arg1: &Node{},
+												},
+											},
+										},
+									},
+								},
+								arg2: &Variable{
+									VAR: so_index,
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+		result = append(result, DepType{head: internalHeadPosition([]interface{}{passive_vp.(*NodeType)}, q), dep: "nsubj:pass:xsubj"})
+	}
+
+	return result
 }
 
 func enhancedLemmaString(nodes []interface{}, q *Context) string {
-	/*
-		sort.Slice(nodes, func(i, j int) bool {
-			// TODO" NodeType heeft geen head
-			return nodes[i].(*NodeType).head < nodes[j].(*NodeType).head
-		})
-	*/
+	sort.Slice(nodes, func(i, j int) bool {
+		// TODO" NodeType heeft geen head
+		return nodes[i].(*NodeType).udHeadPosition < nodes[j].(*NodeType).udHeadPosition
+	})
 	lemmas := make([]string, len(nodes))
 	for i, node := range nodes {
 		lemmas[i] = enhancedLemmaString1(node.(*NodeType), q)
@@ -971,7 +2321,7 @@ func enhancedLemmaString1(node *NodeType, q *Context) string {
 	default:
 		lemma = node.Lemma
 	}
-	if fixed := n1(Find(q /* $node/../node[@ud:ERelation="fixed"] */, &XPath{
+	fixed := Find(q /* $node/../node[@ud:ERelation="fixed"] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
@@ -999,8 +2349,14 @@ func enhancedLemmaString1(node *NodeType, q *Context) string {
 				},
 			},
 		},
-	})); fixed.Lemma != "" {
-		lemma += "_" + fixed.Lemma
+	})
+	if len(fixed) > 0 {
+		sort.Slice(fixed, func(i, j int) bool {
+			return fixed[i].(*NodeType).End < fixed[j].(*NodeType).End
+		})
+		for _, f := range fixed {
+			lemma += "_" + f.(*NodeType).Lemma
+		}
 	}
 	lemma = strings.Replace(lemma, "/", "schuine_streep", -1)
 	lemma = strings.Replace(lemma, "-", "_", -1)

@@ -35,6 +35,7 @@ const (
 	collect__attributes__ud_3aERelation
 	collect__attributes__ud_3aEHeadPosition
 	collect__attributes__ud_3aHeadPosition
+	collect__attributes__ud_3aPronType
 	collect__attributes__ud_3aRelation
 	collect__attributes__ud_3apos
 	collect__attributes__vwtype
@@ -51,6 +52,7 @@ const (
 	function__count__1__args
 	// function__deep__equal__2__args
 	function__ends__with__2__args
+	function__last__0__args
 	function__local__internal__head__position__1__args
 	function__not__1__args
 	function__starts__with__2__args
@@ -208,6 +210,10 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 			if i := r.(*NodeType).udHeadPosition; i > 0 {
 				result1 = append(result1, i)
 			}
+		case collect__attributes__ud_3aPronType:
+			if i := r.(*NodeType).udPronType; i != "" {
+				result1 = append(result1, i)
+			}
 		case collect__attributes__ud_3aRelation:
 			if i := r.(*NodeType).udRelation; i != "" {
 				result1 = append(result1, i)
@@ -352,7 +358,10 @@ type Function struct {
 
 func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 
-	r := d.arg1.Do(subdoc, q)
+	var r []interface{}
+	if d.arg1 != nil {
+		r = d.arg1.Do(subdoc, q)
+	}
 
 	switch d.ARG {
 	case function__contains__2__args:
@@ -391,6 +400,8 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 		return FALSE
+	case function__last__0__args:
+		return []interface{}{len(subdoc)}
 	case function__local__internal__head__position__1__args:
 		return []interface{}{internalHeadPosition(r[0].([]interface{}), q)}
 	case function__not__1__args:
@@ -577,6 +588,8 @@ func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
 		}
 		return ii
 	case int:
+		return []interface{}{t}
+	case string:
 		return []interface{}{t}
 	default:
 		panic(fmt.Sprintf("Missing case for type %T in %s", t, q.filename))
