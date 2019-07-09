@@ -163,5 +163,4 @@ De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
 
 ## Te doen
 
- * enhanced dependencies
  * fixpunct
