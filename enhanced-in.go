@@ -85,7 +85,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		if node.udHeadPosition >= 0 {
+		if node.udHeadPosition >= 0 || node.udHeadPosition == UNDERSCORE { // TODO: klopt dit?
 			enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
 			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)
 			enhanced = append(enhanced, distributeConjuncts(node, q)...)
@@ -166,13 +166,13 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	}
 
 	if label == "nmod" || label == "obl" {
-		if casee := n1(FIND(q, `$node/ancestor::node//node[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end]`)); casee != noNode {
+		if casee := n1(FIND(q, `$q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end]`)); casee != noNode {
 			return join(label, enhancedLemmaString1(casee, q))
 		}
 	}
 
 	if label == "advcl" || label == "acl" {
-		if mark := n1(FIND(q, `$node/ancestor::node//node[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end]`)); mark != noNode {
+		if mark := n1(FIND(q, `$q.varptnodes[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end]`)); mark != noNode {
 			return join(label, enhancedLemmaString1(mark, q))
 		}
 	}
@@ -244,7 +244,7 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 	   };
 	*/
 	if node.udRelation == "conj" {
-		coordHead := n1(FIND(q, `$node/ancestor::node//node[@end = $node/@ud:HeadPosition
+		coordHead := n1(FIND(q, `$q.varallnodes[@end = $node/@ud:HeadPosition
 	       and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")]`))
 		if coordHead != noNode {
 			// in A en B vs in A en naast B --> use enh_dep_label($node) in the latter case...
@@ -331,6 +331,7 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 							      (: not coordination of AUX or (complex) Ps :)
 	*/
 
+	// TODO: dit xpath kan efficiënter
 	conj_heads := FIND(q, `$node[not(@ud:pos=("ADP","AUX"))]/ancestor::node//node[@rel="cnj"
 	   						     and node[
 	   						    (: @rel=$phrase/@rel
@@ -510,7 +511,17 @@ func enhancedLemmaString1(node *NodeType, q *Context) string {
 	fixed := FIND(q, `$node/../node[@ud:ERelation="fixed"]`)
 	if len(fixed) > 0 {
 		sort.Slice(fixed, func(i, j int) bool {
-			return fixed[i].(*NodeType).End < fixed[j].(*NodeType).End
+			fi := fixed[i].(*NodeType)
+			fj := fixed[j].(*NodeType)
+			ei := fi.End
+			ej := fj.End
+			if fi.udCopiedFrom >= 0 {
+				ei = fi.udCopiedFrom
+			}
+			if fj.udCopiedFrom >= 0 {
+				ej = fj.udCopiedFrom
+			}
+			return ei < ej
 		})
 		for _, f := range fixed {
 			lemma += "_" + f.(*NodeType).Lemma

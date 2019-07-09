@@ -352,7 +352,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		if node.udHeadPosition >= 0 {
+		if node.udHeadPosition >= 0 || node.udHeadPosition == UNDERSCORE { // TODO: klopt dit?
 			enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
 			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)
 			enhanced = append(enhanced, distributeConjuncts(node, q)...)
@@ -549,20 +549,13 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	}
 
 	if label == "nmod" || label == "obl" {
-		if casee := n1(Find(q /* $node/ancestor::node//node[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end] */, &XPath{
+		if casee := n1(Find(q /* $q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end] */, &XPath{
 			arg1: &Sort{
-				arg1: &Collect{
-					ARG: collect__child__node,
-					arg1: &Collect{
-						ARG: collect__descendant__or__self__type__node,
-						arg1: &Collect{
-							ARG: collect__ancestors__node,
-							arg1: &Variable{
-								VAR: node,
-							},
-						},
+				arg1: &Filter{
+					arg1: &Variable{
+						VAR: q.varptnodes,
 					},
-					arg2: &Predicate{
+					arg2: &Sort{
 						arg1: &And{
 							arg1: &Equal{
 								ARG: equal__is,
@@ -601,20 +594,13 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	}
 
 	if label == "advcl" || label == "acl" {
-		if mark := n1(Find(q /* $node/ancestor::node//node[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end] */, &XPath{
+		if mark := n1(Find(q /* $q.varptnodes[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end] */, &XPath{
 			arg1: &Sort{
-				arg1: &Collect{
-					ARG: collect__child__node,
-					arg1: &Collect{
-						ARG: collect__descendant__or__self__type__node,
-						arg1: &Collect{
-							ARG: collect__ancestors__node,
-							arg1: &Variable{
-								VAR: node,
-							},
-						},
+				arg1: &Filter{
+					arg1: &Variable{
+						VAR: q.varptnodes,
 					},
-					arg2: &Predicate{
+					arg2: &Sort{
 						arg1: &And{
 							arg1: &Equal{
 								ARG: equal__is,
@@ -847,21 +833,14 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 	   };
 	*/
 	if node.udRelation == "conj" {
-		coordHead := n1(Find(q, /* $node/ancestor::node//node[@end = $node/@ud:HeadPosition
+		coordHead := n1(Find(q, /* $q.varallnodes[@end = $node/@ud:HeadPosition
 			   and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")] */&XPath{
 				arg1: &Sort{
-					arg1: &Collect{
-						ARG: collect__child__node,
-						arg1: &Collect{
-							ARG: collect__descendant__or__self__type__node,
-							arg1: &Collect{
-								ARG: collect__ancestors__node,
-								arg1: &Variable{
-									VAR: node,
-								},
-							},
+					arg1: &Filter{
+						arg1: &Variable{
+							VAR: q.varallnodes,
 						},
-						arg2: &Predicate{
+						arg2: &Sort{
 							arg1: &And{
 								arg1: &Equal{
 									ARG: equal__is,
@@ -1344,6 +1323,7 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 							      (: not coordination of AUX or (complex) Ps :)
 	*/
 
+	// TODO: dit xpath kan efficiënter
 	conj_heads := Find(q, /* $node[not(@ud:pos=("ADP","AUX"))]/ancestor::node//node[@rel="cnj"
 			     and node[
 			    (: @rel=$phrase/@rel
@@ -2352,7 +2332,17 @@ func enhancedLemmaString1(node *NodeType, q *Context) string {
 	})
 	if len(fixed) > 0 {
 		sort.Slice(fixed, func(i, j int) bool {
-			return fixed[i].(*NodeType).End < fixed[j].(*NodeType).End
+			fi := fixed[i].(*NodeType)
+			fj := fixed[j].(*NodeType)
+			ei := fi.End
+			ej := fj.End
+			if fi.udCopiedFrom >= 0 {
+				ei = fi.udCopiedFrom
+			}
+			if fj.udCopiedFrom >= 0 {
+				ej = fj.udCopiedFrom
+			}
+			return ei < ej
 		})
 		for _, f := range fixed {
 			lemma += "_" + f.(*NodeType).Lemma
