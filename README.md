@@ -151,10 +151,3 @@ In het xquery-script komt deze test voor:
 Als ik in de Go-versie `[1]` vervang door `[last()]` dan verdwijnen de
 verschillen. Het heeft dus(?) te maken met hoe de implementatie intern
 de tussenresultaten ordent.
-
-
-----
-
-## Te doen
-
- * fixpunct
