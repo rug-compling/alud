@@ -127,6 +127,10 @@ LassySmall, zo'n 13 keer:
 De Go-versie geeft momenteel zes verschillen voor DEPREL ten opzichte van XQilla
 voor het Eindhoven-corpus.
 
+Daarnaast zijn er ook wat verschillen voor DEPS. De Go-versie krijgt hier soms
+meer waardes.
+
+Wat DEPREL betreft:
 In drie gevallen gaat het om verwisseling. Dit blijkt terug te voeren
 te zijn op het nemen van het eerste element uit een lijst van resultaten.
 Die resultaten staan niet altijd in dezelfde volgorde. De volgorde is
@@ -160,9 +164,6 @@ heb ik nog geen oorzaak kunnen vinden. Hierin komen deze combinaties voor:
 
 De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
 `det`. Van de Go-versie krijgen ze de waarde `nummod`.
-
-Er zijn ook wat verschillen voor DEPS. De Go-versie krijgt hier soms
-meer waardes.
 
 
 ----
