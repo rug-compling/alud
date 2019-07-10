@@ -124,10 +124,10 @@ LassySmall, zo'n 13 keer:
 
 ## Verschillen tussen XQilla en Go
 
-De Go-versie geeft momenteel zes verschillen voor DEPREL ten opzichte van XQilla
+De Go-versie geeft momenteel zes verschillen voor **DEPREL** ten opzichte van XQilla
 voor het Eindhoven-corpus.
 
-Daarnaast zijn er ook wat verschillen voor DEPS. De Go-versie krijgt hier soms
+Daarnaast zijn er ook wat verschillen voor **DEPS**. De Go-versie krijgt hier soms
 meer waardes.
 
 Wat DEPREL betreft:
