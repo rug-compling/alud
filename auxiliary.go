@@ -6,7 +6,7 @@ package main
 
 /*
 func auxiliary(nodes []*NodeType, q *Context) string {
-	if len(nodes) != 1 {
+	if len(nodes) != 1 { // TODO: in script staat: = 0
 		return "ERROR_AUXILIARY_FUNCTION_TAKES_EXACTLY_ONE_ARG"
 	}
 	return auxiliary1(nodes[0], q)
@@ -588,12 +588,11 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "aux:pass"
 	}
 
-	if Test(q, /*
-		  (: krijgen passive with iobj control :)
-		            $node[@lemma="krijgen" and
-		  	              ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj2"]/@index or
-		                    ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="cnj"]/node[@rel="obj2"]/@index
-		                  )] */&XPath{
+	// krijgen passive with iobj control
+	if Test(q, /* $node[@lemma="krijgen" and
+			              ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj2"]/@index or
+		                  ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="cnj"]/node[@rel="obj2"]/@index
+		                )] */&XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
@@ -794,20 +793,19 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "aux:pass"
 	}
 
-	if Test(q, /*
-		  (: alpino has no principled distinction between AUX and VERB, should be TAME verbs semantically, we follow ENGLISH :)
-		          $node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  :)
-		                 ( starts-with(@sc,'aux') or
-		                   ( ../node[@rel="vc"  and
-		                              ( @cat=("ppart","inf","ti") or
-		                                ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
-		                                ( @index and not(@pt or @cat))  (: dangling aux in gapped coordination :)
-		                              )
-		                            ]   and
-		                     @lemma=("blijken","hebben","hoeven","kunnen","moeten","mogen","zijn","zullen")
-		                   )
-		                 )
-		               ] */&XPath{
+	// alpino has no principled distinction between AUX and VERB, should be TAME verbs semantically, we follow ENGLISH
+	if Test(q, /* $node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  :)
+		   ( starts-with(@sc,'aux') or
+		     ( ../node[@rel="vc"  and
+		                ( @cat=("ppart","inf","ti") or
+		                  ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
+		                  ( @index and not(@pt or @cat))  (: dangling aux in gapped coordination :)
+		                )
+		              ]   and
+		       @lemma=("blijken","hebben","hoeven","kunnen","moeten","mogen","zijn","zullen")
+		     )
+		   )
+		 ] */&XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Variable{
@@ -1015,14 +1013,5 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "aux"
 	}
 
-	/*
-	  else if ($node[@pt="ww"] )
-	  then "verb"
-	*/
 	return "verb"
-
-	/*
-	  else "ERROR_NO_VERB"
-	*/
-
 }

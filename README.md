@@ -124,39 +124,15 @@ LassySmall, zo'n 13 keer:
 
 ## Verschillen tussen XQilla en Go
 
-De Go-versie geeft momenteel zes verschillen voor **DEPREL** ten opzichte van XQilla
+De Go-versie geeft momenteel drie verschillen voor **DEPREL** ten opzichte van XQilla
 voor het Eindhoven-corpus.
 
 Daarnaast zijn er ook wat verschillen voor **DEPS**. De Go-versie krijgt hier soms
 meer waardes.
 
-Wat DEPREL betreft:
-In drie gevallen gaat het om verwisseling. Dit blijkt terug te voeren
-te zijn op het nemen van het eerste element uit een lijst van resultaten.
-Die resultaten staan niet altijd in dezelfde volgorde. De volgorde is
-afhankelijk van de implementatie.
-
-Wanneer ik het gebruik van iets zoals `resultaat[1]` overal vervang door
-`leftmost(resultaat)`, dan verdwijnen de verschillen.
-
-Hiervoor heb ik de sorteermethode in de functie `leftmost()`
-specifieker gemaakt, zodat er ook een unieke volgorde is als de
-waardes van `@begin` identiek zijn. Let op de waarde van de variablele `$bi`:
-
-```
-declare function local:leftmost($nodes as element(node)*) as element(node) {
-	let $sorted :=	for $node in $nodes
-		  let $bi := 1000 * number($node/@begin) + number($node/@end)
-			order by $bi
-			return $node
-	return
-	    $sorted[1]
-};
-```
-
-Voor
-[drie andere verschillen](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D%28"cdb-6322"%2C"gbl-5437"%2C"obl-594"%29%5D)
-heb ik nog geen oorzaak kunnen vinden. Hierin komen deze combinaties voor:
+Wat DEPREL betreft: voor
+[drie verschillen](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D%28"cdb-6322"%2C"gbl-5437"%2C"obl-594"%29%5D),
+hierin komen deze combinaties voor:
 
  * zestig- a zeventigduizend katholieken
  * vijf- tot zeshonderd bladzijden
@@ -164,6 +140,17 @@ heb ik nog geen oorzaak kunnen vinden. Hierin komen deze combinaties voor:
 
 De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
 `det`. Van de Go-versie krijgen ze de waarde `nummod`.
+
+In het xquery-script komt deze test voor:
+`
+    then if ($node/node[@rel="cnj"][1]/@ud:pos="NUM" )
+        then "nummod"
+        else "det"
+`
+
+Als ik in de Go-versie `[1]` vervang door `[last()]` dan verdwijnen de
+verschillen. Het heeft dus(?) te maken met hoe de implementatie intern
+de tussenresultaten ordent.
 
 
 ----

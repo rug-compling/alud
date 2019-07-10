@@ -1118,8 +1118,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
-		// TODO als ik hier n1 gebruik i.p.v. leftmost (wat zou moeten) gaat het vaak mis
-		if node == nLeft(Find(q /* $node/../node[@rel="cnj"] */, &XPath{
+		if node == n1(Find(q /* $node/../node[@rel="cnj"][1] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -1130,19 +1129,24 @@ func dependencyLabel(node *NodeType, q *Context) string {
 						},
 					},
 					arg2: &Predicate{
-						arg1: &Equal{
-							ARG: equal__is,
-							arg1: &Collect{
-								ARG:  collect__attributes__rel,
-								arg1: &Node{},
-							},
-							arg2: &Elem{
-								DATA: []interface{}{"cnj"},
+						arg1: &Predicate{
+							arg1: &Equal{
+								ARG: equal__is,
 								arg1: &Collect{
 									ARG:  collect__attributes__rel,
 									arg1: &Node{},
 								},
+								arg2: &Elem{
+									DATA: []interface{}{"cnj"},
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+								},
 							},
+						},
+						arg2: &Elem{
+							DATA: []interface{}{1},
 						},
 					},
 				},
@@ -2222,55 +2226,61 @@ func dependencyLabel(node *NodeType, q *Context) string {
 				},
 			},
 		}) {
-			// index is een int groter dan 0
 			return nonLocalDependencyLabel(
 				node,
-				n1(Find(q /* $node/../node[@rel="body"]//node[@index = $node/@index] */, &XPath{
+				n1(Find(q /* ($node/../node[@rel="body"]//node[@index = $node/@index])[1] */, &XPath{
 					arg1: &Sort{
-						arg1: &Collect{
-							ARG: collect__child__node,
-							arg1: &Collect{
-								ARG: collect__descendant__or__self__type__node,
+						arg1: &Filter{
+							arg1: &Sort{
 								arg1: &Collect{
 									ARG: collect__child__node,
 									arg1: &Collect{
-										ARG: collect__parent__type__node,
-										arg1: &Variable{
-											VAR: node,
+										ARG: collect__descendant__or__self__type__node,
+										arg1: &Collect{
+											ARG: collect__child__node,
+											arg1: &Collect{
+												ARG: collect__parent__type__node,
+												arg1: &Variable{
+													VAR: node,
+												},
+											},
+											arg2: &Predicate{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__rel,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"body"},
+														arg1: &Collect{
+															ARG:  collect__attributes__rel,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
 										},
 									},
 									arg2: &Predicate{
 										arg1: &Equal{
 											ARG: equal__is,
 											arg1: &Collect{
-												ARG:  collect__attributes__rel,
+												ARG:  collect__attributes__index,
 												arg1: &Node{},
 											},
-											arg2: &Elem{
-												DATA: []interface{}{"body"},
-												arg1: &Collect{
-													ARG:  collect__attributes__rel,
-													arg1: &Node{},
+											arg2: &Collect{
+												ARG: collect__attributes__index,
+												arg1: &Variable{
+													VAR: node,
 												},
 											},
 										},
 									},
 								},
 							},
-							arg2: &Predicate{
-								arg1: &Equal{
-									ARG: equal__is,
-									arg1: &Collect{
-										ARG:  collect__attributes__index,
-										arg1: &Node{},
-									},
-									arg2: &Collect{
-										ARG: collect__attributes__index,
-										arg1: &Variable{
-											VAR: node,
-										},
-									},
-								},
+							arg2: &Elem{
+								DATA: []interface{}{1},
 							},
 						},
 					},
@@ -2550,32 +2560,80 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return "parataxis" // dangling words
 		}
-		if len(Find(q /* $node/../node[not(@ud:pos=("PUNCT","SYM","X"))] */, &XPath{
+		if Test(q /* count($node/../node[not(@ud:pos=("PUNCT","SYM","X"))]) < 2 */, &XPath{
 			arg1: &Sort{
-				arg1: &Collect{
-					ARG: collect__child__node,
-					arg1: &Collect{
-						ARG: collect__parent__type__node,
-						arg1: &Variable{
-							VAR: node,
+				arg1: &Cmp{
+					ARG: cmp__lt,
+					arg1: &Function{
+						ARG: function__count__1__args,
+						arg1: &Arg{
+							arg1: &Collect{
+								ARG: collect__child__node,
+								arg1: &Collect{
+									ARG: collect__parent__type__node,
+									arg1: &Variable{
+										VAR: node,
+									},
+								},
+								arg2: &Predicate{
+									arg1: &Function{
+										ARG: function__not__1__args,
+										arg1: &Arg{
+											arg1: &Sort{
+												arg1: &Equal{
+													ARG: equal__is,
+													arg1: &Collect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &Node{},
+													},
+													arg2: &Elem{
+														DATA: []interface{}{"PUNCT", "SYM", "X"},
+														arg1: &Collect{
+															ARG:  collect__attributes__ud_3apos,
+															arg1: &Node{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
 						},
 					},
-					arg2: &Predicate{
+					arg2: &Elem{
+						DATA: []interface{}{2},
 						arg1: &Function{
-							ARG: function__not__1__args,
+							ARG: function__count__1__args,
 							arg1: &Arg{
-								arg1: &Sort{
-									arg1: &Equal{
-										ARG: equal__is,
-										arg1: &Collect{
-											ARG:  collect__attributes__ud_3apos,
-											arg1: &Node{},
+								arg1: &Collect{
+									ARG: collect__child__node,
+									arg1: &Collect{
+										ARG: collect__parent__type__node,
+										arg1: &Variable{
+											VAR: node,
 										},
-										arg2: &Elem{
-											DATA: []interface{}{"PUNCT", "SYM", "X"},
-											arg1: &Collect{
-												ARG:  collect__attributes__ud_3apos,
-												arg1: &Node{},
+									},
+									arg2: &Predicate{
+										arg1: &Function{
+											ARG: function__not__1__args,
+											arg1: &Arg{
+												arg1: &Sort{
+													arg1: &Equal{
+														ARG: equal__is,
+														arg1: &Collect{
+															ARG:  collect__attributes__ud_3apos,
+															arg1: &Node{},
+														},
+														arg2: &Elem{
+															DATA: []interface{}{"PUNCT", "SYM", "X"},
+															arg1: &Collect{
+																ARG:  collect__attributes__ud_3apos,
+																arg1: &Node{},
+															},
+														},
+													},
+												},
 											},
 										},
 									},
@@ -2585,7 +2643,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 					},
 				},
 			},
-		})) < 2 {
+		}) {
 			return "root" // only one non-punct/sym/foreign element in the string
 		}
 		if node.Cat == "mwu" {
@@ -3453,31 +3511,38 @@ func passiveSubject(subj *NodeType, q *Context) string {
 		return "ERROR_NO_PASSIVE_SUBJECT"
 	}
 
-	aux := auxiliary1(n1(Find(q /* $subj/../node[@rel="hd"] */, &XPath{
+	aux := auxiliary1(n1(Find(q /* ($subj/../node[@rel="hd"])[1] */, &XPath{
 		arg1: &Sort{
-			arg1: &Collect{
-				ARG: collect__child__node,
-				arg1: &Collect{
-					ARG: collect__parent__type__node,
-					arg1: &Variable{
-						VAR: subj,
-					},
-				},
-				arg2: &Predicate{
-					arg1: &Equal{
-						ARG: equal__is,
+			arg1: &Filter{
+				arg1: &Sort{
+					arg1: &Collect{
+						ARG: collect__child__node,
 						arg1: &Collect{
-							ARG:  collect__attributes__rel,
-							arg1: &Node{},
+							ARG: collect__parent__type__node,
+							arg1: &Variable{
+								VAR: subj,
+							},
 						},
-						arg2: &Elem{
-							DATA: []interface{}{"hd"},
-							arg1: &Collect{
-								ARG:  collect__attributes__rel,
-								arg1: &Node{},
+						arg2: &Predicate{
+							arg1: &Equal{
+								ARG: equal__is,
+								arg1: &Collect{
+									ARG:  collect__attributes__rel,
+									arg1: &Node{},
+								},
+								arg2: &Elem{
+									DATA: []interface{}{"hd"},
+									arg1: &Collect{
+										ARG:  collect__attributes__rel,
+										arg1: &Node{},
+									},
+								},
 							},
 						},
 					},
+				},
+				arg2: &Elem{
+					DATA: []interface{}{1},
 				},
 			},
 		},
@@ -3750,7 +3815,7 @@ func detLabel(node *NodeType, q *Context) string {
 			},
 		},
 	}) {
-		return "det" // meer  genoeg the
+		return "det" // meer // genoeg // the
 	}
 	if Test(q /* $node/@cat = ("mwu","np","pp","ap","detp","smain") */, &XPath{
 		arg1: &Sort{
@@ -3784,6 +3849,7 @@ func detLabel(node *NodeType, q *Context) string {
 		return "nummod"
 	}
 	if node.Cat == "conj" {
+		// TODO: als ik hier 1 vervang door last() dan verdwijnen de verschillen met Saxon, maar het moet echt 1 zijn
 		if Test(q /* $node/node[@rel="cnj"][1]/@ud:pos="NUM" */, &XPath{
 			arg1: &Sort{
 				arg1: &Equal{

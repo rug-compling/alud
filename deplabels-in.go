@@ -135,8 +135,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
-		// TODO als ik hier n1 gebruik i.p.v. leftmost (wat zou moeten) gaat het vaak mis
-		if node == nLeft(FIND(q, `$node/../node[@rel="cnj"]`)) {
+		if node == n1(FIND(q, `$node/../node[@rel="cnj"][1]`)) {
 			return dependencyLabel(node.parent, q)
 		}
 		return "conj"
@@ -233,10 +232,9 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	}
 	if node.Rel == "rhd" || node.Rel == "whd" {
 		if TEST(q, `$node/../node[@rel="body"]//node/@index = $node/@index`) {
-			// index is een int groter dan 0
 			return nonLocalDependencyLabel(
 				node,
-				n1(FIND(q, `$node/../node[@rel="body"]//node[@index = $node/@index]`)),
+				n1(FIND(q, `($node/../node[@rel="body"]//node[@index = $node/@index])[1]`)),
 				q)
 		}
 		if node.Cat == "pp" {
@@ -278,7 +276,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		if TEST(q, `$node[@ud:pos=("NOUN","PROPN","VERB") and ../node[@cat=("du","smain")]]`) {
 			return "parataxis" // dangling words
 		}
-		if len(FIND(q, `$node/../node[not(@ud:pos=("PUNCT","SYM","X"))]`)) < 2 {
+		if TEST(q, `count($node/../node[not(@ud:pos=("PUNCT","SYM","X"))]) < 2`) {
 			return "root" // only one non-punct/sym/foreign element in the string
 		}
 		if node.Cat == "mwu" {
@@ -364,7 +362,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 		return "ERROR_NO_PASSIVE_SUBJECT"
 	}
 
-	aux := auxiliary1(n1(FIND(q, `$subj/../node[@rel="hd"]`)), q)
+	aux := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[1]`)), q)
 	if aux == "aux:pass" { // de carriere had gered kunnen worden
 		return ":pass"
 	}
@@ -382,7 +380,7 @@ func detLabel(node *NodeType, q *Context) string {
 		return "nmod:poss"
 	}
 	if TEST(q, `$node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X")`) {
-		return "det" // meer  genoeg the
+		return "det" // meer // genoeg // the
 	}
 	if TEST(q, `$node/@cat = ("mwu","np","pp","ap","detp","smain")`) {
 		return "det"
@@ -395,6 +393,7 @@ func detLabel(node *NodeType, q *Context) string {
 		return "nummod"
 	}
 	if node.Cat == "conj" {
+		// TODO: als ik hier 1 vervang door last() dan verdwijnen de verschillen met Saxon, maar het moet echt 1 zijn
 		if TEST(q, `$node/node[@rel="cnj"][1]/@ud:pos="NUM"`) {
 			return "nummod"
 		}
