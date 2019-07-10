@@ -14,13 +14,20 @@ type DepType struct {
 
 func enhancedDependencies(q *Context) {
 
-	reconstructEmptyHead(q)
+	changed := reconstructEmptyHead(q)
 
 	// add_Edependency_relations
 	for _, node := range q.ptnodes {
 		// Edependency_relation
-		node.udERelation = dependencyLabel(node, q)
-		node.udEHeadPosition = externalHeadPosition(node, q)
+		if changed {
+			q.depth = 0
+			node.udERelation = dependencyLabel(node, q)
+			q.depth = 0
+			node.udEHeadPosition = externalHeadPosition(node, q)
+		} else {
+			node.udERelation = node.udRelation
+			node.udEHeadPosition = node.udHeadPosition
+		}
 	}
 
 	for _, node := range q.ptnodes {
@@ -515,10 +522,10 @@ func enhancedLemmaString1(node *NodeType, q *Context) string {
 			fj := fixed[j].(*NodeType)
 			ei := fi.End
 			ej := fj.End
-			if fi.udCopiedFrom >= 0 {
+			if fi.udCopiedFrom > 0 {
 				ei = fi.udCopiedFrom
 			}
-			if fj.udCopiedFrom >= 0 {
+			if fj.udCopiedFrom > 0 {
 				ej = fj.udCopiedFrom
 			}
 			return ei < ej

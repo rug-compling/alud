@@ -161,6 +161,10 @@ heb ik nog geen oorzaak kunnen vinden. Hierin komen deze combinaties voor:
 De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
 `det`. Van de Go-versie krijgen ze de waarde `nummod`.
 
+Er zijn ook wat verschillen voor DEPS. De Go-versie krijgt hier soms
+meer waardes.
+
+
 ----
 
 ## Te doen

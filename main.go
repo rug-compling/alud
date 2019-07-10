@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
 var (
@@ -46,11 +47,15 @@ func main() {
 			continue
 		}
 
+		dir, err := os.Getwd()
+		x(err)
+		x(os.Chdir(filepath.Dir(filename)))
 		for _, f := range collection.Doc {
 			b, err := ioutil.ReadFile(f.Href)
 			x(err)
 			doFile(b, f.Href)
 		}
+		x(os.Chdir(dir))
 	}
 }
 

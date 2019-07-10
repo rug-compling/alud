@@ -8,7 +8,7 @@ import (
 	"sort"
 )
 
-func reconstructEmptyHead(q *Context) {
+func reconstructEmptyHead(q *Context) bool {
 	/*
 	   if ( $node[@rel="hd" and @index and not(@pt or @cat)]  and
 	        $antecedent/@word (: onder andere as hd... :)
@@ -221,6 +221,7 @@ func reconstructEmptyHead(q *Context) {
 			return q.varptnodes[i].(*NodeType).End < q.varptnodes[j].(*NodeType).End
 		})
 	}
+	return found
 }
 
 func leftEdge(node *NodeType, q *Context) int {
