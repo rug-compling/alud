@@ -157,7 +157,7 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 	for _, r := range d.arg1.Do(subdoc, q) {
 		switch d.ARG {
 		case collect__ancestors__node:
-			result1 = r.(*NodeType).axAncestors
+			result1 = append(result1, r.(*NodeType).axAncestors...)
 		case collect__attributes__begin:
 			if i := r.(*NodeType).Begin; i >= 0 {
 				result1 = append(result1, i)
@@ -244,6 +244,43 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 			panic("Missing case in " + q.filename)
 		}
 	}
+
+	// ontdubbelen
+	if len(result1) == 0 {
+		return result1
+	}
+	switch result1[0].(type) {
+	case *NodeType:
+		for i := 0; i < len(result1)-1; i++ {
+			for j := i + 1; j < len(result1); j++ {
+				if result1[i].(*NodeType) == result1[j].(*NodeType) {
+					result1 = append(result1[:j], result1[j+1:]...)
+					j--
+				}
+			}
+		}
+	case string:
+		for i := 0; i < len(result1)-1; i++ {
+			for j := i + 1; j < len(result1); j++ {
+				if result1[i].(string) == result1[j].(string) {
+					result1 = append(result1[:j], result1[j+1:]...)
+					j--
+				}
+			}
+		}
+	case int:
+		for i := 0; i < len(result1)-1; i++ {
+			for j := i + 1; j < len(result1); j++ {
+				if result1[i].(int) == result1[j].(int) {
+					result1 = append(result1[:j], result1[j+1:]...)
+					j--
+				}
+			}
+		}
+	default:
+		panic(fmt.Sprintf("Missing case for type %T in %s", result1[0], q.filename))
+	}
+
 	if d.arg2 == nil {
 		return result1
 	}
@@ -333,7 +370,6 @@ type Filter struct {
 }
 
 func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
-
 	result := make([]interface{}, 0)
 	for i, r := range d.arg1.Do(subdoc, q) {
 		r2 := d.arg2.Do([]interface{}{r}, q)
@@ -348,6 +384,42 @@ func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 	}
+
+	if len(result) == 0 {
+		return result
+	}
+	switch result[0].(type) {
+	case *NodeType:
+		for i := 0; i < len(result)-1; i++ {
+			for j := i + 1; j < len(result); j++ {
+				if result[i].(*NodeType) == result[j].(*NodeType) {
+					result = append(result[:j], result[j+1:]...)
+					j--
+				}
+			}
+		}
+	case string:
+		for i := 0; i < len(result)-1; i++ {
+			for j := i + 1; j < len(result); j++ {
+				if result[i].(string) == result[j].(string) {
+					result = append(result[:j], result[j+1:]...)
+					j--
+				}
+			}
+		}
+	case int:
+		for i := 0; i < len(result)-1; i++ {
+			for j := i + 1; j < len(result); j++ {
+				if result[i].(int) == result[j].(int) {
+					result = append(result[:j], result[j+1:]...)
+					j--
+				}
+			}
+		}
+	default:
+		panic(fmt.Sprintf("Missing case for type %T in %s", result[0], q.filename))
+	}
+
 	return result
 }
 
@@ -516,7 +588,7 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 			return result[i].(*NodeType).Id < result[j].(*NodeType).Id
 		})
 		for i := 1; i < len(result); i++ {
-			if result[i].(*NodeType).Id == result[i-1].(*NodeType).Id {
+			if result[i].(*NodeType) == result[i-1].(*NodeType) {
 				result = append(result[:i], result[i+1:]...)
 				i--
 			}

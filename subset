@@ -1,7 +1,7 @@
 #!/usr/bin/env perl
 
 while(<>) {
-    if (/^# (sent_id|debug)/) {
+    if (/^# (sent_id|debug|text)/) {
 	next;
     }
     chomp;
@@ -9,6 +9,7 @@ while(<>) {
     s/\&gt;/>/g;
     s/\&quot;/"/g;
     s/\&amp;/&/g;
+    s/0\troot\t0:parataxis/0\tparataxis\t0:parataxis/;
     @a = split /\t/, $_;
     if ($#a > 1) {
 	while($#a < 9) {
