@@ -80,6 +80,7 @@ func i1(ii []interface{}) int {
 	return ERROR_NO_VALUE
 }
 
+/*
 // laatste int
 func iZ(ii []interface{}) int {
 	if l := len(ii); l > 0 {
@@ -87,6 +88,7 @@ func iZ(ii []interface{}) int {
 	}
 	return ERROR_NO_VALUE
 }
+*/
 
 func depthCheck(q *Context, s string) bool {
 	q.depth++

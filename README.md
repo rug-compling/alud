@@ -142,11 +142,12 @@ De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
 `det`. Van de Go-versie krijgen ze de waarde `nummod`.
 
 In het xquery-script komt deze test voor:
-`
+
+```
     then if ($node/node[@rel="cnj"][1]/@ud:pos="NUM" )
         then "nummod"
         else "det"
-`
+```
 
 Als ik in de Go-versie `[1]` vervang door `[last()]` dan verdwijnen de
 verschillen. Het heeft dus(?) te maken met hoe de implementatie intern

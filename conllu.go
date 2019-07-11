@@ -11,11 +11,10 @@ func conll(q *Context) string {
 
 	var buf bytes.Buffer
 
+	// TODO: is dit nodig? ook gesorteerd in fixpunct()
 	sort.Slice(q.ptnodes, func(i, j int) bool {
 		return q.ptnodes[i].End < q.ptnodes[j].End
 	})
-
-	// TODO: ontdubbelen
 
 	fmt.Fprintf(&buf, `# source = %s
 # sent_id = %s

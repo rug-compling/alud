@@ -9,12 +9,6 @@ import (
 )
 
 func reconstructEmptyHead(q *Context) bool {
-	/*
-	   if ( $node[@rel="hd" and @index and not(@pt or @cat)]  and
-	        $antecedent/@word (: onder andere as hd... :)
-	        (: and not(local:auxiliary($antecedent) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
-	      )
-	*/
 	seen := make(map[int]bool)
 	found := false
 	for _, n := range q.varindexnodes {
@@ -24,7 +18,6 @@ func reconstructEmptyHead(q *Context) bool {
 			continue
 		}
 
-		// let $antecedent := $node/ancestor::node//node[(@pt or @cat) and @index = $node/@index ]
 		antecedent := Find(q /* $q.varindexnodes[(@pt or @cat) and @index = $node/@index ] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{

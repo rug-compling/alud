@@ -135,30 +135,6 @@ func join(a, b string) string {
 }
 
 func enhanceDependencyLabel(node *NodeType, q *Context) string {
-	/*
-	   declare function local:enhance_dependency_label($node as node()) as xs:string {
-	    let $label := $node/@ud:ERelation
-	    (: find the minimal dominating node :)
-	    let $crd := ($node/ancestor::node[@cat="conj" and
-	   	       not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"])[1]
-	    let $case := ($node/ancestor::node//node[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[1]
-	    let $mark := ($node/ancestor::node//node[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end])[1]
-	    return
-	        1if ($label = "conj" and exists($crd))
-	        1then 2if ($crd/@lemma)
-	   	      2then string-join(($label,local:enhanced_lemma_string($crd)),':')
-	   	      2else 3if ($crd/@cat="mwu")
-	   	        3then string-join(($label,local:enhanced_lemma_string(($crd/node[@rel="mwp"])[1])),':')
-	   			3else "ERROR_empty_eud_label"
-	        1else 4if ($label = ("nmod","obl") and exists($case))
-	   	      4then string-join(($label,local:enhanced_lemma_string($case)),':')
-	   	      4else 5if ($label = ("advcl","acl") and exists($mark))
-	   	        5then string-join(($label,local:enhanced_lemma_string($mark)),':')
-	   	        5else 6if ( exists($label) )
-	   		      6then $label
-	   		      6else "ERROR_empty_eud_label"
-	   };
-	*/
 	label := node.udERelation
 	if label == "conj" {
 		if crd := n1(FIND(q, `($node/ancestor::node[@cat="conj" and
@@ -193,26 +169,6 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 }
 
 func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
-	/*
-
-	   declare function local:anaphoric_relpronoun($node as node()) as node()* {
-	   	(: works voor waar, and last() picks waar in 'daar waar' cases :)
-	   	(: dont add anything for hij werd voorzitter, wat hij nog steeds is (otherwise self-reference) :)
-	   	(: for loop ensures correct result if N has 2 acl:relcl dependents :)
-	   	for $anaphoric_relpronoun in
-	   			$node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
-	   			       node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)][last()]
-	     let $label :=
-	       if ($anaphoric_relpronoun/@ud:Relation = ("nsubj","nsubj:pass"))
-	       then string-join(($anaphoric_relpronoun/@ud:Relation,"relsubj"),":")
-	       else if ($anaphoric_relpronoun/@ud:Relation = ("obj","obl"))
-	   	 then string-join(($anaphoric_relpronoun/@ud:Relation,"relobj"),":")
-	   	 else $anaphoric_relpronoun/@ud:Relation
-	   	return
-	   	<headdep head="{$anaphoric_relpronoun/@ud:HeadPosition}" dep="{$label}" />
-	   };
-	*/
-
 	// works voor waar, and last() picks waar in 'daar waar' cases
 	// dont add anything for hij werd voorzitter, wat hij nog steeds is (otherwise self-reference)
 	// for loop ensures correct result if N has 2 acl:relcl dependents
@@ -235,23 +191,6 @@ func anaphoricRelpronoun(node *NodeType, q *Context) []DepType {
 
 // Glastra en Terlouw verzonnen een list --> nsubj(verzonnen,Glastra) nsubj(verzonnen,Terlouw)
 func distributeConjuncts(node *NodeType, q *Context) []DepType {
-	/*
-	   (: Glastra en Terlouw verzonnen een list --> nsubj(verzonnen,Glastra) nsubj(verzonnen,Terlouw) :)
-	   declare function local:distribute_conjuncts($node as node()) as node()* {
-	   	let $coord_head := $node/ancestor::node//node[@end = $node/@ud:HeadPosition
-	   	       and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")]
-	     (: let $case := ($node/ancestor::node//node[@ud:Relation="case" and @ud:HeadPosition=$coord_head/@end])[1] :)
-	     let $deplabel :=
-	       (: if ($coord_head/@ud:Relation=("nmod","obl") and $case)
-	       then string-join($coord_head/@ud:Relation,local:enhanced_lemma_string($case))
-	       else :) local:enhance_dependency_label($coord_head)
-	   	return
-	   	if ($node[@ud:Relation="conj"] and exists($coord_head))
-	   	(: in A en B vs in A en naast B --> use enh_dep_label($node) in the latter case... :)
-	   	then <headdep head="{$coord_head/@ud:HeadPosition}" dep="{$deplabel}"/>
-	   	else ()
-	   };
-	*/
 	if node.udRelation == "conj" {
 		coordHead := n1(FIND(q, `$q.varallnodes[@end = $node/@ud:HeadPosition
 	       and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")]`))
@@ -269,79 +208,43 @@ func distributeConjuncts(node *NodeType, q *Context) []DepType {
 // done: phrases [np_i [een scoutskameraad] werd .. en _i zocht hem op]
 // idem: de hond was gebaseerd op Lassy en verscheen onder de naam Wirel nsubj:pass in conj1, nsubj in conj 2
 func distributeDependents(node *NodeType, q *Context) []DepType {
-	/*
-	   declare function local:distribute_dependents($node as node()) as node()* {
-	   	let $phrase := 1if ($node[@rel="hd"])
-	   		 1then 2if ($node/../../@cat="pp")   (: door het schilderij :)
-	   		      2then $node/../..
-	   		      2else $node/..
-	   		 1else 3if  ($node[@rel="mwp" and @begin = ../@begin] )
-	   		      3then 4if ($node[ ../@rel="obj1" and ../../@cat="pp"] )
-	   			   4then $node/../..
-	   			   4else 5if ( $node[../@rel="hd" and ../../@rel="obj1" and ../../../@cat="pp"] )
-	   				5then $node/../../.. (:in en rond het Hoofstedelijk Gewest --> do not distribute Hoofdstedelijk:)
-	   				5else 6if ($node[ ../@rel="hd" and not( ../../@cat="pp") ] )   (: mwu as head, but not complex P :)
-	   				     6then $node/../..
-	   				     6else $node/..
-	   		      3else 7if ($node[@rel="obj1" and ../@cat="pp"] )
-	   			   7then $node/..
-	   			   7else $node
-	   			   (: do not apply to prepositions and auxiliaries, ever. Too strict? :)
-	*/
 	var phrase *NodeType
-	if node.Rel == "hd" { //1
-		if TEST(q, `$node/../../@cat="pp"`) { // door het schilderij //2
+	if node.Rel == "hd" {
+		if TEST(q, `$node/../../@cat="pp"`) { // door het schilderij
 			phrase = node.parent.parent
-		} else { //2
+		} else {
 			phrase = node.parent
 		}
-	} else { //1
-		if TEST(q, `$node[@rel="mwp" and @begin = ../@begin]`) { //3
-			if TEST(q, `$node[ ../@rel="obj1" and ../../@cat="pp"]`) { //4
+	} else {
+		if TEST(q, `$node[@rel="mwp" and @begin = ../@begin]`) {
+			if TEST(q, `$node[ ../@rel="obj1" and ../../@cat="pp"]`) {
 				phrase = node.parent.parent
-			} else { //4
-				if TEST(q, `$node[../@rel="hd" and ../../@rel="obj1" and ../../../@cat="pp"]`) { //5
+			} else {
+				if TEST(q, `$node[../@rel="hd" and ../../@rel="obj1" and ../../../@cat="pp"]`) {
 					phrase = node.parent.parent.parent // in en rond het Hoofstedelijk Gewest --> do not distribute Hoofdstedelijk
-				} else { //5
-					if TEST(q, `$node[ ../@rel="hd" and not( ../../@cat="pp") ]`) { // mwu as head, but not complex P //6
+				} else {
+					if TEST(q, `$node[ ../@rel="hd" and not( ../../@cat="pp") ]`) { // mwu as head, but not complex P
 						phrase = node.parent.parent
-					} else { //6
+					} else {
 						phrase = node.parent
 					}
 				}
 			}
-		} else { //3
-			if TEST(q, `$node[@rel="obj1" and ../@cat="pp"]`) { //7
+		} else {
+			if TEST(q, `$node[@rel="obj1" and ../@cat="pp"]`) {
 				phrase = node.parent
-			} else { //7
+			} else {
 				phrase = node
 				// do not apply to prepositions and auxiliaries, ever. Too strict?
 			}
 		}
 	}
 
-	/*
-		where $phrase[@rel=("obj1","su","mod","pc","det") and @index]
-	*/
 	if !TEST(q, `$phrase[@rel=("obj1","su","mod","pc","det") and @index]`) {
 		return []DepType{}
 	}
 
-	/*
-		for $conj_head in $node[not(@ud:pos=("ADP","AUX"))]/ancestor::node//node[@rel="cnj"
-							     and node[
-							    (: @rel=$phrase/@rel
-								and -- this constraint is too strict for coord of passives:)
-								not(@pt or @cat)]/@index = $phrase/@index
-							     and node[@rel=("hd","predc") and not(@ud:pos="AUX") and (@pt or @cat) and	 (: bekende cafes zijn A en B :)
-								(: not(@ud:pos=("ADP","AUX")) and not(@cat="mwu") :)
-								not(local:internal_head_position(..) = @end and (@ud:pos=("ADP","AUX") or @cat="mwu") )
-								]
-						      ]
-							      (: not coordination of AUX or (complex) Ps :)
-	*/
-
-	// TODO: dit xpath kan efficiënter
+	// TODO: dit xpath kan efficiënter?
 	conj_heads := FIND(q, `$node[not(@ud:pos=("ADP","AUX"))]/ancestor::node//node[@rel="cnj"
 	   						     and node[
 	   						    (: @rel=$phrase/@rel
@@ -357,23 +260,11 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 		return []DepType{}
 	}
 
-	/*
-		       let $udRelation := local:non_local_dependency_label($phrase,($node/ancestor::node//node[@rel="cnj"]/
-				    node[
-				    (: @rel=$phrase/@rel and :)
-					not(@pt or @cat) and @index=$phrase/@index],element {"node"} { })[1])
-	*/
 	udRelation := nonLocalDependencyLabel(phrase, n1(FIND(q, `($q.varallnodes[@rel="cnj"]/
 	   			    node[
 	   			    (: @rel=$phrase/@rel and :)
 					not(@pt or @cat) and @index=$phrase/@index])[1]`)), q)
 
-	/*
-	   let $EudRelation :=
-	     if    ($udRelation = ("nmod","obl") and $phrase[@cat="pp"]//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end])
-	     then  string-join(($udRelation,local:enhanced_lemma_string($phrase//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end])),':')
-	     else  $udRelation
-	*/
 	EudRelation := udRelation
 	if TEST(q, `$udRelation = ("nmod","obl") and $phrase[@cat="pp"]/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`) {
 		EudRelation = udRelation + ":" + enhancedLemmaString(FIND(q, `$phrase/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`), q)
@@ -381,9 +272,6 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 
 	result := []DepType{}
 	for _, conj_head := range conj_heads {
-		/*
-			return <headdep head="{local:internal_head_position($conj_head)}" dep="{$EudRelation}"/>
-		*/
 		result = append(result, DepType{head: internalHeadPosition([]interface{}{conj_head.(*NodeType)}, q), dep: EudRelation})
 
 	}
@@ -394,20 +282,6 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 // and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
 //    .. of hij ook voor hen wilde komen tekenen :)
 func xcompControl(node *NodeType, q *Context, so_index int) []DepType {
-	/*
-	   (: should work in coordinations like te laten reizen en te laten beleven,
-	      and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
-	   		  .. of hij ook voor hen wilde komen tekenen :)
-	   declare function local:xcomp-control($node as node(), $so_index as xs:string) as node()* {
-	   	for $xcomp in
-	   	    $node[not(@ud:PronType="Rel")]/ancestor::node//node[(@rel="vc" or (@cat="inf" and @rel="body")) (: covers inf ti oti :)
-	   					   and node[@rel=("hd","predc") and @ud:Relation="xcomp"]  (: vrouwen moeten vertegenwoordigd zijn :)
-	   					   and node[@rel="su" and @index]/@index = $so_index
-	   					  ]
-	   	return
-	   	<headdep head="{local:internal_head_position($xcomp)}" dep="nsubj:xsubj"/>
-	   };
-	*/
 
 	result := []DepType{}
 	for _, xcomp := range FIND(q, `$node[not(@ud:PronType="Rel")]/ancestor::node//node[(@rel="vc" or (@cat="inf" and @rel="body")) (: covers inf ti oti :)
@@ -421,18 +295,6 @@ func xcompControl(node *NodeType, q *Context, so_index int) []DepType {
 
 // alpino NF specific case, controllers with extraposed content are realized downstairs
 func upstairsControl(node *NodeType, q *Context, so_index int) []DepType {
-	/*
-	   (: alpino NF specific case, controllers with extraposed content are realized downstairs :)
-	   declare function local:upstairs-control($node as node(), $so_index as xs:string) as node()* {
-	       for $upstairs in
-	   		$node/ancestor::node[node[@rel="hd" and @ud:pos="VERB"]
-	   						  and node[@rel="vc"]
-	   						  and node[@rel=("su","obj1","obj2") and not(@pt or @cat)]/@index = $so_index
-	   						 ]
-	   	return
-	   	<headdep head="{local:internal_head_position($upstairs)}" dep="nsubj:xsubj"/>
-	   };
-	*/
 
 	result := []DepType{}
 	for _, upstairs := range FIND(q, `$node/ancestor::node[node[@rel="hd" and @ud:pos="VERB"]
@@ -447,18 +309,6 @@ func upstairsControl(node *NodeType, q *Context, so_index int) []DepType {
 
 // een koers waarin de Alsemberg moet worden beklommen
 func passiveVpControl(node *NodeType, q *Context, so_index int) []DepType {
-	/*
-	   (: een koers waarin de Alsemberg moet worden beklommen :)
-	   declare function local:passive-vp-control($node as node(), $so_index as xs:string) as node()* {
-	       for $passive_vp in
-	   	$node/ancestor::node//node[@rel="vc" and @cat="ppart"
-	   				       and node[@rel="hd" and @ud:Relation="xcomp"]
-	   				       and node[@rel="obj1" and @index]/@index = $so_index ]
-	   	return
-	   	<headdep head="{local:internal_head_position($passive_vp)}" dep="nsubj:pass:xsubj"/>
-	   };
-	*/
-	// TODO
 
 	result := []DepType{}
 	for _, passive_vp := range FIND(q, `$q.varallnodes[@rel="vc" and @cat="ppart"

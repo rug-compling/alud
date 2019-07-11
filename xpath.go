@@ -50,7 +50,6 @@ const (
 	equal__is
 	function__contains__2__args
 	function__count__1__args
-	// function__deep__equal__2__args
 	function__ends__with__2__args
 	function__last__0__args
 	function__local__internal__head__position__1__args
@@ -447,22 +446,6 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 		return FALSE
 	case function__count__1__args:
 		return []interface{}{len(r[0].([]interface{}))}
-		/*
-			case function__deep__equal__2__args:
-				// Nodes zijn pointers. Als de pointers niet gelijk zijn zijn de nodes niet gelijk,
-				// want elke node heeft een ander ID. Het is dus niet nodig om elkaars children te vergelijken.
-				r0 := r[0].([]interface{})
-				r1 := r[1].([]interface{})
-				if len(r0) != len(r1) {
-					return FALSE
-				}
-				for i := range r0 {
-					if r0[i] != r1[i] {
-						return FALSE
-					}
-				}
-				return TRUE
-		*/
 	case function__ends__with__2__args:
 		for _, s1 := range r[1].([]interface{}) {
 			for _, s0 := range r[0].([]interface{}) {
@@ -618,30 +601,6 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 	}
 	return result
 }
-
-/*
-type Union struct {
-	arg1 Doer
-	arg2 Doer
-}
-
-func (d *Union) Do(subdoc []interface{}, q *Context) []interface{} {
-	result := d.arg1.Do(subdoc, q)
-	for _, i := range d.arg2.Do(subdoc, q) {
-		found := false
-		for _, j := range result {
-			if i == j {
-				found = true
-				break
-			}
-		}
-		if !found {
-			result = append(result, i)
-		}
-	}
-	return result
-}
-*/
 
 type Variable struct {
 	VAR interface{}
