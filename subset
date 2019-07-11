@@ -9,14 +9,14 @@ while(<>) {
     s/\&gt;/>/g;
     s/\&quot;/"/g;
     s/\&amp;/&/g;
-    s/0\troot\t0:parataxis/0\tparataxis\t0:parataxis/;
+    #s/0\troot\t0:parataxis/0\tparataxis\t0:parataxis/;
     @a = split /\t/, $_;
     if ($#a > 1) {
 	while($#a < 9) {
 	    push @a, "_";
 	}
-	$a[0] =~ s/(\d+)\.2/$1.1/;
-	$a[8] =~ s/(\d+)\.2/$1.1/g;
+	#$a[0] =~ s/(\d+)\.2/$1.1/;
+	#$a[8] =~ s/(\d+)\.2/$1.1/g;
 	#$a[1] = "_"; # FORM
 	#$a[2] = "_"; # LEMMA
 	#$a[6] = "_"; # HEAD
