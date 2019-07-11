@@ -72,6 +72,7 @@ func compile(s string) string {
 	x(cmd.Run())
 	so := stdout.String()
 	se := strings.Replace(stderr.String(), "xmlXPathCompiledEval: evaluation failed\n", "", 1)
+	se = strings.Replace(se, "XPath error : Undefined variable\n", "", 1)
 
 	if se != "" {
 		fmt.Fprintln(os.Stderr, "ERROR:", s2)
