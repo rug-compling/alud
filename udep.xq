@@ -347,7 +347,7 @@ declare function local:fix_misplaced_heads_in_coordination($node as node()) as n
 	       and (exists($misplaced_head))) (: dont match with whd - ld cases :)
        then (: copy content :)
 	    element {name($node)}
-		    {$misplaced_head/@*, for $child in $misplaced_head/node return $child} (: copying id as well, but conversion never refers to this :)
+		    {$misplaced_head[1]/@*, for $child in $misplaced_head[1]/node return $child} (: copying id as well, but conversion never refers to this :)
        else element {name($node)}
 		    {($node/@*, for $child in $node/node
 				return local:fix_misplaced_heads_in_coordination($child))
