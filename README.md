@@ -93,12 +93,9 @@ Resultaat:
 </query>
 ```
 
-Andere mogelijke opties:
+Andere mogelijke optie:
 
  * `-opt:-v`
- * `-tree:linked`
- * `-tree:tiny`
- * `-tree:tinyc`
 
 
 ----
