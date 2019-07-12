@@ -122,9 +122,9 @@ LassySmall, zo'n 13 keer:
 
 ----
 
-## Verschillen tussen ~~XQilla~~ Saxon en Go
+## Verschillen tussen Saxon en Go
 
-De Go-versie geeft momenteel drie verschillen voor **DEPREL** ten opzichte van XQilla
+De Go-versie geeft momenteel drie verschillen voor **DEPREL** ten opzichte van Saxon
 voor het Eindhoven-corpus.
 
 Daarnaast zijn er ook wat verschillen voor **DEPS**. De Go-versie krijgt hier soms
@@ -138,7 +138,7 @@ hierin komen deze combinaties voor:
  * vijf- tot zeshonderd bladzijden
  * een stuk of 6 , 7
 
-De woorden *zestig-*, *vijf-* en *6* krijgen van XQilla de DEPREL
+De woorden *zestig-*, *vijf-* en *6* krijgen van Saxon de DEPREL
 `det`. Van de Go-versie krijgen ze de waarde `nummod`.
 
 In het xquery-script komt deze test voor:
