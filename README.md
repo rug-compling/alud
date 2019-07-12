@@ -55,6 +55,50 @@ Vergelijk
 met
 [uitvoer](https://github.com/pebbe/unidep/blob/master/auxiliary.go)
 
+----
+
+Alternatief: Saxon met optie -explain, zie http://www.saxonica.com/documentation/index.html#!using-xquery/commandline
+
+Voorbeeld:
+
+```
+saxon -explain -opt:0 -qs:'for $doc in <xml/> return $doc/aap[@noot]'
+```
+
+Resultaat:
+
+```xml
+<query>
+   <globalVariables/>
+   <body>
+      <FLWOR baseUri="file:/home/peter/tmp/"
+             ns="fn=~ xs=~ saxon=~ err=~ local=http://www.w3.org/2005/xquery-local-functions xsi=~"
+             line="1">
+         <for var="Q{}doc" slot="0">
+            <elem name="xml" nsuri="">
+               <empty/>
+            </elem>
+         </for>
+         <return>
+            <slash>
+               <varRef name="Q{}doc" slot="0"/>
+               <filter flags="">
+                  <axis name="child" nodeTest="element(Q{}aap)"/>
+                  <axis name="attribute" nodeTest="attribute(Q{}noot)"/>
+               </filter>
+            </slash>
+         </return>
+      </FLWOR>
+   </body>
+</query>
+```
+
+Andere mogelijke opties:
+
+ * `-opt:-v`
+ * `-tree:linked`
+ * `-tree:tiny`
+ * `-tree:tinyc`
 
 
 ----
