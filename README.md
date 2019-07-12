@@ -122,7 +122,7 @@ LassySmall, zo'n 13 keer:
 
 ----
 
-## Verschillen tussen XQilla en Go
+## Verschillen tussen ~~XQilla~~ Saxon en Go
 
 De Go-versie geeft momenteel drie verschillen voor **DEPREL** ten opzichte van XQilla
 voor het Eindhoven-corpus.
