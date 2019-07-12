@@ -128,7 +128,7 @@ De Go-versie geeft momenteel drie verschillen voor **DEPREL** ten opzichte van X
 voor het Eindhoven-corpus.
 
 Daarnaast zijn er ook wat verschillen voor **DEPS**. De Go-versie krijgt hier soms
-meer waardes. De reden hiervan is nog onbekend.
+meer waardes.
 
 Wat DEPREL betreft: voor
 [drie verschillen](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D%28"cdb-6322"%2C"gbl-5437"%2C"obl-594"%29%5D),
@@ -152,3 +152,23 @@ In het xquery-script komt deze test voor:
 Als ik in de Go-versie `[1]` vervang door `[last()]` dan verdwijnen de
 verschillen. Het heeft dus(?) te maken met hoe de implementatie intern
 de tussenresultaten ordent.
+
+Wat DEPS betreft: De extra waardes lijken te komen door deze expressie
+in de functie anaphoricRelpronoun():
+
+```
+    $node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
+        node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)][last()]
+```
+
+Blijkbaar moet voor XPath versie 1 de hele expresie voor de laatste
+index tussen haakjes:
+
+```
+    ($node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
+        node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)])[last()]
+```
+
+In dit geval zijn de extra expressies weg, maar soms verdwijnt de
+verkeerde. Hier hebben we dus(?) weer te maken met verschillen in
+volgorde.

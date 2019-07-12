@@ -227,9 +227,9 @@ func inspect(q *Context) {
 	for _, node := range allnodes {
 		node.axAncestors = make([]interface{}, 0)
 		if node != q.alpino.Node {
-			node.axAncestors = append(node.axAncestors, node.parent.axAncestors...)
 			node.axAncestors = append(node.axAncestors, node.parent)
-			if node.axAncestors[0] != q.alpino.Node {
+			node.axAncestors = append(node.axAncestors, node.parent.axAncestors...)
+			if node.axAncestors[len(node.axAncestors)-1] != q.alpino.Node {
 				// zou niet mogelijk moeten zijn
 				panic("Missing ancestors in " + q.filename)
 			}
