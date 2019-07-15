@@ -449,7 +449,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 			return dependencyLabel(node.parent, q)
 		}
 		if Test(q, /* $node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
-			   and ../../self::node[@rel="cnj" and node[@rel="hd" and not(@pt or @cat)]]] */&XPath{
+			   and ../parent::node[@rel="cnj" and node[@rel="hd" and not(@pt or @cat)]]] */&XPath{
 				arg1: &Sort{
 					arg1: &Filter{
 						arg1: &Variable{
@@ -522,13 +522,10 @@ func dependencyLabel(node *NodeType, q *Context) string {
 									},
 								},
 								arg2: &Collect{
-									ARG: collect__self__node,
+									ARG: collect__parent__node,
 									arg1: &Collect{
-										ARG: collect__parent__type__node,
-										arg1: &Collect{
-											ARG:  collect__parent__type__node,
-											arg1: &Node{},
-										},
+										ARG:  collect__parent__type__node,
+										arg1: &Node{},
 									},
 									arg2: &Predicate{
 										arg1: &And{
@@ -593,7 +590,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 					},
 				},
 			}) { // gapping with subj downstairs
-			// TODO: ../.. is veranderd in ../../self::node    is dat juist?
+			// TODO: ../.. is veranderd in ../parent::node    is dat juist?
 			/*
 			   In 1909 werd de persoonlijke dienstplicht ingevoerd en in 1913 de algemene persoonlijke dienstplicht .
 			   [ hd_i su_j vc [ hd_k [_j pers dienstplicht ]
@@ -4421,7 +4418,7 @@ func labelVmod(node *NodeType, q *Context) string {
 	if Test(q, /* $node[ (  node[@rel="hd" and @lemma="door"]
 		    or (@pt="bw" and ends-with(@lemma,"door"))
 		    )
-		    and ../self::*[@cat="ppart"]/../node[@rel="hd" and @lemma=("zijn","worden")]
+		    and parent::node[@cat="ppart"]/../node[@rel="hd" and @lemma=("zijn","worden")]
 		    and ../../node[@rel="su"]/@index = ../node[@rel="obj1"]/@index
 		] */&XPath{
 			arg1: &Sort{
@@ -4511,11 +4508,8 @@ func labelVmod(node *NodeType, q *Context) string {
 									arg1: &Collect{
 										ARG: collect__parent__type__node,
 										arg1: &Collect{
-											ARG: collect__self__all__node,
-											arg1: &Collect{
-												ARG:  collect__parent__type__node,
-												arg1: &Node{},
-											},
+											ARG:  collect__parent__node,
+											arg1: &Node{},
 											arg2: &Predicate{
 												arg1: &Equal{
 													ARG: equal__is,

@@ -266,8 +266,8 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 					not(@pt or @cat) and @index=$phrase/@index])[1]`)), q)
 
 	EudRelation := udRelation
-	if TEST(q, `$udRelation = ("nmod","obl") and $phrase[@cat="pp"]/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`) {
-		EudRelation = udRelation + ":" + enhancedLemmaString(FIND(q, `$phrase/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`), q)
+	if TEST(q, `$udRelation = ("nmod","obl") and $phrase[@cat="pp"]//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`) {
+		EudRelation = udRelation + ":" + enhancedLemmaString(FIND(q, `$phrase//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`), q)
 	}
 
 	result := []DepType{}

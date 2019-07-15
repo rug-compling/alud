@@ -749,15 +749,12 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 				},
 			}), q)
 		}
-		if Test(q /* $node/../self::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ] */, &XPath{
+		if Test(q /* $node/parent::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
-					ARG: collect__self__node,
-					arg1: &Collect{
-						ARG: collect__parent__type__node,
-						arg1: &Variable{
-							VAR: node,
-						},
+					ARG: collect__parent__node,
+					arg1: &Variable{
+						VAR: node,
 					},
 					arg2: &Predicate{
 						arg1: &And{

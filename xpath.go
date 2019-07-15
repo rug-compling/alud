@@ -45,6 +45,7 @@ const (
 	collect__descendant__or__self__node
 	collect__descendant__or__self__type__node
 	collect__parent__type__node
+	collect__parent__node
 	collect__self__all__node
 	collect__self__node
 	equal__is
@@ -235,7 +236,7 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 			result1 = append(result1, r.(Parent).Descendants()...)
 		case collect__descendant__or__self__type__node, collect__descendant__or__self__node:
 			result1 = append(result1, r.(Parent).DescendantsOrSelf()...)
-		case collect__parent__type__node:
+		case collect__parent__type__node, collect__parent__node:
 			result1 = append(result1, r.(*NodeType).axParent...)
 		case collect__self__all__node, collect__self__node:
 			result1 = append(result1, r) // TODO: correct?

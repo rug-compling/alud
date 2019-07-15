@@ -1574,7 +1574,7 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 		})), q)
 
 	EudRelation := udRelation
-	if Test(q /* $udRelation = ("nmod","obl") and $phrase[@cat="pp"]/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end] */, &XPath{
+	if Test(q /* $udRelation = ("nmod","obl") and $phrase[@cat="pp"]//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end] */, &XPath{
 		arg1: &Sort{
 			arg1: &And{
 				arg1: &Equal{
@@ -1590,23 +1590,26 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 					},
 				},
 				arg2: &Collect{
-					ARG: collect__descendant__node,
-					arg1: &Filter{
-						arg1: &Variable{
-							VAR: phrase,
-						},
-						arg2: &Sort{
-							arg1: &Equal{
-								ARG: equal__is,
-								arg1: &Collect{
-									ARG:  collect__attributes__cat,
-									arg1: &Node{},
-								},
-								arg2: &Elem{
-									DATA: []interface{}{"pp"},
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__descendant__or__self__type__node,
+						arg1: &Filter{
+							arg1: &Variable{
+								VAR: phrase,
+							},
+							arg2: &Sort{
+								arg1: &Equal{
+									ARG: equal__is,
 									arg1: &Collect{
 										ARG:  collect__attributes__cat,
 										arg1: &Node{},
+									},
+									arg2: &Elem{
+										DATA: []interface{}{"pp"},
+										arg1: &Collect{
+											ARG:  collect__attributes__cat,
+											arg1: &Node{},
+										},
 									},
 								},
 							},
@@ -1647,12 +1650,15 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 			},
 		},
 	}) {
-		EudRelation = udRelation + ":" + enhancedLemmaString(Find(q /* $phrase/descendant::node[@ud:Relation="case" and @ud:HeadPosition=$node/@end] */, &XPath{
+		EudRelation = udRelation + ":" + enhancedLemmaString(Find(q /* $phrase//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
-					ARG: collect__descendant__node,
-					arg1: &Variable{
-						VAR: phrase,
+					ARG: collect__child__node,
+					arg1: &Collect{
+						ARG: collect__descendant__or__self__type__node,
+						arg1: &Variable{
+							VAR: phrase,
+						},
 					},
 					arg2: &Predicate{
 						arg1: &And{

@@ -77,7 +77,7 @@ func externalHeadPosition(node *NodeType, q *Context) int {
 			}
 			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
 		}
-		if TEST(q, `$node/../self::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ]`) {
+		if TEST(q, `$node/parent::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ]`) {
 			//reduced relatives , make sure head is not empty (ellipsis)
 			// also : ap with predc: actief als schrijver
 			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
