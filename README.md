@@ -103,7 +103,7 @@ Andere mogelijke optie:
 ## Tests
 
 taak \ tijd | XQilla | Saxon | Udapy | Go
-------- | ------:| -----:| -----:
+------- | ------:| -----:| -----:| -----:
 Eindhoven-corpus, fix misplaced heads + add postags + add features | 08:06 |       | | 00:29
 Eindhoven-corpus, alles behalve enhanced dependencies en fixpunct  | 23:00 |       | | 01:24
 Eindhoven-corpus, alles behalve fixpunct                           |       | 03:26 | | 01:31
