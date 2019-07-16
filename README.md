@@ -102,13 +102,13 @@ Andere mogelijke optie:
 
 ## Tests
 
-taak \ tijd | XQilla | Saxon | Udapy | Go
+taak → tijd | XQilla | Saxon | Udapy | Go
 ------- | ------:| -----:| -----:| -----:
-Eindhoven-corpus, fix misplaced heads + add postags + add features | 08:06 |       | | 00:29
-Eindhoven-corpus, alles behalve enhanced dependencies en fixpunct  | 23:00 |       | | 01:24
-Eindhoven-corpus, alles behalve fixpunct                           |       | 03:26 | | 01:31
-Eindhoven-corpus, alleen fixpunct                                  |       |       | |
-Eindhoven-corpus, alles                                            |       |       | | 01:50
+Eindhoven-corpus, fix misplaced heads + add postags + add features |  8:06 |       |       |  0:27
+Eindhoven-corpus, alles behalve enhanced dependencies en fixpunct  | 23:00 |       |       |  1:02
+Eindhoven-corpus, alles behalve fixpunct                           | 48:04 |  3:26 |       |  1:28
+Eindhoven-corpus, alleen fixpunct                                  |       |       |  0:33 |
+Eindhoven-corpus, alles                                            |       |       |       |  1:31
 
 ----
 
