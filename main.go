@@ -26,8 +26,6 @@ type Doc struct {
 
 func main() {
 
-	var collection Collection
-
 	filenames := []string{}
 	filenames = append(filenames, os.Args[1:]...)
 	if !util.IsTerminal(os.Stdin) {
@@ -41,6 +39,8 @@ func main() {
 	for _, filename := range filenames {
 		b, err := ioutil.ReadFile(filename)
 		x(err)
+
+		var collection Collection
 
 		if xml.Unmarshal(b, &collection) != nil {
 			doFile(b, filename)
