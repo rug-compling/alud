@@ -168,6 +168,8 @@ LassySmall, zo'n 13 keer:
 
 ## Verschillen tussen Saxon en Go
 
+**Verschillen zouden het resultaat kunnen zijn van de indexbug. Zie subdirectory `indexbug`.**
+
 De Go-versie geeft momenteel drie verschillen voor **DEPREL** ten opzichte van Saxon
 voor het Eindhoven-corpus.
 
