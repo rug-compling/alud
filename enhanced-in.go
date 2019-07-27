@@ -80,7 +80,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		relSister := FIND(q, `($node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[1]`)
+		relSister := FIND(q, `($node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[first()]`)
 		if len(relSister) > 0 {
 			relSisterIndex := i1(relSister)
 			enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
@@ -138,25 +138,25 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	label := node.udERelation
 	if label == "conj" {
 		if crd := n1(FIND(q, `($node/ancestor::node[@cat="conj" and
-	       not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"])[1]`)); crd != noNode {
+	       not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"])[first()]`)); crd != noNode {
 			if crd.Lemma != "" {
 				return join(label, enhancedLemmaString1(crd, q))
 			}
 			if crd.Cat == "mwu" {
-				return join(label, enhancedLemmaString1(n1(FIND(q, `($crd/node[@rel="mwp"])[1]`)), q))
+				return join(label, enhancedLemmaString1(n1(FIND(q, `($crd/node[@rel="mwp"])[first()]`)), q))
 			}
 			return "ERROR_empty_eud_label"
 		}
 	}
 
 	if label == "nmod" || label == "obl" {
-		if casee := n1(FIND(q, `($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[1]`)); casee != noNode {
+		if casee := n1(FIND(q, `($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[first()]`)); casee != noNode {
 			return join(label, enhancedLemmaString1(casee, q))
 		}
 	}
 
 	if label == "advcl" || label == "acl" {
-		if mark := n1(FIND(q, `($q.varptnodes[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end])[1]`)); mark != noNode {
+		if mark := n1(FIND(q, `($q.varptnodes[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end])[first()]`)); mark != noNode {
 			return join(label, enhancedLemmaString1(mark, q))
 		}
 	}
@@ -263,7 +263,7 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 	udRelation := nonLocalDependencyLabel(phrase, n1(FIND(q, `($q.varallnodes[@rel="cnj"]/
 	   			    node[
 	   			    (: @rel=$phrase/@rel and :)
-					not(@pt or @cat) and @index=$phrase/@index])[1]`)), q)
+					not(@pt or @cat) and @index=$phrase/@index])[first()]`)), q)
 
 	EudRelation := udRelation
 	if TEST(q, `$udRelation = ("nmod","obl") and $phrase[@cat="pp"]//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`) {

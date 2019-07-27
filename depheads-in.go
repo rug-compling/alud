@@ -390,11 +390,11 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 	}
 
 	if TEST(q, `$node/node[@rel="vc" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="vc"][1]`), q)
+		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="vc"][first()]`), q)
 	}
 
 	if TEST(q, `$node/node[@rel="pc" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="pc"][1]`), q)
+		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="pc"][first()]`), q)
 	}
 
 	if n := FIND(q, `$node/node[@rel="mod" and (@pt or @cat)]`); len(n) > 0 {
