@@ -64,7 +64,7 @@ const (
 )
 
 var (
-	TRUE  = []interface{}{"true"}
+	TRUE  = []interface{}{true}
 	FALSE = []interface{}{}
 )
 
