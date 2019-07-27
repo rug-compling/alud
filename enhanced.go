@@ -281,7 +281,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		relSister := Find(q /* ($node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[first()] */, &XPath{
+		relSister := Find(q /* ($node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[1] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Sort{
@@ -414,7 +414,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	label := node.udERelation
 	if label == "conj" {
 		if crd := n1(Find(q, /* ($node/ancestor::node[@cat="conj" and
-			   not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"])[first()] */&XPath{
+			   not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"])[1] */&XPath{
 				arg1: &Sort{
 					arg1: &Filter{
 						arg1: &Sort{
@@ -519,7 +519,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 				return join(label, enhancedLemmaString1(crd, q))
 			}
 			if crd.Cat == "mwu" {
-				return join(label, enhancedLemmaString1(n1(Find(q /* ($crd/node[@rel="mwp"])[first()] */, &XPath{
+				return join(label, enhancedLemmaString1(n1(Find(q /* ($crd/node[@rel="mwp"])[1] */, &XPath{
 					arg1: &Sort{
 						arg1: &Filter{
 							arg1: &Sort{
@@ -560,7 +560,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	}
 
 	if label == "nmod" || label == "obl" {
-		if casee := n1(Find(q /* ($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[first()] */, &XPath{
+		if casee := n1(Find(q /* ($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[1] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Sort{
@@ -614,7 +614,7 @@ func enhanceDependencyLabel(node *NodeType, q *Context) string {
 	}
 
 	if label == "advcl" || label == "acl" {
-		if mark := n1(Find(q /* ($q.varptnodes[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end])[first()] */, &XPath{
+		if mark := n1(Find(q /* ($q.varptnodes[@ud:ERelation=("mark","case") and @ud:EHeadPosition=$node/@end])[1] */, &XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Sort{
@@ -1513,7 +1513,7 @@ func distributeDependents(node *NodeType, q *Context) []DepType {
 	udRelation := nonLocalDependencyLabel(phrase, n1(Find(q, /* ($q.varallnodes[@rel="cnj"]/
 		   			    node[
 		   			    (: @rel=$phrase/@rel and :)
-						not(@pt or @cat) and @index=$phrase/@index])[first()] */&XPath{
+						not(@pt or @cat) and @index=$phrase/@index])[1] */&XPath{
 			arg1: &Sort{
 				arg1: &Filter{
 					arg1: &Sort{

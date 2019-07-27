@@ -171,7 +171,7 @@ func main() {
 	node := alpino.Node
 
 	fmt.Println("Test 1")
-	for _, n := range Find(q /* $node/node/node[first()] */, &XPath{
+	for _, n := range Find(q /* $node/node/node[1] */, &XPath{
 		arg1: &Sort{
 			arg1: &Collect{
 				ARG: collect__child__node,
@@ -193,7 +193,7 @@ func main() {
 	}
 
 	fmt.Println("Test 2")
-	for _, n := range Find(q /* ($node/node/node)[first()] */, &XPath{
+	for _, n := range Find(q /* ($node/node/node)[1] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Sort{

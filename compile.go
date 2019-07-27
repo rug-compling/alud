@@ -56,6 +56,9 @@ func compile(s string) string {
 
 	s2 := reComment.ReplaceAllLiteralString(s, "")
 
+	// [1] -> [first()]
+	s2 = strings.Replace(s2, "[1]", "[first()]", -1)
+
 	// =("aap","noot","mies")  ->  ="hashcode"
 	s2 = reSet.ReplaceAllStringFunc(s2, func(s string) string {
 		mm := reSet.FindStringSubmatch(s)

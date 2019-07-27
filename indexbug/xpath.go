@@ -91,6 +91,7 @@ func (d *Arg) Do(subdoc []interface{}, q *Context) []interface{} {
 	result := []interface{}{}
 	for i, a := range []Doer{d.arg1, d.arg2} {
 		if i == 0 || a != nil {
+			// TODO: waarom flatten?
 			result = append(result, flatten(a.Do(subdoc, q)))
 		}
 	}

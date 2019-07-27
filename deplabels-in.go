@@ -135,7 +135,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
-		if node == n1(FIND(q, `$node/../node[@rel="cnj"][first()]`)) {
+		if node == n1(FIND(q, `$node/../node[@rel="cnj"][1]`)) {
 			return dependencyLabel(node.parent, q)
 		}
 		return "conj"
@@ -234,7 +234,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		if TEST(q, `$node/../node[@rel="body"]//node/@index = $node/@index`) {
 			return nonLocalDependencyLabel(
 				node,
-				n1(FIND(q, `($node/../node[@rel="body"]//node[@index = $node/@index])[first()]`)),
+				n1(FIND(q, `($node/../node[@rel="body"]//node[@index = $node/@index])[1]`)),
 				q)
 		}
 		if node.Cat == "pp" {
@@ -362,7 +362,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 		return "ERROR_NO_PASSIVE_SUBJECT"
 	}
 
-	aux := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[first()]`)), q)
+	aux := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[1]`)), q)
 	if aux == "aux:pass" { // de carriere had gered kunnen worden
 		return ":pass"
 	}
@@ -394,7 +394,7 @@ func detLabel(node *NodeType, q *Context) string {
 	}
 	if node.Cat == "conj" {
 		// TODO: als ik hier 1 vervang door last() dan verdwijnen de verschillen met Saxon, maar het moet echt 1 zijn
-		if TEST(q, `$node/node[@rel="cnj"][first()]/@ud:pos="NUM"`) {
+		if TEST(q, `$node/node[@rel="cnj"][1]/@ud:pos="NUM"`) {
 			return "nummod"
 		}
 		return "det"

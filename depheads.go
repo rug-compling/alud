@@ -4052,7 +4052,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}) {
-		return internalHeadPositionWithGapping(Find(q /* $node/node[@rel="vc"][first()] */, &XPath{
+		return internalHeadPositionWithGapping(Find(q /* $node/node[@rel="vc"][1] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -4125,7 +4125,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 			},
 		},
 	}) {
-		return internalHeadPositionWithGapping(Find(q /* $node/node[@rel="pc"][first()] */, &XPath{
+		return internalHeadPositionWithGapping(Find(q /* $node/node[@rel="pc"][1] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,

@@ -1115,7 +1115,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
-		if node == n1(Find(q /* $node/../node[@rel="cnj"][first()] */, &XPath{
+		if node == n1(Find(q /* $node/../node[@rel="cnj"][1] */, &XPath{
 			arg1: &Sort{
 				arg1: &Collect{
 					ARG: collect__child__node,
@@ -2225,7 +2225,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 		}) {
 			return nonLocalDependencyLabel(
 				node,
-				n1(Find(q /* ($node/../node[@rel="body"]//node[@index = $node/@index])[first()] */, &XPath{
+				n1(Find(q /* ($node/../node[@rel="body"]//node[@index = $node/@index])[1] */, &XPath{
 					arg1: &Sort{
 						arg1: &Filter{
 							arg1: &Sort{
@@ -3510,7 +3510,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 		return "ERROR_NO_PASSIVE_SUBJECT"
 	}
 
-	aux := auxiliary1(n1(Find(q /* ($subj/../node[@rel="hd"])[first()] */, &XPath{
+	aux := auxiliary1(n1(Find(q /* ($subj/../node[@rel="hd"])[1] */, &XPath{
 		arg1: &Sort{
 			arg1: &Filter{
 				arg1: &Sort{
@@ -3851,7 +3851,7 @@ func detLabel(node *NodeType, q *Context) string {
 	}
 	if node.Cat == "conj" {
 		// TODO: als ik hier 1 vervang door last() dan verdwijnen de verschillen met Saxon, maar het moet echt 1 zijn
-		if Test(q /* $node/node[@rel="cnj"][first()]/@ud:pos="NUM" */, &XPath{
+		if Test(q /* $node/node[@rel="cnj"][1]/@ud:pos="NUM" */, &XPath{
 			arg1: &Sort{
 				arg1: &Equal{
 					ARG: equal__is,

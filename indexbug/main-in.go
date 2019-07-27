@@ -169,12 +169,12 @@ func main() {
 	node := alpino.Node
 
 	fmt.Println("Test 1")
-	for _, n := range FIND(q, `$node/node/node[first()]`) {
+	for _, n := range FIND(q, `$node/node/node[1]`) {
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 
 	fmt.Println("Test 2")
-	for _, n := range FIND(q, `($node/node/node)[first()]`) {
+	for _, n := range FIND(q, `($node/node/node)[1]`) {
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 
