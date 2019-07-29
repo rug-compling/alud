@@ -395,7 +395,6 @@ func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
 				default:
 					panic(fmt.Sprintf("Filter: Missing case for index %d in %s", int(idx), q.filename))
 				}
-				break
 			} else {
 				result = append(result, r)
 			}
@@ -632,21 +631,6 @@ func Test(q *Context, xpath *XPath) bool {
 
 func Find(q *Context, xpath *XPath) []interface{} {
 	return xpath.Do(q)
-}
-
-func list(i interface{}) []interface{} {
-	switch ii := i.(type) {
-	case []interface{}:
-		return ii
-	case []*NodeType:
-		doc := []interface{}{}
-		for _, n := range ii {
-			doc = append(doc, n)
-		}
-		return doc
-	default:
-		return []interface{}{ii}
-	}
 }
 
 func flatten(aa []interface{}) []interface{} {
