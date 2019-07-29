@@ -1,6 +1,6 @@
 # Van Alpino naar Universal Dependencies
 
-Een poging
+Een geslaagde poging
 [universal_dependencies.xq](https://github.com/gossebouma/lassy2ud) om
 te zetten naar Go.
 
@@ -133,7 +133,10 @@ De Go-versie geeft op dit punt dezelfde resultaten als Saxon.
 
 ----
 
-## fix\_misplaced\_heads\_in\_coordination
+## Verschillen tussen Saxon en Go
+
+
+### fix\_misplaced\_heads\_in\_coordination
 
 Hoe vaak moet de functie `fix_misplaced_heads_in_coordination`
 gebruikt worden? In het XQuery-script wordt het twee keer gedaan voor
@@ -141,11 +144,12 @@ uitvoer naar conll-formaat, en één keer voor uitvoer naar XML-formaat.
 
 In mijn programma gebruik ik de functie zo vaak als nodig tot er geen verschillen
 meer optreden. Voor sommige zinnen gaat dat niet goed omdat dingen
-blijvend heen en weer worden geschoven. Dan breek ik het af, en hoop
-op het beste.
+blijvend heen en weer worden geschoven. Dan stop ik, en hoop
+op het beste, maar dan is vaak toch het eindresultaat anders dan bij
+het script.
 
 Zinnen waarbij dit het geval is leveren nogal eens ongeldige
-resultaten, ook bij verwerking door XQilla.
+resultaten, ook bij verwerking door Saxon.
 
 Dit komt niet voor in het Eindhoven-corpus, maar wel vaak in het corpus
 LassySmall, zo'n 13 keer:
@@ -164,28 +168,10 @@ LassySmall, zo'n 13 keer:
  1. WR-P-P-I-0000000106.p.17.s.4
  1. dpc-ibm-001316-nl-sen.p.37.s.1
 
-----
+### Ingevoegde nodes met identieke IDs
 
-## Verschillen tussen Saxon en Go
+Soms voegt het xquery-script meerdere nieuwe nodes in op dezelfde
+plek, en geeft die hetzelfde ID. Dit is niet toegestaan.
 
-De Go-versie geeft momenteel drie verschillen voor **DEPREL** ten opzichte van Saxon
-voor het Eindhoven-corpus.
-
-Daarnaast zijn er ook wat verschillen voor **DEPS**. De Go-versie krijgt hier soms
-meer waardes.
-
-Wat DEPS betreft: dit wordt veroorzaakt door de indexbug, zie
-subdirectory `indexbug`.
-
-Wat DEPREL betreft: oorzaak nog onbekend, mogelijk ook de indexbug?
-
-Voor
-[drie verschillen](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D%28"cdb-6322"%2C"gbl-5437"%2C"obl-594"%29%5D),
-hierin komen deze combinaties voor:
-
- * zestig- a zeventigduizend katholieken
- * vijf- tot zeshonderd bladzijden
- * een stuk of 6 , 7
-
-De woorden *zestig-*, *vijf-* en *6* krijgen van Saxon de DEPREL
-`det`. Van de Go-versie krijgen ze de waarde `nummod`.
+Ik het programma geef ik in dit geval opeenvolgende waardes, 8.1, 8.2
+etc. Dit levert uiteraard andere uitkomsten op.

@@ -590,7 +590,7 @@ func dependencyLabel(node *NodeType, q *Context) string {
 					},
 				},
 			}) { // gapping with subj downstairs
-			// TODO: ../.. is veranderd in ../parent::node    is dat juist?
+			// TODO: ../.. is veranderd in ../parent::node , is dat juist?
 			/*
 			   In 1909 werd de persoonlijke dienstplicht ingevoerd en in 1913 de algemene persoonlijke dienstplicht .
 			   [ hd_i su_j vc [ hd_k [_j pers dienstplicht ]
@@ -3850,7 +3850,6 @@ func detLabel(node *NodeType, q *Context) string {
 		return "nummod"
 	}
 	if node.Cat == "conj" {
-		// TODO: als ik hier 1 vervang door last() dan verdwijnen de verschillen met Saxon, maar het moet echt 1 zijn
 		if Test(q /* $node/node[@rel="cnj"][1]/@ud:pos="NUM" */, &XPath{
 			arg1: &Sort{
 				arg1: &Equal{

@@ -108,8 +108,6 @@ func number(n int) string {
 			return "ERROR_NO_VALUE"
 		case UNDERSCORE:
 			return "_"
-		case TODO:
-			return "TODO"
 		case empty_head:
 			return "empty head"
 		default:

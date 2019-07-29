@@ -1,8 +1,6 @@
 package main
 
 import (
-	//	"github.com/kr/pretty"
-
 	"encoding/xml"
 	"path/filepath"
 	"sort"
@@ -16,7 +14,6 @@ const (
 	ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
 	ERROR_NO_INTERNAL_HEAD
 	UNDERSCORE
-	TODO
 	empty_head
 )
 

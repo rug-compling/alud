@@ -1,8 +1,6 @@
 package main
 
 import (
-	//	"github.com/kr/pretty"
-
 	"fmt"
 	"sort"
 	"strings"
@@ -54,8 +52,8 @@ const (
 	function__contains__2__args
 	function__count__1__args
 	function__ends__with__2__args
-	function__first__0__args
-	function__last__0__args
+	function__first__0__args // LET OP: extra gebruik in (*Collect).Do()
+	function__last__0__args  // LET OP: extra gebruik in (*Collect).Do()
 	function__local__internal__head__position__1__args
 	function__not__1__args
 	function__starts__with__2__args
@@ -284,7 +282,7 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 					case function__last__0__args:
 						result2 = append(result2, r1[len(r1)-1])
 					default:
-						panic("TODO")
+						panic("Collect: Missing case for nested index in " + q.filename)
 					}
 				}
 				return result2
@@ -302,7 +300,7 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 					case -1:
 						result2 = append(result2, list[len(list)-1])
 					default:
-						panic("TODO")
+						panic("Collect: Missing case for plain index in " + q.filename)
 					}
 					continue
 				}
@@ -376,12 +374,6 @@ type Filter struct {
 }
 
 func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
-
-	if _, ok := d.arg1.(*Filter); ok {
-		// speciaal geval!
-		// genest filter, buitenste is index
-		// TODO
-	}
 
 	result := []interface{}{}
 	r1 := d.arg1.Do(subdoc, q)
@@ -588,8 +580,7 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 	default:
-		// TODO
-		// panic(fmt.Sprintf("Sort: Missing case for type %T in %s", result[0], q.filename))
+		panic(fmt.Sprintf("Sort: Missing case for type %T in %s", result[0], q.filename))
 	}
 	return result
 }
