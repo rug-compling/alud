@@ -149,7 +149,7 @@ op het beste, maar dan is vaak toch het eindresultaat anders dan bij
 het script.
 
 Zinnen waarbij dit het geval is leveren nogal eens ongeldige
-resultaten, ook bij verwerking door Saxon.
+resultaten op, ook bij verwerking door Saxon.
 
 Dit komt niet voor in het Eindhoven-corpus, maar wel vaak in het corpus
 LassySmall, zo'n 13 keer:

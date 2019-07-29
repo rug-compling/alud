@@ -1,5 +1,7 @@
 
-Dit demonstreert een bug in het gebruik van indexen, zoals in `$node/node/node[@id][1]`
+Dit demonstreerde een bug in het gebruik van indexen, zoals in `$node/node/node[@id][1]`
+
+*Bug is inmiddels verholpen, maar code is misschien nuttig op een later moment.*
 
 ```bash
 ~ xqilla test1.xq
@@ -26,7 +28,4 @@ Test 3
 id= 3
 ```
 
-De Go-versie geeft in test 2 vier resultaten in plaats van twee.
-
-Ik snap de oorzaak van het probleem, maar weet nog niet hoe ik dit
-moet oplossen.
+De Go-versie ~~geeft~~ gaf in test 2 vier resultaten in plaats van twee.

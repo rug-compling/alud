@@ -188,7 +188,7 @@ func main() {
 
 	fmt.Println("Test 4")
 	nodes := []interface{}{node.Node[0], node.Node[1]}
-	for _, n := range FIND(q, `$nodes[@id<3][1]`) {
+	for _, n := range FIND(q, `$nodes[@id][last()]/node[@id>0][1]`) {
 		//fmt.Printf("%#v\n", n)
 		fmt.Println("id=", n.(*NodeType).Id)
 	}

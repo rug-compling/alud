@@ -251,22 +251,38 @@ func main() {
 
 	fmt.Println("Test 4")
 	nodes := []interface{}{node.Node[0], node.Node[1]}
-	for _, n := range Find(q /* $nodes[@id<3][1] */, &XPath{
+	for _, n := range Find(q /* $nodes[@id][last()]/node[@id>0][1] */, &XPath{
 		arg1: &Sort{
-			arg1: &Filter{
+			arg1: &Collect{
+				ARG: collect__child__node,
 				arg1: &Filter{
-					arg1: &Variable{
-						VAR: nodes,
+					arg1: &Filter{
+						arg1: &Variable{
+							VAR: nodes,
+						},
+						arg2: &Sort{
+							arg1: &Collect{
+								ARG:  collect__attributes__id,
+								arg1: &Node{},
+							},
+						},
 					},
 					arg2: &Sort{
+						arg1: &Function{
+							ARG: function__last__0__args,
+						},
+					},
+				},
+				arg2: &Predicate{
+					arg1: &Predicate{
 						arg1: &Cmp{
-							ARG: cmp__lt,
+							ARG: cmp__gt,
 							arg1: &Collect{
 								ARG:  collect__attributes__id,
 								arg1: &Node{},
 							},
 							arg2: &Elem{
-								DATA: []interface{}{3},
+								DATA: []interface{}{0},
 								arg1: &Collect{
 									ARG:  collect__attributes__id,
 									arg1: &Node{},
@@ -274,9 +290,7 @@ func main() {
 							},
 						},
 					},
-				},
-				arg2: &Sort{
-					arg1: &Function{
+					arg2: &Function{
 						ARG: function__first__0__args,
 					},
 				},
