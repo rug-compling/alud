@@ -14,6 +14,7 @@ func fixMisplacedHeadsInCoordination(q *Context) {
 		return
 	}
 
+	seen := make(map[[2]int]int)
 	counter := 0
 
 START:
@@ -43,12 +44,18 @@ $q.varallnodes[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
                                      )]`) {
 					node3 := n3.(*NodeType)
 					if node2.Index == node3.Index {
-						counter++
-						if counter == 100 {
-							q.warnings = append(q.warnings, "Swap limit for fixMisplacedHeadsInCoordination")
-							fmt.Fprintln(os.Stderr, "WARNING: Swap limit for fixMisplacedHeadsInCoordination in "+q.filename)
-							break START
+						pair := [2]int{node2.Id, node3.Id}
+						if i, ok := seen[pair]; ok {
+							if i == 1 {
+								warning := fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d %d", node2.Id, node3.Id)
+								q.warnings = append(q.warnings, warning)
+								fmt.Fprintln(os.Stderr, warning, "in", q.filename)
+							}
+							seen[pair]++
+							continue
 						}
+						seen[pair] = 1
+						counter++
 						// kopieer inhoud van node2 (niet leeg) naar node3 (leeg)
 						id, rel := node3.Id, node3.Rel
 						*node3 = *node2

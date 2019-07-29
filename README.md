@@ -213,6 +213,4 @@ index tussen haakjes:
         node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)])[last()]
 ```
 
-In dit geval zijn de extra expressies weg, maar soms verdwijnt de
-verkeerde. Hier hebben we dus(?) weer te maken met verschillen in
-volgorde.
+In dit geval zijn de extra expressies weg.
