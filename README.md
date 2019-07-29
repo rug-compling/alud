@@ -174,7 +174,12 @@ voor het Eindhoven-corpus.
 Daarnaast zijn er ook wat verschillen voor **DEPS**. De Go-versie krijgt hier soms
 meer waardes.
 
-Wat DEPREL betreft: voor
+Wat DEPS betreft: dit wordt veroorzaakt door de indexbug, zie
+subdirectory `indexbug`.
+
+Wat DEPREL betreft: oorzaak nog onbekend, mogelijk ook de indexbug?
+
+Voor
 [drie verschillen](https://paqu.let.rug.nl:8068/xpath?db=eindhoven&xpath=%2F%2Fsentence%5B%40sentid%3D%28"cdb-6322"%2C"gbl-5437"%2C"obl-594"%29%5D),
 hierin komen deze combinaties voor:
 
@@ -184,33 +189,3 @@ hierin komen deze combinaties voor:
 
 De woorden *zestig-*, *vijf-* en *6* krijgen van Saxon de DEPREL
 `det`. Van de Go-versie krijgen ze de waarde `nummod`.
-
-In het xquery-script komt deze test voor:
-
-```
-    then if ($node/node[@rel="cnj"][1]/@ud:pos="NUM" )
-        then "nummod"
-        else "det"
-```
-
-Als ik in de Go-versie `[1]` vervang door `[last()]` dan verdwijnen de
-verschillen. Het heeft dus(?) te maken met hoe de implementatie intern
-de tussenresultaten ordent.
-
-Wat DEPS betreft: De extra waardes lijken te komen door deze expressie
-in de functie anaphoricRelpronoun():
-
-```
-    $node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
-        node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)][last()]
-```
-
-Blijkbaar moet voor XPath versie 1 de hele expresie voor de laatste
-index tussen haakjes:
-
-```
-    ($node/ancestor::node[@cat="np" and local:internal_head_position(.) = $node/@end]/
-        node[@rel="mod"]/node[@rel="rhd"]/descendant-or-self::node[@pt="vnw" and not(@ud:HeadPosition = $node/@end)])[last()]
-```
-
-In dit geval zijn de extra expressies weg.
