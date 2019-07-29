@@ -170,16 +170,26 @@ func main() {
 
 	fmt.Println("Test 1")
 	for _, n := range FIND(q, `$node/node/node[1]`) {
+		//fmt.Printf("%#v\n", n)
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 
 	fmt.Println("Test 2")
 	for _, n := range FIND(q, `$node/node/node[@id][1]`) {
+		//fmt.Printf("%#v\n", n)
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 
 	fmt.Println("Test 3")
 	for _, n := range FIND(q, `($node/node/node)[1]`) {
+		//fmt.Printf("%#v\n", n)
+		fmt.Println("id=", n.(*NodeType).Id)
+	}
+
+	fmt.Println("Test 4")
+	nodes := []interface{}{node.Node[0], node.Node[1]}
+	for _, n := range FIND(q, `$nodes[@id<3][1]`) {
+		//fmt.Printf("%#v\n", n)
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 

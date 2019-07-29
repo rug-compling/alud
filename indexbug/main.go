@@ -189,6 +189,7 @@ func main() {
 			},
 		},
 	}) {
+		//fmt.Printf("%#v\n", n)
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 
@@ -217,6 +218,7 @@ func main() {
 			},
 		},
 	}) {
+		//fmt.Printf("%#v\n", n)
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 
@@ -243,6 +245,45 @@ func main() {
 			},
 		},
 	}) {
+		//fmt.Printf("%#v\n", n)
+		fmt.Println("id=", n.(*NodeType).Id)
+	}
+
+	fmt.Println("Test 4")
+	nodes := []interface{}{node.Node[0], node.Node[1]}
+	for _, n := range Find(q /* $nodes[@id<3][1] */, &XPath{
+		arg1: &Sort{
+			arg1: &Filter{
+				arg1: &Filter{
+					arg1: &Variable{
+						VAR: nodes,
+					},
+					arg2: &Sort{
+						arg1: &Cmp{
+							ARG: cmp__lt,
+							arg1: &Collect{
+								ARG:  collect__attributes__id,
+								arg1: &Node{},
+							},
+							arg2: &Elem{
+								DATA: []interface{}{3},
+								arg1: &Collect{
+									ARG:  collect__attributes__id,
+									arg1: &Node{},
+								},
+							},
+						},
+					},
+				},
+				arg2: &Sort{
+					arg1: &Function{
+						ARG: function__first__0__args,
+					},
+				},
+			},
+		},
+	}) {
+		//fmt.Printf("%#v\n", n)
 		fmt.Println("id=", n.(*NodeType).Id)
 	}
 

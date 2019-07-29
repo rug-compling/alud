@@ -122,7 +122,7 @@ func (d *Cmp) Do(subdoc []interface{}, q *Context) []interface{} {
 						return TRUE
 					}
 				default:
-					panic(fmt.Sprintf("Missing case for type %T in %s", a1, q.filename))
+					panic(fmt.Sprintf("Cmp<: Missing case for type %T in %s", a1, q.filename))
 				}
 			}
 		}
@@ -140,13 +140,13 @@ func (d *Cmp) Do(subdoc []interface{}, q *Context) []interface{} {
 						return TRUE
 					}
 				default:
-					panic(fmt.Sprintf("Missing case for type %T in %s", a1, q.filename))
+					panic(fmt.Sprintf("Cmp>: Missing case for type %T in %s", a1, q.filename))
 				}
 			}
 		}
 		return FALSE
 	default:
-		panic("Missing case in " + q.filename)
+		panic("Cmp: Missing case in " + q.filename)
 	}
 }
 
@@ -158,127 +158,164 @@ type Collect struct {
 
 func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 
-	result := []interface{}{}
+	lists := [][]interface{}{}
+
+	result1 := []interface{}{}
 	for _, r := range d.arg1.Do(subdoc, q) {
-		rr := []interface{}{}
 		switch d.ARG {
 		case collect__ancestors__node:
-			rr = r.(*NodeType).axAncestors
+			lists = append(lists, r.(*NodeType).axAncestors)
 		case collect__attributes__begin:
 			if i := r.(*NodeType).Begin; i >= 0 {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__cat:
 			if i := r.(*NodeType).Cat; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__end:
 			if i := r.(*NodeType).End; i >= 0 {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__id:
-			if i := r.(*NodeType).Id; i >= 0 {
-				rr = []interface{}{i}
+			if i := r.(*NodeType).Id; i > -1 {
+				result1 = append(result1, i)
 			}
 		case collect__attributes__index:
 			if i := r.(*NodeType).Index; i > 0 {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__lemma:
 			if i := r.(*NodeType).Lemma; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__naamval:
 			if i := r.(*NodeType).Naamval; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__pt:
 			if i := r.(*NodeType).Pt; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__rel:
 			if i := r.(*NodeType).Rel; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__sc:
 			if i := r.(*NodeType).Sc; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__spectype:
 			if i := r.(*NodeType).Spectype; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aERelation:
 			if i := r.(*NodeType).udERelation; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aEHeadPosition:
 			if i := r.(*NodeType).udEHeadPosition; i > 0 {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aHeadPosition:
 			if i := r.(*NodeType).udHeadPosition; i > 0 {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aPronType:
 			if i := r.(*NodeType).udPronType; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aRelation:
 			if i := r.(*NodeType).udRelation; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3apos:
 			if i := r.(*NodeType).udPos; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__vwtype:
 			if i := r.(*NodeType).Vwtype; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__attributes__word:
 			if i := r.(*NodeType).Word; i != "" {
-				rr = []interface{}{i}
+				result1 = append(result1, i)
 			}
 		case collect__child__node:
-			rr = r.(Parent).Children()
+			lists = append(lists, r.(Parent).Children())
 		case collect__descendant__node:
-			rr = r.(Parent).Descendants()
+			lists = append(lists, r.(Parent).Descendants())
 		case collect__descendant__or__self__type__node, collect__descendant__or__self__node:
-			rr = r.(Parent).DescendantsOrSelf()
+			lists = append(lists, r.(Parent).DescendantsOrSelf())
 		case collect__parent__type__node, collect__parent__node:
-			rr = r.(*NodeType).axParent
+			lists = append(lists, r.(*NodeType).axParent)
 		case collect__self__all__node, collect__self__node:
-			rr = []interface{}{r} // TODO: correct?
+			result1 = append(result1, r) // TODO: correct?
 		default:
-			panic("Missing case in " + q.filename)
+			panic("Collect: Missing case in " + q.filename)
 		}
-		if d.arg2 == nil {
-			result = append(result, rr...)
-			continue
-		}
-		for _, r1 := range rr {
-			a := d.arg2.Do([]interface{}{r1}, q)
-			if len(a) == 0 {
-				continue
-			}
-			if idx, ok := a[0].(IndexType); ok {
-				switch idx {
-				case 1:
-					result = append(result, rr[0])
-				case -1:
-					result = append(result, rr[len(rr)-1])
-				default:
-					panic(fmt.Sprintf("Missing case for index %d in %s", int(idx), q.filename))
-				}
-				break
-			}
-			result = append(result, r1)
-		}
-
 	}
-	return result
 
+	if d.arg2 == nil {
+		for _, list := range lists {
+			result1 = append(result1, list...)
+		}
+		return result1
+	}
+
+	if len(result1) > 0 {
+		l := [][]interface{}{result1}
+		lists = append(l, lists...)
+	}
+
+	result2 := []interface{}{}
+
+	if p, ok := d.arg2.(*Predicate); ok {
+		if f, ok := p.arg2.(*Function); ok {
+			if f.ARG == function__first__0__args || f.ARG == function__last__0__args {
+				for _, list := range lists {
+					r1 := []interface{}{}
+					for _, e := range list {
+						if len(p.arg1.Do([]interface{}{e}, q)) > 0 {
+							r1 = append(r1, e)
+						}
+					}
+					if len(r1) == 0 {
+						continue
+					}
+					switch f.ARG {
+					case function__first__0__args:
+						result2 = append(result2, r1[0])
+					case function__last__0__args:
+						result2 = append(result2, r1[len(r1)-1])
+					default:
+						panic("TODO")
+					}
+				}
+				return result2
+			}
+		}
+	}
+
+	for _, list := range lists {
+		for _, e := range list {
+			for _, r2 := range d.arg2.Do([]interface{}{e}, q) {
+				if idx, ok := r2.(IndexType); ok {
+					switch idx {
+					case 1:
+						result2 = append(result2, list[0])
+					case -1:
+						result2 = append(result2, list[len(list)-1])
+					default:
+						panic("TODO")
+					}
+					continue
+				}
+				result2 = append(result2, r2)
+			}
+		}
+	}
+	return result2
 }
 
 type Elem struct {
@@ -334,7 +371,7 @@ func (d *Equal) Do(subdoc []interface{}, q *Context) []interface{} {
 		}
 		return FALSE
 	default:
-		panic("Missing case in " + q.filename)
+		panic("Equal: Missing case in " + q.filename)
 	}
 }
 
@@ -344,6 +381,13 @@ type Filter struct {
 }
 
 func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
+
+	if _, ok := d.arg1.(*Filter); ok {
+		// speciaal geval!
+		// genest filter, buitenste is index
+		// TODO
+	}
+
 	result := []interface{}{}
 	r1 := d.arg1.Do(subdoc, q)
 	for _, r := range r1 {
@@ -356,7 +400,7 @@ func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
 				case -1:
 					return []interface{}{r1[len(r1)-1]}
 				default:
-					panic(fmt.Sprintf("Missing case for index %d in %s", int(idx), q.filename))
+					panic(fmt.Sprintf("Filter: Missing case for index %d in %s", int(idx), q.filename))
 				}
 				break
 			} else {
@@ -421,7 +465,7 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 		}
 		return FALSE
 	default:
-		panic("Missing case in " + q.filename)
+		panic("Function: Missing case in " + q.filename)
 	}
 }
 
@@ -475,7 +519,7 @@ func (d *Plus) Do(subdoc []interface{}, q *Context) []interface{} {
 		}
 		return result
 	default:
-		panic("Missing case in " + q.filename)
+		panic("Plus: Missing case in " + q.filename)
 	}
 }
 
@@ -485,18 +529,19 @@ type Predicate struct {
 }
 
 func (d *Predicate) Do(subdoc []interface{}, q *Context) []interface{} {
+
 	result := d.arg1.Do(subdoc, q)
 	if d.arg2 == nil || len(result) == 0 {
 		return result
 	}
-	idx := d.arg2.Do(subdoc, q)[0].(IndexType) // TODO: altijd een index?
+	idx := d.arg2.Do(result, q)[0].(IndexType) // TODO: altijd een index?
 	switch idx {
 	case 1:
 		return []interface{}{result[0]}
 	case -1:
 		return []interface{}{result[len(result)-1]}
 	default:
-		panic(fmt.Sprintf("Missing case for index %d in %s", int(idx), q.filename))
+		panic(fmt.Sprintf("Predicate arg2: Missing case for index %d in %s", int(idx), q.filename))
 	}
 }
 
@@ -548,7 +593,8 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 			}
 		}
 	default:
-		panic(fmt.Sprintf("Missing case for type %T in %s", result[0], q.filename))
+		// TODO
+		// panic(fmt.Sprintf("Sort: Missing case for type %T in %s", result[0], q.filename))
 	}
 	return result
 }
@@ -574,7 +620,7 @@ func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
 	case string:
 		return []interface{}{t}
 	default:
-		panic(fmt.Sprintf("Missing case for type %T in %s", t, q.filename))
+		panic(fmt.Sprintf("Variable: Missing case for type %T in %s", t, q.filename))
 	}
 }
 
