@@ -173,10 +173,10 @@ LassySmall, zo'n 13 keer:
 Soms voegt het xquery-script meerdere nieuwe nodes in op dezelfde
 plek, en geeft die hetzelfde ID. Dit is niet toegestaan.
 
-Ik het programma geef ik in dit geval opeenvolgende waardes, 8.1, 8.2
+In het programma geef ik in dit geval opeenvolgende waardes, 8.1, 8.2
 etc. Dit levert uiteraard andere uitkomsten op.
 
 ### Fouten
 
-Voor enhanced dependencies, waar Saxon zoiets als
-`ERROR_NO_INTERNAL_HEAD:mark` geeft geeft de Go-versie domweg `_`.
+Als er foutmeldingen zitten in de uitvoer van Saxon, dan kunnen daar
+in de uitvoer van Go soms andere foutmeldingen staan.
