@@ -627,6 +627,21 @@ func Find(q *Context, xpath *XPath) []interface{} {
 	return xpath.Do(q)
 }
 
+func list(i interface{}) []interface{} {
+	switch ii := i.(type) {
+	case []interface{}:
+		return ii
+	case []*NodeType:
+		doc := []interface{}{}
+		for _, n := range ii {
+			doc = append(doc, n)
+		}
+		return doc
+	default:
+		return []interface{}{ii}
+	}
+}
+
 func flatten(aa []interface{}) []interface{} {
 	result := make([]interface{}, 0)
 	for _, a := range aa {

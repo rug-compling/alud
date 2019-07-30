@@ -5,7 +5,7 @@ package main
 // recursive
 func dependencyLabel(node *NodeType, q *Context) string {
 	if depthCheck(q, "dependencyLabel") {
-		return "ERROR_NO_LABEL"
+		return "ERROR_RECURSION_LIMIT"
 	}
 
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
@@ -359,7 +359,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 // recursive
 func passiveSubject(subj *NodeType, q *Context) string {
 	if depthCheck(q, "passiveSubject") {
-		return "ERROR_NO_PASSIVE_SUBJECT"
+		return "ERROR_RECURSION_LIMIT"
 	}
 
 	aux := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[1]`)), q)

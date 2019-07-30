@@ -371,7 +371,7 @@ declare function local:universal_pos_tag($node as element(node)) as attribute() 
 	      relevant for let in mwe cases and let as part of names :)
 	   if ($REL eq '--' ) then
 		if ( $node/../node[not(@pt='let')] ) then 'PUNCT'
-		else if ( $node[../node/@begin < @begin] )
+		else if ( $node[../node/number(@begin) < number(@begin)] )
 			then 'PUNCT'
 			else 'SYM'
 	      else 'SYM'
@@ -1151,7 +1151,7 @@ declare function local:dependency_label($node as element(node)) as xs:string
 		    then "orphan"
 		    else if ($node[@rel="mod" and ../node[@rel=("pc","ld")]])
 			  then "orphan"
-			  else if ($node[@rel="mod" and ../node[@rel="mod"]/@begin < @begin]) (: gapping with multiple mods :)
+			  else if ($node[@rel="mod" and ../node[@rel="mod"]/number(@begin) < number(@begin)]) (: gapping with multiple mods :)
 				then "orphan"
 				else local:dependency_label($node/..) (: gapping, where this mod is the head :)
 

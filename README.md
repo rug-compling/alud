@@ -175,3 +175,8 @@ plek, en geeft die hetzelfde ID. Dit is niet toegestaan.
 
 Ik het programma geef ik in dit geval opeenvolgende waardes, 8.1, 8.2
 etc. Dit levert uiteraard andere uitkomsten op.
+
+### Fouten
+
+Voor enhanced dependencies, waar Saxon zoiets als
+`ERROR_NO_INTERNAL_HEAD:mark` geeft geeft de Go-versie domweg `_`.

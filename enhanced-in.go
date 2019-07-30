@@ -23,7 +23,7 @@ func enhancedDependencies(q *Context) {
 			q.depth = 0
 			node.udERelation = dependencyLabel(node, q)
 			q.depth = 0
-			node.udEHeadPosition = externalHeadPosition(node, q)
+			node.udEHeadPosition = externalHeadPosition(list(node), q)
 		} else {
 			node.udERelation = node.udRelation
 			node.udEHeadPosition = node.udHeadPosition
@@ -92,8 +92,8 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		// node.udHeadPosition == UNDERSCORE als resultaat van reconstructEmptyHead()
-		if node.udHeadPosition >= 0 || node.udHeadPosition == UNDERSCORE {
+		// TODO: ook voor node.udHeadPosition == UNDERSCORE? (resultaat van reconstructEmptyHead)
+		if node.udHeadPosition >= 0 {
 			enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
 			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                    // self
 			enhanced = append(enhanced, distributeConjuncts(node, q)...)                                    // self
@@ -101,7 +101,7 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		enhanced = []DepType{}
+		enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
 		break
 	}
 

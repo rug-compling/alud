@@ -24,9 +24,11 @@ func conll(q *Context) string {
 		q.sentid,
 		q.sentence)
 
-	for i, d := range q.debugs {
-		fmt.Fprintf(&buf, "# debug_%d = %s\n", i+1, d)
-	}
+	/*
+		for i, d := range q.debugs {
+			fmt.Fprintf(&buf, "# debug_%d = %s\n", i+1, d)
+		}
+	*/
 	for i, w := range q.warnings {
 		fmt.Fprintf(&buf, "# warning_%d = %s\n", i+1, w)
 	}
@@ -96,16 +98,24 @@ func featuresToString(node *NodeType) string {
 func number(n int) string {
 	if n < 0 {
 		switch n {
-		case ERROR_NO_HEAD_FOUND:
-			return "ERROR_NO_HEAD_FOUND"
+		case ERROR_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG:
+			return "ERROR_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG"
+		case ERROR_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND:
+			return "ERROR_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND"
 		case ERROR_NO_EXTERNAL_HEAD:
 			return "ERROR_NO_EXTERNAL_HEAD"
-		case ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT:
-			return "ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT"
+		case ERROR_NO_HEAD_FOUND:
+			return "ERROR_NO_HEAD_FOUND"
 		case ERROR_NO_INTERNAL_HEAD:
 			return "ERROR_NO_INTERNAL_HEAD"
+		case ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT:
+			return "ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT"
+		case ERROR_NO_INTERNAL_HEAD_POSITION_FOUND:
+			return "ERROR_NO_INTERNAL_HEAD_POSITION_FOUND"
 		case ERROR_NO_VALUE:
 			return "ERROR_NO_VALUE"
+		case ERROR_RECURSION_LIMIT:
+			return "ERROR_RECURSION_LIMIT"
 		case UNDERSCORE:
 			return "_"
 		case empty_head:
