@@ -92,8 +92,8 @@ func enhancedDependencies1(node *NodeType, q *Context) {
 			break
 		}
 
-		// TODO: ook voor node.udHeadPosition == UNDERSCORE? (resultaat van reconstructEmptyHead)
-		if node.udHeadPosition >= 0 {
+		// UNDERSCORE is resultaat van reconstructEmptyHead()
+		if node.udHeadPosition >= 0 || node.udHeadPosition == UNDERSCORE {
 			enhanced = []DepType{DepType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
 			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                    // self
 			enhanced = append(enhanced, distributeConjuncts(node, q)...)                                    // self
