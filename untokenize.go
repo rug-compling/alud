@@ -1,4 +1,4 @@
-package main
+package alud
 
 import (
 	"regexp"
@@ -15,7 +15,7 @@ var (
 	reUnP2 = regexp.MustCompile(` ([\])}:;.,!?])`)
 )
 
-func untokenize(q *Context) {
+func untokenize(q *context) {
 	if t := q.sentence; t != "" {
 		t = reUnQ1.ReplaceAllString(" "+t+" ", `$1$2$3`)
 		t = reUnQ2.ReplaceAllString(t, `$1$2$3`)

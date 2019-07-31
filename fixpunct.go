@@ -14,21 +14,21 @@ https://udapi.readthedocs.io/en/latest/udapi.core.html#udapi.core.root.Root
 
 */
 
-package main
+package alud
 
 import (
 	"sort"
 	"strings"
 )
 
-type PNode struct {
-	f         *NodeType
+type pNode struct {
+	f         *nodeType
 	ord       int
 	key1      int
 	key2      int
 	punctType string
-	parent    *PNode
-	children  []*PNode
+	parent    *pNode
+	children  []*pNode
 }
 
 var (
@@ -51,11 +51,11 @@ var (
 	finalPunct = ".?!"
 )
 
-func fixpunct(q *Context) {
+func fixpunct(q *context) {
 
-	nodes := make([]*PNode, 0)
-	rootDescendants := make([]*PNode, 0)
-	var root *PNode
+	nodes := make([]*pNode, 0)
+	rootDescendants := make([]*pNode, 0)
+	var root *pNode
 
 	sort.Slice(q.ptnodes, func(i, j int) bool {
 		return q.ptnodes[i].End < q.ptnodes[i].End
@@ -65,9 +65,9 @@ func fixpunct(q *Context) {
 	for _, line := range q.ptnodes {
 		if line.udCopiedFrom <= 0 {
 			ord++
-			nodes = append(nodes, &PNode{
+			nodes = append(nodes, &pNode{
 				f:        line,
-				children: make([]*PNode, 0),
+				children: make([]*pNode, 0),
 				ord:      ord,
 			})
 			rootDescendants = append(rootDescendants, nodes[ord-1])
@@ -76,7 +76,7 @@ func fixpunct(q *Context) {
 	for _, node := range rootDescendants {
 		if node.f.udHeadPosition == 0 {
 			root = node
-			node.parent = &PNode{f: noNode, children: make([]*PNode, 0)}
+			node.parent = &pNode{f: noNode, children: make([]*pNode, 0)}
 			continue
 		}
 		for _, n2 := range rootDescendants {
@@ -88,7 +88,7 @@ func fixpunct(q *Context) {
 		}
 		if node.parent == nil {
 			// TODO: Dit zou niet moeten gebeuren!
-			node.parent = &PNode{f: noNode, children: make([]*PNode, 0)}
+			node.parent = &pNode{f: noNode, children: make([]*pNode, 0)}
 		}
 	}
 
@@ -172,7 +172,7 @@ func fixpunct(q *Context) {
 	}
 }
 
-func fixPairedPunct(openingNode *PNode, closingPunct string, nodes, rootDescendants []*PNode) {
+func fixPairedPunct(openingNode *pNode, closingPunct string, nodes, rootDescendants []*pNode) {
 	/*
 	   if self.check_paired_punct_upos and opening_node.upos != 'PUNCT':
 	       return
@@ -209,7 +209,7 @@ func fixPairedPunct(openingNode *PNode, closingPunct string, nodes, rootDescenda
 
 }
 
-func fixPair(openingNode, closingNode *PNode, rootDescendants []*PNode) {
+func fixPair(openingNode, closingNode *pNode, rootDescendants []*pNode) {
 	/*
 	   heads = []
 	   punct_heads = []
@@ -220,8 +220,8 @@ func fixPair(openingNode, closingNode *PNode, rootDescendants []*PNode) {
 	           else:
 	               heads.append(node)
 	*/
-	heads := make([]*PNode, 0)
-	punctHeads := make([]*PNode, 0)
+	heads := make([]*pNode, 0)
+	punctHeads := make([]*pNode, 0)
 	for _, node := range rootDescendants[openingNode.ord : closingNode.ord-1] {
 		if node.parent.ord < openingNode.ord || closingNode.ord < node.parent.ord {
 			if node.f.udPos == "PUNCT" {
@@ -279,7 +279,7 @@ func fixPair(openingNode, closingNode *PNode, rootDescendants []*PNode) {
 	closingNode.punctType = "closing"
 }
 
-func fixSubordPunct(node *PNode, rootDescendants []*PNode) {
+func fixSubordPunct(node *pNode, rootDescendants []*pNode) {
 	/*
 	   # Dot used as the ordinal-number marker (in some languages) or abbreviation marker.
 	   # TODO: detect these cases somehow
@@ -329,7 +329,7 @@ func fixSubordPunct(node *PNode, rootDescendants []*PNode) {
 	           break
 	       r_cand = r_cand.next_node
 	*/
-	var lCand, rCand *PNode
+	var lCand, rCand *pNode
 	if node.ord > 1 {
 		lCand = rootDescendants[node.ord-2]
 	}
@@ -380,8 +380,8 @@ func fixSubordPunct(node *PNode, rootDescendants []*PNode) {
 	           r_cand = r_cand.parent
 	           r_path.append(r_cand)
 	*/
-	lPath := make([]*PNode, 1)
-	rPath := make([]*PNode, 1)
+	lPath := make([]*pNode, 1)
+	rPath := make([]*pNode, 1)
 	lPath[0] = lCand
 	rPath[0] = rCand
 	if lCand == nil || lCand.f.End <= 0 {
@@ -441,8 +441,8 @@ func fixSubordPunct(node *PNode, rootDescendants []*PNode) {
 	   else:
 	       return
 	*/
-	var cand *PNode
-	var path []*PNode
+	var cand *pNode
+	var path []*pNode
 	if lCand != nil && isDescendantOf(lCand, rCand) {
 		cand, path = lCand, lPath
 	} else if rCand != nil && isDescendantOf(rCand, lCand) {
@@ -474,7 +474,7 @@ func fixSubordPunct(node *PNode, rootDescendants []*PNode) {
 	node.f.udRelation = "punct"
 }
 
-func setParent(node, parent *PNode) {
+func setParent(node, parent *pNode) {
 	// verwijderen van oude parent
 	for i, n := range node.parent.children {
 		if n == node {
@@ -492,14 +492,14 @@ func setParent(node, parent *PNode) {
 	})
 }
 
-func getDescendants(node *PNode, addSelf bool) []*PNode {
-	nodes := make([]*PNode, 0)
+func getDescendants(node *pNode, addSelf bool) []*pNode {
+	nodes := make([]*pNode, 0)
 	if addSelf {
 		nodes = append(nodes, node)
 	}
 	seen := make(map[int]bool)
-	var desc func(*PNode)
-	desc = func(n *PNode) {
+	var desc func(*pNode)
+	desc = func(n *pNode) {
 		nodes = append(nodes, n.children...)
 		for _, child := range n.children {
 			// loops zouden niet moeten mogen, maar zijn er toch...
@@ -516,13 +516,13 @@ func getDescendants(node *PNode, addSelf bool) []*PNode {
 	return nodes
 }
 
-func isDescendantOf(node1, node2 *PNode) bool {
+func isDescendantOf(node1, node2 *pNode) bool {
 	if node2 == nil {
 		return false
 	}
 	seen := make(map[int]bool)
-	var f func([]*PNode) bool
-	f = func(nodes []*PNode) bool {
+	var f func([]*pNode) bool
+	f = func(nodes []*pNode) bool {
 		for _, node := range nodes {
 			if node1 == node {
 				return true
@@ -541,7 +541,7 @@ func isDescendantOf(node1, node2 *PNode) bool {
 	return f(node2.children)
 }
 
-func contains(nodes []*PNode, node *PNode) bool {
+func contains(nodes []*pNode, node *pNode) bool {
 	for _, n := range nodes {
 		if node == n {
 			return true

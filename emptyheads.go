@@ -2,51 +2,51 @@
 // GENERATED FILE -- DO NOT EDIT
 //
 
-package main
+package alud
 
 import (
 	"sort"
 )
 
-func reconstructEmptyHead(q *Context) bool {
+func reconstructEmptyHead(q *context) bool {
 	seen := make(map[int]bool)
 	found := false
 	for _, n := range q.varindexnodes {
-		node := n.(*NodeType)
+		node := n.(*nodeType)
 
 		if node.Rel != "hd" || node.Pt != "" || node.Cat != "" {
 			continue
 		}
 
-		antecedent := Find(q /* $q.varindexnodes[(@pt or @cat) and @index = $node/@index ] */, &XPath{
-			arg1: &Sort{
-				arg1: &Filter{
-					arg1: &Variable{
+		antecedent := find(q /* $q.varindexnodes[(@pt or @cat) and @index = $node/@index ] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
 						VAR: q.varindexnodes,
 					},
-					arg2: &Sort{
-						arg1: &And{
-							arg1: &Sort{
-								arg1: &Or{
-									arg1: &Collect{
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dSort{
+								arg1: &dOr{
+									arg1: &dCollect{
 										ARG:  collect__attributes__pt,
-										arg1: &Node{},
+										arg1: &dNode{},
 									},
-									arg2: &Collect{
+									arg2: &dCollect{
 										ARG:  collect__attributes__cat,
-										arg1: &Node{},
+										arg1: &dNode{},
 									},
 								},
 							},
-							arg2: &Equal{
+							arg2: &dEqual{
 								ARG: equal__is,
-								arg1: &Collect{
+								arg1: &dCollect{
 									ARG:  collect__attributes__index,
-									arg1: &Node{},
+									arg1: &dNode{},
 								},
-								arg2: &Collect{
+								arg2: &dCollect{
 									ARG: collect__attributes__index,
-									arg1: &Variable{
+									arg1: &dVariable{
 										VAR: node,
 									},
 								},
@@ -56,13 +56,13 @@ func reconstructEmptyHead(q *Context) bool {
 				},
 			},
 		})
-		if !Test(q, /* $antecedent/@word (: onder andere as hd... :)
+		if !test(q, /* $antecedent/@word (: onder andere as hd... :)
 			   (: and not(local:auxiliary($antecedent) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
-			*/&XPath{
-				arg1: &Sort{
-					arg1: &Collect{
+			*/&xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
 						ARG: collect__attributes__word,
-						arg1: &Variable{
+						arg1: &dVariable{
 							VAR: antecedent,
 						},
 					},
@@ -72,25 +72,25 @@ func reconstructEmptyHead(q *Context) bool {
 		}
 		found = true
 
-		others := Find(q /* $node/../node[@pt or @cat] */, &XPath{
-			arg1: &Sort{
-				arg1: &Collect{
+		others := find(q /* $node/../node[@pt or @cat] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
 					ARG: collect__child__node,
-					arg1: &Collect{
+					arg1: &dCollect{
 						ARG: collect__parent__type__node,
-						arg1: &Variable{
+						arg1: &dVariable{
 							VAR: node,
 						},
 					},
-					arg2: &Predicate{
-						arg1: &Or{
-							arg1: &Collect{
+					arg2: &dPredicate{
+						arg1: &dOr{
+							arg1: &dCollect{
 								ARG:  collect__attributes__pt,
-								arg1: &Node{},
+								arg1: &dNode{},
 							},
-							arg2: &Collect{
+							arg2: &dCollect{
 								ARG:  collect__attributes__cat,
-								arg1: &Node{},
+								arg1: &dNode{},
 							},
 						},
 					},
@@ -99,39 +99,39 @@ func reconstructEmptyHead(q *Context) bool {
 		})
 		var end int
 		if len(others) > 0 {
-			if Test(q /* $node/../node[@pt or @cat]/@begin = $node/../@begin */, &XPath{
-				arg1: &Sort{
-					arg1: &Equal{
+			if test(q /* $node/../node[@pt or @cat]/@begin = $node/../@begin */, &xPath{
+				arg1: &dSort{
+					arg1: &dEqual{
 						ARG: equal__is,
-						arg1: &Collect{
+						arg1: &dCollect{
 							ARG: collect__attributes__begin,
-							arg1: &Collect{
+							arg1: &dCollect{
 								ARG: collect__child__node,
-								arg1: &Collect{
+								arg1: &dCollect{
 									ARG: collect__parent__type__node,
-									arg1: &Variable{
+									arg1: &dVariable{
 										VAR: node,
 									},
 								},
-								arg2: &Predicate{
-									arg1: &Or{
-										arg1: &Collect{
+								arg2: &dPredicate{
+									arg1: &dOr{
+										arg1: &dCollect{
 											ARG:  collect__attributes__pt,
-											arg1: &Node{},
+											arg1: &dNode{},
 										},
-										arg2: &Collect{
+										arg2: &dCollect{
 											ARG:  collect__attributes__cat,
-											arg1: &Node{},
+											arg1: &dNode{},
 										},
 									},
 								},
 							},
 						},
-						arg2: &Collect{
+						arg2: &dCollect{
 							ARG: collect__attributes__begin,
-							arg1: &Collect{
+							arg1: &dCollect{
 								ARG: collect__parent__type__node,
-								arg1: &Variable{
+								arg1: &dVariable{
 									VAR: node,
 								},
 							},
@@ -144,13 +144,13 @@ func reconstructEmptyHead(q *Context) bool {
 				end = leftEdge(n1(others), q) + 1 // + 0.1
 			}
 		} else {
-			end = i1(Find(q /* $node/../@end */, &XPath{
-				arg1: &Sort{
-					arg1: &Collect{
+			end = i1(find(q /* $node/../@end */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
 						ARG: collect__attributes__end,
-						arg1: &Collect{
+						arg1: &dCollect{
 							ARG: collect__parent__type__node,
-							arg1: &Variable{
+							arg1: &dVariable{
 								VAR: node,
 							},
 						},
@@ -177,7 +177,7 @@ func reconstructEmptyHead(q *Context) bool {
 		node.Postag = antenode.Postag
 		node.Pt = antenode.Pt
 		node.udRelation = "_"
-		node.udHeadPosition = UNDERSCORE
+		node.udHeadPosition = underscore
 		node.udCopiedFrom = copied
 
 		// kopieer verder alle ud-attributen
@@ -211,31 +211,31 @@ func reconstructEmptyHead(q *Context) bool {
 			return q.ptnodes[i].End < q.ptnodes[j].End
 		})
 		sort.Slice(q.varptnodes, func(i, j int) bool {
-			return q.varptnodes[i].(*NodeType).End < q.varptnodes[j].(*NodeType).End
+			return q.varptnodes[i].(*nodeType).End < q.varptnodes[j].(*nodeType).End
 		})
 	}
 	return found
 }
 
-func leftEdge(node *NodeType, q *Context) int {
+func leftEdge(node *nodeType, q *context) int {
 	left := 1000000
-	for _, n := range Find(q /* $node/descendant-or-self::node[@pt] */, &XPath{
-		arg1: &Sort{
-			arg1: &Collect{
+	for _, n := range find(q /* $node/descendant-or-self::node[@pt] */, &xPath{
+		arg1: &dSort{
+			arg1: &dCollect{
 				ARG: collect__descendant__or__self__node,
-				arg1: &Variable{
+				arg1: &dVariable{
 					VAR: node,
 				},
-				arg2: &Predicate{
-					arg1: &Collect{
+				arg2: &dPredicate{
+					arg1: &dCollect{
 						ARG:  collect__attributes__pt,
-						arg1: &Node{},
+						arg1: &dNode{},
 					},
 				},
 			},
 		},
 	}) {
-		if begin := n.(*NodeType).Begin; begin < left {
+		if begin := n.(*nodeType).Begin; begin < left {
 			left = begin
 		}
 	}

@@ -1,9 +1,9 @@
 // +build ignore
 
-package main
+package alud
 
 /*
-func auxiliary(nodes []*NodeType, q *Context) string {
+func auxiliary(nodes []*nodeType, q *context) string {
 	if len(nodes) != 1 { // TODO: in script staat: = 0
 		return "ERROR_AUXILIARY_FUNCTION_TAKES_EXACTLY_ONE_ARG"
 	}
@@ -11,7 +11,7 @@ func auxiliary(nodes []*NodeType, q *Context) string {
 }
 */
 
-func auxiliary1(node *NodeType, q *Context) string {
+func auxiliary1(node *nodeType, q *context) string {
 
 	if node.Pt != "ww" {
 		return "ERROR_NO_VERB"

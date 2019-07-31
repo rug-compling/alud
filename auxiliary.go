@@ -2,10 +2,10 @@
 // GENERATED FILE -- DO NOT EDIT
 //
 
-package main
+package alud
 
 /*
-func auxiliary(nodes []*NodeType, q *Context) string {
+func auxiliary(nodes []*nodeType, q *context) string {
 	if len(nodes) != 1 { // TODO: in script staat: = 0
 		return "ERROR_AUXILIARY_FUNCTION_TAKES_EXACTLY_ONE_ARG"
 	}
@@ -13,7 +13,7 @@ func auxiliary(nodes []*NodeType, q *Context) string {
 }
 */
 
-func auxiliary1(node *NodeType, q *Context) string {
+func auxiliary1(node *nodeType, q *context) string {
 
 	if node.Pt != "ww" {
 		return "ERROR_NO_VERB"
@@ -22,44 +22,44 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "verb"
 	}
 
-	if Test(q, /* $node[not(../node[@rel=("obj1","se","vc")]) and
+	if test(q, /* $node[not(../node[@rel=("obj1","se","vc")]) and
 			        (: ud documentation suggests 1 cop per lg, van Eynde suggests much more, compromise: the traditional ones :)
 			        @lemma=("zijn","lijken","blijken","blijven","schijnen","heten","voorkomen","worden","dunken") and
 		                 ( contains(@sc,'copula') or
 		                   contains(@sc,'pred')   or
 		                   contains(@sc,'cleft')  or
 		                   ../node[@rel="predc"]
-		                 ) ] */&XPath{
-			arg1: &Sort{
-				arg1: &Filter{
-					arg1: &Variable{
+		                 ) ] */&xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
 						VAR: node,
 					},
-					arg2: &Sort{
-						arg1: &And{
-							arg1: &And{
-								arg1: &Function{
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dAnd{
+								arg1: &dFunction{
 									ARG: function__not__1__args,
-									arg1: &Arg{
-										arg1: &Sort{
-											arg1: &Collect{
+									arg1: &dArg{
+										arg1: &dSort{
+											arg1: &dCollect{
 												ARG: collect__child__node,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG:  collect__parent__type__node,
-													arg1: &Node{},
+													arg1: &dNode{},
 												},
-												arg2: &Predicate{
-													arg1: &Equal{
+												arg2: &dPredicate{
+													arg1: &dEqual{
 														ARG: equal__is,
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
-														arg2: &Elem{
+														arg2: &dElem{
 															DATA: []interface{}{"obj1", "se", "vc"},
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
@@ -68,93 +68,93 @@ func auxiliary1(node *NodeType, q *Context) string {
 										},
 									},
 								},
-								arg2: &Equal{
+								arg2: &dEqual{
 									ARG: equal__is,
-									arg1: &Collect{
+									arg1: &dCollect{
 										ARG:  collect__attributes__lemma,
-										arg1: &Node{},
+										arg1: &dNode{},
 									},
-									arg2: &Elem{
+									arg2: &dElem{
 										DATA: []interface{}{"zijn", "lijken", "blijken", "blijven", "schijnen", "heten", "voorkomen", "worden", "dunken"},
-										arg1: &Collect{
+										arg1: &dCollect{
 											ARG:  collect__attributes__lemma,
-											arg1: &Node{},
+											arg1: &dNode{},
 										},
 									},
 								},
 							},
-							arg2: &Sort{
-								arg1: &Or{
-									arg1: &Or{
-										arg1: &Or{
-											arg1: &Function{
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dOr{
+										arg1: &dOr{
+											arg1: &dFunction{
 												ARG: function__contains__2__args,
-												arg1: &Arg{
-													arg1: &Arg{
-														arg1: &Sort{
-															arg1: &Collect{
+												arg1: &dArg{
+													arg1: &dArg{
+														arg1: &dSort{
+															arg1: &dCollect{
 																ARG:  collect__attributes__sc,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
-													arg2: &Elem{
+													arg2: &dElem{
 														DATA: []interface{}{"copula"},
 													},
 												},
 											},
-											arg2: &Function{
+											arg2: &dFunction{
 												ARG: function__contains__2__args,
-												arg1: &Arg{
-													arg1: &Arg{
-														arg1: &Sort{
-															arg1: &Collect{
+												arg1: &dArg{
+													arg1: &dArg{
+														arg1: &dSort{
+															arg1: &dCollect{
 																ARG:  collect__attributes__sc,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
-													arg2: &Elem{
+													arg2: &dElem{
 														DATA: []interface{}{"pred"},
 													},
 												},
 											},
 										},
-										arg2: &Function{
+										arg2: &dFunction{
 											ARG: function__contains__2__args,
-											arg1: &Arg{
-												arg1: &Arg{
-													arg1: &Sort{
-														arg1: &Collect{
+											arg1: &dArg{
+												arg1: &dArg{
+													arg1: &dSort{
+														arg1: &dCollect{
 															ARG:  collect__attributes__sc,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
 													},
 												},
-												arg2: &Elem{
+												arg2: &dElem{
 													DATA: []interface{}{"cleft"},
 												},
 											},
 										},
 									},
-									arg2: &Collect{
+									arg2: &dCollect{
 										ARG: collect__child__node,
-										arg1: &Collect{
+										arg1: &dCollect{
 											ARG:  collect__parent__type__node,
-											arg1: &Node{},
+											arg1: &dNode{},
 										},
-										arg2: &Predicate{
-											arg1: &Equal{
+										arg2: &dPredicate{
+											arg1: &dEqual{
 												ARG: equal__is,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG:  collect__attributes__rel,
-													arg1: &Node{},
+													arg1: &dNode{},
 												},
-												arg2: &Elem{
+												arg2: &dElem{
 													DATA: []interface{}{"predc"},
-													arg1: &Collect{
+													arg1: &dCollect{
 														ARG:  collect__attributes__rel,
-														arg1: &Node{},
+														arg1: &dNode{},
 													},
 												},
 											},
@@ -170,7 +170,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 		return "cop"
 	}
 
-	if Test(q, /* $node[@lemma=("zijn","worden") and
+	if test(q, /* $node[@lemma=("zijn","worden") and
 		   ( @sc="passive"  or
 		   	 ( ../node[@rel="vc"] and
 		         ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj1"]/@index or
@@ -180,140 +180,140 @@ func auxiliary1(node *NodeType, q *Context) string {
 		          or not(../node[@rel="su"])
 		          )
 		      )
-		   ) ] */&XPath{
-			arg1: &Sort{
-				arg1: &Filter{
-					arg1: &Variable{
+		   ) ] */&xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
 						VAR: node,
 					},
-					arg2: &Sort{
-						arg1: &And{
-							arg1: &Equal{
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dEqual{
 								ARG: equal__is,
-								arg1: &Collect{
+								arg1: &dCollect{
 									ARG:  collect__attributes__lemma,
-									arg1: &Node{},
+									arg1: &dNode{},
 								},
-								arg2: &Elem{
+								arg2: &dElem{
 									DATA: []interface{}{"zijn", "worden"},
-									arg1: &Collect{
+									arg1: &dCollect{
 										ARG:  collect__attributes__lemma,
-										arg1: &Node{},
+										arg1: &dNode{},
 									},
 								},
 							},
-							arg2: &Sort{
-								arg1: &Or{
-									arg1: &Equal{
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dEqual{
 										ARG: equal__is,
-										arg1: &Collect{
+										arg1: &dCollect{
 											ARG:  collect__attributes__sc,
-											arg1: &Node{},
+											arg1: &dNode{},
 										},
-										arg2: &Elem{
+										arg2: &dElem{
 											DATA: []interface{}{"passive"},
-											arg1: &Collect{
+											arg1: &dCollect{
 												ARG:  collect__attributes__sc,
-												arg1: &Node{},
+												arg1: &dNode{},
 											},
 										},
 									},
-									arg2: &Sort{
-										arg1: &And{
-											arg1: &Collect{
+									arg2: &dSort{
+										arg1: &dAnd{
+											arg1: &dCollect{
 												ARG: collect__child__node,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG:  collect__parent__type__node,
-													arg1: &Node{},
+													arg1: &dNode{},
 												},
-												arg2: &Predicate{
-													arg1: &Equal{
+												arg2: &dPredicate{
+													arg1: &dEqual{
 														ARG: equal__is,
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
-														arg2: &Elem{
+														arg2: &dElem{
 															DATA: []interface{}{"vc"},
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
 												},
 											},
-											arg2: &Sort{
-												arg1: &Or{
-													arg1: &Or{
-														arg1: &Or{
-															arg1: &Equal{
+											arg2: &dSort{
+												arg1: &dOr{
+													arg1: &dOr{
+														arg1: &dOr{
+															arg1: &dEqual{
 																ARG: equal__is,
-																arg1: &Collect{
+																arg1: &dCollect{
 																	ARG: collect__attributes__index,
-																	arg1: &Collect{
+																	arg1: &dCollect{
 																		ARG: collect__child__node,
-																		arg1: &Collect{
+																		arg1: &dCollect{
 																			ARG:  collect__parent__type__node,
-																			arg1: &Node{},
+																			arg1: &dNode{},
 																		},
-																		arg2: &Predicate{
-																			arg1: &Equal{
+																		arg2: &dPredicate{
+																			arg1: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__rel,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Elem{
+																				arg2: &dElem{
 																					DATA: []interface{}{"su"},
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
 																				},
 																			},
 																		},
 																	},
 																},
-																arg2: &Collect{
+																arg2: &dCollect{
 																	ARG: collect__attributes__index,
-																	arg1: &Collect{
+																	arg1: &dCollect{
 																		ARG: collect__child__node,
-																		arg1: &Collect{
+																		arg1: &dCollect{
 																			ARG: collect__child__node,
-																			arg1: &Collect{
+																			arg1: &dCollect{
 																				ARG:  collect__parent__type__node,
-																				arg1: &Node{},
+																				arg1: &dNode{},
 																			},
-																			arg2: &Predicate{
-																				arg1: &Equal{
+																			arg2: &dPredicate{
+																				arg1: &dEqual{
 																					ARG: equal__is,
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
-																					arg2: &Elem{
+																					arg2: &dElem{
 																						DATA: []interface{}{"vc"},
-																						arg1: &Collect{
+																						arg1: &dCollect{
 																							ARG:  collect__attributes__rel,
-																							arg1: &Node{},
+																							arg1: &dNode{},
 																						},
 																					},
 																				},
 																			},
 																		},
-																		arg2: &Predicate{
-																			arg1: &Equal{
+																		arg2: &dPredicate{
+																			arg1: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__rel,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Elem{
+																				arg2: &dElem{
 																					DATA: []interface{}{"obj1"},
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
 																				},
 																			},
@@ -321,92 +321,92 @@ func auxiliary1(node *NodeType, q *Context) string {
 																	},
 																},
 															},
-															arg2: &Equal{
+															arg2: &dEqual{
 																ARG: equal__is,
-																arg1: &Collect{
+																arg1: &dCollect{
 																	ARG: collect__attributes__index,
-																	arg1: &Collect{
+																	arg1: &dCollect{
 																		ARG: collect__child__node,
-																		arg1: &Collect{
+																		arg1: &dCollect{
 																			ARG:  collect__parent__type__node,
-																			arg1: &Node{},
+																			arg1: &dNode{},
 																		},
-																		arg2: &Predicate{
-																			arg1: &Equal{
+																		arg2: &dPredicate{
+																			arg1: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__rel,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Elem{
+																				arg2: &dElem{
 																					DATA: []interface{}{"su"},
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
 																				},
 																			},
 																		},
 																	},
 																},
-																arg2: &Collect{
+																arg2: &dCollect{
 																	ARG: collect__attributes__index,
-																	arg1: &Collect{
+																	arg1: &dCollect{
 																		ARG: collect__child__node,
-																		arg1: &Collect{
+																		arg1: &dCollect{
 																			ARG: collect__child__node,
-																			arg1: &Collect{
+																			arg1: &dCollect{
 																				ARG: collect__child__node,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__parent__type__node,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Predicate{
-																					arg1: &Equal{
+																				arg2: &dPredicate{
+																					arg1: &dEqual{
 																						ARG: equal__is,
-																						arg1: &Collect{
+																						arg1: &dCollect{
 																							ARG:  collect__attributes__rel,
-																							arg1: &Node{},
+																							arg1: &dNode{},
 																						},
-																						arg2: &Elem{
+																						arg2: &dElem{
 																							DATA: []interface{}{"vc"},
-																							arg1: &Collect{
+																							arg1: &dCollect{
 																								ARG:  collect__attributes__rel,
-																								arg1: &Node{},
+																								arg1: &dNode{},
 																							},
 																						},
 																					},
 																				},
 																			},
-																			arg2: &Predicate{
-																				arg1: &Equal{
+																			arg2: &dPredicate{
+																				arg1: &dEqual{
 																					ARG: equal__is,
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
-																					arg2: &Elem{
+																					arg2: &dElem{
 																						DATA: []interface{}{"cnj"},
-																						arg1: &Collect{
+																						arg1: &dCollect{
 																							ARG:  collect__attributes__rel,
-																							arg1: &Node{},
+																							arg1: &dNode{},
 																						},
 																					},
 																				},
 																			},
 																		},
-																		arg2: &Predicate{
-																			arg1: &Equal{
+																		arg2: &dPredicate{
+																			arg1: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__rel,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Elem{
+																				arg2: &dElem{
 																					DATA: []interface{}{"obj1"},
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
 																				},
 																			},
@@ -415,44 +415,44 @@ func auxiliary1(node *NodeType, q *Context) string {
 																},
 															},
 														},
-														arg2: &Equal{
+														arg2: &dEqual{
 															ARG: equal__is,
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG: collect__attributes__index,
-																arg1: &Collect{
+																arg1: &dCollect{
 																	ARG: collect__child__node,
-																	arg1: &Collect{
+																	arg1: &dCollect{
 																		ARG:  collect__parent__type__node,
-																		arg1: &Node{},
+																		arg1: &dNode{},
 																	},
-																	arg2: &Predicate{
-																		arg1: &And{
-																			arg1: &Equal{
+																	arg2: &dPredicate{
+																		arg1: &dAnd{
+																			arg1: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__rel,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Elem{
+																				arg2: &dElem{
 																					DATA: []interface{}{"vc"},
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
 																				},
 																			},
-																			arg2: &Function{
+																			arg2: &dFunction{
 																				ARG: function__not__1__args,
-																				arg1: &Arg{
-																					arg1: &Sort{
-																						arg1: &Or{
-																							arg1: &Collect{
+																				arg1: &dArg{
+																					arg1: &dSort{
+																						arg1: &dOr{
+																							arg1: &dCollect{
 																								ARG:  collect__attributes__pt,
-																								arg1: &Node{},
+																								arg1: &dNode{},
 																							},
-																							arg2: &Collect{
+																							arg2: &dCollect{
 																								ARG:  collect__attributes__cat,
-																								arg1: &Node{},
+																								arg1: &dNode{},
 																							},
 																						},
 																					},
@@ -462,75 +462,75 @@ func auxiliary1(node *NodeType, q *Context) string {
 																	},
 																},
 															},
-															arg2: &Collect{
+															arg2: &dCollect{
 																ARG: collect__attributes__index,
-																arg1: &Filter{
-																	arg1: &Variable{
+																arg1: &dFilter{
+																	arg1: &dVariable{
 																		VAR: q.varindexnodes,
 																	},
-																	arg2: &Sort{
-																		arg1: &And{
-																			arg1: &Equal{
+																	arg2: &dSort{
+																		arg1: &dAnd{
+																			arg1: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__rel,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Elem{
+																				arg2: &dElem{
 																					DATA: []interface{}{"vc"},
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__rel,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
 																				},
 																			},
-																			arg2: &Equal{
+																			arg2: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG: collect__attributes__index,
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__child__node,
-																						arg1: &Node{},
-																						arg2: &Predicate{
-																							arg1: &Equal{
+																						arg1: &dNode{},
+																						arg2: &dPredicate{
+																							arg1: &dEqual{
 																								ARG: equal__is,
-																								arg1: &Collect{
+																								arg1: &dCollect{
 																									ARG:  collect__attributes__rel,
-																									arg1: &Node{},
+																									arg1: &dNode{},
 																								},
-																								arg2: &Elem{
+																								arg2: &dElem{
 																									DATA: []interface{}{"obj1"},
-																									arg1: &Collect{
+																									arg1: &dCollect{
 																										ARG:  collect__attributes__rel,
-																										arg1: &Node{},
+																										arg1: &dNode{},
 																									},
 																								},
 																							},
 																						},
 																					},
 																				},
-																				arg2: &Collect{
+																				arg2: &dCollect{
 																					ARG: collect__attributes__index,
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG: collect__child__node,
-																						arg1: &Collect{
+																						arg1: &dCollect{
 																							ARG: collect__parent__type__node,
-																							arg1: &Variable{
+																							arg1: &dVariable{
 																								VAR: node,
 																							},
 																						},
-																						arg2: &Predicate{
-																							arg1: &Equal{
+																						arg2: &dPredicate{
+																							arg1: &dEqual{
 																								ARG: equal__is,
-																								arg1: &Collect{
+																								arg1: &dCollect{
 																									ARG:  collect__attributes__rel,
-																									arg1: &Node{},
+																									arg1: &dNode{},
 																								},
-																								arg2: &Elem{
+																								arg2: &dElem{
 																									DATA: []interface{}{"su"},
-																									arg1: &Collect{
+																									arg1: &dCollect{
 																										ARG:  collect__attributes__rel,
-																										arg1: &Node{},
+																										arg1: &dNode{},
 																									},
 																								},
 																							},
@@ -544,28 +544,28 @@ func auxiliary1(node *NodeType, q *Context) string {
 															},
 														},
 													},
-													arg2: &Function{
+													arg2: &dFunction{
 														ARG: function__not__1__args,
-														arg1: &Arg{
-															arg1: &Sort{
-																arg1: &Collect{
+														arg1: &dArg{
+															arg1: &dSort{
+																arg1: &dCollect{
 																	ARG: collect__child__node,
-																	arg1: &Collect{
+																	arg1: &dCollect{
 																		ARG:  collect__parent__type__node,
-																		arg1: &Node{},
+																		arg1: &dNode{},
 																	},
-																	arg2: &Predicate{
-																		arg1: &Equal{
+																	arg2: &dPredicate{
+																		arg1: &dEqual{
 																			ARG: equal__is,
-																			arg1: &Collect{
+																			arg1: &dCollect{
 																				ARG:  collect__attributes__rel,
-																				arg1: &Node{},
+																				arg1: &dNode{},
 																			},
-																			arg2: &Elem{
+																			arg2: &dElem{
 																				DATA: []interface{}{"su"},
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__rel,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
 																			},
 																		},
@@ -589,100 +589,100 @@ func auxiliary1(node *NodeType, q *Context) string {
 	}
 
 	// krijgen passive with iobj control
-	if Test(q, /* $node[@lemma="krijgen" and
+	if test(q, /* $node[@lemma="krijgen" and
 			              ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj2"]/@index or
 		                  ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="cnj"]/node[@rel="obj2"]/@index
-		                )] */&XPath{
-			arg1: &Sort{
-				arg1: &Filter{
-					arg1: &Variable{
+		                )] */&xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
 						VAR: node,
 					},
-					arg2: &Sort{
-						arg1: &And{
-							arg1: &Equal{
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dEqual{
 								ARG: equal__is,
-								arg1: &Collect{
+								arg1: &dCollect{
 									ARG:  collect__attributes__lemma,
-									arg1: &Node{},
+									arg1: &dNode{},
 								},
-								arg2: &Elem{
+								arg2: &dElem{
 									DATA: []interface{}{"krijgen"},
-									arg1: &Collect{
+									arg1: &dCollect{
 										ARG:  collect__attributes__lemma,
-										arg1: &Node{},
+										arg1: &dNode{},
 									},
 								},
 							},
-							arg2: &Sort{
-								arg1: &Or{
-									arg1: &Equal{
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dEqual{
 										ARG: equal__is,
-										arg1: &Collect{
+										arg1: &dCollect{
 											ARG: collect__attributes__index,
-											arg1: &Collect{
+											arg1: &dCollect{
 												ARG: collect__child__node,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG:  collect__parent__type__node,
-													arg1: &Node{},
+													arg1: &dNode{},
 												},
-												arg2: &Predicate{
-													arg1: &Equal{
+												arg2: &dPredicate{
+													arg1: &dEqual{
 														ARG: equal__is,
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
-														arg2: &Elem{
+														arg2: &dElem{
 															DATA: []interface{}{"su"},
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
 												},
 											},
 										},
-										arg2: &Collect{
+										arg2: &dCollect{
 											ARG: collect__attributes__index,
-											arg1: &Collect{
+											arg1: &dCollect{
 												ARG: collect__child__node,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG: collect__child__node,
-													arg1: &Collect{
+													arg1: &dCollect{
 														ARG:  collect__parent__type__node,
-														arg1: &Node{},
+														arg1: &dNode{},
 													},
-													arg2: &Predicate{
-														arg1: &Equal{
+													arg2: &dPredicate{
+														arg1: &dEqual{
 															ARG: equal__is,
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
-															arg2: &Elem{
+															arg2: &dElem{
 																DATA: []interface{}{"vc"},
-																arg1: &Collect{
+																arg1: &dCollect{
 																	ARG:  collect__attributes__rel,
-																	arg1: &Node{},
+																	arg1: &dNode{},
 																},
 															},
 														},
 													},
 												},
-												arg2: &Predicate{
-													arg1: &Equal{
+												arg2: &dPredicate{
+													arg1: &dEqual{
 														ARG: equal__is,
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
-														arg2: &Elem{
+														arg2: &dElem{
 															DATA: []interface{}{"obj2"},
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
@@ -690,92 +690,92 @@ func auxiliary1(node *NodeType, q *Context) string {
 											},
 										},
 									},
-									arg2: &Equal{
+									arg2: &dEqual{
 										ARG: equal__is,
-										arg1: &Collect{
+										arg1: &dCollect{
 											ARG: collect__attributes__index,
-											arg1: &Collect{
+											arg1: &dCollect{
 												ARG: collect__child__node,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG:  collect__parent__type__node,
-													arg1: &Node{},
+													arg1: &dNode{},
 												},
-												arg2: &Predicate{
-													arg1: &Equal{
+												arg2: &dPredicate{
+													arg1: &dEqual{
 														ARG: equal__is,
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
-														arg2: &Elem{
+														arg2: &dElem{
 															DATA: []interface{}{"su"},
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
 												},
 											},
 										},
-										arg2: &Collect{
+										arg2: &dCollect{
 											ARG: collect__attributes__index,
-											arg1: &Collect{
+											arg1: &dCollect{
 												ARG: collect__child__node,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG: collect__child__node,
-													arg1: &Collect{
+													arg1: &dCollect{
 														ARG: collect__child__node,
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__parent__type__node,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
-														arg2: &Predicate{
-															arg1: &Equal{
+														arg2: &dPredicate{
+															arg1: &dEqual{
 																ARG: equal__is,
-																arg1: &Collect{
+																arg1: &dCollect{
 																	ARG:  collect__attributes__rel,
-																	arg1: &Node{},
+																	arg1: &dNode{},
 																},
-																arg2: &Elem{
+																arg2: &dElem{
 																	DATA: []interface{}{"vc"},
-																	arg1: &Collect{
+																	arg1: &dCollect{
 																		ARG:  collect__attributes__rel,
-																		arg1: &Node{},
+																		arg1: &dNode{},
 																	},
 																},
 															},
 														},
 													},
-													arg2: &Predicate{
-														arg1: &Equal{
+													arg2: &dPredicate{
+														arg1: &dEqual{
 															ARG: equal__is,
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
-															arg2: &Elem{
+															arg2: &dElem{
 																DATA: []interface{}{"cnj"},
-																arg1: &Collect{
+																arg1: &dCollect{
 																	ARG:  collect__attributes__rel,
-																	arg1: &Node{},
+																	arg1: &dNode{},
 																},
 															},
 														},
 													},
 												},
-												arg2: &Predicate{
-													arg1: &Equal{
+												arg2: &dPredicate{
+													arg1: &dEqual{
 														ARG: equal__is,
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
-														arg2: &Elem{
+														arg2: &dElem{
 															DATA: []interface{}{"obj2"},
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
 														},
 													},
@@ -794,7 +794,7 @@ func auxiliary1(node *NodeType, q *Context) string {
 	}
 
 	// alpino has no principled distinction between AUX and VERB, should be TAME verbs semantically, we follow ENGLISH
-	if Test(q, /* $node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  :)
+	if test(q, /* $node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  :)
 		   ( starts-with(@sc,'aux') or
 		     ( ../node[@rel="vc"  and
 		                ( @cat=("ppart","inf","ti") or
@@ -805,36 +805,36 @@ func auxiliary1(node *NodeType, q *Context) string {
 		       @lemma=("blijken","hebben","hoeven","kunnen","moeten","mogen","zijn","zullen")
 		     )
 		   )
-		 ] */&XPath{
-			arg1: &Sort{
-				arg1: &Filter{
-					arg1: &Variable{
+		 ] */&xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
 						VAR: node,
 					},
-					arg2: &Sort{
-						arg1: &And{
-							arg1: &Function{
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dFunction{
 								ARG: function__not__1__args,
-								arg1: &Arg{
-									arg1: &Sort{
-										arg1: &Collect{
+								arg1: &dArg{
+									arg1: &dSort{
+										arg1: &dCollect{
 											ARG: collect__child__node,
-											arg1: &Collect{
+											arg1: &dCollect{
 												ARG:  collect__parent__type__node,
-												arg1: &Node{},
+												arg1: &dNode{},
 											},
-											arg2: &Predicate{
-												arg1: &Equal{
+											arg2: &dPredicate{
+												arg1: &dEqual{
 													ARG: equal__is,
-													arg1: &Collect{
+													arg1: &dCollect{
 														ARG:  collect__attributes__rel,
-														arg1: &Node{},
+														arg1: &dNode{},
 													},
-													arg2: &Elem{
+													arg2: &dElem{
 														DATA: []interface{}{"predc"},
-														arg1: &Collect{
+														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
-															arg1: &Node{},
+															arg1: &dNode{},
 														},
 													},
 												},
@@ -843,111 +843,111 @@ func auxiliary1(node *NodeType, q *Context) string {
 									},
 								},
 							},
-							arg2: &Sort{
-								arg1: &Or{
-									arg1: &Function{
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dFunction{
 										ARG: function__starts__with__2__args,
-										arg1: &Arg{
-											arg1: &Arg{
-												arg1: &Sort{
-													arg1: &Collect{
+										arg1: &dArg{
+											arg1: &dArg{
+												arg1: &dSort{
+													arg1: &dCollect{
 														ARG:  collect__attributes__sc,
-														arg1: &Node{},
+														arg1: &dNode{},
 													},
 												},
 											},
-											arg2: &Elem{
+											arg2: &dElem{
 												DATA: []interface{}{"aux"},
 											},
 										},
 									},
-									arg2: &Sort{
-										arg1: &And{
-											arg1: &Collect{
+									arg2: &dSort{
+										arg1: &dAnd{
+											arg1: &dCollect{
 												ARG: collect__child__node,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG:  collect__parent__type__node,
-													arg1: &Node{},
+													arg1: &dNode{},
 												},
-												arg2: &Predicate{
-													arg1: &And{
-														arg1: &Equal{
+												arg2: &dPredicate{
+													arg1: &dAnd{
+														arg1: &dEqual{
 															ARG: equal__is,
-															arg1: &Collect{
+															arg1: &dCollect{
 																ARG:  collect__attributes__rel,
-																arg1: &Node{},
+																arg1: &dNode{},
 															},
-															arg2: &Elem{
+															arg2: &dElem{
 																DATA: []interface{}{"vc"},
-																arg1: &Collect{
+																arg1: &dCollect{
 																	ARG:  collect__attributes__rel,
-																	arg1: &Node{},
+																	arg1: &dNode{},
 																},
 															},
 														},
-														arg2: &Sort{
-															arg1: &Or{
-																arg1: &Or{
-																	arg1: &Equal{
+														arg2: &dSort{
+															arg1: &dOr{
+																arg1: &dOr{
+																	arg1: &dEqual{
 																		ARG: equal__is,
-																		arg1: &Collect{
+																		arg1: &dCollect{
 																			ARG:  collect__attributes__cat,
-																			arg1: &Node{},
+																			arg1: &dNode{},
 																		},
-																		arg2: &Elem{
+																		arg2: &dElem{
 																			DATA: []interface{}{"ppart", "inf", "ti"},
-																			arg1: &Collect{
+																			arg1: &dCollect{
 																				ARG:  collect__attributes__cat,
-																				arg1: &Node{},
+																				arg1: &dNode{},
 																			},
 																		},
 																	},
-																	arg2: &Sort{
-																		arg1: &And{
-																			arg1: &Equal{
+																	arg2: &dSort{
+																		arg1: &dAnd{
+																			arg1: &dEqual{
 																				ARG: equal__is,
-																				arg1: &Collect{
+																				arg1: &dCollect{
 																					ARG:  collect__attributes__cat,
-																					arg1: &Node{},
+																					arg1: &dNode{},
 																				},
-																				arg2: &Elem{
+																				arg2: &dElem{
 																					DATA: []interface{}{"conj"},
-																					arg1: &Collect{
+																					arg1: &dCollect{
 																						ARG:  collect__attributes__cat,
-																						arg1: &Node{},
+																						arg1: &dNode{},
 																					},
 																				},
 																			},
-																			arg2: &Collect{
+																			arg2: &dCollect{
 																				ARG:  collect__child__node,
-																				arg1: &Node{},
-																				arg2: &Predicate{
-																					arg1: &And{
-																						arg1: &Equal{
+																				arg1: &dNode{},
+																				arg2: &dPredicate{
+																					arg1: &dAnd{
+																						arg1: &dEqual{
 																							ARG: equal__is,
-																							arg1: &Collect{
+																							arg1: &dCollect{
 																								ARG:  collect__attributes__rel,
-																								arg1: &Node{},
+																								arg1: &dNode{},
 																							},
-																							arg2: &Elem{
+																							arg2: &dElem{
 																								DATA: []interface{}{"cnj"},
-																								arg1: &Collect{
+																								arg1: &dCollect{
 																									ARG:  collect__attributes__rel,
-																									arg1: &Node{},
+																									arg1: &dNode{},
 																								},
 																							},
 																						},
-																						arg2: &Equal{
+																						arg2: &dEqual{
 																							ARG: equal__is,
-																							arg1: &Collect{
+																							arg1: &dCollect{
 																								ARG:  collect__attributes__cat,
-																								arg1: &Node{},
+																								arg1: &dNode{},
 																							},
-																							arg2: &Elem{
+																							arg2: &dElem{
 																								DATA: []interface{}{"ppart", "inf", "ti"},
-																								arg1: &Collect{
+																								arg1: &dCollect{
 																									ARG:  collect__attributes__cat,
-																									arg1: &Node{},
+																									arg1: &dNode{},
 																								},
 																							},
 																						},
@@ -957,24 +957,24 @@ func auxiliary1(node *NodeType, q *Context) string {
 																		},
 																	},
 																},
-																arg2: &Sort{
-																	arg1: &And{
-																		arg1: &Collect{
+																arg2: &dSort{
+																	arg1: &dAnd{
+																		arg1: &dCollect{
 																			ARG:  collect__attributes__index,
-																			arg1: &Node{},
+																			arg1: &dNode{},
 																		},
-																		arg2: &Function{
+																		arg2: &dFunction{
 																			ARG: function__not__1__args,
-																			arg1: &Arg{
-																				arg1: &Sort{
-																					arg1: &Or{
-																						arg1: &Collect{
+																			arg1: &dArg{
+																				arg1: &dSort{
+																					arg1: &dOr{
+																						arg1: &dCollect{
 																							ARG:  collect__attributes__pt,
-																							arg1: &Node{},
+																							arg1: &dNode{},
 																						},
-																						arg2: &Collect{
+																						arg2: &dCollect{
 																							ARG:  collect__attributes__cat,
-																							arg1: &Node{},
+																							arg1: &dNode{},
 																						},
 																					},
 																				},
@@ -987,17 +987,17 @@ func auxiliary1(node *NodeType, q *Context) string {
 													},
 												},
 											},
-											arg2: &Equal{
+											arg2: &dEqual{
 												ARG: equal__is,
-												arg1: &Collect{
+												arg1: &dCollect{
 													ARG:  collect__attributes__lemma,
-													arg1: &Node{},
+													arg1: &dNode{},
 												},
-												arg2: &Elem{
+												arg2: &dElem{
 													DATA: []interface{}{"blijken", "hebben", "hoeven", "kunnen", "moeten", "mogen", "zijn", "zullen"},
-													arg1: &Collect{
+													arg1: &dCollect{
 														ARG:  collect__attributes__lemma,
-														arg1: &Node{},
+														arg1: &dNode{},
 													},
 												},
 											},

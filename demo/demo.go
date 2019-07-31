@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/pebbe/util"
+	"github.com/rug-compling/alud"
 
 	"bufio"
 	"encoding/xml"
@@ -60,7 +61,7 @@ func main() {
 }
 
 func doFile(doc []byte, filename string) {
-	result, err := doDoc(doc, filename)
+	result, err := alud.Ud(doc, filename)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
 	} else {

@@ -1,22 +1,22 @@
 // +build ignore
 
-package main
+package alud
 
 import (
 	"sort"
 )
 
 // recursive
-func externalHeadPosition(nodes []interface{}, q *Context) int {
+func externalHeadPosition(nodes []interface{}, q *context) int {
 	if depthCheck(q, "externalHeadPosition") {
-		return ERROR_RECURSION_LIMIT
+		return error_RECURSION_LIMIT
 	}
 
 	if len(nodes) == 0 {
-		return ERROR_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG
+		return error_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG
 	}
 
-	node := nodes[0].(*NodeType)
+	node := nodes[0].(*nodeType)
 
 	if node.Rel == "hd" && (node.udPos == "ADP" || node.parent.Cat == "pp") {
 		// vol vertrouwen
@@ -162,14 +162,14 @@ func externalHeadPosition(nodes []interface{}, q *Context) int {
 		if node.parent.Begin >= 0 {
 			return externalHeadPosition(node.axParent, q)
 		}
-		return ERROR_NO_HEAD_FOUND
+		return error_NO_HEAD_FOUND
 	}
 
 	if node.Rel == "dlink" || node.Rel == "sat" || node.Rel == "tag" {
 		if n := FIND(q, `$node/../node[@rel="nucl"]`); len(n) > 0 {
 			return internalHeadPositionWithGapping(n, q)
 		}
-		return ERROR_NO_EXTERNAL_HEAD
+		return error_NO_EXTERNAL_HEAD
 	}
 
 	if node.Rel == "vc" {
@@ -270,19 +270,19 @@ func externalHeadPosition(nodes []interface{}, q *Context) int {
 		return internalHeadPositionWithGapping(node.axParent, q)
 	}
 
-	return ERROR_NO_EXTERNAL_HEAD
+	return error_NO_EXTERNAL_HEAD
 }
 
 // recursive
-func internalHeadPosition(nodes []interface{}, q *Context) int {
+func internalHeadPosition(nodes []interface{}, q *context) int {
 	if depthCheck(q, "internalHeadPosition") {
-		return ERROR_RECURSION_LIMIT
+		return error_RECURSION_LIMIT
 	}
 
 	if n := len(nodes); n == 0 {
-		return ERROR_NO_INTERNAL_HEAD_POSITION_FOUND
+		return error_NO_INTERNAL_HEAD_POSITION_FOUND
 	} else if n > 1 {
-		return ERROR_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND
+		return error_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND
 	}
 	node := nodes[0]
 
@@ -365,10 +365,10 @@ func internalHeadPosition(nodes []interface{}, q *Context) int {
 		return empty_head
 	}
 
-	return ERROR_NO_INTERNAL_HEAD
+	return error_NO_INTERNAL_HEAD
 }
 
-func internalHeadPositionWithGapping(node []interface{}, q *Context) int {
+func internalHeadPositionWithGapping(node []interface{}, q *context) int {
 	if hdPos := internalHeadPosition(node, q); hdPos == empty_head {
 		return internalHeadPositionOfGappedConstituent(node, q)
 	} else {
@@ -376,9 +376,9 @@ func internalHeadPositionWithGapping(node []interface{}, q *Context) int {
 	}
 }
 
-func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int {
+func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int {
 	if depthCheck(q, "internalHeadPositionOfGappedConstituent") {
-		return ERROR_RECURSION_LIMIT
+		return error_RECURSION_LIMIT
 	}
 
 	if TEST(q, `$node/node[@rel="hd" and (@pt or @cat)]`) {
@@ -434,7 +434,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *Context) int
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
-	return ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
+	return error_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
 }
 
 /*
@@ -443,7 +443,7 @@ if interhdpos($node) < internalhdpos($node/..) then do something ad hoc
 because even fixing misplaced heads fails in cases like
 Het front der activisten vertoont dan wel een beeld van lusteloosheid , " aan de basis " is en wordt toch veel werk verzet .
 */
-func headPositionOfConjunction(node *NodeType, q *Context) int {
+func headPositionOfConjunction(node *nodeType, q *context) int {
 
 	internal_head := internalHeadPositionWithGapping([]interface{}{node}, q)
 	leftmost_conj_daughter := nLeft(FIND(q, `$node/../node[@rel="cnj"]`))
@@ -466,7 +466,7 @@ func headPositionOfConjunction(node *NodeType, q *Context) int {
 	return endpos_of_leftmost_conj_constituents[len(endpos_of_leftmost_conj_constituents)-1]
 }
 
-func followingCnjSister(node *NodeType, q *Context) []interface{} {
+func followingCnjSister(node *nodeType, q *context) []interface{} {
 	/*
 	   declare function local:following-cnj-sister($node as element(node)) as element(node)
 	   { let $annotated-sisters :=
@@ -491,7 +491,7 @@ func followingCnjSister(node *NodeType, q *Context) []interface{} {
 
 	// TODO: klopt dit ???
 
-	sisters := []*NodeType{}
+	sisters := []*nodeType{}
 	for _, n := range node.parent.Node {
 		if n.Rel == "cnj" /* && n.Begin > node.Begin */ {
 			b := FIND(q, `$n/descendant-or-self::node[@word]/@begin`)

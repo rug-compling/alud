@@ -1,4 +1,4 @@
-package main
+package alud
 
 import (
 	"fmt"
@@ -6,16 +6,16 @@ import (
 	"strings"
 )
 
-type IndexType int
+type indexType int
 
-type Doer interface {
-	Do(subdoc []interface{}, q *Context) []interface{}
+type doer interface {
+	do(subdoc []interface{}, q *context) []interface{}
 }
 
-type Parent interface {
-	Children() []interface{}
-	Descendants() []interface{}
-	DescendantsOrSelf() []interface{}
+type parent interface {
+	children() []interface{}
+	descendants() []interface{}
+	descendantsOrSelf() []interface{}
 }
 
 const (
@@ -52,8 +52,8 @@ const (
 	function__contains__2__args
 	function__count__1__args
 	function__ends__with__2__args
-	function__first__0__args // LET OP: extra gebruik in (*Collect).Do()
-	function__last__0__args  // LET OP: extra gebruik in (*Collect).Do()
+	function__first__0__args // LET OP: extra gebruik in (*cCollect).do()
+	function__last__0__args  // LET OP: extra gebruik in (*cCollect).do()
 	function__local__internal__head__position__1__args
 	function__not__1__args
 	function__starts__with__2__args
@@ -62,49 +62,49 @@ const (
 )
 
 var (
-	TRUE  = []interface{}{true}
-	FALSE = []interface{}{}
+	nTRUE  = []interface{}{true}
+	nFALSE = []interface{}{}
 )
 
-type And struct {
-	arg1 Doer
-	arg2 Doer
+type dAnd struct {
+	arg1 doer
+	arg2 doer
 }
 
-func (d *And) Do(subdoc []interface{}, q *Context) []interface{} {
-	for _, a := range []Doer{d.arg1, d.arg2} {
-		if r := a.Do(subdoc, q); len(r) == 0 {
-			return FALSE
+func (d *dAnd) do(subdoc []interface{}, q *context) []interface{} {
+	for _, a := range []doer{d.arg1, d.arg2} {
+		if r := a.do(subdoc, q); len(r) == 0 {
+			return nFALSE
 		}
 	}
-	return TRUE
+	return nTRUE
 }
 
-type Arg struct {
-	arg1 Doer
-	arg2 Doer
+type dArg struct {
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Arg) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dArg) do(subdoc []interface{}, q *context) []interface{} {
 	result := []interface{}{}
-	for i, a := range []Doer{d.arg1, d.arg2} {
+	for i, a := range []doer{d.arg1, d.arg2} {
 		if i == 0 || a != nil {
 			// TODO: waarom flatten?
-			result = append(result, flatten(a.Do(subdoc, q)))
+			result = append(result, flatten(a.do(subdoc, q)))
 		}
 	}
 	return result
 }
 
-type Cmp struct {
+type dCmp struct {
 	ARG  int
-	arg1 Doer
-	arg2 Doer
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Cmp) Do(subdoc []interface{}, q *Context) []interface{} {
-	arg1 := d.arg1.Do(subdoc, q)
-	arg2 := d.arg2.Do(subdoc, q)
+func (d *dCmp) do(subdoc []interface{}, q *context) []interface{} {
+	arg1 := d.arg1.do(subdoc, q)
+	arg2 := d.arg2.do(subdoc, q)
 	switch d.ARG {
 	case cmp__lt: // <
 		for _, a1 := range arg1 {
@@ -112,136 +112,136 @@ func (d *Cmp) Do(subdoc []interface{}, q *Context) []interface{} {
 				switch a1t := a1.(type) {
 				case int:
 					if a1t < a2.(int) {
-						return TRUE
+						return nTRUE
 					}
 				case string:
 					if a1t < a2.(string) {
-						return TRUE
+						return nTRUE
 					}
 				default:
 					panic(fmt.Sprintf("Cmp<: Missing case for type %T in %s", a1, q.filename))
 				}
 			}
 		}
-		return FALSE
+		return nFALSE
 	case cmp__gt: // >
 		for _, a1 := range arg1 {
 			for _, a2 := range arg2 {
 				switch a1t := a1.(type) {
 				case int:
 					if a1t > a2.(int) {
-						return TRUE
+						return nTRUE
 					}
 				case string:
 					if a1t > a2.(string) {
-						return TRUE
+						return nTRUE
 					}
 				default:
 					panic(fmt.Sprintf("Cmp>: Missing case for type %T in %s", a1, q.filename))
 				}
 			}
 		}
-		return FALSE
+		return nFALSE
 	default:
 		panic("Cmp: Missing case in " + q.filename)
 	}
 }
 
-type Collect struct {
+type dCollect struct {
 	ARG  int
-	arg1 Doer
-	arg2 Doer
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dCollect) do(subdoc []interface{}, q *context) []interface{} {
 
 	lists := [][]interface{}{}
 
 	result1 := []interface{}{}
-	for _, r := range d.arg1.Do(subdoc, q) {
+	for _, r := range d.arg1.do(subdoc, q) {
 		switch d.ARG {
 		case collect__ancestors__node:
-			lists = append(lists, r.(*NodeType).axAncestors)
+			lists = append(lists, r.(*nodeType).axAncestors)
 		case collect__attributes__begin:
-			if i := r.(*NodeType).Begin; i >= 0 {
+			if i := r.(*nodeType).Begin; i >= 0 {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__cat:
-			if i := r.(*NodeType).Cat; i != "" {
+			if i := r.(*nodeType).Cat; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__end:
-			if i := r.(*NodeType).End; i >= 0 {
+			if i := r.(*nodeType).End; i >= 0 {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__index:
-			if i := r.(*NodeType).Index; i > 0 {
+			if i := r.(*nodeType).Index; i > 0 {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__lemma:
-			if i := r.(*NodeType).Lemma; i != "" {
+			if i := r.(*nodeType).Lemma; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__naamval:
-			if i := r.(*NodeType).Naamval; i != "" {
+			if i := r.(*nodeType).Naamval; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__pt:
-			if i := r.(*NodeType).Pt; i != "" {
+			if i := r.(*nodeType).Pt; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__rel:
-			if i := r.(*NodeType).Rel; i != "" {
+			if i := r.(*nodeType).Rel; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__sc:
-			if i := r.(*NodeType).Sc; i != "" {
+			if i := r.(*nodeType).Sc; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__spectype:
-			if i := r.(*NodeType).Spectype; i != "" {
+			if i := r.(*nodeType).Spectype; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aERelation:
-			if i := r.(*NodeType).udERelation; i != "" {
+			if i := r.(*nodeType).udERelation; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aEHeadPosition:
-			if i := r.(*NodeType).udEHeadPosition; i > 0 {
+			if i := r.(*nodeType).udEHeadPosition; i > 0 {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aHeadPosition:
-			if i := r.(*NodeType).udHeadPosition; i > 0 {
+			if i := r.(*nodeType).udHeadPosition; i > 0 {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aPronType:
-			if i := r.(*NodeType).udPronType; i != "" {
+			if i := r.(*nodeType).udPronType; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3aRelation:
-			if i := r.(*NodeType).udRelation; i != "" {
+			if i := r.(*nodeType).udRelation; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__ud_3apos:
-			if i := r.(*NodeType).udPos; i != "" {
+			if i := r.(*nodeType).udPos; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__vwtype:
-			if i := r.(*NodeType).Vwtype; i != "" {
+			if i := r.(*nodeType).Vwtype; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__attributes__word:
-			if i := r.(*NodeType).Word; i != "" {
+			if i := r.(*nodeType).Word; i != "" {
 				result1 = append(result1, i)
 			}
 		case collect__child__node:
-			lists = append(lists, r.(Parent).Children())
+			lists = append(lists, r.(parent).children())
 		case collect__descendant__node:
-			lists = append(lists, r.(Parent).Descendants())
+			lists = append(lists, r.(parent).descendants())
 		case collect__descendant__or__self__type__node, collect__descendant__or__self__node:
-			lists = append(lists, r.(Parent).DescendantsOrSelf())
+			lists = append(lists, r.(parent).descendantsOrSelf())
 		case collect__parent__type__node, collect__parent__node:
-			lists = append(lists, r.(*NodeType).axParent)
+			lists = append(lists, r.(*nodeType).axParent)
 		case collect__self__all__node, collect__self__node:
 			result1 = append(result1, r) // TODO: correct?
 		default:
@@ -263,13 +263,13 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 
 	result2 := []interface{}{}
 
-	if p, ok := d.arg2.(*Predicate); ok {
-		if f, ok := p.arg2.(*Function); ok {
+	if p, ok := d.arg2.(*dPredicate); ok {
+		if f, ok := p.arg2.(*dFunction); ok {
 			if f.ARG == function__first__0__args || f.ARG == function__last__0__args {
 				for _, list := range lists {
 					r1 := []interface{}{}
 					for _, e := range list {
-						if len(p.arg1.Do([]interface{}{e}, q)) > 0 {
+						if len(p.arg1.do([]interface{}{e}, q)) > 0 {
 							r1 = append(r1, e)
 						}
 					}
@@ -292,8 +292,8 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 
 	for _, list := range lists {
 		for _, e := range list {
-			for _, r2 := range d.arg2.Do([]interface{}{e}, q) {
-				if idx, ok := r2.(IndexType); ok {
+			for _, r2 := range d.arg2.do([]interface{}{e}, q) {
+				if idx, ok := r2.(indexType); ok {
 					switch idx {
 					case 1:
 						result2 = append(result2, list[0])
@@ -311,12 +311,12 @@ func (d *Collect) Do(subdoc []interface{}, q *Context) []interface{} {
 	return result2
 }
 
-type Elem struct {
+type dElem struct {
 	DATA []interface{}
-	arg1 Doer
+	arg1 doer
 }
 
-func (d *Elem) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dElem) do(subdoc []interface{}, q *context) []interface{} {
 
 	if d.arg1 == nil {
 		return d.DATA
@@ -344,43 +344,43 @@ func (d *Elem) Do(subdoc []interface{}, q *Context) []interface{} {
 	return d.DATA
 }
 
-type Equal struct {
+type dEqual struct {
 	ARG  int
-	arg1 Doer
-	arg2 Doer
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Equal) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dEqual) do(subdoc []interface{}, q *context) []interface{} {
 	switch d.ARG {
 	case equal__is:
-		a1 := d.arg1.Do(subdoc, q)
-		a2 := d.arg2.Do(subdoc, q)
+		a1 := d.arg1.do(subdoc, q)
+		a2 := d.arg2.do(subdoc, q)
 		for _, aa1 := range a1 {
 			for _, aa2 := range a2 {
 				if aa1 == aa2 {
-					return TRUE
+					return nTRUE
 				}
 			}
 		}
-		return FALSE
+		return nFALSE
 	default:
 		panic("Equal: Missing case in " + q.filename)
 	}
 }
 
-type Filter struct {
-	arg1 Doer
-	arg2 Doer
+type dFilter struct {
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dFilter) do(subdoc []interface{}, q *context) []interface{} {
 
 	result := []interface{}{}
-	r1 := d.arg1.Do(subdoc, q)
+	r1 := d.arg1.do(subdoc, q)
 	for _, r := range r1 {
-		r2 := d.arg2.Do([]interface{}{r}, q)
+		r2 := d.arg2.do([]interface{}{r}, q)
 		if len(r2) > 0 {
-			if idx, ok := r2[0].(IndexType); ok {
+			if idx, ok := r2[0].(indexType); ok {
 				switch idx {
 				case 1:
 					return []interface{}{r1[0]}
@@ -397,16 +397,16 @@ func (d *Filter) Do(subdoc []interface{}, q *Context) []interface{} {
 	return result
 }
 
-type Function struct {
+type dFunction struct {
 	ARG  int
-	arg1 Doer
+	arg1 doer
 }
 
-func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dFunction) do(subdoc []interface{}, q *context) []interface{} {
 
 	var r []interface{}
 	if d.arg1 != nil {
-		r = d.arg1.Do(subdoc, q)
+		r = d.arg1.do(subdoc, q)
 	}
 
 	switch d.ARG {
@@ -414,80 +414,80 @@ func (d *Function) Do(subdoc []interface{}, q *Context) []interface{} {
 		for _, s1 := range r[1].([]interface{}) {
 			for _, s0 := range r[0].([]interface{}) {
 				if strings.Contains(s0.(string), s1.(string)) {
-					return TRUE
+					return nTRUE
 				}
 			}
 		}
-		return FALSE
+		return nFALSE
 	case function__count__1__args:
 		return []interface{}{len(r[0].([]interface{}))}
 	case function__ends__with__2__args:
 		for _, s1 := range r[1].([]interface{}) {
 			for _, s0 := range r[0].([]interface{}) {
 				if strings.HasSuffix(s0.(string), s1.(string)) {
-					return TRUE
+					return nTRUE
 				}
 			}
 		}
-		return FALSE
+		return nFALSE
 	case function__first__0__args:
-		return []interface{}{IndexType(1)}
+		return []interface{}{indexType(1)}
 	case function__last__0__args:
-		return []interface{}{IndexType(-1)}
+		return []interface{}{indexType(-1)}
 	case function__local__internal__head__position__1__args:
 		return []interface{}{internalHeadPosition(r[0].([]interface{}), q)}
 	case function__not__1__args:
 		if len(r[0].([]interface{})) == 0 {
-			return TRUE
+			return nTRUE
 		}
-		return FALSE
+		return nFALSE
 	case function__starts__with__2__args:
 		for _, s1 := range r[1].([]interface{}) {
 			for _, s0 := range r[0].([]interface{}) {
 				if strings.HasPrefix(s0.(string), s1.(string)) {
-					return TRUE
+					return nTRUE
 				}
 			}
 		}
-		return FALSE
+		return nFALSE
 	default:
 		panic("Function: Missing case in " + q.filename)
 	}
 }
 
-type Node struct {
+type dNode struct {
 }
 
-func (d *Node) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dNode) do(subdoc []interface{}, q *context) []interface{} {
 	return subdoc
 }
 
-type Or struct {
-	arg1 Doer
-	arg2 Doer
+type dOr struct {
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Or) Do(subdoc []interface{}, q *Context) []interface{} {
-	for _, a := range []Doer{d.arg1, d.arg2} {
-		if r := a.Do(subdoc, q); len(r) > 0 {
-			return TRUE
+func (d *dOr) do(subdoc []interface{}, q *context) []interface{} {
+	for _, a := range []doer{d.arg1, d.arg2} {
+		if r := a.do(subdoc, q); len(r) > 0 {
+			return nTRUE
 		}
 	}
-	return FALSE
+	return nFALSE
 }
 
-type Plus struct {
+type dPlus struct {
 	ARG  int
-	arg1 Doer
-	arg2 Doer
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Plus) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dPlus) do(subdoc []interface{}, q *context) []interface{} {
 	switch d.ARG {
 	case plus__plus:
 		result := []interface{}{}
-		a1 := d.arg1.Do(subdoc, q)
-		a2 := d.arg2.Do(subdoc, q)
+		a1 := d.arg1.do(subdoc, q)
+		a2 := d.arg2.do(subdoc, q)
 		for _, aa1 := range a1 {
 			for _, aa2 := range a2 {
 				result = append(result, aa1.(int)+aa2.(int))
@@ -496,8 +496,8 @@ func (d *Plus) Do(subdoc []interface{}, q *Context) []interface{} {
 		return result
 	case plus__minus:
 		result := []interface{}{}
-		a1 := d.arg1.Do(subdoc, q)
-		a2 := d.arg2.Do(subdoc, q)
+		a1 := d.arg1.do(subdoc, q)
+		a2 := d.arg2.do(subdoc, q)
 		for _, aa1 := range a1 {
 			for _, aa2 := range a2 {
 				result = append(result, aa1.(int)-aa2.(int))
@@ -509,18 +509,18 @@ func (d *Plus) Do(subdoc []interface{}, q *Context) []interface{} {
 	}
 }
 
-type Predicate struct {
-	arg1 Doer
-	arg2 Doer
+type dPredicate struct {
+	arg1 doer
+	arg2 doer
 }
 
-func (d *Predicate) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dPredicate) do(subdoc []interface{}, q *context) []interface{} {
 
-	result := d.arg1.Do(subdoc, q)
+	result := d.arg1.do(subdoc, q)
 	if d.arg2 == nil || len(result) == 0 {
 		return result
 	}
-	idx := d.arg2.Do(result, q)[0].(IndexType) // TODO: altijd een index?
+	idx := d.arg2.do(result, q)[0].(indexType) // TODO: altijd een index?
 	switch idx {
 	case 1:
 		return []interface{}{result[0]}
@@ -531,29 +531,29 @@ func (d *Predicate) Do(subdoc []interface{}, q *Context) []interface{} {
 	}
 }
 
-type Root struct {
+type dRoot struct {
 }
 
-func (d *Root) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dRoot) do(subdoc []interface{}, q *context) []interface{} {
 	return q.varroot
 }
 
-type Sort struct {
-	arg1 Doer
+type dSort struct {
+	arg1 doer
 }
 
-func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
-	result := d.arg1.Do(subdoc, q)
+func (d *dSort) do(subdoc []interface{}, q *context) []interface{} {
+	result := d.arg1.do(subdoc, q)
 	if len(result) < 2 {
 		return result
 	}
 	switch result[0].(type) {
-	case *NodeType:
+	case *nodeType:
 		sort.Slice(result, func(i, j int) bool {
-			return result[i].(*NodeType).Id < result[j].(*NodeType).Id
+			return result[i].(*nodeType).Id < result[j].(*nodeType).Id
 		})
 		for i := 1; i < len(result); i++ {
-			if result[i].(*NodeType) == result[i-1].(*NodeType) {
+			if result[i].(*nodeType) == result[i-1].(*nodeType) {
 				result = append(result[:i], result[i+1:]...)
 				i--
 			}
@@ -584,17 +584,17 @@ func (d *Sort) Do(subdoc []interface{}, q *Context) []interface{} {
 	return result
 }
 
-type Variable struct {
+type dVariable struct {
 	VAR interface{}
 }
 
-func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
+func (d *dVariable) do(subdoc []interface{}, q *context) []interface{} {
 	switch t := d.VAR.(type) {
 	case []interface{}:
 		return t
-	case *NodeType:
+	case *nodeType:
 		return []interface{}{t}
-	case []*NodeType:
+	case []*nodeType:
 		ii := make([]interface{}, len(t))
 		for i, v := range t {
 			ii[i] = v
@@ -609,29 +609,29 @@ func (d *Variable) Do(subdoc []interface{}, q *Context) []interface{} {
 	}
 }
 
-type XPath struct {
-	arg1 Doer
+type xPath struct {
+	arg1 doer
 }
 
-func (d *XPath) Do(q *Context) []interface{} {
-	return d.arg1.Do([]interface{}{}, q)
+func (d *xPath) do(q *context) []interface{} {
+	return d.arg1.do([]interface{}{}, q)
 }
 
 ////////////////////////////////////////////////////////////////
 
-func Test(q *Context, xpath *XPath) bool {
-	return len(xpath.Do(q)) > 0
+func test(q *context, xpath *xPath) bool {
+	return len(xpath.do(q)) > 0
 }
 
-func Find(q *Context, xpath *XPath) []interface{} {
-	return xpath.Do(q)
+func find(q *context, xpath *xPath) []interface{} {
+	return xpath.do(q)
 }
 
 func list(i interface{}) []interface{} {
 	switch ii := i.(type) {
 	case []interface{}:
 		return ii
-	case []*NodeType:
+	case []*nodeType:
 		doc := []interface{}{}
 		for _, n := range ii {
 			doc = append(doc, n)
@@ -655,22 +655,22 @@ func flatten(aa []interface{}) []interface{} {
 	return result
 }
 
-func (a *Alpino_ds) Children() []interface{} {
+func (a *alpino_ds) children() []interface{} {
 	return []interface{}{a.Node}
 }
 
-func (a *Alpino_ds) DescendantsOrSelf() []interface{} {
+func (a *alpino_ds) descendantsOrSelf() []interface{} {
 	return a.Node.axDescendantsOrSelf
 }
 
-func (n *NodeType) Children() []interface{} {
+func (n *nodeType) children() []interface{} {
 	return n.axChildren
 }
 
-func (n *NodeType) Descendants() []interface{} {
+func (n *nodeType) descendants() []interface{} {
 	return n.axDescendants
 }
 
-func (n *NodeType) DescendantsOrSelf() []interface{} {
+func (n *nodeType) descendantsOrSelf() []interface{} {
 	return n.axDescendantsOrSelf
 }

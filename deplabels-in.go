@@ -1,9 +1,9 @@
 // +build ignore
 
-package main
+package alud
 
 // recursive
-func dependencyLabel(node *NodeType, q *Context) string {
+func dependencyLabel(node *nodeType, q *context) string {
 	if depthCheck(q, "dependencyLabel") {
 		return "ERROR_RECURSION_LIMIT"
 	}
@@ -325,14 +325,14 @@ func dependencyLabel(node *NodeType, q *Context) string {
 	return "ERROR_NO_LABEL"
 }
 
-func determineNominalModLabel(node *NodeType, q *Context) string {
+func determineNominalModLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node/../node[@rel="hd" and (@ud:pos="VERB" or @ud:pos="ADJ")]`) {
 		return "obl"
 	}
 	return "nmod"
 }
 
-func subjectLabel(subj *NodeType, q *Context) string {
+func subjectLabel(subj *nodeType, q *context) string {
 	pass := passiveSubject(subj, q)
 	if TEST(q, `$subj[@cat=("whsub","ssub","ti","cp","oti")] or
 	            $subj[@cat="conj" and node/@cat=("whsub","ssub","ti","cp","oti")]`) {
@@ -357,7 +357,7 @@ func subjectLabel(subj *NodeType, q *Context) string {
 }
 
 // recursive
-func passiveSubject(subj *NodeType, q *Context) string {
+func passiveSubject(subj *nodeType, q *context) string {
 	if depthCheck(q, "passiveSubject") {
 		return "ERROR_RECURSION_LIMIT"
 	}
@@ -372,7 +372,7 @@ func passiveSubject(subj *NodeType, q *Context) string {
 	return ""
 }
 
-func detLabel(node *NodeType, q *Context) string {
+func detLabel(node *nodeType, q *context) string {
 	// zijn boek, diens boek, ieders boek, aller landen, Ron's probleem, Fidel Castro's belang
 	if TEST(q, `$node[@ud:pos = "PRON" and @vwtype="bez"] or
 	          $node[@ud:pos = ("PRON","PROPN") and @naamval="gen"] or
@@ -401,7 +401,7 @@ func detLabel(node *NodeType, q *Context) string {
 	return "ERROR_NO_LABEL_DET"
 }
 
-func modLabelInsideNp(node *NodeType, q *Context) string {
+func modLabelInsideNp(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat="pp"]/node[@rel="vc"]`) {
 		return "acl" // pp containing a clause
 	}
@@ -446,7 +446,7 @@ func modLabelInsideNp(node *NodeType, q *Context) string {
 	return "ERROR_NO_LABEL_NMOD"
 }
 
-func labelVmod(node *NodeType, q *Context) string {
+func labelVmod(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat="pp"]/node[@rel="vc"]`) {
 		return "advcl"
 	}
@@ -486,7 +486,7 @@ func labelVmod(node *NodeType, q *Context) string {
 
 // this function is now also used to distribute dependents in coordination in Enhanced UD , so lot more rels and contexts are possible
 // and passives, as in " hun taal werd gediscrimineerd en verboden"
-func nonLocalDependencyLabel(head, gap *NodeType, q *Context) string {
+func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 	if gap.Rel == "su" {
 		return subjectLabel(gap, q)
 	}

@@ -1,61 +1,55 @@
-// +build ignore
-
-package main
+package alud
 
 import (
-	//	"github.com/kr/pretty"
-	"github.com/pebbe/util"
-
 	"encoding/xml"
 	"fmt"
-	"io/ioutil"
+	"path/filepath"
 	"sort"
 	"strings"
 )
 
 const (
-	ERROR_NO_VALUE = -1000 * (iota + 1)
-	ERROR_NO_HEAD_FOUND
-	ERROR_NO_EXTERNAL_HEAD
-	ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
-	ERROR_NO_INTERNAL_HEAD
-	UNDERSCORE
-	TODO
+	error_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG = -1000 * (iota + 1)
+	error_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND
+	error_NO_EXTERNAL_HEAD
+	error_NO_HEAD_FOUND
+	error_NO_INTERNAL_HEAD
+	error_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
+	error_NO_INTERNAL_HEAD_POSITION_FOUND
+	error_NO_VALUE
+	error_RECURSION_LIMIT
+	underscore
 	empty_head
 )
 
-var (
-	x = util.CheckErr
-)
-
-type Context struct {
-	alpino        *Alpino_ds
+type context struct {
+	alpino        *alpino_ds
 	filename      string
 	sentence      string
 	sentid        string
 	debugs        []string
 	warnings      []string
 	depth         int
-	allnodes      []*NodeType
-	ptnodes       []*NodeType
+	allnodes      []*nodeType
+	ptnodes       []*nodeType
 	varallnodes   []interface{}
 	varindexnodes []interface{}
 	varptnodes    []interface{}
 	varroot       []interface{}
 }
 
-type Alpino_ds struct {
+type alpino_ds struct {
 	XMLName  xml.Name  `xml:"alpino_ds"`
-	Node     *NodeType `xml:"node,omitempty"`
-	Sentence *SentType `xml:"sentence,omitempty"`
+	Node     *nodeType `xml:"node,omitempty"`
+	Sentence *sentType `xml:"sentence,omitempty"`
 }
 
-type SentType struct {
+type sentType struct {
 	Sent   string `xml:",chardata"`
 	SentId string `xml:"sentid,attr,omitempty"`
 }
 
-type NodeType struct {
+type nodeType struct {
 	Begin    int         `xml:"begin,attr"`
 	Cat      string      `xml:"cat,attr,omitempty"`
 	Conjtype string      `xml:"conjtype,attr,omitempty"`
@@ -82,8 +76,8 @@ type NodeType struct {
 	Vwtype   string      `xml:"vwtype,attr,omitempty"`
 	Word     string      `xml:"word,attr,omitempty"`
 	Wvorm    string      `xml:"wvorm,attr,omitempty"`
-	Node     []*NodeType `xml:"node"`
-	parent   *NodeType
+	Node     []*nodeType `xml:"node"`
+	parent   *nodeType
 
 	// als je hier iets aan toevoegt, dan ook toevoegen in emptyheads-in.go in functie reconstructEmptyHead
 	udAbbr           string
@@ -116,19 +110,19 @@ type NodeType struct {
 }
 
 var (
-	noNode = &NodeType{
+	noNode = &nodeType{
 		Begin:               -1000,
 		End:                 -1000,
 		udCopiedFrom:        -1000,
 		Id:                  -1,
-		Node:                []*NodeType{},
+		Node:                []*nodeType{},
 		axParent:            []interface{}{},
 		axAncestors:         []interface{}{},
 		axChildren:          []interface{}{},
 		axDescendants:       []interface{}{},
 		axDescendantsOrSelf: []interface{}{},
-		udHeadPosition:      ERROR_NO_EXTERNAL_HEAD,
-		udEHeadPosition:     ERROR_NO_EXTERNAL_HEAD,
+		udHeadPosition:      error_NO_EXTERNAL_HEAD,
+		udEHeadPosition:     error_NO_EXTERNAL_HEAD,
 	}
 )
 
@@ -136,20 +130,44 @@ func init() {
 	noNode.parent = noNode
 }
 
-func main() {
+// Derive Universal Dependencies form parsed sentence in alpino_ds format.
+func Ud(alpino_doc []byte, filename string) (conllu string, err error) {
 
-	b, err := ioutil.ReadFile("file.xml")
-	x(err)
+	defer func() {
+		if r := recover(); r != nil {
+			conllu = ""
+			err = fmt.Errorf("%v", r)
+		}
+	}()
 
-	var alpino Alpino_ds
-	x(xml.Unmarshal(b, &alpino))
+	conllu, err = UdTry(alpino_doc, filename)
 
-	var walk func(*NodeType)
-	walk = func(node *NodeType) {
+	return
+}
+
+// Like Ud(), but may panic. Used for development.
+func UdTry(alpino_doc []byte, filename string) (conllu string, err error) {
+
+	var alpino alpino_ds
+	err = xml.Unmarshal(alpino_doc, &alpino)
+	if err != nil {
+		return "", err
+	}
+
+	if alpino.Sentence.SentId == "" {
+		id := filepath.Base(filename)
+		if strings.HasSuffix(id, ".xml") {
+			id = id[:len(id)-4]
+		}
+		alpino.Sentence.SentId = id
+	}
+
+	var walk func(*nodeType)
+	walk = func(node *nodeType) {
 		node.Begin *= 1000
 		node.End *= 1000
 		if node.Node == nil {
-			node.Node = make([]*NodeType, 0)
+			node.Node = make([]*nodeType, 0)
 		} else {
 			for _, n := range node.Node {
 				walk(n)
@@ -158,51 +176,35 @@ func main() {
 	}
 	walk(alpino.Node)
 
-	q := &Context{
+	q := &context{
 		alpino:   &alpino,
+		filename: filename,
+		sentence: alpino.Sentence.Sent,
+		sentid:   alpino.Sentence.SentId,
 		varroot:  []interface{}{alpino.Node},
 		warnings: []string{},
 	}
 
 	inspect(q)
 
-	node := alpino.Node
-
-	fmt.Println("Test 1")
-	for _, n := range FIND(q, `$node/node/node[1]`) {
-		//fmt.Printf("%#v\n", n)
-		fmt.Println("id=", n.(*NodeType).Id)
-	}
-
-	fmt.Println("Test 2")
-	for _, n := range FIND(q, `$node/node/node[@id][1]`) {
-		//fmt.Printf("%#v\n", n)
-		fmt.Println("id=", n.(*NodeType).Id)
-	}
-
-	fmt.Println("Test 3")
-	for _, n := range FIND(q, `($node/node/node)[1]`) {
-		//fmt.Printf("%#v\n", n)
-		fmt.Println("id=", n.(*NodeType).Id)
-	}
-
-	fmt.Println("Test 4")
-	nodes := []interface{}{node.Node[0], node.Node[1]}
-	for _, n := range FIND(q, `$nodes[@id][last()]/node[@id>0][1]`) {
-		//fmt.Printf("%#v\n", n)
-		fmt.Println("id=", n.(*NodeType).Id)
-	}
-
+	fixMisplacedHeadsInCoordination(q)
+	addPosTags(q)
+	addFeatures(q)
+	addDependencyRelations(q)
+	enhancedDependencies(q)
+	fixpunct(q)
+	untokenize(q)
+	return conll(q), nil
 }
 
-func inspect(q *Context) {
-	allnodes := make([]*NodeType, 0)
+func inspect(q *context) {
+	allnodes := make([]*nodeType, 0)
 	varallnodes := make([]interface{}, 0)
-	ptnodes := make([]*NodeType, 0)
+	ptnodes := make([]*nodeType, 0)
 	varindexnodes := make([]interface{}, 0)
 
-	var walk func(*NodeType)
-	walk = func(node *NodeType) {
+	var walk func(*nodeType)
+	walk = func(node *nodeType) {
 
 		// bug in Alpino: missing pt
 		if node.Word != "" && node.Pt == "" {
@@ -266,8 +268,4 @@ func inspect(q *Context) {
 	q.ptnodes = ptnodes
 	q.varptnodes = varptnodes
 
-}
-
-func internalHeadPosition(node []interface{}, q *Context) int {
-	return ERROR_NO_INTERNAL_HEAD
 }

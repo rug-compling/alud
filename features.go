@@ -1,6 +1,6 @@
-package main
+package alud
 
-func addFeatures(q *Context) {
+func addFeatures(q *context) {
 	for _, node := range q.ptnodes {
 		switch node.udPos {
 		case "NOUN", "PROPN":
@@ -19,7 +19,7 @@ func addFeatures(q *Context) {
 	}
 }
 
-func nominalFeatues(node *NodeType, q *Context) {
+func nominalFeatues(node *nodeType, q *context) {
 	switch node.Genus {
 	case "zijd":
 		node.udGender = "Com"
@@ -55,7 +55,7 @@ func nominalFeatues(node *NodeType, q *Context) {
 	}
 }
 
-func adjectiveFeatures(node *NodeType, q *Context) {
+func adjectiveFeatures(node *nodeType, q *context) {
 	switch node.Graad {
 	case "basis":
 		node.udDegree = "Pos"
@@ -72,7 +72,7 @@ func adjectiveFeatures(node *NodeType, q *Context) {
 	}
 }
 
-func pronounFeatures(node *NodeType, q *Context) {
+func pronounFeatures(node *nodeType, q *context) {
 	switch node.Vwtype {
 	case "refl":
 		node.udPronType = "Prs"
@@ -134,7 +134,7 @@ func pronounFeatures(node *NodeType, q *Context) {
 	}
 }
 
-func verbalFeatures(node *NodeType, q *Context) {
+func verbalFeatures(node *nodeType, q *context) {
 
 	switch node.Wvorm {
 	case "pv":
@@ -172,7 +172,7 @@ func verbalFeatures(node *NodeType, q *Context) {
 	}
 }
 
-func determinerFeatures(node *NodeType, q *Context) {
+func determinerFeatures(node *nodeType, q *context) {
 	switch node.Lwtype {
 	case "bep":
 		node.udDefinite = "Def"
@@ -185,7 +185,7 @@ func determinerFeatures(node *NodeType, q *Context) {
 	}
 }
 
-func specialFeatures(node *NodeType, q *Context) {
+func specialFeatures(node *nodeType, q *context) {
 	switch node.Spectype {
 	case "vreemd":
 		node.udForeign = "Yes"

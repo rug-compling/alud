@@ -1,14 +1,13 @@
 // +build ignore
 
-package main
+package alud
 
 import (
 	"fmt"
-	"os"
 )
 
 // voorkwam dat LPF opnieuw of SGP voor het eerst in de regering zou komen  -- gapped LD
-func fixMisplacedHeadsInCoordination(q *Context) {
+func fixMisplacedHeadsInCoordination(q *context) {
 
 	if len(q.varindexnodes) == 0 {
 		return
@@ -35,21 +34,20 @@ $n1[@rel=("hd","ld") and
                                                                 )
                                                                ]
                                        ]]`) {
-				node2 := n2.(*NodeType)
+				node2 := n2.(*nodeType)
 				for _, n3 := range FIND(q, `
 $q.varallnodes[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
                  ancestor::node[@rel="cnj"]  and
                                     ( @begin        = ..//node[@cat or @pt]/@end or
                                       @begin - 1000 = ..//node[@cat or @pt]/@end
                                      )]`) {
-					node3 := n3.(*NodeType)
+					node3 := n3.(*nodeType)
 					if node2.Index == node3.Index {
 						pair := [2]int{node2.Id, node3.Id}
 						if i, ok := seen[pair]; ok {
 							if i == 1 {
 								warning := fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d %d", node2.Id, node3.Id)
 								q.warnings = append(q.warnings, warning)
-								fmt.Fprintln(os.Stderr, warning, "in", q.filename)
 							}
 							seen[pair]++
 							continue
@@ -61,13 +59,13 @@ $q.varallnodes[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
 						*node3 = *node2
 						node3.Id, node3.Rel = id, rel
 						// maak node2 leeg
-						*node2 = NodeType{
+						*node2 = nodeType{
 							Begin: node2.Begin,
 							End:   node2.End,
 							Id:    node2.Id,
 							Index: node2.Index,
 							Rel:   node2.Rel,
-							Node:  []*NodeType{},
+							Node:  []*nodeType{},
 						}
 						// opnieuw beginnen
 						inspect(q)

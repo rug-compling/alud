@@ -1,23 +1,21 @@
-package main
+package alud
 
 import (
-	"fmt"
-	"os"
 	"sort"
 )
 
 // meest linkse node
-func nLeft(nodes []interface{}) *NodeType {
+func nLeft(nodes []interface{}) *nodeType {
 	switch len(nodes) {
 	case 0:
 		return noNode
 	case 1:
-		return nodes[0].(*NodeType)
+		return nodes[0].(*nodeType)
 	}
 	sort.Slice(nodes, func(i, j int) bool {
 		// solve cases where begin is identical (hij is en blijft omstreden)??
-		ii := nodes[i].(*NodeType)
-		jj := nodes[j].(*NodeType)
+		ii := nodes[i].(*nodeType)
+		jj := nodes[j].(*nodeType)
 		if ii.Begin != jj.Begin {
 			return ii.Begin < jj.Begin // ints
 		}
@@ -26,7 +24,7 @@ func nLeft(nodes []interface{}) *NodeType {
 		//}
 		//return ii.Id > jj.Id // ints, omgekeerd
 	})
-	return nodes[0].(*NodeType)
+	return nodes[0].(*nodeType)
 }
 
 // meest linkse node als []interface{}, met lengte 0 of 1
@@ -55,19 +53,19 @@ func ifZ(nodes []interface{}) []interface{} {
 }
 
 // eerste node
-func n1(nodes []interface{}) *NodeType {
+func n1(nodes []interface{}) *nodeType {
 	//return nLeft(nodes)
 
 	if len(nodes) > 0 {
-		return nodes[0].(*NodeType)
+		return nodes[0].(*nodeType)
 	}
 	return noNode
 }
 
 // laatste node
-func nZ(nodes []interface{}) *NodeType {
+func nZ(nodes []interface{}) *nodeType {
 	if len(nodes) > 0 {
-		return nodes[len(nodes)-1].(*NodeType)
+		return nodes[len(nodes)-1].(*nodeType)
 	}
 	return noNode
 }
@@ -77,7 +75,7 @@ func i1(ii []interface{}) int {
 	if len(ii) > 0 {
 		return ii[0].(int)
 	}
-	return ERROR_NO_VALUE
+	return error_NO_VALUE
 }
 
 /*
@@ -86,17 +84,16 @@ func iZ(ii []interface{}) int {
 	if l := len(ii); l > 0 {
 		return ii[l-1].(int)
 	}
-	return ERROR_NO_VALUE
+	return error_NO_VALUE
 }
 */
 
-func depthCheck(q *Context, s string) bool {
+func depthCheck(q *context, s string) bool {
 	q.depth++
 	if q.depth < 1000 {
 		return false
 	}
 	q.warnings = append(q.warnings, "Recursion depth limit for "+s)
-	fmt.Fprintf(os.Stderr, "WARNING: Recursion depth limit for %s in %s\n", s, q.filename)
 	return true
 }
 

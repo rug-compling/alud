@@ -1,16 +1,16 @@
 // +build ignore
 
-package main
+package alud
 
 import (
 	"sort"
 )
 
-func reconstructEmptyHead(q *Context) bool {
+func reconstructEmptyHead(q *context) bool {
 	seen := make(map[int]bool)
 	found := false
 	for _, n := range q.varindexnodes {
-		node := n.(*NodeType)
+		node := n.(*nodeType)
 
 		if node.Rel != "hd" || node.Pt != "" || node.Cat != "" {
 			continue
@@ -54,7 +54,7 @@ func reconstructEmptyHead(q *Context) bool {
 		node.Postag = antenode.Postag
 		node.Pt = antenode.Pt
 		node.udRelation = "_"
-		node.udHeadPosition = UNDERSCORE
+		node.udHeadPosition = underscore
 		node.udCopiedFrom = copied
 
 		// kopieer verder alle ud-attributen
@@ -88,16 +88,16 @@ func reconstructEmptyHead(q *Context) bool {
 			return q.ptnodes[i].End < q.ptnodes[j].End
 		})
 		sort.Slice(q.varptnodes, func(i, j int) bool {
-			return q.varptnodes[i].(*NodeType).End < q.varptnodes[j].(*NodeType).End
+			return q.varptnodes[i].(*nodeType).End < q.varptnodes[j].(*nodeType).End
 		})
 	}
 	return found
 }
 
-func leftEdge(node *NodeType, q *Context) int {
+func leftEdge(node *nodeType, q *context) int {
 	left := 1000000
 	for _, n := range FIND(q, `$node/descendant-or-self::node[@pt]`) {
-		if begin := n.(*NodeType).Begin; begin < left {
+		if begin := n.(*nodeType).Begin; begin < left {
 			left = begin
 		}
 	}

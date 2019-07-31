@@ -1,12 +1,12 @@
-package main
+package alud
 
-func addPosTags(q *Context) {
+func addPosTags(q *context) {
 	for _, node := range q.ptnodes {
 		node.udPos = universalPosTags(node, q)
 	}
 }
 
-func universalPosTags(node *NodeType, q *Context) string {
+func universalPosTags(node *nodeType, q *context) string {
 	pt := node.Pt
 	rel := node.Rel
 

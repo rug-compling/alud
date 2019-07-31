@@ -49,8 +49,8 @@ func compile(s string) string {
 
 	start := strings.Index(s, "`") + 1
 	stop := strings.LastIndex(s, "`")
-	prefix := strings.Replace(s[:start-1], "TEST", "Test", 1)
-	prefix = strings.Replace(prefix, "FIND", "Find", 1)
+	prefix := strings.Replace(s[:start-1], "TEST", "test", 1)
+	prefix = strings.Replace(prefix, "FIND", "find", 1)
 	suffix := s[stop+1:]
 	s = s[start:stop]
 
@@ -102,10 +102,10 @@ func parse(s string) string {
 	}
 
 	if len(lines) == 0 {
-		return "&XPath{\"COMPILE ERROR\"}"
+		return "&xPath{\"COMPILE ERROR\"}"
 	}
 
-	out = append(out, "&XPath{")
+	out = append(out, "&xPath{")
 	lvl := 0
 	prev := make([]int, 1)
 	for _, line := range lines {
@@ -121,7 +121,7 @@ func parse(s string) string {
 		}
 		words := strings.Fields(line.s)
 		cmd := strings.ToLower(words[0])
-		str := strings.Title(cmd)
+		str := "d" + strings.Title(cmd)
 		cmd0 := cmd
 		if len(prev) <= lvl {
 			prev = append(prev, 1)
