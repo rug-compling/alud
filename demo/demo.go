@@ -37,6 +37,18 @@ func main() {
 		x(scanner.Err())
 	}
 
+	if len(filenames) == 0 {
+		fmt.Printf(`
+Usage, examples:
+
+    %s file.xml ...
+    %s collection.xml ...
+    find . -name '*.xml' | %s
+
+`, os.Args[0], os.Args[0], os.Args[0])
+		return
+	}
+
 	for _, filename := range filenames {
 		b, err := ioutil.ReadFile(filename)
 		x(err)
