@@ -1,6 +1,6 @@
 XPath-expressies in Go kunnen gebruikt worden in de functies `FIND()`
 en `TEST()`, waarin de expressie zelf tussen backquotes dient te
-staan.
+staan. Met gewone, dubbele aanhalingstekens werkt het niet.
 
 ----
 
@@ -18,8 +18,27 @@ van elkaar af liggen.
 interne waarde | uitvoer
 -------------- | -------------
 1000           | 1
-2004           | 2.4
-3050           | 3.50
+2003           | 2.3
+4050           | 4.50
+
+----
+
+De compiler maakt gebruik van libxml2, dat alleen XPath versie 1 kan verwerken.
+
+De compiler herkent reeksen zoals deze, en codeert die op een wijze
+die libxml2 kan verwerken:
+
+```
+    = ("aap", "noot")
+```
+
+Het isgelijk-teken en de dubbele aanhalingstekens zijn nodig. Deze reeksen
+worden niet herkend:
+
+```
+    > ("aap", "noot")
+    = ('aap', 'noot')
+```
 
 ----
 
