@@ -14,7 +14,5 @@ See Universal Dependencies: https://universaldependencies.org/
 See CoNLL-U: https://universaldependencies.org/format.html
 
 See xquery script: https://github.com/gossebouma/lassy2ud
-
-
 */
 package alud

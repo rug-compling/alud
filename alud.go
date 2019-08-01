@@ -8,6 +8,12 @@ import (
 	"strings"
 )
 
+// updates to the output
+const VersionMajor = int(1)
+
+// updates to the package API (unlikely)
+const VersionMinor = int(0)
+
 const (
 	error_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG = -1000 * (iota + 1)
 	error_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND

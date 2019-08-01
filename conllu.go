@@ -19,10 +19,12 @@ func conll(q *context) string {
 	fmt.Fprintf(&buf, `# source = %s
 # sent_id = %s
 # text = %s
+# auto = ALUD %d
 `,
 		q.filename,
-		q.sentid,
-		q.sentence)
+		strings.Replace(q.sentid, "/", "\\", -1), // het teken / is gereserveerd
+		q.sentence,
+		VersionMajor)
 
 	/*
 		for i, d := range q.debugs {

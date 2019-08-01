@@ -4,6 +4,8 @@ Een geslaagde poging
 [universal_dependencies.xq](https://github.com/gossebouma/lassy2ud) om
 te zetten naar Go.
 
+[![GoDoc](https://godoc.org/github.com/rug-compling/alud?status.svg)](https://godoc.org/github.com/rug-compling/alud)
+
 ----
 
 Met het programma `testXPath` (zit bij de bronbestanden van libxml2) kun je xpath-expressies compileren en

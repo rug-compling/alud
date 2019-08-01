@@ -52,8 +52,8 @@ const (
 	function__contains__2__args
 	function__count__1__args
 	function__ends__with__2__args
-	function__first__0__args // LET OP: extra gebruik in (*cCollect).do()
-	function__last__0__args  // LET OP: extra gebruik in (*cCollect).do()
+	function__first__0__args // LET OP: extra gebruik in (*dCollect).do()
+	function__last__0__args  // LET OP: extra gebruik in (*dCollect).do()
 	function__local__internal__head__position__1__args
 	function__not__1__args
 	function__starts__with__2__args
