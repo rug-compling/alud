@@ -1,184 +1,93 @@
 # Van Alpino naar Universal Dependencies
 
-Een geslaagde poging
-[universal_dependencies.xq](https://github.com/gossebouma/lassy2ud) om
-te zetten naar Go.
+A [Go](https://golang.org/) package for deriving [Universal Dependencies](https://universaldependencies.org/) from sentences parsed with [Alpino](https://www.let.rug.nl/vannoord/alp/Alpino/).
 
 [![GoDoc](https://godoc.org/github.com/rug-compling/alud?status.svg)](https://godoc.org/github.com/rug-compling/alud)
 
-----
-
-Met het programma `testXPath` (zit bij de bronbestanden van libxml2) kun je xpath-expressies compileren en
-het resultaat printen. Voorbeeld:
-
-```
-testXPath --tree '$doc/aap[@noot]'
-```
-
-Resultaat:
-
-```
-  SORT
-    COLLECT  'child' 'name' 'node' aap
-      VARIABLE doc
-      PREDICATE
-        COLLECT  'attributes' 'name' 'node' noot
-          NODE
-```
-
-Zie functie `xmlXPathDebugDumpStepOp` in `libxml2-`_*_`/xpath.c`
-
-Die uitvoer laat zich makkelijk omzetten naar code in Go:
-
-```go
-func process(doc *Obj) (interface{}, error) {
-    xpath := &XPath{
-        arg1: &Sort{
-            arg1: &Collect{
-                ARG: collect_child_name_node_aap,
-                arg1: &Variable{
-                    ARG: variable_doc,
-                },
-                arg2: &Predicate{
-                    arg1: &Collect{
-                        ARG:  collect_attributes_name_node_noot,
-                        arg1: &Node{},
-                    },
-                },
-            },
-        },
-    }
-    return xpath.Do(doc)
-}
-```
-
-Vergelijk
-[invoer](https://github.com/pebbe/unidep/blob/master/auxiliary-in.go)
-met
-[uitvoer](https://github.com/pebbe/unidep/blob/master/auxiliary.go)
-
-----
-
-Alternatief: Saxon met optie -explain, zie http://www.saxonica.com/documentation/index.html#!using-xquery/commandline
-
-Voorbeeld:
-
-```
-saxon -explain -opt:0 -qs:'for $doc in <xml/> return $doc/aap[@noot]'
-```
-
-Resultaat:
+Example input:
 
 ```xml
-<query>
-   <globalVariables/>
-   <body>
-      <FLWOR baseUri="file:/home/peter/tmp/"
-             ns="fn=~ xs=~ saxon=~ err=~ local=http://www.w3.org/2005/xquery-local-functions xsi=~"
-             line="1">
-         <for var="Q{}doc" slot="0">
-            <elem name="xml" nsuri="">
-               <empty/>
-            </elem>
-         </for>
-         <return>
-            <slash>
-               <varRef name="Q{}doc" slot="0"/>
-               <filter flags="">
-                  <axis name="child" nodeTest="element(Q{}aap)"/>
-                  <axis name="attribute" nodeTest="attribute(Q{}noot)"/>
-               </filter>
-            </slash>
-         </return>
-      </FLWOR>
-   </body>
-</query>
+<?xml version="1.0" encoding="UTF-8"?>
+<alpino_ds version="1.6">
+  <node begin="0" cat="top" end="8" id="0" rel="top">
+    <node begin="0" cat="smain" end="7" id="1" rel="--">
+      <node begin="0" cat="pp" end="3" id="2" rel="mod">
+        <node begin="0" end="1" frame="preposition(in,[])"
+              his="normal" his_1="decap" his_1_1="normal" id="3"
+              lcat="pp" lemma="in" pos="prep" postag="VZ(init)"
+              pt="vz" rel="hd" root="in" sense="in" vztype="init"
+              word="In"/>
+        <node begin="1" cat="np" end="3" id="4" rel="obj1">
+          <node begin="1" end="2"
+                frame="determiner(het,nwh,nmod,pro,nparg,wkpro)"
+                his="normal" his_1="normal" id="5" infl="het"
+                lcat="detp" lemma="het" lwtype="bep" naamval="stan"
+                npagr="evon" pos="det" postag="LID(bep,stan,evon)"
+                pt="lid" rel="det" root="het" sense="het" wh="nwh"
+                word="het"/>
+          <node begin="2" end="3" frame="proper_name(sg,'LOC')"
+                genus="onz" getal="ev" graad="basis" his="normal"
+                his_1="names_dictionary" id="6" lcat="np"
+                lemma="Waddengebied" naamval="stan" neclass="LOC"
+                ntype="eigen" num="sg" pos="name"
+                postag="N(eigen,ev,basis,onz,stan)" pt="n" rel="hd"
+                rnum="sg" root="Waddengebied" sense="Waddengebied"
+                word="Waddengebied"/>
+        </node>
+      </node>
+      <node begin="3" end="4" frame="verb(unacc,sg_heeft,copula)"
+            his="normal" his_1="normal" id="7" infl="sg_heeft"
+            lcat="smain" lemma="zijn" pos="verb"
+            postag="WW(pv,tgw,ev)" pt="ww" pvagr="ev" pvtijd="tgw"
+            rel="hd" root="ben" sc="copula" sense="ben"
+            stype="declarative" tense="present" word="is" wvorm="pv"/>
+      <node begin="4" cat="np" end="6" id="8" rel="su">
+        <node begin="4" end="5" frame="determiner(de)" his="normal"
+              his_1="normal" id="9" infl="de" lcat="detp" lemma="de"
+              lwtype="bep" naamval="stan" npagr="rest" pos="det"
+              postag="LID(bep,stan,rest)" pt="lid" rel="det" root="de"
+              sense="de" word="de"/>
+        <node begin="5" end="6" frame="noun(de,count,sg)" gen="de"
+              genus="zijd" getal="ev" graad="basis" his="normal"
+              his_1="normal" id="10" lcat="np" lemma="wind"
+              naamval="stan" ntype="soort" num="sg" pos="noun"
+              postag="N(soort,ev,basis,zijd,stan)" pt="n" rel="hd"
+              rnum="sg" root="wind" sense="wind" word="wind"/>
+      </node>
+      <node aform="base" begin="6" buiging="zonder" end="7"
+            frame="adjective(no_e(nonadv))" graad="basis" his="normal"
+            his_1="normal" id="11" infl="no_e" lcat="ap"
+            lemma="veranderlijk" pos="adj" positie="vrij"
+            postag="ADJ(vrij,basis,zonder)" pt="adj" rel="predc"
+            root="veranderlijk" sense="veranderlijk" vform="adj"
+            word="veranderlijk"/>
+    </node>
+    <node begin="7" end="8" frame="punct(punt)" his="normal"
+          his_1="normal" id="12" lcat="punct" lemma="." pos="punct"
+          postag="LET()" pt="let" rel="--" root="." sense="."
+          special="punt" word="."/>
+  </node>
+  <sentence sentid="knmi.1">In het Waddengebied is de wind veranderlijk .</sentence>
+</alpino_ds>
 ```
 
-Andere mogelijke optie:
+Output (reformatted):
 
- * `-opt:-v`
+```
+# source = knmi.1.xml
+# sent_id = knmi.1
+# text = In het Waddengebied is de wind veranderlijk.
+# auto = ALUD 1
+1   In              in              ADP     VZ|init                     _                                       3   case    3:case      _
+2   het             het             DET     LID|bep|stan|evon           Definite=Def                            3   det     3:det       _
+3   Waddengebied    Waddengebied    PROPN   N|eigen|ev|basis|onz|stan   Gender=Neut|Number=Sing                 7   obl     7:obl:in    _
+4   is              zijn            AUX     WW|pv|tgw|ev                Number=Sing|Tense=Pres|VerbForm=Fin     7   cop     7:cop       _
+5   de              de              DET     LID|bep|stan|rest           Definite=Def                            6   det     6:det       _
+6   wind            wind            NOUN    N|soort|ev|basis|zijd|stan  Gender=Com|Number=Sing                  7   nsubj   7:nsubj     _
+7   veranderlijk    veranderlijk    ADJ     ADJ|vrij|basis|zonder       Degree=Pos                              0   root    0:root      _
+8   .               .               PUNCT   LET                         _                                       7   punct   7:punct     _
 
-
-----
-
-## Tests
-
-taak → tijd | XQilla | Saxon | Udapy | Go
-------- | ------:| -----:| -----:| -----:
-Eindhoven-corpus, fix misplaced heads + add postags + add features |  8:06 |       |       |  0:27
-Eindhoven-corpus, alles behalve enhanced dependencies en fixpunct  | 23:00 |       |       |  1:02
-Eindhoven-corpus, alles behalve fixpunct                           | 48:04 |  3:26 |       |  1:28
-Eindhoven-corpus, alleen fixpunct                                  |       |       |  0:33 |
-Eindhoven-corpus, alles                                            |       |       |       |  1:31
-
-----
-
-## Verschillen tussen Saxon en XQilla
-
-De resultaten van Saxon en XQilla verschillen van elkaar, in de
-toevoeging die enhanced UDs krijgen. Bijvoorbeeld, bestand
-`1057.xml` uit het corpus Alpino Treebank, daarin krijgt het woord
-*parlementsverkiezingen* van Saxon de DEPS `9:advcl:evenals` en van XQilla
-`9:advcl:bij`. 
-
-Nog een paar bestanden die verschillen opleveren, uit hetzelde corpus:
-
- * 1017.xml
- * 1022.xml
- * 1024.xml
- * 1055.xml
-
-In totaal levert dit corpus 525 verschillen.
-
-De Go-versie geeft op dit punt dezelfde resultaten als Saxon.
-
-----
-
-## Verschillen tussen Saxon en Go
+```
 
 
-### fix\_misplaced\_heads\_in\_coordination
-
-Hoe vaak moet de functie `fix_misplaced_heads_in_coordination`
-gebruikt worden? In het XQuery-script wordt het twee keer gedaan voor
-uitvoer naar conll-formaat, en één keer voor uitvoer naar XML-formaat.
-
-In mijn programma gebruik ik de functie zo vaak als nodig tot er geen verschillen
-meer optreden. Voor sommige zinnen gaat dat niet goed omdat dingen
-blijvend heen en weer worden geschoven. Dan stop ik, en hoop
-op het beste, maar dan is vaak toch het eindresultaat anders dan bij
-het script.
-
-Zinnen waarbij dit het geval is leveren nogal eens ongeldige
-resultaten op, ook bij verwerking door Saxon.
-
-Dit komt niet voor in het Eindhoven-corpus, maar wel vaak in het corpus
-LassySmall, zo'n 13 keer:
-
- 1. WR-P-E-I-0000006366.p.8.s.4 — Invalid HEAD value ERROR\_NO\_INTERNAL\_HEAD\_IN\_GAPPED\_CONSTITUENT
- 1. WR-P-E-I-0000020972.p.4.s.143 — An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.150
- 1. WR-P-E-I-0000020972.p.4.s.164 — An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.177 — An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.192 — An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.200 — An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000020972.p.4.s.215 — An element has two attributes with the same expanded name
- 1. WR-P-E-I-0000050211.p.1.s.188 — Unordered ID numbers 20.1, 20.1
- 1. WR-P-E-I-0000050381.p.1.s.682.2
- 1. WR-P-P-I-0000000098.p.4.s.2
- 1. WR-P-P-I-0000000106.p.17.s.4
- 1. dpc-ibm-001316-nl-sen.p.37.s.1
-
-### Ingevoegde nodes met identieke IDs
-
-Soms voegt het xquery-script meerdere nieuwe nodes in op dezelfde
-plek, en geeft die hetzelfde ID. Dit is niet toegestaan.
-
-In het programma geef ik in dit geval opeenvolgende waardes, 8.1, 8.2
-etc. Dit levert uiteraard andere uitkomsten op.
-
-### Fouten
-
-Als er foutmeldingen zitten in de uitvoer van Saxon, dan kunnen daar
-in de uitvoer van Go soms andere foutmeldingen staan.
+For visualisation of the result, see http://www.let.rug.nl/kleiweg/conllu/
