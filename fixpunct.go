@@ -17,6 +17,7 @@ https://udapi.readthedocs.io/en/latest/udapi.core.html#udapi.core.root.Root
 package alud
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 )
@@ -62,8 +63,15 @@ func fixpunct(q *context) {
 	})
 
 	ord := 0
+	skip := false
 	for _, line := range q.ptnodes {
 		if line.udCopiedFrom <= 0 {
+			if line.udHeadPosition == 0 && line.udRelation != "root" {
+				// fixpunct zou deze fout foutief doen verdwijnen
+				q.warnings = append(q.warnings, fmt.Sprintf("invalid HEAD/DEPREL combination 0/%s, skipping fixpunct()", line.udRelation))
+				skip = true
+			}
+
 			ord++
 			nodes = append(nodes, &pNode{
 				f:        line,
@@ -73,6 +81,10 @@ func fixpunct(q *context) {
 			rootDescendants = append(rootDescendants, nodes[ord-1])
 		}
 	}
+	if skip {
+		return
+	}
+
 	for _, node := range rootDescendants {
 		if node.f.udHeadPosition == 0 {
 			root = node
