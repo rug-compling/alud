@@ -42,12 +42,18 @@ worden niet herkend:
 
 ----
 
+Als er aanpassingen aan de code gemaakt worden die effect hebben op de
+uitvoer, dan dient de waarde van `VersionMajor` in `alud.go` opgehoogd
+te worden. En de waarde van `VersionMinor` moet dan terug naar 0.
+
+----
+
 Er zit nogal wat complexiteit in de verwerking van predicaten. Je hebt
 de ‘gewone’ predicaten, die werken op elke node individueel, en je
 hebt de index-predicaten, die werken op een of meer sets van nodes.
 Nog complexer is het wanneer de beide gecombineerd worden. Om de
 juiste resultaten te krijgen heb ik hier en daar wat houtje-touwtje
-gebruikt in de methode `Do` van `Collect`, in de hoop dat de boel niet
+gebruikt in de methode `do` van `dCollect`, in de hoop dat de boel niet
 breekt. Er is vast een betere manier, maar dan niet zonder simpel
 platte sets van nodes doorschuiven van de ene naar de volgende stap
 zoals nu gebeurt.
