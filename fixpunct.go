@@ -157,6 +157,7 @@ func fixpunct(q *context) {
 	// TODO: klopt dit?
 	if root.f.udRelation != "root" {
 		root.f.udRelation = "root"
+		root.f.udEnhanced = number(root.f.udHeadPosition) + ":root"
 		for _, node2 := range rootDescendants {
 			if node2.parent.f.End > 0 && node2.f.udRelation == "root" {
 				node2.f.udRelation = "punct"
