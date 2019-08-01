@@ -1,6 +1,6 @@
 # Van Alpino naar Universal Dependencies
 
-A [Go](https://golang.org/) package for deriving [Universal Dependencies](https://universaldependencies.org/) from sentences parsed with [Alpino](https://www.let.rug.nl/vannoord/alp/Alpino/).
+A [Go](https://golang.org/) package for deriving [Universal Dependencies](https://universaldependencies.org/) from Dutch sentences parsed with [Alpino](https://www.let.rug.nl/vannoord/alp/Alpino/).
 
 [![GoDoc](https://godoc.org/github.com/rug-compling/alud?status.svg)](https://godoc.org/github.com/rug-compling/alud)
 
