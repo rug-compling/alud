@@ -225,6 +225,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.udPos == "VERB" {
 			return "xcomp"
 		}
+		if node.udPos == "PRON" { //floating quantifiers
+			return "obl"
+		}
 		if node.udPos != "" {
 			return "advmod"
 		}
@@ -254,7 +257,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		if node.udPos == "SYM" || node.udPos == "X" {
 			if TEST(q, `$node/../node[@cat]`) {
-				return "appos" // 1. Jantje is ziek  1-->appos??
+				return "parataxis" // 1. Jantje is ziek  1-->appos??
 			}
 			return "root"
 		}
@@ -382,7 +385,16 @@ func detLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X")`) {
 		return "det" // meer // genoeg // the
 	}
-	if TEST(q, `$node/@cat = ("mwu","np","pp","ap","detp","smain")`) {
+	if TEST(q, `$node/@cat = "detp"`) {
+		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NUM"]`) {
+			return "nummod"
+		}
+		return "det"
+	}
+	if TEST(q, `$node/@cat="np"`) {
+		return "nmod"
+	}
+	if TEST(q, `$node/@cat = ("mwu","pp","ap","smain")`) {
 		return "det"
 	}
 	// tussen 5 en 6 .., needs more principled solution
@@ -464,7 +476,10 @@ func labelVmod(node *nodeType, q *context) string {
 			NO/YES: hierdoor werd Prince door het grote publiek ontdekt
 		*/
 	}
-	if TEST(q, `$node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","PRON","PROPN","X","PUNCT","SYM") ]`) {
+	if TEST(q, `$node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","VERB","PRON","PROPN","X","PUNCT","SYM") ]`) {
+		return "obl"
+	}
+	if TEST(q, `$node[@cat="advp"]/node[@ud:pos=("NOUN","VERB","ADP")]`) {
 		return "obl"
 	}
 	if TEST(q, `$node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")]`) {
