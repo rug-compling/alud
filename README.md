@@ -84,7 +84,7 @@ Output (reformatted):
 4   is              zijn            AUX     WW|pv|tgw|ev                Number=Sing|Tense=Pres|VerbForm=Fin     7   cop     7:cop       _
 5   de              de              DET     LID|bep|stan|rest           Definite=Def                            6   det     6:det       _
 6   wind            wind            NOUN    N|soort|ev|basis|zijd|stan  Gender=Com|Number=Sing                  7   nsubj   7:nsubj     _
-7   veranderlijk    veranderlijk    ADJ     ADJ|vrij|basis|zonder       Degree=Pos                              0   root    0:root      _
+7   veranderlijk    veranderlijk    ADJ     ADJ|vrij|basis|zonder       Degree=Pos                              0   root    0:root      SpaceAfter=No
 8   .               .               PUNCT   LET                         _                                       7   punct   7:punct     _
 
 ```
