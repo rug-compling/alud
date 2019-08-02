@@ -9,7 +9,7 @@ import (
 )
 
 // updates to the output
-const VersionMajor = int(3)
+const VersionMajor = int(4)
 
 // updates to the package API (unlikely)
 const VersionMinor = int(0)
@@ -98,6 +98,7 @@ type nodeType struct {
 	udForeign        string
 	udGender         string
 	udHeadPosition   int
+	udNoSpaceAfter   bool
 	udNumber         string
 	udPerson         string
 	udPos            string
@@ -198,6 +199,12 @@ func UdTry(alpino_doc []byte, filename string) (conllu string, err error) {
 	addFeatures(q)
 	addDependencyRelations(q)
 	enhancedDependencies(q)
+
+	// voor de laatste drie onderdelen moet q.ptnodes op woordpositie gesorteerd zijn
+	sort.Slice(q.ptnodes, func(i, j int) bool {
+		return q.ptnodes[i].End < q.ptnodes[i].End
+	})
+
 	fixpunct(q)
 	untokenize(q)
 	return conll(q), nil
