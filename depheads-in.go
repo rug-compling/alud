@@ -213,6 +213,14 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "su" {
+		if TEST(q, `$node[../node[@rel="vc"] and ../node[@rel="hd" and 
+			                  ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]]`) {
+			    tmp := internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="vc"]`), q)
+			    if node.Begin < tmp && tmp <= node.End {
+			    	return externalHeadPosition(node.axParent, q)
+			    }
+			    return tmp
+		} 
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) { // gapping
 			return internalHeadPositionWithGapping(node.axParent, q) // ud head could still be a predc
 		}
@@ -381,9 +389,13 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return error_RECURSION_LIMIT
 	}
 
-	if TEST(q, `$node/node[@rel="hd" and (@pt or @cat)]`) {
-		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q)
+	if TEST(q, `$node/node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX")]`) {
+		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q) // aux, prepositions 
 	}
+
+    if TEST(q, `$node[ node[@rel="hd" and @ud:pos="AUX"] and node[@rel=("vc","predc")] ]`) {
+    	return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","predc")]`), q)
+    }
 
 	if TEST(q, `$node/node[@rel="su" and (@pt or @cat)]`) {
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="su"]`), q) // 44 van 87 in lassysmall

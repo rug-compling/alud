@@ -476,7 +476,7 @@ func labelVmod(node *nodeType, q *context) string {
 			NO/YES: hierdoor werd Prince door het grote publiek ontdekt
 		*/
 	}
-	if TEST(q, `$node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","VERB","PRON","PROPN","X","PUNCT","SYM") ]`) {
+	if TEST(q, `$node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","VERB","PRON","PROPN","X","PUNCT","SYM","ADP") ]`) {
 		return "obl"
 	}
 	if TEST(q, `$node[@cat="advp"]/node[@ud:pos=("NOUN","VERB","ADP")]`) {
@@ -485,7 +485,7 @@ func labelVmod(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")]`) {
 		return "advcl"
 	}
-	if TEST(q, `$node[@ud:pos= ("ADJ","ADV","ADP","VERB","SCONJ","INTJ")
+	if TEST(q, `$node[@ud:pos= ("ADJ","ADV","SCONJ","INTJ")
 	                      or @cat=("advp","ap")
 	                      or (@cat="conj" and node/@ud:pos="ADV")]`) {
 		return "advmod" // niet of nauwelijks
