@@ -6,9 +6,7 @@ package alud
 
 // recursive
 func dependencyLabel(node *nodeType, q *context) string {
-	if depthCheck(q, "dependencyLabel") {
-		return "ERROR_RECURSION_LIMIT"
-	}
+	depthCheck(q, "dependencyLabel")
 
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
@@ -3509,9 +3507,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 
 // recursive
 func passiveSubject(subj *nodeType, q *context) string {
-	if depthCheck(q, "passiveSubject") {
-		return "ERROR_RECURSION_LIMIT"
-	}
+	depthCheck(q, "passiveSubject")
 
 	aux := auxiliary1(n1(find(q /* ($subj/../node[@rel="hd"])[1] */, &xPath{
 		arg1: &dSort{
@@ -3821,28 +3817,7 @@ func detLabel(node *nodeType, q *context) string {
 	}) {
 		return "det" // meer // genoeg // the
 	}
-	if test(q /* $node/@cat = "detp" */, &xPath{
-		arg1: &dSort{
-			arg1: &dEqual{
-				ARG: equal__is,
-				arg1: &dCollect{
-					ARG: collect__attributes__cat,
-					arg1: &dVariable{
-						VAR: node,
-					},
-				},
-				arg2: &dElem{
-					DATA: []interface{}{"detp"},
-					arg1: &dCollect{
-						ARG: collect__attributes__cat,
-						arg1: &dVariable{
-							VAR: node,
-						},
-					},
-				},
-			},
-		},
-	}) {
+	if node.Cat == "detp" {
 		if test(q /* $node/node[@rel="hd" and @ud:pos="NUM"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -3889,28 +3864,7 @@ func detLabel(node *nodeType, q *context) string {
 		}
 		return "det"
 	}
-	if test(q /* $node/@cat="np" */, &xPath{
-		arg1: &dSort{
-			arg1: &dEqual{
-				ARG: equal__is,
-				arg1: &dCollect{
-					ARG: collect__attributes__cat,
-					arg1: &dVariable{
-						VAR: node,
-					},
-				},
-				arg2: &dElem{
-					DATA: []interface{}{"np"},
-					arg1: &dCollect{
-						ARG: collect__attributes__cat,
-						arg1: &dVariable{
-							VAR: node,
-						},
-					},
-				},
-			},
-		},
-	}) {
+	if node.Cat == "np" {
 		return "nmod"
 	}
 	if test(q /* $node/@cat = ("mwu","pp","ap","smain") */, &xPath{

@@ -4,9 +4,7 @@ package alud
 
 // recursive
 func dependencyLabel(node *nodeType, q *context) string {
-	if depthCheck(q, "dependencyLabel") {
-		return "ERROR_RECURSION_LIMIT"
-	}
+	depthCheck(q, "dependencyLabel")
 
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
@@ -361,9 +359,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 
 // recursive
 func passiveSubject(subj *nodeType, q *context) string {
-	if depthCheck(q, "passiveSubject") {
-		return "ERROR_RECURSION_LIMIT"
-	}
+	depthCheck(q, "passiveSubject")
 
 	aux := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[1]`)), q)
 	if aux == "aux:pass" { // de carriere had gered kunnen worden
@@ -385,13 +381,13 @@ func detLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X")`) {
 		return "det" // meer // genoeg // the
 	}
-	if TEST(q, `$node/@cat = "detp"`) {
+	if node.Cat == "detp" {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NUM"]`) {
 			return "nummod"
 		}
 		return "det"
 	}
-	if TEST(q, `$node/@cat="np"`) {
+	if node.Cat == "np" {
 		return "nmod"
 	}
 	if TEST(q, `$node/@cat = ("mwu","pp","ap","smain")`) {

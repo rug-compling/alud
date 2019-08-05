@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/pebbe/dbxml"
 	"github.com/pebbe/util"
 	"github.com/rug-compling/alud"
 
@@ -11,6 +12,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var (
@@ -40,7 +42,9 @@ Usage, examples:
 
     %s [options] file.xml ...
     %s [options] collection.xml ...
+    %s [options] file.dact ...
     find . -name '*.xml' | %s [options]
+    find . -name '*.dact' | %s [options]
 
 Options:
 
@@ -51,7 +55,7 @@ Options:
     -p : panic on error (for development)
     -t : don't try to restore detokenized sentence
 
-`, p, p, p)
+`, p, p, p, p, p)
 }
 
 func main() {
@@ -95,13 +99,26 @@ func main() {
 	}
 
 	for _, filename := range filenames {
+		if strings.HasSuffix(filename, ".dact") {
+			db, err := dbxml.OpenRead(filename)
+			x(err)
+			docs, err := db.All()
+			x(err)
+			for docs.Next() {
+				doFile([]byte(docs.Content()), docs.Name(), filename, options)
+			}
+			x(docs.Error())
+			db.Close()
+			continue
+		}
+
 		b, err := ioutil.ReadFile(filename)
 		x(err)
 
 		var collection Collection
 
 		if xml.Unmarshal(b, &collection) != nil {
-			doFile(b, filename, options)
+			doFile(b, filename, "", options)
 			continue
 		}
 
@@ -111,17 +128,18 @@ func main() {
 		for _, f := range collection.Doc {
 			b, err := ioutil.ReadFile(f.Href)
 			x(err)
-			doFile(b, f.Href, options)
+			doFile(b, f.Href, "", options)
 		}
 		x(os.Chdir(dir))
 	}
 }
 
-func doFile(doc []byte, filename string, options int) {
+func doFile(doc []byte, filename, archname string, options int) {
 	result, err := alud.Ud(doc, filename, options)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
+		fmt.Fprintf(os.Stderr, "Error in %s: %s: %v\n", archname, filename, err)
 	} else {
+		fmt.Println("# archive =", archname)
 		fmt.Print(result)
 	}
 }
