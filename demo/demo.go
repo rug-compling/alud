@@ -6,6 +6,7 @@ import (
 
 	"bufio"
 	"encoding/xml"
+	"flag"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -13,6 +14,13 @@ import (
 )
 
 var (
+	opt_c = flag.Bool("c", false, "don't include comments")
+	opt_d = flag.Bool("d", false, "include debug messages in comments")
+	opt_e = flag.Bool("e", false, "skip enhanced dependencies")
+	opt_f = flag.Bool("f", false, "don't fix punctuation")
+	opt_p = flag.Bool("p", false, "panic on error (for development)")
+	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
+
 	x = util.CheckErr
 )
 
@@ -25,10 +33,34 @@ type Doc struct {
 	Href string `xml:"href,attr"`
 }
 
+func usage() {
+	p := filepath.Base(os.Args[0])
+	fmt.Printf(`
+Usage, examples:
+
+    %s [options] file.xml ...
+    %s [options] collection.xml ...
+    find . -name '*.xml' | %s [options]
+
+Options:
+
+    -c : don't include comments
+    -d : include debug messages in comments
+    -e : skip enhanced dependencies
+    -f : don't fix punctuation
+    -p : panic on error (for development)
+    -t : don't try to restore detokenized sentence
+
+`, p, p, p)
+}
+
 func main() {
 
+	flag.Usage = usage
+	flag.Parse()
+
 	filenames := []string{}
-	filenames = append(filenames, os.Args[1:]...)
+	filenames = append(filenames, flag.Args()...)
 	if !util.IsTerminal(os.Stdin) {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
@@ -38,15 +70,28 @@ func main() {
 	}
 
 	if len(filenames) == 0 {
-		fmt.Printf(`
-Usage, examples:
-
-    %s file.xml ...
-    %s collection.xml ...
-    find . -name '*.xml' | %s
-
-`, os.Args[0], os.Args[0], os.Args[0])
+		usage()
 		return
+	}
+
+	var options int
+	if *opt_c {
+		options |= alud.OPT_NO_COMMENTS
+	}
+	if *opt_d {
+		options |= alud.OPT_DEBUG
+	}
+	if *opt_e {
+		options |= alud.OPT_NO_ENHANCED
+	}
+	if *opt_f {
+		options |= alud.OPT_NO_FIX_PUNCT
+	}
+	if *opt_p {
+		options |= alud.OPT_PANIC
+	}
+	if *opt_t {
+		options |= alud.OPT_NO_DETOKENIZE
 	}
 
 	for _, filename := range filenames {
@@ -56,7 +101,7 @@ Usage, examples:
 		var collection Collection
 
 		if xml.Unmarshal(b, &collection) != nil {
-			doFile(b, filename)
+			doFile(b, filename, options)
 			continue
 		}
 
@@ -66,14 +111,14 @@ Usage, examples:
 		for _, f := range collection.Doc {
 			b, err := ioutil.ReadFile(f.Href)
 			x(err)
-			doFile(b, f.Href)
+			doFile(b, f.Href, options)
 		}
 		x(os.Chdir(dir))
 	}
 }
 
-func doFile(doc []byte, filename string) {
-	result, err := alud.Ud(doc, filename)
+func doFile(doc []byte, filename string, options int) {
+	result, err := alud.Ud(doc, filename, options)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
 	} else {

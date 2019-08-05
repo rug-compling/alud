@@ -46,8 +46,7 @@ $q.varallnodes[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
 						pair := [2]int{node2.Id, node3.Id}
 						if i, ok := seen[pair]; ok {
 							if i == 1 {
-								warning := fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d %d", node2.Id, node3.Id)
-								q.warnings = append(q.warnings, warning)
+								panic(fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d %d", node2.Id, node3.Id))
 							}
 							seen[pair]++
 							continue
