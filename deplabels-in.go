@@ -381,13 +381,13 @@ func detLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X")`) {
 		return "det" // meer // genoeg // the
 	}
-	if TEST(q, `$node/@cat = "detp"`) {
+	if node.Cat == "detp" {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NUM"]`) {
 			return "nummod"
 		}
 		return "det"
 	}
-	if TEST(q, `$node/@cat="np"`) {
+	if node.Cat == "np" {
 		return "nmod"
 	}
 	if TEST(q, `$node/@cat = ("mwu","pp","ap","smain")`) {
