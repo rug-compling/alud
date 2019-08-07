@@ -21,12 +21,12 @@ START:
 		for _, n1 := range q.varallnodes {
 			// FIND op varallnodes niet mogelijk omdat twee keer naar $node wordt verwezen, en dat moet dezelfde node zijn
 			for _, n2 := range FIND(q, `
-$n1[@rel=("hd","ld") and
+$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and
       @index and
       (@pt or @cat) and
       ancestor::node[@rel="cnj"] and
       ancestor::node[@cat="conj"]/node[@rel="cnj" and
-                                       descendant-or-self::node[@rel=("hd","ld") and
+                                       descendant-or-self::node[@rel=("hd","ld","obj1") and
                                                                 @index=$n1/@index and
                                                                 not(@cat or @pt) and
                                                                 ( @begin        = ..//node[@cat or @pt]/@end or
@@ -36,7 +36,7 @@ $n1[@rel=("hd","ld") and
                                        ]]`) {
 				node2 := n2.(*nodeType)
 				for _, n3 := range FIND(q, `
-$q.varallnodes[@rel=("hd","ld","vc") and @index and not(@pt or @cat) and
+$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and @index and not(@pt or @cat) and
                  ancestor::node[@rel="cnj"]  and
                                     ( @begin        = ..//node[@cat or @pt]/@end or
                                       @begin - 1000 = ..//node[@cat or @pt]/@end
