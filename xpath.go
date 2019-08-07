@@ -531,12 +531,14 @@ func (d *dPredicate) do(subdoc []interface{}, q *context) []interface{} {
 	}
 }
 
+/*
 type dRoot struct {
 }
 
 func (d *dRoot) do(subdoc []interface{}, q *context) []interface{} {
 	return q.varroot
 }
+*/
 
 type dSort struct {
 	arg1 doer
@@ -655,13 +657,17 @@ func flatten(aa []interface{}) []interface{} {
 	return result
 }
 
+/*
 func (a *alpino_ds) children() []interface{} {
 	return []interface{}{a.Node}
 }
+*/
 
+/*
 func (a *alpino_ds) descendantsOrSelf() []interface{} {
 	return a.Node.axDescendantsOrSelf
 }
+*/
 
 func (n *nodeType) children() []interface{} {
 	return n.axChildren

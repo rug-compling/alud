@@ -16,12 +16,13 @@ const VersionMinor = int(1)
 
 // options can be or'ed as last argument to Ud()
 const (
-	OPT_DEBUG         = 1 << iota // include debug messages in comments
-	OPT_NO_COMMENTS               // don't include comments
-	OPT_NO_DETOKENIZE             // don't try to restore detokenized sentence
-	OPT_NO_ENHANCED               // skip enhanced dependencies
-	OPT_NO_FIX_PUNCT              // don't fix punctuation
-	OPT_PANIC                     // panic on error (for development)
+	OPT_DEBUG                  = 1 << iota // include debug messages in comments
+	OPT_NO_COMMENTS                        // don't include comments
+	OPT_NO_DETOKENIZE                      // don't try to restore detokenized sentence
+	OPT_NO_ENHANCED                        // skip enhanced dependencies
+	OPT_NO_FIX_PUNCT                       // don't fix punctuation
+	OPT_NO_FIX_MISPLACED_HEADS             // don't fix misplaced heads in coordination
+	OPT_PANIC                              // panic on error (for development)
 )
 
 const (
@@ -205,7 +206,9 @@ func udTry(alpino_doc []byte, filename string, options int) (conllu string, err 
 
 	inspect(q)
 
-	fixMisplacedHeadsInCoordination(q)
+	if options&OPT_NO_FIX_MISPLACED_HEADS == 0 {
+		fixMisplacedHeadsInCoordination(q)
+	}
 	addPosTags(q)
 	addFeatures(q)
 	addDependencyRelations(q)
