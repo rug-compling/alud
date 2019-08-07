@@ -3793,7 +3793,7 @@ func detLabel(node *nodeType, q *context) string {
 		}) {
 		return "nmod:poss"
 	}
-	if test(q /* $node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X") */, &xPath{
+	if test(q /* $node/@ud:pos = ("DET","PROPN","PRON","ADV","X") */, &xPath{
 		arg1: &dSort{
 			arg1: &dEqual{
 				ARG: equal__is,
@@ -3804,7 +3804,7 @@ func detLabel(node *nodeType, q *context) string {
 					},
 				},
 				arg2: &dElem{
-					DATA: []interface{}{"DET", "PROPN", "NOUN", "ADJ", "PRON", "ADV", "X"},
+					DATA: []interface{}{"DET", "PROPN", "PRON", "ADV", "X"},
 					arg1: &dCollect{
 						ARG: collect__attributes__ud_3apos,
 						arg1: &dVariable{
@@ -3862,12 +3862,96 @@ func detLabel(node *nodeType, q *context) string {
 		}) {
 			return "nummod"
 		}
+		if test(q /* $node/node[@rel="hd" and @ud:pos=("NOUN","ADJ")] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"NOUN", "ADJ"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "nmod"
+		}
 		return "det"
 	}
-	if node.Cat == "np" {
+	if test(q /* $node[@cat=("np","ap") or @ud:pos=("SYM","ADJ") ] */, &xPath{
+		arg1: &dSort{
+			arg1: &dFilter{
+				arg1: &dVariable{
+					VAR: node,
+				},
+				arg2: &dSort{
+					arg1: &dOr{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__cat,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"np", "ap"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+							},
+						},
+						arg2: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"SYM", "ADJ"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
 		return "nmod"
 	}
-	if test(q /* $node/@cat = ("mwu","pp","ap","smain") */, &xPath{
+	if test(q /* $node/@cat = ("mwu","pp","smain") */, &xPath{
 		arg1: &dSort{
 			arg1: &dEqual{
 				ARG: equal__is,
@@ -3878,7 +3962,7 @@ func detLabel(node *nodeType, q *context) string {
 					},
 				},
 				arg2: &dElem{
-					DATA: []interface{}{"mwu", "pp", "ap", "smain"},
+					DATA: []interface{}{"mwu", "pp", "smain"},
 					arg1: &dCollect{
 						ARG: collect__attributes__cat,
 						arg1: &dVariable{

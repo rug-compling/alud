@@ -378,19 +378,22 @@ func detLabel(node *nodeType, q *context) string {
 	          $node[@cat="mwu" and node[@spectype="deeleigen"]]`) {
 		return "nmod:poss"
 	}
-	if TEST(q, `$node/@ud:pos = ("DET","PROPN","NOUN","ADJ","PRON","ADV","X")`) {
+	if TEST(q, `$node/@ud:pos = ("DET","PROPN","PRON","ADV","X")`) {
 		return "det" // meer // genoeg // the
 	}
 	if node.Cat == "detp" {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NUM"]`) {
 			return "nummod"
 		}
+		if TEST(q, `$node/node[@rel="hd" and @ud:pos=("NOUN","ADJ")]`) {
+			return "nmod"
+		}
 		return "det"
 	}
-	if node.Cat == "np" {
+	if TEST(q, `$node[@cat=("np","ap") or @ud:pos=("SYM","ADJ") ]`) {
 		return "nmod"
 	}
-	if TEST(q, `$node/@cat = ("mwu","pp","ap","smain")`) {
+	if TEST(q, `$node/@cat = ("mwu","pp","smain")`) {
 		return "det"
 	}
 	// tussen 5 en 6 .., needs more principled solution
