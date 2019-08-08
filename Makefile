@@ -18,3 +18,11 @@ all: $(SRC)
 
 compile: compile.go
 	go build -tags compile $^
+
+demo/demo: demo/demo.go $(SRC) *.go
+	cd demo && go build -v .
+
+demo-dact/demo-dact: demo-dact/demo-dact.go $(SRC) *.go
+	cd demo-dact && go build -v .
+
+demos: demo/demo demo-dact/demo-dact

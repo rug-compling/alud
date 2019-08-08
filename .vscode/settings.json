@@ -1,0 +1,14 @@
+{
+    "explorer.sortOrder": "type",
+    "files.exclude": {
+        "auxiliary.go": true,
+        "compile": true,
+        "demo/demo": true,
+        "demo-dact/demo-dact": true,
+        "depheads.go": true,
+        "deplabels.go": true,
+        "emptyheads.go": true,
+        "enhanced.go": true,
+        "misplacedheads.go": true
+    },
+}
