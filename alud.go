@@ -9,10 +9,15 @@ import (
 )
 
 // updates to the output
-const VersionMajor = int(4)
+const VersionMajor = 4
 
 // updates to the package API (unlikely)
-const VersionMinor = int(1)
+const VersionMinor = 2
+
+const (
+	UDVersionMajor = 2
+	UDVersionMinor = 2 // not yet 3
+)
 
 // options can be or'ed as last argument to Ud()
 const (
