@@ -31,17 +31,10 @@ const (
 )
 
 const (
-	error_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG = -1000 * (iota + 1)
-	error_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND
-	error_NO_EXTERNAL_HEAD
-	error_NO_HEAD_FOUND
-	error_NO_INTERNAL_HEAD
-	error_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT
-	error_NO_INTERNAL_HEAD_POSITION_FOUND
-	error_NO_VALUE
-	error_RECURSION_LIMIT
-	underscore
+	underscore = -1000 * (iota + 1)
 	empty_head
+	error_no_head
+	error_no_value
 )
 
 type context struct {
@@ -151,8 +144,8 @@ var (
 		axChildren:          []interface{}{},
 		axDescendants:       []interface{}{},
 		axDescendantsOrSelf: []interface{}{},
-		udHeadPosition:      error_NO_EXTERNAL_HEAD,
-		udEHeadPosition:     error_NO_EXTERNAL_HEAD,
+		udHeadPosition:      error_no_head,
+		udEHeadPosition:     error_no_head,
 	}
 )
 

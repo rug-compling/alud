@@ -435,7 +435,7 @@ func (d *dFunction) do(subdoc []interface{}, q *context) []interface{} {
 	case function__last__0__args:
 		return []interface{}{indexType(-1)}
 	case function__local__internal__head__position__1__args:
-		return []interface{}{internalHeadPosition(r[0].([]interface{}), q)}
+		return []interface{}{internalHeadPosition(r[0].([]interface{}), q, []trace{trace{s: "XPath function"}})}
 	case function__not__1__args:
 		if len(r[0].([]interface{})) == 0 {
 			return nTRUE

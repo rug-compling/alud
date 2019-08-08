@@ -99,28 +99,12 @@ func featuresToString(node *nodeType) string {
 func number(n int) string {
 	if n < 0 {
 		switch n {
-		case error_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG:
-			return "ERROR_EXTERNAL_HEAD_MUST_HAVE_ONE_ARG"
-		case error_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND:
-			return "ERROR_MORE_THAN_ONE_INTERNAL_HEAD_POSITION_FOUND"
-		case error_NO_EXTERNAL_HEAD:
-			return "ERROR_NO_EXTERNAL_HEAD"
-		case error_NO_HEAD_FOUND:
-			return "ERROR_NO_HEAD_FOUND"
-		case error_NO_INTERNAL_HEAD:
-			return "ERROR_NO_INTERNAL_HEAD"
-		case error_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT:
-			return "ERROR_NO_INTERNAL_HEAD_IN_GAPPED_CONSTITUENT"
-		case error_NO_INTERNAL_HEAD_POSITION_FOUND:
-			return "ERROR_NO_INTERNAL_HEAD_POSITION_FOUND"
-		case error_NO_VALUE:
-			return "ERROR_NO_VALUE"
-		case error_RECURSION_LIMIT:
-			return "ERROR_RECURSION_LIMIT"
 		case underscore:
 			return "_"
 		case empty_head:
 			return "empty head"
+		case error_no_head:
+			panic("No head")
 		default:
 			panic("Missing case")
 		}

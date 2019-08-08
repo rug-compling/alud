@@ -77,7 +77,7 @@ func i1(ii []interface{}) int {
 	if len(ii) > 0 {
 		return ii[0].(int)
 	}
-	return error_NO_VALUE
+	return error_no_value
 }
 
 /*
