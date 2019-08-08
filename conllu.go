@@ -26,9 +26,6 @@ func conll(q *context, options int) string {
 				fmt.Fprintf(&buf, "# debug_%d = %s\n", i+1, d)
 			}
 		}
-		for i, w := range q.warnings {
-			fmt.Fprintf(&buf, "# warning_%d = %s\n", i+1, w)
-		}
 	}
 
 	u := func(s string) string {

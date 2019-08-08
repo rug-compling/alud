@@ -43,7 +43,6 @@ type context struct {
 	sentence      string
 	sentid        string
 	debugs        []string
-	warnings      []string
 	depth         int
 	allnodes      []*nodeType
 	ptnodes       []*nodeType
@@ -206,7 +205,6 @@ func udTry(alpino_doc []byte, filename string, options int) (conllu string, err 
 		sentence: alpino.Sentence.Sent,
 		sentid:   alpino.Sentence.SentId,
 		varroot:  []interface{}{alpino.Node},
-		warnings: []string{},
 	}
 
 	inspect(q)
