@@ -154,7 +154,7 @@ func enhanceDependencyLabel(node *nodeType, q *context, tr []trace) string {
 			if crd.Cat == "mwu" {
 				return join(label, enhancedLemmaString1(n1(FIND(q, `($crd/node[@rel="mwp"])[1]`)), q))
 			}
-			panic(tracer("Empty EUD label", tr))
+			panic(tracer("Empty EUD label", tr, q))
 		}
 	}
 
@@ -174,7 +174,7 @@ func enhanceDependencyLabel(node *nodeType, q *context, tr []trace) string {
 		return label
 	}
 
-	panic(tracer("Empty EUD label", tr))
+	panic(tracer("Empty EUD label", tr, q))
 }
 
 func anaphoricRelpronoun(node *nodeType, q *context) []depType {

@@ -106,11 +106,14 @@ func dump(alpino *Alpino_ds) {
 }
 */
 
-func tracer(s string, tr []trace) string {
+func tracer(s string, tr []trace, q *context) string {
 	var buf bytes.Buffer
 	buf.WriteString(s)
 	if len(tr) > 0 && tr[0].node != nil {
 		fmt.Fprintf(&buf, " for %s:%s", number(tr[0].node.End), tr[0].node.Word)
+	}
+	for _, d := range q.debugs {
+		buf.WriteString("\n  # debug: " + d)
 	}
 	for i := len(tr) - 1; i >= 0; i-- {
 		t := tr[i]

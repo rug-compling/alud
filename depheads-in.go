@@ -13,7 +13,7 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 
 	if len(nodes) == 0 {
 		tr = append(tr, trace{s: "externalHeadPosition"})
-		panic(tracer(fmt.Sprint("External head must have one arg, has ", len(nodes)), tr))
+		panic(tracer(fmt.Sprint("External head must have one arg, has ", len(nodes)), tr, q))
 	}
 
 	node := nodes[0].(*nodeType)
@@ -169,14 +169,14 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 		if node.parent.Begin >= 0 {
 			return externalHeadPosition(node.axParent, q, tr)
 		}
-		panic(tracer("No head found", tr))
+		panic(tracer("No head found", tr, q))
 	}
 
 	if node.Rel == "dlink" || node.Rel == "sat" || node.Rel == "tag" {
 		if n := FIND(q, `$node/../node[@rel="nucl"]`); len(n) > 0 {
 			return internalHeadPositionWithGapping(n, q, tr)
 		}
-		panic(tracer("No external head", tr))
+		panic(tracer("No external head", tr, q))
 	}
 
 	if node.Rel == "vc" {
@@ -285,7 +285,7 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 		return internalHeadPositionWithGapping(node.axParent, q, tr)
 	}
 
-	panic(tracer("No external head", tr))
+	panic(tracer("No external head", tr, q))
 }
 
 // recursive
@@ -295,9 +295,9 @@ func internalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 	if n := len(nodes); n != 1 {
 		tr = append(tr, trace{s: "internalHeadPosition"})
 		if n == 0 {
-			panic(tracer("No internal head position found", tr))
+			panic(tracer("No internal head position found", tr, q))
 		} else if n > 1 {
-			panic(tracer("More than one internal head position found", tr))
+			panic(tracer("More than one internal head position found", tr, q))
 		}
 	}
 	node := nodes[0]
@@ -384,7 +384,7 @@ func internalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 		return empty_head
 	}
 
-	panic(tracer("No internal head", tr))
+	panic(tracer("No internal head", tr, q))
 }
 
 func internalHeadPositionWithGapping(node []interface{}, q *context, tr []trace) int {
@@ -465,7 +465,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context, tr 
 		return internalHeadPositionWithGapping(if1(n), q, tr)
 	}
 
-	panic(tracer("No internal head in gapped constituent", tr))
+	panic(tracer("No internal head in gapped constituent", tr, q))
 }
 
 /*

@@ -290,7 +290,7 @@ func dependencyLabel(node *nodeType, q *context, tr []trace) string {
 			if TEST(q, `$node/node[@ud:pos=("PUNCT","SYM")]`) { // fix for mwu punctuation in Alpino output
 				return "punct"
 			}
-			panic(tracer("No label --", tr))
+			panic(tracer("No label --", tr, q))
 		}
 		if TEST(q, `$node[not(@ud:pos)]/../@rel="top"`) {
 			return "root"
@@ -301,7 +301,7 @@ func dependencyLabel(node *nodeType, q *context, tr []trace) string {
 		if TEST(q, `$node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","VERB","INTJ")]`) {
 			return "parataxis"
 		}
-		panic(tracer("No label --", tr))
+		panic(tracer("No label --", tr, q))
 	}
 	if node.Rel == "hd" {
 		if node.udPos == "ADP" {
@@ -326,7 +326,7 @@ func dependencyLabel(node *nodeType, q *context, tr []trace) string {
 		}
 		return dependencyLabel(node.parent, q, tr)
 	}
-	panic(tracer("No label", tr))
+	panic(tracer("No label", tr, q))
 }
 
 func determineNominalModLabel(node *nodeType, q *context) string {
@@ -414,7 +414,7 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 		}
 		return "det"
 	}
-	panic(tracer("No label det", tr))
+	panic(tracer("No label det", tr, q))
 }
 
 func modLabelInsideNp(node *nodeType, q *context, tr []trace) string {
@@ -459,9 +459,9 @@ func modLabelInsideNp(node *nodeType, q *context, tr []trace) string {
 		return "det" // empty determiners in gapping?
 	}
 	if node.Index > 0 {
-		panic(tracer("Index nmod", tr))
+		panic(tracer("Index nmod", tr, q))
 	}
-	panic(tracer("No label nmod", tr))
+	panic(tracer("No label nmod", tr, q))
 }
 
 func labelVmod(node *nodeType, q *context, tr []trace) string {
@@ -501,9 +501,9 @@ func labelVmod(node *nodeType, q *context, tr []trace) string {
 		return "nummod"
 	}
 	if node.Index > 0 {
-		panic(tracer("Index vmod", tr))
+		panic(tracer("Index vmod", tr, q))
 	}
-	panic(tracer("No label vmod", tr))
+	panic(tracer("No label vmod", tr, q))
 }
 
 // this function is now also used to distribute dependents in coordination in Enhanced UD , so lot more rels and contexts are possible
@@ -539,7 +539,7 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context, tr []trace) string
 		if TEST(q, `$head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")]`) {
 			return "advmod" // waar precies zit je ..
 		}
-		panic(tracer("No label index PC", tr))
+		panic(tracer("No label index PC", tr, q))
 	}
 	if gap.Rel == "sup" || gap.Rel == "pobj1" {
 		return "expl" // waar het om gaat is dat hij scoort, het is 1881 en dertien jaar geleden dat ...
@@ -563,7 +563,7 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context, tr []trace) string
 		if TEST(q, `$head[@ud:pos=("ADV","ADP") or @cat= ("advp","ap","mwu","conj")]`) {
 			return "advmod" // hoe vaak -- AP, daar waar, waar en wanneer, voor als rhd
 		}
-		panic(tracer("No label index mod", tr))
+		panic(tracer("No label index mod", tr, q))
 	}
 	if gap.Rel == "det" {
 		return detLabel(head, q, tr)
@@ -574,5 +574,5 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context, tr []trace) string
 	if gap.Rel == "du" || gap.Rel == "dp" {
 		return "parataxis"
 	}
-	panic(tracer("No label index", tr))
+	panic(tracer("No label index", tr, q))
 }

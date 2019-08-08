@@ -564,7 +564,7 @@ func enhanceDependencyLabel(node *nodeType, q *context, tr []trace) string {
 					},
 				})), q))
 			}
-			panic(tracer("Empty EUD label", tr))
+			panic(tracer("Empty EUD label", tr, q))
 		}
 	}
 
@@ -680,7 +680,7 @@ func enhanceDependencyLabel(node *nodeType, q *context, tr []trace) string {
 		return label
 	}
 
-	panic(tracer("Empty EUD label", tr))
+	panic(tracer("Empty EUD label", tr, q))
 }
 
 func anaphoricRelpronoun(node *nodeType, q *context) []depType {
