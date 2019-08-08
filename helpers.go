@@ -1,6 +1,8 @@
 package alud
 
 import (
+	"bytes"
+	"fmt"
 	"sort"
 )
 
@@ -103,3 +105,37 @@ func dump(alpino *Alpino_ds) {
 	fmt.Println("<?xml version=\"1.0\"?>\n" + s)
 }
 */
+
+func tracer(s string, tr []trace) string {
+	var buf bytes.Buffer
+	buf.WriteString(s)
+	for i := len(tr) - 1; i >= 0; i-- {
+		t := tr[i]
+		buf.WriteString("\n    in " + t.s)
+		for ii, n := range []*nodeType{t.node, t.head, t.gap} {
+			if n == nil {
+				continue
+			}
+			fmt.Fprintf(
+				&buf,
+				"\n        %s -- id:%d  begin:%s  end:%s",
+				[]string{"node", "head", "gap "}[ii],
+				n.Id,
+				number(n.Begin),
+				number(n.End))
+			if w := n.Word; w != "" {
+				fmt.Fprintf(&buf, "  word:%s", w)
+			}
+			if pt := n.Pt; pt != "" {
+				fmt.Fprintf(&buf, "  pt:%s", pt)
+			}
+			if cat := n.Cat; cat != "" {
+				fmt.Fprintf(&buf, "  cat:%s", cat)
+			}
+			if rel := n.Rel; rel != "" {
+				fmt.Fprintf(&buf, "  rel:%s", rel)
+			}
+		}
+	}
+	return buf.String()
+}

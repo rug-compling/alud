@@ -23,7 +23,7 @@ func enhancedDependencies(q *context) {
 		// Edependency_relation
 		if changed {
 			q.depth = 0
-			node.udERelation = dependencyLabel(node, q)
+			node.udERelation = dependencyLabel(node, q, []trace{trace{s: "enhancedDependencies"}})
 			q.depth = 0
 			node.udEHeadPosition = externalHeadPosition(list(node), q)
 		} else {
@@ -1583,7 +1583,7 @@ func distributeDependents(node *nodeType, q *context) []depType {
 					},
 				},
 			},
-		})), q)
+		})), q, []trace{trace{s: "distributeDependents"}})
 
 	EudRelation := udRelation
 	if test(q /* $udRelation = ("nmod","obl") and $phrase[@cat="pp"]//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end] */, &xPath{

@@ -60,6 +60,13 @@ type context struct {
 	varroot       []interface{}
 }
 
+type trace struct {
+	s    string
+	node *nodeType
+	head *nodeType
+	gap  *nodeType
+}
+
 type alpino_ds struct {
 	XMLName  xml.Name  `xml:"alpino_ds"`
 	Node     *nodeType `xml:"node,omitempty"`
