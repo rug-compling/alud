@@ -145,7 +145,11 @@ func doFile(doc []byte, filename, archname string, options int) {
 	}
 	result, err := alud.Ud(doc, filename, options)
 	if err != nil {
-		fmt.Printf("# source = %s\n# error = %v\n\n", filename, err)
+		s := err.Error()
+		if i := strings.Index(s, "\n"); i > 0 {
+			s = s[:i]
+		}
+		fmt.Printf("# source = %s\n# error = %s\n\n", filename, s)
 		fmt.Fprintf(os.Stderr, "Error in %s: %s: %v\n", archname, filename, err)
 	} else {
 		fmt.Print(result)

@@ -109,6 +109,9 @@ func dump(alpino *Alpino_ds) {
 func tracer(s string, tr []trace) string {
 	var buf bytes.Buffer
 	buf.WriteString(s)
+	if len(tr) > 0 && tr[0].node != nil {
+		fmt.Fprintf(&buf, " for %s:%s", number(tr[0].node.End), tr[0].node.Word)
+	}
 	for i := len(tr) - 1; i >= 0; i-- {
 		t := tr[i]
 		buf.WriteString("\n    in " + t.s)
@@ -123,17 +126,71 @@ func tracer(s string, tr []trace) string {
 				n.Id,
 				number(n.Begin),
 				number(n.End))
-			if w := n.Word; w != "" {
-				fmt.Fprintf(&buf, "  word:%s", w)
+			if a := n.Word; a != "" {
+				fmt.Fprintf(&buf, "  word:%s", a)
 			}
-			if pt := n.Pt; pt != "" {
-				fmt.Fprintf(&buf, "  pt:%s", pt)
+			if a := n.Pt; a != "" {
+				fmt.Fprintf(&buf, "  pt:%s", a)
 			}
-			if cat := n.Cat; cat != "" {
-				fmt.Fprintf(&buf, "  cat:%s", cat)
+			if a := n.Cat; a != "" {
+				fmt.Fprintf(&buf, "  cat:%s", a)
 			}
-			if rel := n.Rel; rel != "" {
-				fmt.Fprintf(&buf, "  rel:%s", rel)
+			if a := n.Rel; a != "" {
+				fmt.Fprintf(&buf, "  rel:%s", a)
+			}
+			if a := n.Conjtype; a != "" {
+				fmt.Fprintf(&buf, "  conjtype:%s", a)
+			}
+			if a := n.Genus; a != "" {
+				fmt.Fprintf(&buf, "  genus:%s", a)
+			}
+			if a := n.Getal; a != "" {
+				fmt.Fprintf(&buf, "  getal:%s", a)
+			}
+			if a := n.Graad; a != "" {
+				fmt.Fprintf(&buf, "  graad:%s", a)
+			}
+			if a := n.Index; a > 0 {
+				fmt.Fprintf(&buf, "  index:%d", a)
+			}
+			if a := n.Lemma; a != "" {
+				fmt.Fprintf(&buf, "  lemma:%s", a)
+			}
+			if a := n.Lwtype; a != "" {
+				fmt.Fprintf(&buf, "  lwtype:%s", a)
+			}
+			if a := n.Naamval; a != "" {
+				fmt.Fprintf(&buf, "  naamval:%s", a)
+			}
+			if a := n.Ntype; a != "" {
+				fmt.Fprintf(&buf, "  ntype:%s", a)
+			}
+			if a := n.Numtype; a != "" {
+				fmt.Fprintf(&buf, "  numtype:%s", a)
+			}
+			if a := n.Pdtype; a != "" {
+				fmt.Fprintf(&buf, "  pdtype:%s", a)
+			}
+			if a := n.Persoon; a != "" {
+				fmt.Fprintf(&buf, "  persoon:%s", a)
+			}
+			if a := n.Pvagr; a != "" {
+				fmt.Fprintf(&buf, "  pvagr:%s", a)
+			}
+			if a := n.Pvtijd; a != "" {
+				fmt.Fprintf(&buf, "  pvtijd:%s", a)
+			}
+			if a := n.Sc; a != "" {
+				fmt.Fprintf(&buf, "  sc:%s", a)
+			}
+			if a := n.Spectype; a != "" {
+				fmt.Fprintf(&buf, "  spectype:%s", a)
+			}
+			if a := n.Vwtype; a != "" {
+				fmt.Fprintf(&buf, "  vwtype:%s", a)
+			}
+			if a := n.Wvorm; a != "" {
+				fmt.Fprintf(&buf, "  wvorm:%s", a)
 			}
 		}
 	}

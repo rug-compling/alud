@@ -22,7 +22,7 @@ func enhancedDependencies(q *context) {
 		// Edependency_relation
 		if changed {
 			q.depth = 0
-			node.udERelation = dependencyLabel(node, q, []trace{trace{s: "enhancedDependencies"}})
+			node.udERelation = dependencyLabel(node, q, []trace{trace{s: "enhancedDependencies", node: node}})
 			q.depth = 0
 			node.udEHeadPosition = externalHeadPosition(list(node), q, []trace{trace{s: "enhancedDependencies", node: node}})
 			if node.udEHeadPosition == 0 && node.udERelation != "root" {

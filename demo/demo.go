@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var (
@@ -125,7 +126,11 @@ func main() {
 func doFile(doc []byte, filename string, options int) {
 	result, err := alud.Ud(doc, filename, options)
 	if err != nil {
-		fmt.Printf("# source = %s\n# error = %v\n\n", filename, err)
+		s := err.Error()
+		if i := strings.Index(s, "\n"); i > 0 {
+			s = s[:i]
+		}
+		fmt.Printf("# source = %s\n# error = %s\n\n", filename, s)
 		fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
 	} else {
 		fmt.Print(result)
