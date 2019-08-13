@@ -511,7 +511,7 @@ func dependencyLabel(node *nodeType, q *context, tr []trace) string {
 				},
 			},
 		}) { // gapping
-			return dependencyLabel(node.parent, q)
+			return dependencyLabel(node.parent, q, tr)
 		}
 		if test(q, /* $node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
 			   and ../parent::node[@rel="cnj" and node[@rel="hd" and not(@pt or @cat)]]] */&xPath{
