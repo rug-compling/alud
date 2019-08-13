@@ -2241,6 +2241,9 @@ func dependencyLabel(node *nodeType, q *context, tr []trace) string {
 		if node.udPos == "PRON" { //floating quantifiers
 			return "obl"
 		}
+		if node.udPos == "NOUN" { // zich politiek bezoedelen
+			return "obl"
+		}
 		if node.udPos != "" {
 			return "advmod"
 		}
@@ -4919,6 +4922,52 @@ func labelVmod(node *nodeType, q *context, tr []trace) string {
 						},
 						arg2: &dElem{
 							DATA: []interface{}{"NOUN", "VERB", "ADP"},
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		return "obl"
+	}
+	if test(q /* $node[@cat="ap"]/node[@ud:pos="NOUN"] */, &xPath{
+		arg1: &dSort{
+			arg1: &dCollect{
+				ARG: collect__child__node,
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__cat,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"ap"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+				arg2: &dPredicate{
+					arg1: &dEqual{
+						ARG: equal__is,
+						arg1: &dCollect{
+							ARG:  collect__attributes__ud_3apos,
+							arg1: &dNode{},
+						},
+						arg2: &dElem{
+							DATA: []interface{}{"NOUN"},
 							arg1: &dCollect{
 								ARG:  collect__attributes__ud_3apos,
 								arg1: &dNode{},

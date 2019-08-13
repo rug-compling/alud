@@ -228,6 +228,9 @@ func dependencyLabel(node *nodeType, q *context, tr []trace) string {
 		if node.udPos == "PRON" { //floating quantifiers
 			return "obl"
 		}
+		if node.udPos == "NOUN" { // zich politiek bezoedelen
+			return "obl"
+		}
 		if node.udPos != "" {
 			return "advmod"
 		}
@@ -487,6 +490,9 @@ func labelVmod(node *nodeType, q *context, tr []trace) string {
 		return "obl"
 	}
 	if TEST(q, `$node[@cat="advp"]/node[@ud:pos=("NOUN","VERB","ADP")]`) {
+		return "obl"
+	}
+	if TEST(q, `$node[@cat="ap"]/node[@ud:pos="NOUN"]`) {
 		return "obl"
 	}
 	if TEST(q, `$node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")]`) {
