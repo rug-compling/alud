@@ -3886,7 +3886,7 @@ func internalHeadPositionWithGapping(node []interface{}, q *context) int {
 func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int {
 	depthCheck(q, "internalHeadPositionOfGappedConstituent")
 
-	if test(q /* $node/node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX")] */, &xPath{
+	if test(q /* $node/node[@rel="hd" and (@pt or @cat) and not(@ud:pos=("AUX","ADP"))] */, &xPath{
 		arg1: &dSort{
 			arg1: &dCollect{
 				ARG: collect__child__node,
@@ -3934,7 +3934,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 											arg1: &dNode{},
 										},
 										arg2: &dElem{
-											DATA: []interface{}{"AUX"},
+											DATA: []interface{}{"AUX", "ADP"},
 											arg1: &dCollect{
 												ARG:  collect__attributes__ud_3apos,
 												arg1: &dNode{},

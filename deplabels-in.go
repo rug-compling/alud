@@ -61,7 +61,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "expl:pv"
 	}
 	if node.Rel == "su" {
-		if TEST(q, `$node[../@rel="cnj" and ../node[@rel="hd" and not(@pt or @cat)]]`) { // gapping
+		if TEST(q, `$node[../@rel="cnj" and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel="vc"]/node[@rel="hd"  and (@pt or @cat)])]`) { // gapping
 			return dependencyLabel(node.parent, q)
 		}
 		if TEST(q, `$node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
