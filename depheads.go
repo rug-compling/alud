@@ -4801,6 +4801,50 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context, tr 
 	}); len(n) > 0 {
 		return internalHeadPositionWithGapping(if1(n), q, tr)
 	}
+	if n := find(q /* $node/node[@rel="hd" and @ud:pos="ADP"] */, &xPath{
+		arg1: &dSort{
+			arg1: &dCollect{
+				ARG: collect__child__node,
+				arg1: &dVariable{
+					VAR: node,
+				},
+				arg2: &dPredicate{
+					arg1: &dAnd{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__rel,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"hd"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+							},
+						},
+						arg2: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"ADP"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}); len(n) > 0 { // in en rond Brussel, case not necessary in xquery code (run-time issue?)
+		return internalHeadPositionWithGapping(if1(n), q, tr)
+	}
 
 	panic(tracer("No internal head in gapped constituent", tr, q))
 }
