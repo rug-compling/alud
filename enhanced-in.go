@@ -3,6 +3,7 @@
 package alud
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 )
@@ -21,9 +22,15 @@ func enhancedDependencies(q *context) {
 		// Edependency_relation
 		if changed {
 			q.depth = 0
-			node.udERelation = dependencyLabel(node, q)
+			node.udERelation = dependencyLabel(node, q, []trace{trace{s: "enhancedDependencies", node: node}})
 			q.depth = 0
-			node.udEHeadPosition = externalHeadPosition(list(node), q)
+			node.udEHeadPosition = externalHeadPosition(list(node), q, []trace{trace{s: "enhancedDependencies", node: node}})
+			if node.udEHeadPosition == 0 && node.udERelation != "root" ||
+				node.udEHeadPosition != 0 && node.udERelation == "root" {
+				panic(fmt.Sprintf("Invalid DEPS %s:%s in %s:%s",
+					number(node.udEHeadPosition), node.udERelation,
+					number(node.End), node.Word))
+			}
 		} else {
 			node.udERelation = node.udRelation
 			node.udEHeadPosition = node.udHeadPosition
@@ -40,6 +47,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 	// rhd : een levend visje dat doorgeslikt moet worden
 	q.depth = 0
 	var enhanced []depType
+	tr := []trace{trace{s: "enhancedDependencies1", node: node}}
 	for {
 
 		if TEST(q, `$node[@ud:ERelation=("nsubj","obj","iobj","nsubj:pass")]`) { // TODO: klopt dit? exists binnen [ ]
@@ -47,13 +55,13 @@ func enhancedDependencies1(node *nodeType, q *context) {
 				`$node/ancestor::node/node[@rel=("su","obj1","obj2") and local:internal_head_position(.) = $node/@end ]/@index`)
 			if len(so) > 0 {
 				soIndex := i1(so)
-				enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-				enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                    // self
-				enhanced = append(enhanced, distributeConjuncts(node, q)...)                                    // self
-				enhanced = append(enhanced, distributeDependents(node, q)...)                                   // self
-				enhanced = append(enhanced, xcompControl(node, q, soIndex)...)
-				enhanced = append(enhanced, upstairsControl(node, q, soIndex)...)
-				enhanced = append(enhanced, passiveVpControl(node, q, soIndex)...)
+				enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q, tr)}} // self
+				enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                        // self
+				enhanced = append(enhanced, distributeConjuncts(node, q, tr)...)                                    // self
+				enhanced = append(enhanced, distributeDependents(node, q, tr)...)                                   // self
+				enhanced = append(enhanced, xcompControl(node, q, tr, soIndex)...)
+				enhanced = append(enhanced, upstairsControl(node, q, tr, soIndex)...)
+				enhanced = append(enhanced, passiveVpControl(node, q, tr, soIndex)...)
 				break
 			}
 		}
@@ -65,43 +73,43 @@ func enhancedDependencies1(node *nodeType, q *context) {
 			rhdNp := FIND(q, `$node/ancestor::node[@cat="np" and node[@rel="mod"]/node[@rel="rhd"]/@index = $rhdIndex]`)
 			// de enige _i die voldoet aan de eisen -- make sure empty heads are covered as well
 			if len(rhdNp) > 0 {
-				enhanced = []depType{depType{head: internalHeadPositionWithGapping(rhdNp, q), dep: "ref"}} // rhdref
-				enhanced = append(enhanced, xcompControl(node, q, rhdIndex)...)
-				enhanced = append(enhanced, passiveVpControl(node, q, rhdIndex)...)
+				enhanced = []depType{depType{head: internalHeadPositionWithGapping(rhdNp, q, tr), dep: "ref"}} // rhdref
+				enhanced = append(enhanced, xcompControl(node, q, tr, rhdIndex)...)
+				enhanced = append(enhanced, passiveVpControl(node, q, tr, rhdIndex)...)
 				break
 			}
 			// if there is no antecedent, lets keep the basic relation
-			enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                    // self
-			enhanced = append(enhanced, distributeConjuncts(node, q)...)                                    // self
-			enhanced = append(enhanced, distributeDependents(node, q)...)                                   // self
-			enhanced = append(enhanced, xcompControl(node, q, rhdIndex)...)
-			enhanced = append(enhanced, passiveVpControl(node, q, rhdIndex)...)
+			enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q, tr)}} // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                        // self
+			enhanced = append(enhanced, distributeConjuncts(node, q, tr)...)                                    // self
+			enhanced = append(enhanced, distributeDependents(node, q, tr)...)                                   // self
+			enhanced = append(enhanced, xcompControl(node, q, tr, rhdIndex)...)
+			enhanced = append(enhanced, passiveVpControl(node, q, tr, rhdIndex)...)
 			break
 		}
 
 		relSister := FIND(q, `($node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[1]`)
 		if len(relSister) > 0 {
 			relSisterIndex := i1(relSister)
-			enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                    // self
-			enhanced = append(enhanced, distributeConjuncts(node, q)...)                                    // self
-			enhanced = append(enhanced, distributeDependents(node, q)...)                                   // self
-			enhanced = append(enhanced, xcompControl(node, q, relSisterIndex)...)
-			enhanced = append(enhanced, passiveVpControl(node, q, relSisterIndex)...)
+			enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q, tr)}} // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                        // self
+			enhanced = append(enhanced, distributeConjuncts(node, q, tr)...)                                    // self
+			enhanced = append(enhanced, distributeDependents(node, q, tr)...)                                   // self
+			enhanced = append(enhanced, xcompControl(node, q, tr, relSisterIndex)...)
+			enhanced = append(enhanced, passiveVpControl(node, q, tr, relSisterIndex)...)
 			break
 		}
 
 		// underscore is resultaat van reconstructEmptyHead()
 		if node.udHeadPosition >= 0 || node.udHeadPosition == underscore {
-			enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                    // self
-			enhanced = append(enhanced, distributeConjuncts(node, q)...)                                    // self
-			enhanced = append(enhanced, distributeDependents(node, q)...)                                   // self
+			enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q, tr)}} // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                                        // self
+			enhanced = append(enhanced, distributeConjuncts(node, q, tr)...)                                    // self
+			enhanced = append(enhanced, distributeDependents(node, q, tr)...)                                   // self
 			break
 		}
 
-		enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
+		enhanced = []depType{depType{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q, tr)}}
 		break
 	}
 
@@ -119,6 +127,9 @@ func enhancedDependencies1(node *nodeType, q *context) {
 	}
 	ss := make([]string, 0, len(enhanced))
 	for _, e := range enhanced {
+		if e.head == 0 && e.dep != "root" {
+			panic(fmt.Sprintf("Invalid EUD 0:%s in %s:%s", e.dep, number(node.End), node.Word))
+		}
 		if e.dep != "" {
 			ss = append(ss, number(e.head)+":"+e.dep)
 		}
@@ -134,7 +145,8 @@ func join(a, b string) string {
 	return a + ":" + b
 }
 
-func enhanceDependencyLabel(node *nodeType, q *context) string {
+func enhanceDependencyLabel(node *nodeType, q *context, tr []trace) string {
+	tr = append(tr, trace{s: "enhanceDependencyLabel", node: node})
 	label := node.udERelation
 	if label == "conj" {
 		if crd := n1(FIND(q, `($node/ancestor::node[@cat="conj" and
@@ -145,7 +157,7 @@ func enhanceDependencyLabel(node *nodeType, q *context) string {
 			if crd.Cat == "mwu" {
 				return join(label, enhancedLemmaString1(n1(FIND(q, `($crd/node[@rel="mwp"])[1]`)), q))
 			}
-			return "ERROR_empty_eud_label"
+			panic(tracer("Empty EUD label", tr, q))
 		}
 	}
 
@@ -165,7 +177,7 @@ func enhanceDependencyLabel(node *nodeType, q *context) string {
 		return label
 	}
 
-	return "ERROR_empty_eud_label"
+	panic(tracer("Empty EUD label", tr, q))
 }
 
 func anaphoricRelpronoun(node *nodeType, q *context) []depType {
@@ -190,13 +202,14 @@ func anaphoricRelpronoun(node *nodeType, q *context) []depType {
 }
 
 // Glastra en Terlouw verzonnen een list --> nsubj(verzonnen,Glastra) nsubj(verzonnen,Terlouw)
-func distributeConjuncts(node *nodeType, q *context) []depType {
+func distributeConjuncts(node *nodeType, q *context, tr []trace) []depType {
+	tr = append(tr, trace{s: "distributeConjuncts", node: node})
 	if node.udRelation == "conj" {
 		coordHead := n1(FIND(q, `$q.varallnodes[@end = $node/@ud:HeadPosition
 	       and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")]`))
 		if coordHead != noNode {
 			// in A en B vs in A en naast B --> use enh_dep_label($node) in the latter case...
-			depLabel := enhanceDependencyLabel(coordHead, q)
+			depLabel := enhanceDependencyLabel(coordHead, q, tr)
 			return []depType{depType{head: coordHead.udHeadPosition, dep: depLabel}}
 		}
 	}
@@ -207,7 +220,8 @@ func distributeConjuncts(node *nodeType, q *context) []depType {
 // todo: passives ze werd ontmanteld en verkocht  su coindexed with two obj1
 // done: phrases [np_i [een scoutskameraad] werd .. en _i zocht hem op]
 // idem: de hond was gebaseerd op Lassy en verscheen onder de naam Wirel nsubj:pass in conj1, nsubj in conj 2
-func distributeDependents(node *nodeType, q *context) []depType {
+func distributeDependents(node *nodeType, q *context, tr []trace) []depType {
+	tr = append(tr, trace{s: "distributeDependents", node: node})
 	var phrase *nodeType
 	if node.Rel == "hd" {
 		if TEST(q, `$node/../../@cat="pp"`) { // door het schilderij
@@ -263,7 +277,7 @@ func distributeDependents(node *nodeType, q *context) []depType {
 	udRelation := nonLocalDependencyLabel(phrase, n1(FIND(q, `($q.varallnodes[@rel="cnj"]/
 	   			    node[
 	   			    (: @rel=$phrase/@rel and :)
-					not(@pt or @cat) and @index=$phrase/@index])[1]`)), q)
+					not(@pt or @cat) and @index=$phrase/@index])[1]`)), q, tr)
 
 	EudRelation := udRelation
 	if TEST(q, `$udRelation = ("nmod","obl") and $phrase[@cat="pp"]//node[@ud:Relation="case" and @ud:HeadPosition=$node/@end]`) {
@@ -272,7 +286,7 @@ func distributeDependents(node *nodeType, q *context) []depType {
 
 	result := []depType{}
 	for _, conj_head := range conj_heads {
-		result = append(result, depType{head: internalHeadPosition([]interface{}{conj_head.(*nodeType)}, q), dep: EudRelation})
+		result = append(result, depType{head: internalHeadPosition([]interface{}{conj_head.(*nodeType)}, q, tr), dep: EudRelation})
 
 	}
 	return result
@@ -281,40 +295,45 @@ func distributeDependents(node *nodeType, q *context) []depType {
 // should work in coordinations like te laten reizen en te laten beleven,
 // and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
 //    .. of hij ook voor hen wilde komen tekenen :)
-func xcompControl(node *nodeType, q *context, so_index int) []depType {
+func xcompControl(node *nodeType, q *context, tr []trace, so_index int) []depType {
+
+	tr = append(tr, trace{s: "xcompControl", node: node})
 
 	result := []depType{}
 	for _, xcomp := range FIND(q, `$node[not(@ud:PronType="Rel")]/ancestor::node//node[(@rel="vc" or (@cat="inf" and @rel="body")) (: covers inf ti oti :)
 	   					   and node[@rel=("hd","predc") and @ud:Relation="xcomp"]  (: vrouwen moeten vertegenwoordigd zijn :)
 	   					   and node[@rel="su" and @index]/@index = $so_index
 	   					  ]`) {
-		result = append(result, depType{head: internalHeadPosition([]interface{}{xcomp.(*nodeType)}, q), dep: "nsubj:xsubj"})
+		result = append(result, depType{head: internalHeadPosition([]interface{}{xcomp.(*nodeType)}, q, tr), dep: "nsubj:xsubj"})
 	}
 	return result
 }
 
 // alpino NF specific case, controllers with extraposed content are realized downstairs
-func upstairsControl(node *nodeType, q *context, so_index int) []depType {
+func upstairsControl(node *nodeType, q *context, tr []trace, so_index int) []depType {
+
+	tr = append(tr, trace{s: "upstairsControl", node: node})
 
 	result := []depType{}
 	for _, upstairs := range FIND(q, `$node/ancestor::node[node[@rel="hd" and @ud:pos="VERB"]
-	   						  and node[@rel="vc"]
 	   						  and node[@rel=("su","obj1","obj2") and not(@pt or @cat)]/@index = $so_index
 	   						 ]`) {
-		result = append(result, depType{head: internalHeadPosition([]interface{}{upstairs.(*nodeType)}, q), dep: "nsubj:xsubj"})
+		result = append(result, depType{head: internalHeadPosition([]interface{}{upstairs.(*nodeType)}, q, tr), dep: "nsubj:xsubj"})
 	}
 	return result
 
 }
 
 // een koers waarin de Alsemberg moet worden beklommen
-func passiveVpControl(node *nodeType, q *context, so_index int) []depType {
+func passiveVpControl(node *nodeType, q *context, tr []trace, so_index int) []depType {
+
+	tr = append(tr, trace{s: "passiveVpControl", node: node})
 
 	result := []depType{}
 	for _, passive_vp := range FIND(q, `$q.varallnodes[@rel="vc" and @cat="ppart"
 	   				       and node[@rel="hd" and @ud:Relation="xcomp"]
 	   				       and node[@rel="obj1" and @index]/@index = $so_index ]`) {
-		result = append(result, depType{head: internalHeadPosition([]interface{}{passive_vp.(*nodeType)}, q), dep: "nsubj:pass:xsubj"})
+		result = append(result, depType{head: internalHeadPosition([]interface{}{passive_vp.(*nodeType)}, q, tr), dep: "nsubj:pass:xsubj"})
 	}
 
 	return result

@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var (
@@ -18,6 +19,7 @@ var (
 	opt_d = flag.Bool("d", false, "include debug messages in comments")
 	opt_e = flag.Bool("e", false, "skip enhanced dependencies")
 	opt_f = flag.Bool("f", false, "don't fix punctuation")
+	opt_m = flag.Bool("m", false, "don't fix mixplaced heads in coordination")
 	opt_p = flag.Bool("p", false, "panic on error (for development)")
 	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
 
@@ -48,7 +50,8 @@ Options:
     -d : include debug messages in comments
     -e : skip enhanced dependencies
     -f : don't fix punctuation
-    -p : panic on error (for development)
+    -m : don't fix misplaced heads in coordication
+    -p : panic on error
     -t : don't try to restore detokenized sentence
 
 `, p, p, p)
@@ -87,6 +90,9 @@ func main() {
 	if *opt_f {
 		options |= alud.OPT_NO_FIX_PUNCT
 	}
+	if *opt_m {
+		options |= alud.OPT_NO_FIX_MISPLACED_HEADS
+	}
 	if *opt_p {
 		options |= alud.OPT_PANIC
 	}
@@ -120,6 +126,11 @@ func main() {
 func doFile(doc []byte, filename string, options int) {
 	result, err := alud.Ud(doc, filename, options)
 	if err != nil {
+		s := err.Error()
+		if i := strings.Index(s, "\n"); i > 0 {
+			s = s[:i]
+		}
+		fmt.Printf("# source = %s\n# error = %s\n\n", filename, s)
 		fmt.Fprintf(os.Stderr, "Error in %s: %v\n", filename, err)
 	} else {
 		fmt.Print(result)
