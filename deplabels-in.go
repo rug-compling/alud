@@ -63,12 +63,12 @@ func dependencyLabel(node *nodeType, q *context, tr []trace) string {
 		return "expl:pv"
 	}
 	if node.Rel == "su" {
-		if TEST(q, `$node[../@rel="cnj" and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel="vc"]/node[@rel="hd"  and (@pt or @cat)])]`) { // gapping
+		if TEST(q, `$node[../@rel="cnj" and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel=("vc","predc")]/node[@rel="hd"  and (@pt or @cat)])]`) { // gapping
 			return dependencyLabel(node.parent, q, tr)
 		}
 		if TEST(q, `$node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
-	                                 and ../parent::node[@rel="cnj" and node[@rel="hd" and not(@pt or @cat)]]]`) { // gapping with subj downstairs
-			// TODO: ../.. is veranderd in ../parent::node , is dat juist?
+	                                 and ../parent::node[@rel="cnj"]]`) { // gapping with subj downstairs
+			// TODO: ../.. is veranderd in ../parent::node , is dat juist? JA
 			/*
 			   In 1909 werd de persoonlijke dienstplicht ingevoerd en in 1913 de algemene persoonlijke dienstplicht .
 			   [ hd_i su_j vc [ hd_k [_j pers dienstplicht ]

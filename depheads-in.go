@@ -232,7 +232,7 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 			return internalHeadPositionWithGapping(node.axParent, q, tr) // ud head could still be a predc
 		}
 		// only for 1 case where verb is missing -- die eigendom ... (no verb))
-		if TEST(q, `$node[../node[@rel="predc"] and not(../node[@rel="hd" and (@pt or @cat)])]`) {
+		if TEST(q, `$node[../node[@rel="predc" and (@pt or @cat)] and not(../node[@rel="hd" and (@pt or @cat)])]`) {
 			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q, tr)
 		}
 		return externalHeadPosition(node.axParent, q, tr) // this probably does no change anything, as we are still attaching to head of left conjunct
