@@ -12,6 +12,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -25,6 +26,8 @@ var (
 	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
 
 	x = util.CheckErr
+
+	reSentID = regexp.MustCompile(`<sentence.*?sentid="(.*?)".*</sentence>`)
 )
 
 type Collection struct {
@@ -144,14 +147,26 @@ func doFile(doc []byte, filename, archname string, options int) {
 		fmt.Println("# archive =", archname)
 	}
 	result, err := alud.Ud(doc, filename, options)
-	if err != nil {
+	if err == nil {
+		fmt.Print(result)
+	} else {
 		s := err.Error()
 		if i := strings.Index(s, "\n"); i > 0 {
 			s = s[:i]
 		}
-		fmt.Printf("# source = %s\n# error = %s\n\n", filename, s)
-		fmt.Fprintf(os.Stderr, "Error in %s: %s: %v\n", archname, filename, err)
-	} else {
-		fmt.Print(result)
+		m := reSentID.FindSubmatch(doc)
+		id1 := ""
+		id2 := ""
+		if len(m) == 2 {
+			id := string(m[1])
+			id1 = "# sent_id = " + id + "\n"
+			id2 = "  sentence ID: " + id + "\n"
+		}
+		fmt.Printf("# source = %s\n%s# error = %s\n\n", filename, id1, s)
+		if archname == "" {
+			fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id2, err)
+		} else {
+			fmt.Fprintf(os.Stderr, "%s: %s\n%s  error: %v\n", archname, filename, id2, err)
+		}
 	}
 }
