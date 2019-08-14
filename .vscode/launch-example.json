@@ -9,7 +9,7 @@
             "type": "go",
             "request": "launch",
             "mode": "auto",
-            "program": "${workspaceRoot}/demo",
+            "program": "${workspaceRoot}/cmd/alud",
             "env": {},
             "args": ["-d", "-p", "/home/peter/corpus/file1.xml"]
         }
