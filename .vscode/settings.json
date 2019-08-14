@@ -2,9 +2,9 @@
     "explorer.sortOrder": "type",
     "files.exclude": {
         "auxiliary.go": true,
+        "cmd/alud/debug": true,
+        "cmd/alud-dact/debug": true,
         "compile": true,
-        "demo/demo": true,
-        "demo-dact/demo-dact": true,
         "depheads.go": true,
         "deplabels.go": true,
         "emptyheads.go": true,
