@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/pebbe/dbxml"
-	"github.com/pebbe/util"
 	"github.com/rug-compling/alud"
+	"github.com/rug-compling/alud/cmd/internal/util"
 
 	"bufio"
 	"encoding/xml"
