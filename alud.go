@@ -93,6 +93,7 @@ func AlpinoUd(alpino_doc []byte, filename string) (alpino string, err error) {
 		Status: "error",
 		Error:  e,
 		Auto:   fmt.Sprintf("ALUD%d.%d", int(VersionMajor), int(VersionMinor)),
+		Conllu: " ", // spatie is nodig, wordt later verwijderd
 	}
 	return alpinoFormat(&alp), err
 }
