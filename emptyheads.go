@@ -170,6 +170,15 @@ func reconstructEmptyHead(q *context) bool {
 			copied = antenode.End
 		}
 
+		node.udOldState = &nodeType{
+			Begin:  node.Begin,
+			End:    node.End,
+			Word:   node.Word,
+			Lemma:  node.Lemma,
+			Postag: node.Postag,
+			Pt:     node.Pt,
+		}
+
 		node.Begin = end - 1
 		node.End = end
 		node.Word = antenode.Word
