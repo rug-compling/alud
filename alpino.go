@@ -2,7 +2,6 @@ package alud
 
 import (
 	"encoding/xml"
-	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
@@ -34,9 +33,7 @@ func alpinoRestore(q *context) {
 		node.End /= 1000
 	}
 	q.alpino.UdNodes = []*udNodeType{}
-	q.alpino.Conllu = &conlluType{
-		Auto: fmt.Sprintf("ALUD%d.%d", int(VersionMajor), int(VersionMinor)),
-	}
+	q.alpino.Conllu = &conlluType{Auto: version}
 }
 
 func alpinoFormat(alpino *alpino_ds) string {

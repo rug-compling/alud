@@ -52,13 +52,16 @@ var (
 		udHeadPosition:      error_no_head,
 		udEHeadPosition:     error_no_head,
 	}
+	version = fmt.Sprintf("ALUD%d.%d", VersionMajor, VersionMinor)
 )
 
 func init() {
 	noNode.parent = noNode
 }
 
+// Derive Universal Dependencies and insert into alpino_ds format.
 //
+// When err is not nil and alpino is not "" it contains the err in the alpino_ds format.
 func AlpinoUd(alpino_doc []byte, filename string) (alpino string, err error) {
 	conllu, q, err := ud(alpino_doc, filename, OPT_NO_COMMENTS|OPT_NO_DETOKENIZE)
 
@@ -66,6 +69,11 @@ func AlpinoUd(alpino_doc []byte, filename string) (alpino string, err error) {
 		alpinoRestore(q)
 		alpinoDo(conllu, q)
 		return alpinoFormat(q.alpino), nil
+	}
+
+	var alp alpino_ds
+	if xml.Unmarshal(alpino_doc, &alp) != nil {
+		return "", err
 	}
 
 	e := err.Error()
@@ -81,18 +89,15 @@ func AlpinoUd(alpino_doc []byte, filename string) (alpino string, err error) {
 			r(n)
 		}
 	}
-
-	var alp alpino_ds
-	if xml.Unmarshal(alpino_doc, &alp) != nil {
-		alp = alpino_ds{}
-	} else {
+	if alp.Node != nil {
 		r(alp.Node)
 	}
+
 	alp.UdNodes = []*udNodeType{}
 	alp.Conllu = &conlluType{
 		Status: "error",
 		Error:  e,
-		Auto:   fmt.Sprintf("ALUD%d.%d", int(VersionMajor), int(VersionMinor)),
+		Auto:   version,
 		Conllu: " ", // spatie is nodig, wordt later verwijderd
 	}
 	return alpinoFormat(&alp), err
