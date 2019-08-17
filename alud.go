@@ -61,27 +61,40 @@ func init() {
 //
 func AlpinoUd(alpino_doc []byte, filename string) (alpino string, err error) {
 	conllu, q, err := ud(alpino_doc, filename, OPT_NO_COMMENTS|OPT_NO_DETOKENIZE)
+
 	if err == nil {
 		alpinoRestore(q)
 		alpinoDo(conllu, q)
-		return alpinoFormat(q)
+		return alpinoFormat(q.alpino), nil
 	}
-	if q == nil {
-		return "", err
-	}
+
 	e := err.Error()
 	i := strings.Index(e, "\n")
 	if i > 0 {
 		e = e[:i]
 	}
-	q.alpino.Conllu = &conlluType{
+
+	var r func(*nodeType)
+	r = func(node *nodeType) {
+		node.Ud = nil
+		for _, n := range node.Node {
+			r(n)
+		}
+	}
+
+	var alp alpino_ds
+	if xml.Unmarshal(alpino_doc, &alp) != nil {
+		alp = alpino_ds{}
+	} else {
+		r(alp.Node)
+	}
+	alp.UdNodes = []*udNodeType{}
+	alp.Conllu = &conlluType{
 		Status: "error",
 		Error:  e,
 		Auto:   fmt.Sprintf("ALUD%d.%d", int(VersionMajor), int(VersionMinor)),
 	}
-	alpinoRestore(q)
-	alpino, err = alpinoFormat(q)
-	return
+	return alpinoFormat(&alp), err
 }
 
 // Derive Universal Dependencies from parsed sentence in alpino_ds format.

@@ -17,6 +17,7 @@ import (
 )
 
 var (
+	opt_a = flag.Bool("a", false, "output in alpino")
 	opt_c = flag.Bool("c", false, "don't include comments")
 	opt_d = flag.Bool("d", false, "include debug messages in comments")
 	opt_e = flag.Bool("e", false, "skip enhanced dependencies")
@@ -52,6 +53,7 @@ Usage, examples:
 
 Options:
 
+    -a : output in Alpino, all other options are ignored
     -c : don't include comments
     -d : include debug messages in comments
     -e : skip enhanced dependencies
@@ -143,6 +145,25 @@ func main() {
 }
 
 func doFile(doc []byte, filename, archname string, options int) {
+	if *opt_a {
+		result, err := alud.AlpinoUd(doc, filename)
+		if archname == "" {
+			fmt.Printf("<!-- %s -->\n", filename)
+		} else {
+			fmt.Printf("<!-- %s : %s -->\n", archname, filename)
+		}
+		fmt.Println(result)
+		fmt.Println()
+		if err != nil {
+			if archname == "" {
+				fmt.Fprintf(os.Stderr, "%s\n  error: %v\n", filename, err)
+			} else {
+				fmt.Fprintf(os.Stderr, "%s : %s\n  error: %v\n", archname, filename, err)
+			}
+		}
+		return
+	}
+
 	if archname != "" {
 		fmt.Println("# archive =", archname)
 	}

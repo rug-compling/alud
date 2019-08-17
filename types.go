@@ -96,34 +96,20 @@ type conlluType struct {
 }
 
 type nodeType struct {
-	Begin    int         `xml:"begin,attr"`
-	Cat      string      `xml:"cat,attr,omitempty"`
-	Conjtype string      `xml:"conjtype,attr,omitempty"`
-	End      int         `xml:"end,attr"`
-	Genus    string      `xml:"genus,attr,omitempty"`
-	Getal    string      `xml:"getal,attr,omitempty"`
-	Graad    string      `xml:"graad,attr,omitempty"`
-	Id       int         `xml:"id,attr,omitempty"`
-	Index    int         `xml:"index,attr,omitempty"`
-	Lemma    string      `xml:"lemma,attr,omitempty"`
-	Lwtype   string      `xml:"lwtype,attr,omitempty"`
-	Naamval  string      `xml:"naamval,attr,omitempty"`
-	Ntype    string      `xml:"ntype,attr,omitempty"`
-	Numtype  string      `xml:"numtype,attr,omitempty"`
-	Pdtype   string      `xml:"pdtype,attr,omitempty"`
-	Persoon  string      `xml:"persoon,attr,omitempty"`
-	Postag   string      `xml:"postag,attr,omitempty"`
-	Pt       string      `xml:"pt,attr,omitempty"`
-	Pvagr    string      `xml:"pvagr,attr,omitempty"`
-	Pvtijd   string      `xml:"pvtijd,attr,omitempty"`
-	Rel      string      `xml:"rel,attr,omitempty"`
-	Sc       string      `xml:"sc,attr,omitempty"`
-	Spectype string      `xml:"spectype,attr,omitempty"`
-	Vwtype   string      `xml:"vwtype,attr,omitempty"`
-	Word     string      `xml:"word,attr,omitempty"`
-	Wvorm    string      `xml:"wvorm,attr,omitempty"`
-	Node     []*nodeType `xml:"node"`
-	parent   *nodeType
+	Begin  int    `xml:"begin,attr"`
+	End    int    `xml:"end,attr"`
+	Id     int    `xml:"id,attr,omitempty"`
+	Index  int    `xml:"index,attr,omitempty"`
+	Lemma  string `xml:"lemma,attr,omitempty"`
+	Postag string `xml:"postag,attr,omitempty"`
+	Pt     string `xml:"pt,attr,omitempty"`
+	Rel    string `xml:"rel,attr,omitempty"`
+	Word   string `xml:"word,attr,omitempty"`
+	fullNode
+	Node   []*nodeType `xml:"node"`
+	parent *nodeType
+
+	Ud *udType `xml:"ud,omitempty"`
 
 	// als je hier iets aan toevoegt, dan ook toevoegen in emptyheads-in.go in functie reconstructEmptyHead
 	udAbbr           string
@@ -199,4 +185,17 @@ type udNodeType struct {
 	Wvorm    string `xml:"wvorm,attr,omitempty"`
 
 	UdNodes []*udNodeType `xml:",omitempty"`
+}
+
+type udType struct {
+	Id    string `xml:"id,attr,omitempty"`
+	Form  string `xml:"form,attr,omitempty"`
+	Lemma string `xml:"lemma,attr,omitempty"`
+	Upos  string `xml:"upos,attr,omitempty"`
+	featsType
+	Head       string    `xml:"head,attr,omitempty"`
+	Deprel     string    `xml:"deprel,attr,omitempty"`
+	DeprelMain string    `xml:"deprel_main,attr,omitempty"`
+	DeprelAux  string    `xml:"deprel_aux,attr,omitempty"`
+	Dep        []depType `xml:"dep,omitempty"`
 }

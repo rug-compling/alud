@@ -1,6 +1,8 @@
 {
     "explorer.sortOrder": "type",
     "files.exclude": {
+        "attribmake": true,
+        "attributes.go": true,
         "auxiliary.go": true,
         "cmd/alud/debug": true,
         "cmd/alud-dact/debug": true,
