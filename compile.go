@@ -40,7 +40,7 @@ func main() {
 
 	program = reTest.ReplaceAllStringFunc(program, compile)
 
-	fmt.Println("//\n// GENERATED FILE -- DO NOT EDIT\n//\n")
+	fmt.Println("//\n// // THIS IS A GENERATED FILE. DO NOT EDIT.\n//\n")
 
 	fmt.Print(program)
 }
