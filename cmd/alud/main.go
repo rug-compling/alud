@@ -130,7 +130,7 @@ func main() {
 
 func doFile(doc []byte, filename string, options int) {
 	if *opt_a {
-		result, err := alud.AlpinoUd(doc, filename)
+		result, err := alud.UdAlpino(doc, filename)
 		fmt.Printf("<!-- %s -->\n", filename)
 		fmt.Println(result)
 		fmt.Println()

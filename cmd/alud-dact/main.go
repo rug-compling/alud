@@ -146,7 +146,7 @@ func main() {
 
 func doFile(doc []byte, filename, archname string, options int) {
 	if *opt_a {
-		result, err := alud.AlpinoUd(doc, filename)
+		result, err := alud.UdAlpino(doc, filename)
 		if archname == "" {
 			fmt.Printf("<!-- %s -->\n", filename)
 		} else {
