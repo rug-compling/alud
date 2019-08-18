@@ -52,11 +52,16 @@ var (
 		udHeadPosition:      error_no_head,
 		udEHeadPosition:     error_no_head,
 	}
-	version = fmt.Sprintf("ALUD%d.%d", VersionMajor, VersionMinor)
+	versionID = fmt.Sprintf("ALUD%d.%d", VersionMajor, VersionMinor)
 )
 
 func init() {
 	noNode.parent = noNode
+}
+
+// Version identifier in format ALUDmajor.minor
+func VersionID() string {
+	return versionID
 }
 
 // Derive Universal Dependencies and insert into alpino_ds format.
@@ -93,11 +98,18 @@ func AlpinoUd(alpino_doc []byte, filename string) (alpino string, err error) {
 		r(alp.Node)
 	}
 
+	if alp.Sentence.SentId == "" {
+		id := filepath.Base(filename)
+		if strings.HasSuffix(id, ".xml") {
+			id = id[:len(id)-4]
+		}
+		alp.Sentence.SentId = id
+	}
 	alp.UdNodes = []*udNodeType{}
 	alp.Conllu = &conlluType{
 		Status: "error",
 		Error:  e,
-		Auto:   version,
+		Auto:   versionID,
 		Conllu: " ", // spatie is nodig, wordt later verwijderd
 	}
 	return alpinoFormat(&alp), err
@@ -172,12 +184,6 @@ func udTry(alpino_doc []byte, filename string, options int) (conllu string, q *c
 	if options&OPT_NO_ENHANCED == 0 {
 		enhancedDependencies(q)
 	}
-
-	// voor de laatste drie onderdelen moet q.ptnodes op woordpositie gesorteerd zijn
-	sort.Slice(q.ptnodes, func(i, j int) bool {
-		return q.ptnodes[i].End < q.ptnodes[j].End
-	})
-
 	if options&OPT_NO_FIX_PUNCT == 0 {
 		fixpunct(q)
 	}

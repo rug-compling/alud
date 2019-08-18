@@ -1,24 +1,12 @@
 
 SRC = \
-	alpino.go \
-	alud.go \
 	attributes.go \
 	auxiliary.go \
-	conllu.go \
 	depheads.go \
 	deplabels.go \
-	deprels.go \
-	doc.go \
 	emptyheads.go \
 	enhanced.go \
-	features.go \
-	fixpunct.go \
-	helpers.go \
-	misplacedheads.go \
-	postags.go \
-	types.go \
-	untokenize.go \
-	xpath.go
+	misplacedheads.go
 
 %.go : %-in.go compile
 	rm -f $@ $@.tmp.go
@@ -36,4 +24,6 @@ attribmake: attribmake.go
 	go build -tags attrib $^
 
 attributes.go: attributes.txt attribmake
+	rm -f $@
 	./attribmake $< > $@
+	chmod 444 $@
