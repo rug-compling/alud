@@ -17,7 +17,7 @@ var (
 
 // Insert given Universal Dependencies into alpino_ds format.
 //
-// Use UD info from alpino_ds if conllu is "".
+// Use UD info from alpino_doc if conllu is "".
 //
 // Some very basic checks are performed, but most errors in the conllu format are not detected.
 func Alpino(alpino_doc []byte, conllu string) (alpino string, err error) {
