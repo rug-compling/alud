@@ -399,7 +399,7 @@ func noe(s string) string {
 }
 
 func getNode(node *nodeType, end int) *nodeType {
-	if node == nil {
+	if node == nil || node.End < end || node.Begin >= end {
 		return nil
 	}
 	if node.End == end && node.Word != "" {
