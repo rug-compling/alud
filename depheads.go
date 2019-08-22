@@ -2519,7 +2519,7 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 			if node.Begin < tmp && tmp <= node.End {
 				return externalHeadPosition(node.axParent, q, tr)
 			}
-			return tmp
+			return internalHeadPositionWithGapping(node.axParent, q, tr) // dont go to vc directly as it might be empty
 		}
 		if test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &xPath{
 			arg1: &dSort{
@@ -4029,67 +4029,40 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context, tr 
 		}), q, tr) // aux, prepositions
 	}
 
-	if test(q /* $node[ node[@rel="hd" and @ud:pos="AUX"] and node[@rel=("vc","predc")] ] */, &xPath{
+	if test(q /* $node/node[@rel="hd" and @ud:pos="AUX"] */, &xPath{
 		arg1: &dSort{
-			arg1: &dFilter{
+			arg1: &dCollect{
+				ARG: collect__child__node,
 				arg1: &dVariable{
 					VAR: node,
 				},
-				arg2: &dSort{
+				arg2: &dPredicate{
 					arg1: &dAnd{
-						arg1: &dCollect{
-							ARG:  collect__child__node,
-							arg1: &dNode{},
-							arg2: &dPredicate{
-								arg1: &dAnd{
-									arg1: &dEqual{
-										ARG: equal__is,
-										arg1: &dCollect{
-											ARG:  collect__attributes__rel,
-											arg1: &dNode{},
-										},
-										arg2: &dElem{
-											DATA: []interface{}{"hd"},
-											arg1: &dCollect{
-												ARG:  collect__attributes__rel,
-												arg1: &dNode{},
-											},
-										},
-									},
-									arg2: &dEqual{
-										ARG: equal__is,
-										arg1: &dCollect{
-											ARG:  collect__attributes__ud_3apos,
-											arg1: &dNode{},
-										},
-										arg2: &dElem{
-											DATA: []interface{}{"AUX"},
-											arg1: &dCollect{
-												ARG:  collect__attributes__ud_3apos,
-												arg1: &dNode{},
-											},
-										},
-									},
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__rel,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"hd"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
 								},
 							},
 						},
-						arg2: &dCollect{
-							ARG:  collect__child__node,
-							arg1: &dNode{},
-							arg2: &dPredicate{
-								arg1: &dEqual{
-									ARG: equal__is,
-									arg1: &dCollect{
-										ARG:  collect__attributes__rel,
-										arg1: &dNode{},
-									},
-									arg2: &dElem{
-										DATA: []interface{}{"vc", "predc"},
-										arg1: &dCollect{
-											ARG:  collect__attributes__rel,
-											arg1: &dNode{},
-										},
-									},
+						arg2: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"AUX"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
 								},
 							},
 						},
@@ -4098,7 +4071,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context, tr 
 			},
 		},
 	}) {
-		return internalHeadPositionWithGapping(find(q /* $node/node[@rel=("vc","predc")] */, &xPath{
+		if test(q /* $node/node[@rel=("vc","predc") and (@pt or node[@cat or @pt])] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -4106,24 +4079,104 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context, tr 
 						VAR: node,
 					},
 					arg2: &dPredicate{
-						arg1: &dEqual{
-							ARG: equal__is,
-							arg1: &dCollect{
-								ARG:  collect__attributes__rel,
-								arg1: &dNode{},
-							},
-							arg2: &dElem{
-								DATA: []interface{}{"vc", "predc"},
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
 								arg1: &dCollect{
 									ARG:  collect__attributes__rel,
 									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"vc", "predc"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dCollect{
+										ARG:  collect__attributes__pt,
+										arg1: &dNode{},
+									},
+									arg2: &dCollect{
+										ARG:  collect__child__node,
+										arg1: &dNode{},
+										arg2: &dPredicate{
+											arg1: &dOr{
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+												arg2: &dCollect{
+													ARG:  collect__attributes__pt,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
 								},
 							},
 						},
 					},
 				},
 			},
-		}), q, tr)
+		}) {
+			return internalHeadPositionWithGapping(find(q /* $node/node[@rel=("vc","predc")] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"vc", "predc"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}), q, tr)
+		} else {
+			return internalHeadPositionWithGapping(find(q /* $node/node[@rel="hd"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}), q, tr)
+		}
 	}
 
 	if test(q /* $node/node[@rel="su" and (@pt or @cat)] */, &xPath{

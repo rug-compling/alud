@@ -226,7 +226,7 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 			if node.Begin < tmp && tmp <= node.End {
 				return externalHeadPosition(node.axParent, q, tr)
 			}
-			return tmp
+			return internalHeadPositionWithGapping(node.axParent, q, tr) // dont go to vc directly as it might be empty
 		}
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) { // gapping
 			return internalHeadPositionWithGapping(node.axParent, q, tr) // ud head could still be a predc
@@ -411,8 +411,12 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context, tr 
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q, tr) // aux, prepositions
 	}
 
-	if TEST(q, `$node[ node[@rel="hd" and @ud:pos="AUX"] and node[@rel=("vc","predc")] ]`) {
-		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","predc")]`), q, tr)
+	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
+		if TEST(q, `$node/node[@rel=("vc","predc") and (@pt or node[@cat or @pt])]`) {
+			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","predc")]`), q, tr)
+		} else {
+			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q, tr)
+		}
 	}
 
 	if TEST(q, `$node/node[@rel="su" and (@pt or @cat)]`) {

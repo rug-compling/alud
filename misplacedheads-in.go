@@ -30,6 +30,7 @@ $n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and
                                                                 @index=$n1/@index and
                                                                 not(@cat or @pt) and
                                                                 ( @begin        = ..//node[@cat or @pt]/@end or
+                                                                  @begin        = ../..//node[@cat or @pt]/@end or 
                                                                   @begin - 1000 = ..//node[@cat or @pt]/@end
                                                                 )
                                                                ]
@@ -39,6 +40,7 @@ $n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and
 $q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and @index and not(@pt or @cat) and
                  ancestor::node[@rel="cnj"]  and
                                     ( @begin        = ..//node[@cat or @pt]/@end or
+                                      @begin        = ../..//node[@cat or @pt]/@end or
                                       @begin - 1000 = ..//node[@cat or @pt]/@end
                                      )]`) {
 					node3 := n3.(*nodeType)

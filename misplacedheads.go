@@ -32,6 +32,7 @@ START:
 				                                                                @index=$n1/@index and
 				                                                                not(@cat or @pt) and
 				                                                                ( @begin        = ..//node[@cat or @pt]/@end or
+				                                                                  @begin        = ../..//node[@cat or @pt]/@end or
 				                                                                  @begin - 1000 = ..//node[@cat or @pt]/@end
 				                                                                )
 				                                                               ]
@@ -253,32 +254,69 @@ START:
 															},
 															arg2: &dSort{
 																arg1: &dOr{
-																	arg1: &dEqual{
-																		ARG: equal__is,
-																		arg1: &dCollect{
-																			ARG:  collect__attributes__begin,
-																			arg1: &dNode{},
-																		},
-																		arg2: &dCollect{
-																			ARG: collect__attributes__end,
+																	arg1: &dOr{
+																		arg1: &dEqual{
+																			ARG: equal__is,
 																			arg1: &dCollect{
-																				ARG: collect__child__node,
+																				ARG:  collect__attributes__begin,
+																				arg1: &dNode{},
+																			},
+																			arg2: &dCollect{
+																				ARG: collect__attributes__end,
 																				arg1: &dCollect{
-																					ARG: collect__descendant__or__self__type__node,
+																					ARG: collect__child__node,
 																					arg1: &dCollect{
-																						ARG:  collect__parent__type__node,
-																						arg1: &dNode{},
-																					},
-																				},
-																				arg2: &dPredicate{
-																					arg1: &dOr{
+																						ARG: collect__descendant__or__self__type__node,
 																						arg1: &dCollect{
-																							ARG:  collect__attributes__cat,
+																							ARG:  collect__parent__type__node,
 																							arg1: &dNode{},
 																						},
-																						arg2: &dCollect{
-																							ARG:  collect__attributes__pt,
-																							arg1: &dNode{},
+																					},
+																					arg2: &dPredicate{
+																						arg1: &dOr{
+																							arg1: &dCollect{
+																								ARG:  collect__attributes__cat,
+																								arg1: &dNode{},
+																							},
+																							arg2: &dCollect{
+																								ARG:  collect__attributes__pt,
+																								arg1: &dNode{},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																		arg2: &dEqual{
+																			ARG: equal__is,
+																			arg1: &dCollect{
+																				ARG:  collect__attributes__begin,
+																				arg1: &dNode{},
+																			},
+																			arg2: &dCollect{
+																				ARG: collect__attributes__end,
+																				arg1: &dCollect{
+																					ARG: collect__child__node,
+																					arg1: &dCollect{
+																						ARG: collect__descendant__or__self__type__node,
+																						arg1: &dCollect{
+																							ARG: collect__parent__type__node,
+																							arg1: &dCollect{
+																								ARG:  collect__parent__type__node,
+																								arg1: &dNode{},
+																							},
+																						},
+																					},
+																					arg2: &dPredicate{
+																						arg1: &dOr{
+																							arg1: &dCollect{
+																								ARG:  collect__attributes__cat,
+																								arg1: &dNode{},
+																							},
+																							arg2: &dCollect{
+																								ARG:  collect__attributes__pt,
+																								arg1: &dNode{},
+																							},
 																						},
 																					},
 																				},
@@ -345,6 +383,7 @@ START:
 					$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and @index and not(@pt or @cat) and
 					                 ancestor::node[@rel="cnj"]  and
 					                                    ( @begin        = ..//node[@cat or @pt]/@end or
+					                                      @begin        = ../..//node[@cat or @pt]/@end or
 					                                      @begin - 1000 = ..//node[@cat or @pt]/@end
 					                                     )] */&xPath{
 						arg1: &dSort{
@@ -478,32 +517,69 @@ START:
 										},
 										arg2: &dSort{
 											arg1: &dOr{
-												arg1: &dEqual{
-													ARG: equal__is,
-													arg1: &dCollect{
-														ARG:  collect__attributes__begin,
-														arg1: &dNode{},
-													},
-													arg2: &dCollect{
-														ARG: collect__attributes__end,
+												arg1: &dOr{
+													arg1: &dEqual{
+														ARG: equal__is,
 														arg1: &dCollect{
-															ARG: collect__child__node,
+															ARG:  collect__attributes__begin,
+															arg1: &dNode{},
+														},
+														arg2: &dCollect{
+															ARG: collect__attributes__end,
 															arg1: &dCollect{
-																ARG: collect__descendant__or__self__type__node,
+																ARG: collect__child__node,
 																arg1: &dCollect{
-																	ARG:  collect__parent__type__node,
-																	arg1: &dNode{},
-																},
-															},
-															arg2: &dPredicate{
-																arg1: &dOr{
+																	ARG: collect__descendant__or__self__type__node,
 																	arg1: &dCollect{
-																		ARG:  collect__attributes__cat,
+																		ARG:  collect__parent__type__node,
 																		arg1: &dNode{},
 																	},
-																	arg2: &dCollect{
-																		ARG:  collect__attributes__pt,
-																		arg1: &dNode{},
+																},
+																arg2: &dPredicate{
+																	arg1: &dOr{
+																		arg1: &dCollect{
+																			ARG:  collect__attributes__cat,
+																			arg1: &dNode{},
+																		},
+																		arg2: &dCollect{
+																			ARG:  collect__attributes__pt,
+																			arg1: &dNode{},
+																		},
+																	},
+																},
+															},
+														},
+													},
+													arg2: &dEqual{
+														ARG: equal__is,
+														arg1: &dCollect{
+															ARG:  collect__attributes__begin,
+															arg1: &dNode{},
+														},
+														arg2: &dCollect{
+															ARG: collect__attributes__end,
+															arg1: &dCollect{
+																ARG: collect__child__node,
+																arg1: &dCollect{
+																	ARG: collect__descendant__or__self__type__node,
+																	arg1: &dCollect{
+																		ARG: collect__parent__type__node,
+																		arg1: &dCollect{
+																			ARG:  collect__parent__type__node,
+																			arg1: &dNode{},
+																		},
+																	},
+																},
+																arg2: &dPredicate{
+																	arg1: &dOr{
+																		arg1: &dCollect{
+																			ARG:  collect__attributes__cat,
+																			arg1: &dNode{},
+																		},
+																		arg2: &dCollect{
+																			ARG:  collect__attributes__pt,
+																			arg1: &dNode{},
+																		},
 																	},
 																},
 															},
