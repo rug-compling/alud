@@ -1,8 +1,10 @@
 ================================================================
 
-The file fixpunct.go is based on fixpunct.py, written
-by Martin Popel, part of udapi: https://udapi.github.io/
-See: fixpunct.py.LICENSE.txt
+The file fixpunct.go is based on fixpunct.edit.py
+The file fixpunct.edit.py is a modified version of fixpunct.py
+The file fixpunct.py, written by Martin Popel, is part of
+udapi: https://udapi.github.io/
+See: fixpunct.LICENSE.txt
 
 ================================================================
 For all other stuff:

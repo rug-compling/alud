@@ -2,8 +2,8 @@ package main
 
 import (
 	"github.com/pebbe/dbxml"
+	"github.com/rug-compling/alud/internal/util"
 	"github.com/rug-compling/alud/v2"
-	"github.com/rug-compling/alud/cmd/internal/util"
 
 	"bufio"
 	"encoding/xml"
@@ -23,6 +23,7 @@ var (
 	opt_e = flag.Bool("e", false, "skip enhanced dependencies")
 	opt_f = flag.Bool("f", false, "don't fix punctuation")
 	opt_m = flag.Bool("m", false, "don't fix mixplaced heads in coordination")
+	opt_M = flag.Bool("M", false, "don't copy metadata to comments")
 	opt_p = flag.Bool("p", false, "panic on error (for development)")
 	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
 
@@ -59,7 +60,8 @@ Options:
     -e : skip enhanced dependencies
     -f : don't fix punctuation
     -m : don't fix misplaced heads in coordication
-    -p : panic on error
+	-M : don't copy metadata to comments
+	-p : panic on error
     -t : don't try to restore detokenized sentence
 
 `, p, p, p, p, p)
@@ -100,6 +102,9 @@ func main() {
 	}
 	if *opt_m {
 		options |= alud.OPT_NO_FIX_MISPLACED_HEADS
+	}
+	if *opt_M {
+		options |= alud.OPT_NO_METADATA
 	}
 	if *opt_p {
 		options |= alud.OPT_PANIC
