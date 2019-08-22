@@ -220,10 +220,10 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 	}
 
 	if node.Rel == "su" {
-		if TEST(q, `$node[../node[@rel="vc"] and ../node[@rel="hd" and 
-			                  ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]]`) {
-			tmp := internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="vc"]`), q, tr)
-			if node.Begin < tmp && tmp <= node.End {
+		if TEST(q, `$node/../node[@rel="vc"] and $node/../node[@rel="hd" and 
+			                  ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]`) {
+			tmp := internalHeadPositionWithGapping(node.axParent, q, tr) // testing -- dont go to vc as it has no head sometimes...
+			if node.Begin < tmp && tmp <= node.End {                     // maybe the different error handling in go code causes diff with xquery script?
 				return externalHeadPosition(node.axParent, q, tr)
 			}
 			return internalHeadPositionWithGapping(node.axParent, q, tr) // dont go to vc directly as it might be empty
@@ -413,7 +413,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context, tr 
 
 	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
 		if TEST(q, `$node/node[@rel=("vc","predc") and (@pt or node[@cat or @pt])]`) {
-			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","predc")]`), q, tr)
+			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","pred")]`), q, tr) // testing should be vc,pred
 		} else {
 			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q, tr)
 		}

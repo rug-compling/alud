@@ -386,7 +386,7 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 	          $node[@cat="mwu" and node[@spectype="deeleigen"]]`) {
 		return "nmod:poss"
 	}
-	if TEST(q, `$node/@ud:pos = ("DET","PROPN","PRON","ADV","X")`) {
+	if TEST(q, `$node/@ud:pos = ("DET","PROPN","PRON","X")`) {
 		return "det" // meer // genoeg // the
 	}
 	if node.Cat == "detp" {
@@ -398,7 +398,7 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 		}
 		return "det"
 	}
-	if TEST(q, `$node[@cat=("np","ap") or @ud:pos=("SYM","ADJ") ]`) {
+	if TEST(q, `$node[@cat=("np","ap") or @ud:pos=("SYM","ADJ","ADV") ]`) {
 		return "nmod"
 	}
 	if TEST(q, `$node/@cat = ("mwu","pp","smain")`) {
@@ -412,10 +412,8 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 		return "nummod"
 	}
 	if node.Cat == "conj" {
-		if TEST(q, `$node/node[@rel="cnj"][1]/@ud:pos="NUM"`) {
-			return "nummod"
-		}
-		return "det"
+
+		return detLabel(n1(FIND(q, `($node/node[@rel="cnj"])[1]`)), q, tr)
 	}
 	panic(tracer("No label det", tr, q))
 }

@@ -3825,7 +3825,7 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 		}) {
 		return "nmod:poss"
 	}
-	if test(q /* $node/@ud:pos = ("DET","PROPN","PRON","ADV","X") */, &xPath{
+	if test(q /* $node/@ud:pos = ("DET","PROPN","PRON","X") */, &xPath{
 		arg1: &dSort{
 			arg1: &dEqual{
 				ARG: equal__is,
@@ -3836,7 +3836,7 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 					},
 				},
 				arg2: &dElem{
-					DATA: []interface{}{"DET", "PROPN", "PRON", "ADV", "X"},
+					DATA: []interface{}{"DET", "PROPN", "PRON", "X"},
 					arg1: &dCollect{
 						ARG: collect__attributes__ud_3apos,
 						arg1: &dVariable{
@@ -3940,7 +3940,7 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 		}
 		return "det"
 	}
-	if test(q /* $node[@cat=("np","ap") or @ud:pos=("SYM","ADJ") ] */, &xPath{
+	if test(q /* $node[@cat=("np","ap") or @ud:pos=("SYM","ADJ","ADV") ] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -3969,7 +3969,7 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 								arg1: &dNode{},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"SYM", "ADJ"},
+								DATA: []interface{}{"SYM", "ADJ", "ADV"},
 								arg1: &dCollect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &dNode{},
@@ -4015,79 +4015,42 @@ func detLabel(node *nodeType, q *context, tr []trace) string {
 		return "nummod"
 	}
 	if node.Cat == "conj" {
-		if test(q /* $node/node[@rel="cnj"][1]/@ud:pos="NUM" */, &xPath{
+
+		return detLabel(n1(find(q /* ($node/node[@rel="cnj"])[1] */, &xPath{
 			arg1: &dSort{
-				arg1: &dEqual{
-					ARG: equal__is,
-					arg1: &dCollect{
-						ARG: collect__attributes__ud_3apos,
+				arg1: &dFilter{
+					arg1: &dSort{
 						arg1: &dCollect{
 							ARG: collect__child__node,
 							arg1: &dVariable{
 								VAR: node,
 							},
 							arg2: &dPredicate{
-								arg1: &dPredicate{
-									arg1: &dEqual{
-										ARG: equal__is,
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"cnj"},
 										arg1: &dCollect{
 											ARG:  collect__attributes__rel,
 											arg1: &dNode{},
 										},
-										arg2: &dElem{
-											DATA: []interface{}{"cnj"},
-											arg1: &dCollect{
-												ARG:  collect__attributes__rel,
-												arg1: &dNode{},
-											},
-										},
 									},
-								},
-								arg2: &dFunction{
-									ARG: function__first__0__args,
 								},
 							},
 						},
 					},
-					arg2: &dElem{
-						DATA: []interface{}{"NUM"},
-						arg1: &dCollect{
-							ARG: collect__attributes__ud_3apos,
-							arg1: &dCollect{
-								ARG: collect__child__node,
-								arg1: &dVariable{
-									VAR: node,
-								},
-								arg2: &dPredicate{
-									arg1: &dPredicate{
-										arg1: &dEqual{
-											ARG: equal__is,
-											arg1: &dCollect{
-												ARG:  collect__attributes__rel,
-												arg1: &dNode{},
-											},
-											arg2: &dElem{
-												DATA: []interface{}{"cnj"},
-												arg1: &dCollect{
-													ARG:  collect__attributes__rel,
-													arg1: &dNode{},
-												},
-											},
-										},
-									},
-									arg2: &dFunction{
-										ARG: function__first__0__args,
-									},
-								},
-							},
+					arg2: &dSort{
+						arg1: &dFunction{
+							ARG: function__first__0__args,
 						},
 					},
 				},
 			},
-		}) {
-			return "nummod"
-		}
-		return "det"
+		})), q, tr)
 	}
 	panic(tracer("No label det", tr, q))
 }
