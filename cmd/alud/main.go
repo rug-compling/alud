@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/rug-compling/alud"
+	"github.com/rug-compling/alud/v2"
 	"github.com/rug-compling/alud/cmd/internal/util"
 
 	"bufio"

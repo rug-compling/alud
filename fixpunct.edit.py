@@ -29,10 +29,15 @@ PAIRED_PUNCT = {
     '(': ')',
     '[': ']',
     '{': '}',
+    ',,': "''", # Nederlands
     '"': '"',   # ASCII double quotes
     "'": "'",   # ASCII single quotes
+    '`': "'",   # Nederlands, ASCII
     '“': '”',   # quotation marks used in English,...
-    '„': '“',   # Czech, German, Russian,...
+    '‘': '’',   # Nederland
+    # '„': '“',   # Czech, German, Russian,...
+    '„': '”',   # Nederlands
+    '”': '”',   # Nederlands
     '«': '»',   # French, Russian, Spanish,...
     '‹': '›',   # dtto
     '《': '》',  # Korean, Chinese
