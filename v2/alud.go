@@ -16,6 +16,7 @@ const (
 	OPT_NO_ENHANCED                        // skip enhanced dependencies
 	OPT_NO_FIX_PUNCT                       // don't fix punctuation
 	OPT_NO_FIX_MISPLACED_HEADS             // don't fix misplaced heads in coordination
+	OPT_NO_METADATA                        // don't copy metadata to comments
 	OPT_PANIC                              // panic on error (for development)
 )
 

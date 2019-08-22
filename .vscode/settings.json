@@ -1,16 +1,15 @@
 {
-    "explorer.sortOrder": "type",
     "files.exclude": {
         "attribmake": true,
-        "attributes.go": true,
-        "auxiliary.go": true,
+        "compile": true,
         "cmd/alud/debug": true,
         "cmd/alud-dact/debug": true,
-        "compile": true,
-        "depheads.go": true,
-        "deplabels.go": true,
-        "emptyheads.go": true,
-        "enhanced.go": true,
-        "misplacedheads.go": true
+        "v2/attributes.go": true,
+        "v2/auxiliary.go": true,
+        "v2/depheads.go": true,
+        "v2/deplabels.go": true,
+        "v2/emptyheads.go": true,
+        "v2/enhanced.go": true,
+        "v2/misplacedheads.go": true
     },
 }

@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/pebbe/util"
+	"github.com/rug-compling/alud/internal/util"
 
 	"bytes"
 	"crypto/md5"
