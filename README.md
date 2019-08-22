@@ -91,3 +91,8 @@ Output (reformatted):
 
 
 For visualisation of the result, see http://www.let.rug.nl/kleiweg/conllu/
+
+## Other functionality
+
+ * Derive Universal Dependencies and insert into the alpino_ds format
+ * Insert given Universal Dependencies into the alpino_ds format

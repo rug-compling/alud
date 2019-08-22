@@ -42,12 +42,6 @@ worden niet herkend:
 
 ----
 
-Als er aanpassingen aan de code gemaakt worden die effect hebben op de
-uitvoer, dan dient de waarde van `VersionMajor` in `alud.go` opgehoogd
-te worden. En de waarde van `VersionMinor` moet dan terug naar 0.
-
-----
-
 Er zit nogal wat complexiteit in de verwerking van predicaten. Je hebt
 de ‘gewone’ predicaten, die werken op elke node individueel, en je
 hebt de index-predicaten, die werken op een of meer sets van nodes.
