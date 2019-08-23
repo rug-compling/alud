@@ -258,7 +258,7 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 		}
 	}
 
-	aux := auxiliary1(node, q)
+	aux, _ := auxiliary1(node, q) // negeer fout, aux is dan ""
 
 	if node.Rel == "hd" && (aux == "aux" || aux == "aux:pass") {
 		// aux aux:pass cop
@@ -2488,6 +2488,7 @@ func externalHeadPosition(nodes []interface{}, q *context, tr []trace) int {
 			if node.Begin < tmp && tmp <= node.End {                     // maybe the different error handling in go code causes diff with xquery script?
 				return externalHeadPosition(node.axParent, q, tr)
 			}
+			// TODO: vervangen door: return tmp
 			return internalHeadPositionWithGapping(node.axParent, q, tr) // dont go to vc directly as it might be empty
 		}
 		if test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &xPath{
