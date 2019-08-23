@@ -138,7 +138,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 		if e.head == 0 && e.dep != "root" ||
 			e.head != 0 && e.dep == "root" ||
 			e.dep == "orphan" {
-			panic(fmt.Sprintf("Invalid EUD %s:%s in %s:%s", number(e.head), e.dep, number(node.End), node.Word))
+			panic(fmt.Sprintf("Invalid EUD %s:%s", number(e.head), e.dep))
 		}
 		if e.dep != "" {
 			ss = append(ss, number(e.head)+":"+e.dep)
