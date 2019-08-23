@@ -1,7 +1,7 @@
 Het programma `compile`, dat de Go-bestanden met XPath-expressies compileert
 naar zuiver Go, maakt gebruik van het programma `testXPath` dat onderdeel is van
 de sources van `libxml2`. Dit is getest met `libxml2` versie 2.9.9.
-Een oudere versie werkte niet goed. 
+Een oudere versie werkte niet goed.
 
 ----
 

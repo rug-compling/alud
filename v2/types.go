@@ -20,11 +20,18 @@ type context struct {
 	swapped       [][2]*nodeType
 }
 
-type trace struct {
+type traceT struct {
+	msg    string
+	debugs []string
+	trace  []traceType
+}
+
+type traceType struct {
 	s    string
 	node *nodeType
 	head *nodeType
 	gap  *nodeType
+	subj *nodeType
 }
 
 type alpino_ds struct {

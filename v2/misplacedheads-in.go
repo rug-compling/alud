@@ -30,7 +30,7 @@ $n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and
                                                                 @index=$n1/@index and
                                                                 not(@cat or @pt) and
                                                                 ( @begin        = ..//node[@cat or @pt]/@end or
-                                                                  @begin        = ../..//node[@cat or @pt]/@end or 
+                                                                  @begin        = ../..//node[@cat or @pt]/@end or
                                                                   @begin - 1000 = ..//node[@cat or @pt]/@end
                                                                 )
                                                                ]

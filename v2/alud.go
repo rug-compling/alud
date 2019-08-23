@@ -64,7 +64,7 @@ func ud(alpino_doc []byte, filename string, options int) (conllu string, q *cont
 		defer func() {
 			if r := recover(); r != nil {
 				conllu = ""
-				err = fmt.Errorf("%v", r)
+				err = fmt.Errorf("%v", untrace(r))
 			}
 		}()
 	}
