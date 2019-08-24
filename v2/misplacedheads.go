@@ -15,7 +15,13 @@ func fixMisplacedHeadsInCoordination(q *context) {
 		return
 	}
 
-	seen := make(map[[2]int]int)
+	defer func() {
+		if r := recover(); r != nil {
+			panic(trace(r, "fixMisplacedHeadsInCoordination", q))
+		}
+	}()
+
+	seen := make(map[[2]int]bool)
 
 START:
 	for true {
@@ -636,12 +642,24 @@ START:
 					}) {
 					node3 := n3.(*nodeType)
 					if node2.Index == node3.Index {
+
+						q.debugs = append(q.debugs, fmt.Sprintf(
+							"fixMisplacedHeadsInCoordination: %d -> %d ?", node2.Id, node3.Id))
+						min, max := minmaxword(node2)
+						score2 := wordwalk(q.alpino.Node, node2, node3, min, max)
+						score3 := wordwalk(q.alpino.Node, node3, node2, min, max)
+						if score2 <=
+							score3 {
+							q.debugs = append(q.debugs, fmt.Sprintf("  -> reject, score2: %d, score3: %d", score2, score3))
+							continue
+						}
+						q.debugs = append(q.debugs, fmt.Sprintf("  -> accept, score2: %d, score3: %d", score2, score3))
+
 						pair := [2]int{node2.Id, node3.Id}
-						if seen[pair] > 3 {
+						if seen[pair] {
 							panic(fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d -> %d", node2.Id, node3.Id))
 						}
-						seen[pair] = seen[pair] + 1
-						q.debugs = append(q.debugs, fmt.Sprintf("fixMisplacedHeadsInCoordination: %d -> %d", node2.Id, node3.Id))
+						seen[pair] = true
 						// kopieer inhoud van node2 (niet leeg) naar node3 (leeg)
 						swap(node2, node3)
 						q.swapped = append(q.swapped, [2]*nodeType{node2, node3})
@@ -670,4 +688,61 @@ func swap(nietLeeg, leeg *nodeType) {
 		Rel:   nietLeeg.Rel,
 		Node:  []*nodeType{},
 	}
+}
+
+func minmaxword(node *nodeType) (min, max int) {
+	min = 9999000
+	max = 0
+	var r func(*nodeType)
+	r = func(n *nodeType) {
+		if n.Word != "" {
+			if n.End > max {
+				max = n.End
+			}
+			if n.End < min {
+				min = n.End
+			}
+		} else if n.Node != nil {
+			for _, n1 := range n.Node {
+				r(n1)
+			}
+		}
+	}
+	r(node)
+
+	return min, max
+}
+
+func wordwalk(root, node, skip *nodeType, min, max int) (score int) {
+
+	left := true
+	var r func(*nodeType)
+	r = func(n *nodeType) {
+		if n == node {
+			left = false
+			return
+		}
+		if n == skip {
+			return
+		}
+		if n.Word != "" {
+
+			if left {
+				if n.End > min {
+					score++
+				}
+			} else {
+				if n.End < max {
+					score++
+				}
+			}
+
+		} else if n.Node != nil {
+			for _, n2 := range n.Node {
+				r(n2)
+			}
+		}
+	}
+	r(root)
+	return
 }
