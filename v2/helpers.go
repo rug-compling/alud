@@ -228,7 +228,7 @@ func untrace(r interface{}) string {
 			}
 		}
 	default:
-		fmt.Fprintln(&buf, rr)
+		fmt.Fprint(&buf, rr)
 	}
 	return buf.String()
 }

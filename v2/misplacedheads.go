@@ -648,12 +648,14 @@ START:
 						min, max := minmaxword(node2)
 						score2 := wordwalk(q.alpino.Node, node2, node3, min, max)
 						score3 := wordwalk(q.alpino.Node, node3, node2, min, max)
-						if score2 <=
-							score3 {
-							q.debugs = append(q.debugs, fmt.Sprintf("  -> reject, score2: %d, score3: %d", score2, score3))
+						if score2 <= score3 {
+							q.debugs = append(q.debugs, fmt.Sprintf("  -> reject, scores: %d %d", score2, score3))
+							if score2 == score3 {
+								q.debugs = append(q.debugs, "  -> warning: equal score")
+							}
 							continue
 						}
-						q.debugs = append(q.debugs, fmt.Sprintf("  -> accept, score2: %d, score3: %d", score2, score3))
+						q.debugs = append(q.debugs, fmt.Sprintf("  -> accept, scores: %d %d", score2, score3))
 
 						pair := [2]int{node2.Id, node3.Id}
 						if seen[pair] {
