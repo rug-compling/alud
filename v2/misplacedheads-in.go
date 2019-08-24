@@ -14,7 +14,6 @@ func fixMisplacedHeadsInCoordination(q *context) {
 	}
 
 	seen := make(map[[2]int]bool)
-	counter := 0
 
 START:
 	for true {
@@ -47,10 +46,10 @@ $q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and 
 					if node2.Index == node3.Index {
 						pair := [2]int{node2.Id, node3.Id}
 						if seen[pair] {
-							panic(fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d %d", node2.Id, node3.Id))
+							panic(fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d -> %d", node2.Id, node3.Id))
 						}
 						seen[pair] = true
-						counter++
+						q.debugs = append(q.debugs, fmt.Sprintf("fixMisplacedHeadsInCoordination: %d -> %d", node2.Id, node3.Id))
 						// kopieer inhoud van node2 (niet leeg) naar node3 (leeg)
 						swap(node2, node3)
 						q.swapped = append(q.swapped, [2]*nodeType{node2, node3})
@@ -62,9 +61,6 @@ $q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and 
 			}
 		}
 		break
-	}
-	if counter > 0 {
-		q.debugs = append(q.debugs, fmt.Sprintf("fixMisplacedHeadsInCoordination: %d swaps", counter))
 	}
 }
 

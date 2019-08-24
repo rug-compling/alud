@@ -15,8 +15,7 @@ func fixMisplacedHeadsInCoordination(q *context) {
 		return
 	}
 
-	seen := make(map[[2]int]bool)
-	counter := 0
+	seen := make(map[[2]int]int)
 
 START:
 	for true {
@@ -638,11 +637,11 @@ START:
 					node3 := n3.(*nodeType)
 					if node2.Index == node3.Index {
 						pair := [2]int{node2.Id, node3.Id}
-						if seen[pair] {
-							panic(fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d %d", node2.Id, node3.Id))
+						if seen[pair] > 3 {
+							panic(fmt.Sprintf("Loop detected in fixMisplacedHeadsInCoordination: %d -> %d", node2.Id, node3.Id))
 						}
-						seen[pair] = true
-						counter++
+						seen[pair] = seen[pair] + 1
+						q.debugs = append(q.debugs, fmt.Sprintf("fixMisplacedHeadsInCoordination: %d -> %d", node2.Id, node3.Id))
 						// kopieer inhoud van node2 (niet leeg) naar node3 (leeg)
 						swap(node2, node3)
 						q.swapped = append(q.swapped, [2]*nodeType{node2, node3})
@@ -654,9 +653,6 @@ START:
 			}
 		}
 		break
-	}
-	if counter > 0 {
-		q.debugs = append(q.debugs, fmt.Sprintf("fixMisplacedHeadsInCoordination: %d swaps", counter))
 	}
 }
 
