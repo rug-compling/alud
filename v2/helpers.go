@@ -140,7 +140,7 @@ func untrace(r interface{}) string {
 	case traceT:
 
 		fmt.Fprint(&buf, rr.msg)
-		if node := rr.trace[len(rr.trace)-1].node; node.Word != "" {
+		if node := rr.trace[len(rr.trace)-1].node; node != nil && node.Word != "" {
 			fmt.Fprintf(&buf, " for %s:%s", number(node.End), node.Word)
 		}
 		for _, d := range rr.debugs {
