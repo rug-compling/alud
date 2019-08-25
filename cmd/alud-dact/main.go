@@ -60,8 +60,8 @@ Options:
     -e : skip enhanced dependencies
     -f : don't fix punctuation
     -m : don't fix misplaced heads in coordication
-	-M : don't copy metadata to comments
-	-p : panic on error
+    -M : don't copy metadata to comments
+    -p : panic on error
     -t : don't try to restore detokenized sentence
 
 `, p, p, p, p, p)
