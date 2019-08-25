@@ -51,7 +51,7 @@ func Alpino(alpino_doc []byte, conllu, auto string) (alpino string, err error) {
 	alp.Conllu = &conlluType{Conllu: conllu, Auto: auto}
 	alpinoDo(conllu, &alp)
 	alpino, err = alpinoFormat(&alp), nil
-	return
+	return // geen argumenten i.v.m. recover
 }
 
 // Derive Universal Dependencies and insert into alpino_ds format.

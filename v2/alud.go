@@ -69,7 +69,7 @@ func ud(alpino_doc []byte, filename string, options int) (conllu string, q *cont
 		}()
 	}
 	conllu, q, err = udTry(alpino_doc, filename, options)
-	return
+	return // geen argumenten i.v.m. recover
 }
 
 func udTry(alpino_doc []byte, filename string, options int) (conllu string, q *context, err error) {
