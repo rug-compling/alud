@@ -718,6 +718,8 @@ func minmaxword(node *nodeType) (min, max int) {
 func wordwalk(root, node, skip *nodeType, min, max int) (score int) {
 
 	left := true
+	e1 := node.Begin + 1000
+	e2 := node.End
 	var r func(*nodeType)
 	r = func(n *nodeType) {
 		if n == node {
@@ -728,7 +730,6 @@ func wordwalk(root, node, skip *nodeType, min, max int) (score int) {
 			return
 		}
 		if n.Word != "" {
-
 			if left {
 				if n.End > min {
 					score++
@@ -738,11 +739,16 @@ func wordwalk(root, node, skip *nodeType, min, max int) (score int) {
 					score++
 				}
 			}
-
-		} else if n.Node != nil {
-			for _, n2 := range n.Node {
-				r(n2)
-			}
+			return
+		}
+		if n.Node == nil {
+			return
+		}
+		if left && n.End < e1 || !left && n.Begin+1000 > e2 {
+			return
+		}
+		for _, n2 := range n.Node {
+			r(n2)
 		}
 	}
 	r(root)
