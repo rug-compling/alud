@@ -65,8 +65,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 				soIndex := i1(so)
 				//NP
 				enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-				//NP
-				enhanced = append(enhanced, anaphoricRelpronoun(node, q)...) // self
+				enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
 				//NP
 				enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 				//NP
@@ -99,8 +98,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 			// if there is no antecedent, lets keep the basic relation
 			//NP
 			enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			//NP
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...) // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
 			//NP
 			enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 			//NP
@@ -117,8 +115,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 			relSisterIndex := i1(relSister)
 			//NP
 			enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			//NP
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...) // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
 			//NP
 			enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 			//NP
@@ -134,8 +131,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 		if node.udHeadPosition >= 0 || node.udHeadPosition == underscore {
 			//NP
 			enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			//NP
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...) // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
 			//NP
 			enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 			//NP

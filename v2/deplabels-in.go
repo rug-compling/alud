@@ -88,21 +88,21 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.Rel == "svp" {
 		return "compound:prt" // v2: added prt extension
 	}
-	//NP
-	aux, _ := auxiliary1(node, q) // negeer fout, aux is dan ""
-	if aux == "aux:pass" {
-		if TEST(q, `$node[../node[@rel="su" and not(@pt or @cat)] and
+	if aux, err := auxiliary1(node, q); err == nil {
+		if aux == "aux:pass" {
+			if TEST(q, `$node[../node[@rel="su" and not(@pt or @cat)] and
 	                 ../node[@rel="vc" and not(@pt or @cat)] and
 	                 ../@rel="cnj"]`) {
-			return "conj"
+				return "conj"
+			}
+			return "aux:pass"
 		}
-		return "aux:pass"
-	}
-	if aux == "aux" {
-		return "aux"
-	}
-	if aux == "cop" {
-		return "cop"
+		if aux == "aux" {
+			return "aux"
+		}
+		if aux == "cop" {
+			return "cop"
+		}
 	}
 	if node.Rel == "det" {
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
@@ -379,13 +379,13 @@ func passiveSubject(subj *nodeType, q *context) string {
 
 	depthCheck(q)
 
-	//NP
-	aux, _ := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[1]`)), q) // negeer fout, aux is dan ""
-	if aux == "aux:pass" {                                                // de carriere had gered kunnen worden
-		return ":pass"
-	}
-	if aux == "aux" && TEST(q, `$subj/@index = $subj/../node[@rel="vc"]/node[@rel="su"]/@index`) {
-		return passiveSubject(n1(FIND(q, `$subj/../node[@rel="vc"]/node[@rel="su"]`)), q)
+	if aux, err := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[1]`)), q); err == nil {
+		if aux == "aux:pass" { // de carriere had gered kunnen worden
+			return ":pass"
+		}
+		if aux == "aux" && TEST(q, `$subj/@index = $subj/../node[@rel="vc"]/node[@rel="su"]/@index`) {
+			return passiveSubject(n1(FIND(q, `$subj/../node[@rel="vc"]/node[@rel="su"]`)), q)
+		}
 	}
 	return ""
 }

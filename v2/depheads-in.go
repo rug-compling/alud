@@ -50,33 +50,32 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		}
 	}
 
-	//NP
-	aux, _ := auxiliary1(node, q) // negeer fout, aux is dan ""
-
-	if node.Rel == "hd" && (aux == "aux" || aux == "aux:pass") {
-		// aux aux:pass cop
-		if vc_predc := FIND(q, `$node/../node[@rel=("vc","predc")]`); len(vc_predc) > 0 {
-			if TEST(q, `$vc_predc[@pt or (@cat and node[@pt or @cat])]`) {
-				// skip vc with just empty nodes
-				return internalHeadPositionWithGapping(if1(vc_predc), q)
+	if aux, err := auxiliary1(node, q); err == nil {
+		if node.Rel == "hd" && (aux == "aux" || aux == "aux:pass") {
+			// aux aux:pass cop
+			if vc_predc := FIND(q, `$node/../node[@rel=("vc","predc")]`); len(vc_predc) > 0 {
+				if TEST(q, `$vc_predc[@pt or (@cat and node[@pt or @cat])]`) {
+					// skip vc with just empty nodes
+					return internalHeadPositionWithGapping(if1(vc_predc), q)
+				}
 			}
+			// if ($node/../node[@rel="predc"]/@index = $node/../../node[@rel="whd"]/@index)
+			//     then local:internal_head_position($node/../../node[@rel="whd"])
+			return externalHeadPosition(node.axParent, q) // gapping, but does it ever occur with aux?? with cop: hij was en blijft nog steeds een omstreden figuur
 		}
-		// if ($node/../node[@rel="predc"]/@index = $node/../../node[@rel="whd"]/@index)
-		//     then local:internal_head_position($node/../../node[@rel="whd"])
-		return externalHeadPosition(node.axParent, q) // gapping, but does it ever occur with aux?? with cop: hij was en blijft nog steeds een omstreden figuur
-	}
 
-	if node.Rel == "hd" && aux == "cop" {
-		predc := FIND(q, `$node/../node[@rel="predc"]`)
-		if len(predc) > 0 && TEST(q, `$predc[@pt or @cat]`) {
-			return internalHeadPositionWithGapping(if1(predc), q)
+		if node.Rel == "hd" && aux == "cop" {
+			predc := FIND(q, `$node/../node[@rel="predc"]`)
+			if len(predc) > 0 && TEST(q, `$predc[@pt or @cat]`) {
+				return internalHeadPositionWithGapping(if1(predc), q)
+			}
+			if TEST(q, `$node/../node[@rel="predc"]/@index = $node/ancestor::node/node[@rel=("rhd","whd")]/@index`) {
+				return internalHeadPosition(
+					FIND(q, `$node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index]`),
+					q)
+			}
+			return externalHeadPosition(node.axParent, q) // gapping, but could it??
 		}
-		if TEST(q, `$node/../node[@rel="predc"]/@index = $node/ancestor::node/node[@rel=("rhd","whd")]/@index`) {
-			return internalHeadPosition(
-				FIND(q, `$node/ancestor::node/node[@rel=("rhd","whd") and @index = $node/../node[@rel="predc"]/@index]`),
-				q)
-		}
-		return externalHeadPosition(node.axParent, q) // gapping, but could it??
 	}
 
 	if node.Rel == "hd" || node.Rel == "nucl" || node.Rel == "body" {
@@ -217,7 +216,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		elliptical cases, select last() as brute force solution
 	*/
 	if node.Rel == "crd" {
-		//NP
+		//NP -> OK, followingCnjSister geeft geen panic
 		tmp := followingCnjSister(node, q)
 		return internalHeadPositionWithGapping(ifZ(FIND(q, `$node/../node[@rel="cnj" and
 	          	                 @begin=$tmp/@begin and
@@ -228,12 +227,12 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	if node.Rel == "su" {
 		if TEST(q, `$node/../node[@rel="vc"] and $node/../node[@rel="hd" and
 			                  ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]`) {
-			//NP
-			tmp := internalHeadPositionWithGapping(node.axParent, q) // testing -- dont go to vc as it has no head sometimes...
-			if node.Begin < tmp && tmp <= node.End {                 // maybe the different error handling in go code causes diff with xquery script?
+			//NP -> half opgelost -> zie TODO
+			tmp, err := internalHeadPositionWithGappingWithError(node.axParent, q) // testing -- dont go to vc as it has no head sometimes...
+			if err == nil && node.Begin < tmp && tmp <= node.End {                 // maybe the different error handling in go code causes diff with xquery script?
 				return externalHeadPosition(node.axParent, q)
 			}
-			// TODO: vervangen door: return tmp
+			// TODO: dit is gelijk aan tmp... wat als err != nil?
 			return internalHeadPositionWithGapping(node.axParent, q) // dont go to vc directly as it might be empty
 		}
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) { // gapping
@@ -294,6 +293,17 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	panic("No external head")
+}
+
+func internalHeadPositionWithError(nodes []interface{}, q *context) (head int, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			head = error_no_head
+			err = fmt.Errorf("NO HEAD")
+		}
+	}()
+	head = internalHeadPosition(nodes, q)
+	return // geen argumenten i.v.m. recover
 }
 
 // recursive
@@ -406,6 +416,17 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 	panic("No internal head")
 }
 
+func internalHeadPositionWithGappingWithError(node []interface{}, q *context) (head int, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			head = error_no_head
+			err = fmt.Errorf("NO HEAD")
+		}
+	}()
+	head = internalHeadPositionWithGapping(node, q)
+	return // geen argumenten i.v.m. recover
+}
+
 func internalHeadPositionWithGapping(node []interface{}, q *context) int {
 
 	defer func() {
@@ -418,7 +439,7 @@ func internalHeadPositionWithGapping(node []interface{}, q *context) int {
 		}
 	}()
 
-	//NP
+	//NP -> OK, werkt zoals het zou moeten
 	if hdPos := internalHeadPosition(node, q); hdPos == empty_head {
 		return internalHeadPositionOfGappedConstituent(node, q)
 	} else {
@@ -521,10 +542,10 @@ func headPositionOfConjunction(node *nodeType, q *context) int {
 		}
 	}()
 
-	//NP
+	//NP wat te doen?
 	internal_head := internalHeadPositionWithGapping([]interface{}{node}, q)
 	leftmost_conj_daughter := nLeft(FIND(q, `$node/../node[@rel="cnj"]`))
-	//NP
+	//NP wat te doen?
 	leftmost_internal_head := internalHeadPositionWithGapping([]interface{}{leftmost_conj_daughter}, q)
 
 	if leftmost_internal_head < internal_head {
