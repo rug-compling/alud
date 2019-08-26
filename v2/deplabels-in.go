@@ -88,6 +88,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.Rel == "svp" {
 		return "compound:prt" // v2: added prt extension
 	}
+	//NP
 	aux, _ := auxiliary1(node, q) // negeer fout, aux is dan ""
 	if aux == "aux:pass" {
 		if TEST(q, `$node[../node[@rel="su" and not(@pt or @cat)] and
@@ -378,6 +379,7 @@ func passiveSubject(subj *nodeType, q *context) string {
 
 	depthCheck(q)
 
+	//NP
 	aux, _ := auxiliary1(n1(FIND(q, `($subj/../node[@rel="hd"])[1]`)), q) // negeer fout, aux is dan ""
 	if aux == "aux:pass" {                                                // de carriere had gered kunnen worden
 		return ":pass"

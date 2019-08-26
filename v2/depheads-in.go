@@ -50,6 +50,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		}
 	}
 
+	//NP
 	aux, _ := auxiliary1(node, q) // negeer fout, aux is dan ""
 
 	if node.Rel == "hd" && (aux == "aux" || aux == "aux:pass") {
@@ -216,6 +217,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		elliptical cases, select last() as brute force solution
 	*/
 	if node.Rel == "crd" {
+		//NP
 		tmp := followingCnjSister(node, q)
 		return internalHeadPositionWithGapping(ifZ(FIND(q, `$node/../node[@rel="cnj" and
 	          	                 @begin=$tmp/@begin and
@@ -226,6 +228,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	if node.Rel == "su" {
 		if TEST(q, `$node/../node[@rel="vc"] and $node/../node[@rel="hd" and
 			                  ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]`) {
+			//NP
 			tmp := internalHeadPositionWithGapping(node.axParent, q) // testing -- dont go to vc as it has no head sometimes...
 			if node.Begin < tmp && tmp <= node.End {                 // maybe the different error handling in go code causes diff with xquery script?
 				return externalHeadPosition(node.axParent, q)
@@ -415,6 +418,7 @@ func internalHeadPositionWithGapping(node []interface{}, q *context) int {
 		}
 	}()
 
+	//NP
 	if hdPos := internalHeadPosition(node, q); hdPos == empty_head {
 		return internalHeadPositionOfGappedConstituent(node, q)
 	} else {
@@ -517,8 +521,10 @@ func headPositionOfConjunction(node *nodeType, q *context) int {
 		}
 	}()
 
+	//NP
 	internal_head := internalHeadPositionWithGapping([]interface{}{node}, q)
 	leftmost_conj_daughter := nLeft(FIND(q, `$node/../node[@rel="cnj"]`))
+	//NP
 	leftmost_internal_head := internalHeadPositionWithGapping([]interface{}{leftmost_conj_daughter}, q)
 
 	if leftmost_internal_head < internal_head {
@@ -539,12 +545,6 @@ func headPositionOfConjunction(node *nodeType, q *context) int {
 }
 
 func followingCnjSister(node *nodeType, q *context) []interface{} {
-
-	defer func() {
-		if r := recover(); r != nil {
-			panic(trace(r, "followingCnjSister", q, node))
-		}
-	}()
 
 	/*
 	   declare function local:following-cnj-sister($node as element(node)) as element(node)

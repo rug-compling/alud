@@ -435,6 +435,7 @@ func (d *dFunction) do(subdoc []interface{}, q *context) []interface{} {
 	case function__last__0__args:
 		return []interface{}{indexType(-1)}
 	case function__local__internal__head__position__1__args:
+		//NP
 		value, err := func() (v int, e error) {
 			defer func() {
 				if rec := recover(); rec != nil {
