@@ -206,3 +206,8 @@ type udType struct {
 	DeprelAux  string    `xml:"deprel_aux,attr,omitempty"`
 	Dep        []depType `xml:"dep,omitempty"`
 }
+
+type nodeDepType struct {
+	node *nodeType
+	dep  *depType
+}
