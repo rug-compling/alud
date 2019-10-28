@@ -21,6 +21,7 @@ var (
 	opt_d = flag.Bool("d", false, "include debug messages in comments")
 	opt_e = flag.Bool("e", false, "skip enhanced dependencies")
 	opt_f = flag.Bool("f", false, "don't fix punctuation")
+	opt_i = flag.String("i", "", "regexp for filtering filename as sentence id")
 	opt_m = flag.Bool("m", false, "don't fix mixplaced heads in coordination")
 	opt_M = flag.Bool("M", false, "don't copy metadata to comments")
 	opt_p = flag.Bool("p", false, "panic on error (for development)")
@@ -56,6 +57,8 @@ Options:
     -d : include debug messages in comments
     -e : skip enhanced dependencies
     -f : don't fix punctuation
+    -i regexp : make sent_id from regexp applied to filename
+                example: /skip/this/prefix/(.*).xml
     -m : don't fix misplaced heads in coordication
     -M : don't copy metadata to comments
     -p : panic on error
@@ -84,6 +87,7 @@ func main() {
 		return
 	}
 
+	var reID *regexp.Regexp
 	var options int
 	if *opt_c {
 		options |= alud.OPT_NO_COMMENTS
@@ -96,6 +100,11 @@ func main() {
 	}
 	if *opt_f {
 		options |= alud.OPT_NO_FIX_PUNCT
+	}
+	if *opt_i != "" {
+		var err error
+		reID, err = regexp.Compile(*opt_i)
+		x(err)
 	}
 	if *opt_m {
 		options |= alud.OPT_NO_FIX_MISPLACED_HEADS
@@ -117,7 +126,11 @@ func main() {
 		var collection Collection
 
 		if xml.Unmarshal(b, &collection) != nil {
-			doFile(b, filename, options)
+			var sentid string
+			if *opt_i != "" {
+				sentid = reID.FindStringSubmatch(filename)[1]
+			}
+			doFile(b, filename, sentid, options)
 			continue
 		}
 
@@ -127,15 +140,19 @@ func main() {
 		for _, f := range collection.Doc {
 			b, err := ioutil.ReadFile(f.Href)
 			x(err)
-			doFile(b, f.Href, options)
+			var sentid string
+			if *opt_i != "" {
+				sentid = reID.FindStringSubmatch(f.Href)[1]
+			}
+			doFile(b, f.Href, sentid, options)
 		}
 		x(os.Chdir(dir))
 	}
 }
 
-func doFile(doc []byte, filename string, options int) {
+func doFile(doc []byte, filename, sentid string, options int) {
 	if *opt_a {
-		result, err := alud.UdAlpino(doc, filename)
+		result, err := alud.UdAlpino(doc, filename, sentid)
 		fmt.Printf("<!-- %s -->\n", filename)
 		fmt.Println(result)
 		fmt.Println()
@@ -145,7 +162,7 @@ func doFile(doc []byte, filename string, options int) {
 		return
 	}
 
-	result, err := alud.Ud(doc, filename, options)
+	result, err := alud.Ud(doc, filename, sentid, options)
 	if err == nil {
 		fmt.Print(result)
 	} else {
