@@ -21,7 +21,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "appos"
 		}
 		if TEST(q, `$node/../node[@rel="mod" and (@pt or @cat)]`) {
-			return "orphan"
+			return "appos" //was "orphan"
 		}
 		return dependencyLabel(node.parent, q)
 	}
@@ -52,6 +52,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 				if TEST(q, `$node/../../@cat="np"`) {
 					return "acl"
 				}
+				if TEST(q, `$node/../../@cat="top"`) { // met als gevolg een neiging tot...
+					return "root"
+				}
 				return "advcl"
 			}
 			return "xcomp"
@@ -68,7 +71,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "expl:pv"
 	}
 	if node.Rel == "su" {
-		if TEST(q, `$node[../@rel="cnj" and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel=("vc","predc")]/node[@rel="hd"  and (@pt or @cat)])]`) { // gapping
+		if TEST(q, `$node[../@rel=("cnj","dp","body") and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel=("vc","predc") and (@pt or node[@rel=("hd","cnj")  and (@pt or @cat)] )] )]`) { // gapping
 			return dependencyLabel(node.parent, q)
 		}
 		if TEST(q, `$node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
@@ -98,6 +101,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "aux:pass"
 		}
 		if aux == "aux" {
+			if TEST(q, `$node[../node[@rel="su" and not(@pt or @cat)] and
+	                 ../node[@rel="vc" and not(@pt or @cat)] and
+	                 ../@rel="cnj"]`) {
+				return "conj"
+			}
 			return "aux"
 		}
 		if aux == "cop" {
@@ -109,7 +117,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return detLabel(node, q)
 		}
 		if TEST(q, `$node/../node[@rel="mod" and (@pt or @cat)]`) { // gapping
-			return "orphan"
+			return detLabel(node, q) // was "orphan"
 		}
 		return dependencyLabel(node.parent, q) // gapping
 	}
@@ -120,9 +128,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 			}
 			return dependencyLabel(node.parent, q)
 		}
-		if TEST(q, `$node[@index = ../../node[@rel="su"]/@index ]`) {
+		if TEST(q, `$node[@index = ../../node[@rel="su"]/@index and ../node[@rel="hd" and (@pt or @cat)]]`) {
 			return "nsubj:pass" // trees where su (with extraposed material) is spelled out at position of obj1
-		}
+		} // but not elliptic cases (with empty head) like: Boven de engel is de profeet Zacharia afgebeeld en boven Maria de profeet Micha
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
 			return "obj"
 		}
@@ -182,6 +190,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		return dependencyLabel(node.parent, q) // gapping
 	}
+	if node.Rel == "mod" && node.parent.Rel == "det" { // [ap/det steeds vnw/meer] invloed
+		return "amod"
+	}
 	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" { // [detp niet veel] meer
 		// modification of nomimal heads
 		// pc and ld occur in nominalizations
@@ -191,9 +202,10 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node == nLeft(FIND(q, `$node/../node[@rel="mod" and (@pt or @cat)]`)) { // gapping with multiple mods
 			return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 		}
-		return "orphan"
+		return modLabelInsideNp(node, q) //was "orphan"
 	}
-	if TEST(q, `$node[@rel=("mod","pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp")]`) {
+
+	if TEST(q, `$node[@rel=("mod","pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")]`) {
 		// modification of verbal, adjectival heads
 		// nb some oti's directly dominate (preceding) modifiers
 		// [advp weg ermee ]
@@ -203,12 +215,10 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/../node[@rel=("su","obj1","predc","vc") and (@pt or @cat)]`) {
 			return "orphan"
 		}
-		if TEST(q, `$node[@rel="mod" and ../node[@rel=("pc","ld")]]`) {
-			return "orphan"
-		}
-		if TEST(q, `$node[@rel="mod" and ../node[@rel="mod"]/@begin < @begin]`) { // gapping with multiple mods
-			return "orphan"
-		}
+		// combined mod/ld/pc for consistency with dephead position
+		if TEST(q, `$node[@rel=("mod","ld","pc") and ../node[@rel=("mod","pc","ld") and (@pt or @cat)]/@begin < @begin ]`) { // gapping with multiple mods
+			return "orphan" //  added (@pt or @cat) to prevent match with an empty mod, eventhough those do not have a @begin attribute
+		} // seems like a BUG
 		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 	}
 	if TEST(q, `$node[@rel="mod" and ../@cat=("pp","detp","advp")]`) {
@@ -316,8 +326,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 			if TEST(q, `$node/../node[@rel="predc"]`) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
-			if TEST(q, `not($node/../node[@rel="pc"])`) {
-				return "case" // er blijft weinig over van het lijk : over heads a predc and has pc as sister
+			if TEST(q, `$node/../node[@rel=("obj1","vc","se") and (@pt or @cat)]`) {
+				return "case" //
+			}
+			if TEST(q, `$node/../node[@rel="pc"]`) { // superfluous ??
+				return dependencyLabel(node.parent, q) // er blijft weinig over van het lijk : over heads a predc and has pc as sister
 			}
 			return dependencyLabel(node.parent, q) // not sure about this one
 		}
@@ -398,9 +411,9 @@ func detLabel(node *nodeType, q *context) string {
 		}
 	}()
 
-	// zijn boek, diens boek, ieders boek, aller landen, Ron's probleem, Fidel Castro's belang
+	// zijn boek, diens boek, ieders boek, aller landen, Ron's probleem, Fidel Castro's belang, zuids schoppenaas
 	if TEST(q, `$node[@ud:pos = "PRON" and @vwtype="bez"] or
-	          $node[@ud:pos = ("PRON","PROPN") and @naamval="gen"] or
+	          $node[@ud:pos = ("PRON","PROPN","NOUN") and @naamval="gen"] or
 	          $node[@cat="mwu" and node[@spectype="deeleigen"]]`) {
 		return "nmod:poss"
 	}
@@ -419,10 +432,13 @@ func detLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat=("np","ap") or @ud:pos=("SYM","ADJ","ADV") ]`) {
 		return "nmod"
 	}
-	if TEST(q, `$node/@cat = ("mwu","pp","smain")`) {
+	if TEST(q, `$node/@cat = ("mwu","smain")`) {
 		return "det"
 	}
-	// tussen 5 en 6 .., needs more principled solution
+	// tussen 5 en 6 ..--> almost all PP cases are with tussen NUM and NUM
+	if TEST(q, `$node/@cat = "pp"`) {
+		return "nummod"
+	}
 	// nog meer mensen dan anders
 	// hetzelfde tijdstip als anders , nogal wat,
 	// hij heeft ik weet niet hoeveel boeken
