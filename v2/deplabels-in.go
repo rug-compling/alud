@@ -221,7 +221,13 @@ func dependencyLabel(node *nodeType, q *context) string {
 		} // seems like a BUG
 		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 	}
-	if TEST(q, `$node[@rel="mod" and ../@cat=("pp","detp","advp")]`) {
+	if TEST(q, `$node[@rel="mod" and ../@cat="pp"]`) { // [mod hd/ADP obj1/empty]  --> make mod the external head
+		if TEST(q, `$node/../node[@rel="obj1" and (@pt or @cat)]`) {
+			return "amod"
+		}
+		return dependencyLabel(node.parent, q)
+	}
+	if TEST(q, `$node[@rel="mod" and ../@cat=("detp","advp")]`) {
 		return "amod"
 	}
 	if TEST(q, `$node[@rel="mod" and ../@cat=("cp", "whrel", "whq", "whsub")]`) {
@@ -332,7 +338,10 @@ func dependencyLabel(node *nodeType, q *context) string {
 			if TEST(q, `$node/../node[@rel="pc"]`) { // superfluous ??
 				return dependencyLabel(node.parent, q) // er blijft weinig over van het lijk : over heads a predc and has pc as sister
 			}
-			return dependencyLabel(node.parent, q) // not sure about this one
+			if TEST(q, `$node[../node[@rel="mod" and (@pt or @cat)] and ../@cat="pp"]`) { //
+				return "parataxis" // [mod om wat te zonnen] in [1] en bij [1 de kleine meertjes]
+			}
+			return dependencyLabel(node.parent, q) // [predc [mod het beste] af/hd,ADP] here af heads a predc --> go to parent
 		}
 		if TEST(q, `$node[(@ud:pos=("ADJ","X","ADV") or @cat="mwu")
 	                            and ../@cat="pp"

@@ -29,7 +29,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		// vol vertrouwen
 		if n := FIND(q, `$node/../node[@rel="predc"]`); len(n) > 0 {
 			// met als titel
-			return internalHeadPosition(n[:1], q)
+			return internalHeadPositionWithGapping(n[:1], q)
 		}
 		if obj1_vc_se_me := FIND(q, `$node/../node[@rel=("obj1","vc","se","me")]`); len(obj1_vc_se_me) > 0 {
 			// adding pt/cat enough for gapping cases?
@@ -40,7 +40,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				return internalHeadPosition(FIND(q, `$node/ancestor::node/node[@rel=("rhd","whd")
                                        and @index = $node/../node[@rel=("obj1","vc","se","me")]/@index]`), q)
 			}
-			if pobj1 := FIND(q, `$node/../node[@rel="pobj1"]`); len(pobj1) > 0 {
+			if pobj1 := FIND(q, `$node/../node[@rel=("pobj1","mod")]`); len(pobj1) > 0 {
 				return internalHeadPosition(if1(pobj1), q)
 			}
 			// in de eerste rond --> typo in LassySmall/Wiki , binnen en [advp later buiten ]
@@ -264,15 +264,18 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "mod" || node.Rel == "app" {
-		if TEST(q, `$node/../node[@rel=("hd","su","obj1","pc","predc","body") and (@pt or @cat)]`) { // gapping, as su but now su or obj1  could be head as well
+
+		if TEST(q, `$node/../node[( @rel=("su","obj1","pc","predc","body") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) { // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
+
 		if n := FIND(q, `$node/../node[@rel=("mod","app") and (@cat or @pt)]`); len(n) > 0 { // whatever comes first
 			if node == nLeft(n) { // gapping with multiple mods
 				return externalHeadPosition(node.axParent, q)
 			}
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
+
 		if TEST(q, `$node/../../node[@rel="su" and (@pt or @cat)]`) { // an mod in an otherwise empty tree (after fixing heads in conj)
 			return internalHeadPosition(FIND(q, `$node/../../node[@rel="su"]`), q)
 		}
@@ -525,6 +528,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 	if n := FIND(q, `$node/node[@rel="dp" and (@pt or @cat)]`); len(n) > 0 {
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
+
 	if n := FIND(q, `$node/node[@rel="hd" and @ud:pos="ADP"]`); len(n) > 0 { // in en rond Brussel, case not necessary in xquery code (run-time issue?)
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
