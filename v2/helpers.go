@@ -2,8 +2,10 @@ package alud
 
 import (
 	"bytes"
+	"encoding/xml"
 	"fmt"
 	"sort"
+	"strings"
 )
 
 // meest linkse node
@@ -97,14 +99,14 @@ func depthCheck(q *context) {
 	}
 }
 
-/*
-func dump(alpino *Alpino_ds) {
+func dump(alpino *alpino_ds) {
 	b, err := xml.MarshalIndent(alpino, "", "  ")
-	x(err)
+	if err != nil {
+		panic(err)
+	}
 	s := strings.Replace(string(b), "000", "", -1)
 	fmt.Println("<?xml version=\"1.0\"?>\n" + s)
 }
-*/
 
 // nodes[0] -> node
 // nodes[1] -> head

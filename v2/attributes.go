@@ -8,7 +8,6 @@ type fullNode struct {
 	Aform        string `xml:"aform,attr,omitempty"`
 	Buiging      string `xml:"buiging,attr,omitempty"`
 	Case         string `xml:"case,attr,omitempty"`
-	Cat          string `xml:"cat,attr,omitempty"`
 	Comparative  string `xml:"comparative,attr,omitempty"`
 	Conjtype     string `xml:"conjtype,attr,omitempty"`
 	Def          string `xml:"def,attr,omitempty"`

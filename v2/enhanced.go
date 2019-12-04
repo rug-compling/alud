@@ -26,6 +26,7 @@ func enhancedDependencies(q *context) {
 	}()
 
 	changed := reconstructEmptyHead(q)
+	//dump(q.alpino)
 
 	// add_Edependency_relations
 	for _, node = range q.ptnodes {

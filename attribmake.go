@@ -36,6 +36,7 @@ type fullNode struct {
 		"pt":     true,
 		"rel":    true,
 		"word":   true,
+		"cat":    true,
 	}
 
 	for _, attrib := range attribs {

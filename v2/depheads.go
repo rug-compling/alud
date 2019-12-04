@@ -3231,7 +3231,8 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 			},
 		},
 	}) {
-		return find(q /* $node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end */, &xPath{
+		// TODO: CHECK THIS
+		if f := find(q /* $node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__attributes__end,
@@ -3285,7 +3286,9 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 					},
 				},
 			},
-		})[0].(int)
+		}); len(f) > 0 {
+			return f[0].(int)
+		}
 	}
 
 	if test(q /* $node[@cat="conj"] */, &xPath{

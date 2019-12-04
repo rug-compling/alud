@@ -354,7 +354,10 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if TEST(q, `$node[@cat="mwu"]`) {
-		return FIND(q, `$node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end`)[0].(int)
+		// TODO: CHECK THIS
+		if f := FIND(q, `$node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end`); len(f) > 0 {
+			return f[0].(int)
+		}
 	}
 
 	if TEST(q, `$node[@cat="conj"]`) {
