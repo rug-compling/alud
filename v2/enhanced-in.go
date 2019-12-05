@@ -200,8 +200,14 @@ func enhanceDependencyLabel(node *nodeType, q *context) string {
 			if crd.Lemma != "" {
 				return join(label, enhancedLemmaString1(crd, q))
 			}
+
 			if crd.Cat == "mwu" {
 				return join(label, enhancedLemmaString1(n1(FIND(q, `($crd/node[@rel="mwp"])[1]`)), q))
+			}
+
+			if crd.Lemma == "" { // cases where the crd element is co-indexed
+				// zon 200 joodse en 120 arabische doden en gewonden
+				return label
 			}
 			panic("Empty EUD label")
 		}

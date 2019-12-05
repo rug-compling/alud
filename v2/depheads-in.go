@@ -150,12 +150,15 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "--" && node.udPos != "" {
+		if n := FIND(q, `$node/../node[@rel="--" and @cat="smain"]`); len(n) > 0 { // fixing problematic case in dpc
+			return internalHeadPositionWithGapping(n, q) // why does internalHeadPositionWithGapping not work here?
+		}
 		if TEST(q, `$node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
 	                   and ../node[@rel="--" and
 	                               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
 	                  ]`) {
 			return internalHeadPositionWithGapping(
-				FIND(q, `$node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","ADP","ADV","DET","PROPN","NUM","PRON"))][1]`),
+				FIND(q, `($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON"))])[1]`),
 				q)
 		}
 		if n := FIND(q, `$node/../node[@cat][1]`); len(n) > 0 {
@@ -195,7 +198,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		if TEST(q, `$node/../@cat="pp"`) { // eraan dat
 			return externalHeadPosition(node.axParent, q)
 		}
-		if TEST(q, `$node/../node[@rel=("hd","su") and (@pt or @cat)]`) {
+		if TEST(q, `$node/../node[@rel=("hd","su","obj1") and (@pt or @cat)]`) {
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 		return externalHeadPosition(node.axParent, q)
@@ -225,6 +228,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "su" {
+		if TEST(q, `$node[../node[@rel="predc" and (@pt or @cat)] and ../node[@rel="hd" and @ud:pos="AUX"]]`) {
+			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
+		}
 		if TEST(q, `$node/../node[@rel="vc"] and $node/../node[@rel="hd" and
 			                  ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]`) {
 			//NP -> half opgelost -> zie TODO
@@ -256,7 +262,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		return externalHeadPosition(node.axParent, q)
 	}
 
-	if node.Rel == "pc" {
+	if node.Rel == "pc" || node.Rel == "ld" {
 		if TEST(q, `$node/../node[@rel=("hd","su","obj1") and (@pt or @cat)]`) { // gapping, as su but now su could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
@@ -264,7 +270,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "mod" || node.Rel == "app" {
-
+		if predc := FIND(q, `$node/../node[@rel="predc"]`); len(predc) > 0 { // debugging only -- this case should be covered by case below!
+			return internalHeadPositionWithGapping(predc, q)
+		}
 		if TEST(q, `$node/../node[( @rel=("su","obj1","pc","predc","body") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) { // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
@@ -284,8 +292,8 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		   LassySmall4/wiki-7064/wiki-7064.p.28.s.3.xml */
 	}
 
-	if node.Rel == "app" || node.Rel == "det" {
-		if TEST(q, `$node/../node[@rel=("hd","mod") and (@pt or @cat)]`) { // gapping with an app (or a det)!
+	if node.Rel == "app" || node.Rel == "det" || node.Rel == "me" {
+		if TEST(q, `$node/../node[@rel=("hd","mod") and (@pt or @cat)]`) { // gapping with an app (or a det)! (or me!)
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 		return externalHeadPosition(node.axParent, q)
@@ -505,11 +513,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="pc"][1]`), q)
 	}
 
-	if n := FIND(q, `$node/node[@rel=("mod","app") and (@pt or @cat)]`); len(n) > 0 { // pick leftmost
-		return internalHeadPositionWithGapping(if1(n), q)
-	}
-
-	if n := FIND(q, `$node/node[@rel="app" and (@pt or @cat)]`); len(n) > 0 {
+	if n := FIND(q, `$node/node[@rel=("mod","app","me") and (@pt or @cat)]`); len(n) > 0 { // pick leftmost
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
@@ -530,6 +534,12 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 	}
 
 	if n := FIND(q, `$node/node[@rel="hd" and @ud:pos="ADP"]`); len(n) > 0 { // in en rond Brussel, case not necessary in xquery code (run-time issue?)
+		return internalHeadPositionWithGapping(if1(n), q)
+	}
+	if n := FIND(q, `$node[@cat="pp"]/node[@rel="hd" and @cat="mwu"]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
+		return internalHeadPositionWithGapping(if1(n), q)
+	}
+	if n := FIND(q, `$node[@cat="mwu"]/node[@rel="mwp"]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
