@@ -31,7 +31,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.Rel == "crd" {
 		return "cc"
 	}
-	if node.Rel == "me" && TEST(q, `$node[@rel="me" and not(../node[@ud:pos="ADP"]) ]`) {
+	if node.Rel == "me" && TEST(q, `$node[@rel="me" and ../node[@rel="hd" and (@pt or @cat) and not(@ud:pos="ADP")]]`) {
 		return determineNominalModLabel(node, q)
 	}
 	if node.Rel == "obcomp" {
