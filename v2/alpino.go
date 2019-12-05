@@ -120,6 +120,8 @@ func alpinoRestore(q *context) {
 			node.Lemma = node.udOldState.Lemma
 			node.Postag = node.udOldState.Postag
 			node.Pt = node.udOldState.Pt
+			node.Cat = node.udOldState.Cat
+			node.Node = node.udOldState.Node
 		}
 	}
 	for _, node := range q.allnodes {

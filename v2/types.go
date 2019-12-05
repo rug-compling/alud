@@ -112,6 +112,7 @@ type nodeType struct {
 	Pt     string `xml:"pt,attr,omitempty"`
 	Rel    string `xml:"rel,attr,omitempty"`
 	Word   string `xml:"word,attr,omitempty"`
+	Cat    string `xml:"cat,attr,omitempty"`
 	fullNode
 	Node   []*nodeType `xml:"node"`
 	parent *nodeType
