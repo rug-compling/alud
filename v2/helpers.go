@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"sort"
-	"strings"
 )
 
 // meest linkse node
@@ -104,8 +103,7 @@ func dump(alpino *alpino_ds) {
 	if err != nil {
 		panic(err)
 	}
-	s := strings.Replace(string(b), "000", "", -1)
-	fmt.Println("<?xml version=\"1.0\"?>\n" + s)
+	fmt.Println("<?xml version=\"1.0\"?>\n" + string(b))
 }
 
 // nodes[0] -> node
@@ -156,9 +154,9 @@ func untrace(r interface{}) string {
 				}
 				fmt.Fprintf(
 					&buf,
-					"\n        %s -- id:%d  begin:%s  end:%s",
+					"\n        %s -- id:%s  begin:%s  end:%s",
 					[]string{"node", "head", "gap ", "subj"}[ii],
-					n.Id,
+					number(n.Id),
 					number(n.Begin),
 					number(n.End))
 				if a := n.Word; a != "" {

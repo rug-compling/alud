@@ -120,6 +120,7 @@ func reconstructEmptyHead(q *context) bool {
 				*n2 = *n
 				n2.Begin = end - 1
 				n2.End = end
+				n2.Id = node.Id + 1 + i
 				n2.udRelation = "_"
 				n2.udHeadPosition = underscore
 				n2.udCopiedFrom = copied

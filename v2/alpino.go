@@ -128,6 +128,7 @@ func alpinoRestore(q *context) {
 		node.Ud = &udType{Dep: make([]depType, 0)}
 		node.Begin /= 1000
 		node.End /= 1000
+		node.Id /= 1000
 	}
 	q.alpino.UdNodes = []*udNodeType{}
 	q.alpino.Conllu = &conlluType{Auto: VersionID()}

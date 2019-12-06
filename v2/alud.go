@@ -96,6 +96,7 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 	walk = func(node *nodeType) {
 		node.Begin *= 1000
 		node.End *= 1000
+		node.Id *= 1000
 		if node.Node == nil {
 			node.Node = make([]*nodeType, 0)
 		} else {
