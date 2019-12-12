@@ -160,10 +160,12 @@ func validMwu(node *nodeType) bool {
 		return false
 	}
 
-	for i, n := range node.Node {
-		if i > 0 && node.Node[i-1].End != n.Begin {
-			return false
-		}
+	for _, n := range node.Node {
+		/*
+			if i > 0 && node.Node[i-1].End != n.Begin {
+				return false
+			}
+		*/
 		if n.Rel != "mwp" {
 			return false
 		}
