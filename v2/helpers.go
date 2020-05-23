@@ -25,7 +25,7 @@ func nLeft(nodes []interface{}) *nodeType {
 		//if ii.End != jj.End {
 		return ii.End < jj.End // ints
 		//}
-		//return ii.Id > jj.Id // ints, omgekeerd
+		//return ii.ID > jj.ID // ints, omgekeerd
 	})
 	return nodes[0].(*nodeType)
 }
@@ -156,7 +156,7 @@ func untrace(r interface{}) string {
 					&buf,
 					"\n        %s -- id:%s  begin:%s  end:%s",
 					[]string{"node", "head", "gap ", "subj"}[ii],
-					number(n.Id),
+					number(n.ID),
 					number(n.Begin),
 					number(n.End))
 				if a := n.Word; a != "" {
