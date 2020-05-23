@@ -1,6 +1,5 @@
 
 SRC = \
-	attributes.go \
 	auxiliary.go \
 	depheads.go \
 	deplabels.go \
@@ -17,7 +16,3 @@ SRC = \
 
 all: $(SRC)
 
-attributes.go: ../attributes.txt ../attribmake
-	rm -f $@
-	../attribmake $< > $@
-	chmod 444 $@

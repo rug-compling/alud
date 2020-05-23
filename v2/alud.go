@@ -1,6 +1,8 @@
 package alud
 
 import (
+	"github.com/rug-compling/alpinods"
+
 	"encoding/xml"
 	"fmt"
 	"path/filepath"
@@ -29,10 +31,12 @@ const (
 
 var (
 	noNode = &nodeType{
-		Begin:               -1000,
-		End:                 -1000,
+		NodeAttributes: alpinods.NodeAttributes{
+			Begin: -1000,
+			End:   -1000,
+			Id:    -1,
+		},
 		udCopiedFrom:        -1000,
-		Id:                  -1,
 		Node:                []*nodeType{},
 		axParent:            []interface{}{},
 		axAncestors:         []interface{}{},

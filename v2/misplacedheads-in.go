@@ -3,6 +3,8 @@
 package alud
 
 import (
+	"github.com/rug-compling/alpinods"
+
 	"fmt"
 )
 
@@ -91,12 +93,14 @@ func swap(nietLeeg, leeg *nodeType) {
 	leeg.Id, leeg.Rel = id, rel
 	// maak nietLeeg leeg
 	*nietLeeg = nodeType{
-		Begin: nietLeeg.Begin,
-		End:   nietLeeg.End,
-		Id:    nietLeeg.Id,
-		Index: nietLeeg.Index,
-		Rel:   nietLeeg.Rel,
-		Node:  []*nodeType{},
+		NodeAttributes: alpinods.NodeAttributes{
+			Begin: nietLeeg.Begin,
+			End:   nietLeeg.End,
+			Id:    nietLeeg.Id,
+			Index: nietLeeg.Index,
+			Rel:   nietLeeg.Rel,
+		},
+		Node: []*nodeType{},
 	}
 }
 

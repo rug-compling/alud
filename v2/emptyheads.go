@@ -5,6 +5,8 @@
 package alud
 
 import (
+	"github.com/rug-compling/alpinods"
+
 	"sort"
 )
 
@@ -200,14 +202,16 @@ func reconstructEmptyHead(q *context) bool {
 		}
 
 		node.udOldState = &nodeType{
-			Begin:  node.Begin,
-			Cat:    node.Cat,
-			End:    node.End,
-			Word:   node.Word,
-			Lemma:  node.Lemma,
-			Postag: node.Postag,
-			Pt:     node.Pt,
-			Node:   node.Node,
+			NodeAttributes: alpinods.NodeAttributes{
+				Begin:  node.Begin,
+				Cat:    node.Cat,
+				End:    node.End,
+				Word:   node.Word,
+				Lemma:  node.Lemma,
+				Postag: node.Postag,
+				Pt:     node.Pt,
+			},
+			Node: node.Node,
 		}
 
 		node.Begin = end - 1
