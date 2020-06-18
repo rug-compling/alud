@@ -92,6 +92,7 @@ type conlluType struct {
 
 type nodeType struct {
 	alpinods.NodeAttributes
+	Data   []*Data     `xml:"data,omitempty"`
 	Node   []*nodeType `xml:"node"`
 	parent *nodeType
 
@@ -127,6 +128,11 @@ type nodeType struct {
 	axChildren          []interface{}
 	axDescendants       []interface{}
 	axDescendantsOrSelf []interface{}
+}
+
+type Data struct {
+	Name string `xml:"name,attr,omitempty"`
+	Data string `xml:",chardata"`
 }
 
 type udNodeType struct {

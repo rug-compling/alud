@@ -12,7 +12,7 @@ import (
 )
 
 var (
-	reShorted  = regexp.MustCompile(`></(meta|parser|node|dep|acl|advcl|advmod|amod|appos|aux|case|cc|ccomp|clf|compound|conj|cop|csubj|det|discourse|dislocated|expl|fixed|flat|goeswith|iobj|list|mark|nmod|nsubj|nummod|obj|obl|orphan|parataxis|punct|ref|reparandum|root|vocative|xcomp)>`)
+	reShorted  = regexp.MustCompile(`></(meta|parser|node|data|dep|acl|advcl|advmod|amod|appos|aux|case|cc|ccomp|clf|compound|conj|cop|csubj|det|discourse|dislocated|expl|fixed|flat|goeswith|iobj|list|mark|nmod|nsubj|nummod|obj|obl|orphan|parataxis|punct|ref|reparandum|root|vocative|xcomp)>`)
 	reNoConllu = regexp.MustCompile(`><!\[CDATA\[\s*\]\]></conllu>`)
 )
 
