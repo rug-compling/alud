@@ -28,11 +28,11 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 			        (: ud documentation suggests 1 cop per lg, van Eynde suggests much more, compromise: the traditional ones :)
 			        (: @lemma=("zijn","lijken","blijken","blijven","schijnen","heten","voorkomen","worden","dunken") and :)
 			        @lemma="zijn" and
-		                 ( contains(@sc,'copula') or
+		             (:    ( contains(@sc,'copula') or
 		                   contains(@sc,'pred')   or
-		                   contains(@sc,'cleft')  or
+		                   contains(@sc,'cleft')  or :)
 		                   ../node[@rel="predc"]
-		                 ) ]`) {
+		                  ]`) {
 		return "cop", nil
 	}
 
