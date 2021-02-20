@@ -1,4 +1,4 @@
-github.com/pebbe/dbxml v1.3.0 h1:wXbSUtTZ32uXOE7BAHuTxpd2UWZBdERfhzvP7l6+PoI=
-github.com/pebbe/dbxml v1.3.0/go.mod h1:Hl8vBiwip2cZ3BQHlQ0gBYLuNVaNY++qqYzCyM4U7OA=
-github.com/rug-compling/alpinods v1.12.3 h1:uXGEnBDeEHLmBAN6UNDkwwz9PSwfxCqNIS3Tiri5c54=
-github.com/rug-compling/alpinods v1.12.3/go.mod h1:QsRpNTvTL2Hb95t3nn3LQmxyjHmXCns7d4Rc5yrdRPI=
+github.com/pebbe/dbxml v1.3.1 h1:36vm7gj4e4rYic6TaHT3MCt9EjaIJPqSjJGARSAjjxc=
+github.com/pebbe/dbxml v1.3.1/go.mod h1:g5Nu8pQcuIsuZveVYYZmqgya//k4SLbtVhnZ6DDuyN4=
+github.com/rug-compling/alpinods v1.12.4 h1:SkNFEcNhS8oD7QwaCdMOEfkUGtbW16ghdDFr+f0xX+k=
+github.com/rug-compling/alpinods v1.12.4/go.mod h1:R3BBX8RIw9InVqHZ+1W+MsX8WX8uBkoVNNGE38mqF1Q=

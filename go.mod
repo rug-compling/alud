@@ -1,8 +1,8 @@
 module github.com/rug-compling/alud
 
-go 1.15
+go 1.16
 
 require (
-	github.com/pebbe/dbxml v1.3.0
-	github.com/rug-compling/alpinods v1.12.3
+	github.com/pebbe/dbxml v1.3.1
+	github.com/rug-compling/alpinods v1.12.4
 )
