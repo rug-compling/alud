@@ -1350,6 +1350,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Begin >= 0 && node.Begin == node.parent.Begin {
 			return dependencyLabel(node.parent, q)
 		}
+		if node.Begin >= 0 && node.Begin == node.parent.Begin+2 {
+			return dependencyLabel(node.parent, q)
+		}
 		if test(q /* $node/../node[@ud:pos="PROPN"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -1967,7 +1970,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) {
 			return modLabelInsideNp(node, q)
 		}
-		if node == nLeft(find(q /* $node/../node[@rel="mod" and (@pt or @cat)] */, &xPath{
+		if node == nLeft(find(q /* $node/../node[@rel=("mod") and (@pt or @cat)] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -2015,7 +2018,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return modLabelInsideNp(node, q) //was "orphan"
 	}
 
-	if test(q /* $node[@rel=("mod","pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")] */, &xPath{
+	if test(q /* $node[@rel=("pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -2030,7 +2033,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 								arg1: &dNode{},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"mod", "pc", "ld"},
+								DATA: []interface{}{"pc", "ld"},
 								arg1: &dCollect{
 									ARG:  collect__attributes__rel,
 									arg1: &dNode{},
@@ -2061,7 +2064,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 				},
 			},
 		},
-	}) {
+	}) { // give pc priority GB 8/2/21
 		// modification of verbal, adjectival heads
 		// nb some oti's directly dominate (preceding) modifiers
 		// [advp weg ermee ]
@@ -2155,7 +2158,233 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) {
 			return "orphan"
 		}
-		// combined mod/ld/pc for consistency with dephead position
+		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
+	}
+
+	if test(q /* $node[@rel=("mod") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")] */, &xPath{
+		arg1: &dSort{
+			arg1: &dFilter{
+				arg1: &dVariable{
+					VAR: node,
+				},
+				arg2: &dSort{
+					arg1: &dAnd{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__rel,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"mod"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+							},
+						},
+						arg2: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG: collect__attributes__cat,
+								arg1: &dCollect{
+									ARG:  collect__parent__type__node,
+									arg1: &dNode{},
+								},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"sv1", "smain", "ssub", "inf", "ppres", "ppart", "oti", "ap", "advp", "cp", "whrel"},
+								arg1: &dCollect{
+									ARG: collect__attributes__cat,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		// modification of verbal, adjectival heads
+		// nb some oti's directly dominate (preceding) modifiers
+		// [advp weg ermee ]
+		if test(q /* $node/../node[@rel=("hd","body") and (@pt or @cat)] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd", "body"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dCollect{
+										ARG:  collect__attributes__pt,
+										arg1: &dNode{},
+									},
+									arg2: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // body for mods dangling outside cmp/body: maar niet om ...
+			return labelVmod(node, q)
+		}
+		if test(q /* $node[not(../node[@rel="hd"]) and ../node[@rel="predc" and (@pt or @cat)]] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dFunction{
+								ARG: function__not__1__args,
+								arg1: &dArg{
+									arg1: &dSort{
+										arg1: &dCollect{
+											ARG: collect__child__node,
+											arg1: &dCollect{
+												ARG:  collect__parent__type__node,
+												arg1: &dNode{},
+											},
+											arg2: &dPredicate{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"hd"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG:  collect__parent__type__node,
+									arg1: &dNode{},
+								},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"predc"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dSort{
+											arg1: &dOr{
+												arg1: &dCollect{
+													ARG:  collect__attributes__pt,
+													arg1: &dNode{},
+												},
+												arg2: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // mod in context of predc but no empty head
+			// avoid orphan, because that would not disappear in enhanced
+			return labelVmod(node, q)
+		}
+		if test(q /* $node/../node[@rel=("su","obj1","predc","vc","pc") and (@pt or @cat)] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"su", "obj1", "predc", "vc", "pc"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dCollect{
+										ARG:  collect__attributes__pt,
+										arg1: &dNode{},
+									},
+									arg2: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // added pc 16/2/21
+			return "orphan"
+		}
+		// combined mod/ld/pc for consistency with dephead position & superfluous again, see above. Gb 8/2 BN begin-position checks dont work as these are renumbered internally
 		if test(q /* $node[@rel=("mod","ld","pc") and ../node[@rel=("mod","pc","ld") and (@pt or @cat)]/@begin < @begin ] */, &xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
@@ -2325,6 +2554,53 @@ func dependencyLabel(node *nodeType, q *context) string {
 			},
 		}) {
 			return "amod"
+		}
+		if test(q /* $node/../node[@rel="hd" and @ud:pos="ADV"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"ADV"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // daarom dus
+			return "advmod"
 		}
 		return dependencyLabel(node.parent, q)
 	}
@@ -2624,6 +2900,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		if node.Cat == "pp" {
 			return "nmod" // onder wie michael boogerd
+		}
+		if node.udPos == "PRON" { // [whd wat] [body nu]
+			return "obl"
 		}
 		return "advmod" // [whq waarom jij]
 	}
@@ -2982,7 +3261,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "root" // only one non-punct/sym/foreign element in the string
 		}
 		if node.Cat == "mwu" {
-			if node.Begin == node.parent.Begin && node.End == node.parent.End {
+			if node.Begin == node.parent.Begin { // && node.End == node.parent.End
 				return "root"
 			}
 			if test(q /* $node/node[@ud:pos=("PUNCT","SYM")] */, &xPath{
@@ -3186,7 +3465,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			}) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
-			if test(q /* $node/../node[@rel=("obj1","vc","se") and (@pt or @cat)] */, &xPath{
+			if test(q /* $node/../node[@rel=("obj1","vc","se","me") and (@pt or @cat)] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
 						ARG: collect__child__node,
@@ -3205,7 +3484,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 										arg1: &dNode{},
 									},
 									arg2: &dElem{
-										DATA: []interface{}{"obj1", "vc", "se"},
+										DATA: []interface{}{"obj1", "vc", "se", "me"},
 										arg1: &dCollect{
 											ARG:  collect__attributes__rel,
 											arg1: &dNode{},
@@ -3228,7 +3507,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 						},
 					},
 				},
-			}) {
+			}) { // examples in paqus suggest me case is already covered (advmod), yet leuven/253 gives error without me here..
 				return "case" //
 			}
 			if test(q /* $node/../node[@rel="pc"] */, &xPath{
@@ -4775,7 +5054,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	if node.Cat == "detp" {
 		return "det" // [detp niet veel] meer error?
 	}
-	if node.Cat == "rel" || node.Cat == "whrel" {
+	if node.Cat == "rel" || node.Cat == "whrel" || node.Cat == "ssub" {
 		return "acl:relcl"
 	}
 	// v2 added relcl -- whrel= met name waar ...

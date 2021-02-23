@@ -143,6 +143,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Begin >= 0 && node.Begin == node.parent.Begin {
 			return dependencyLabel(node.parent, q)
 		}
+		if node.Begin >= 0 && node.Begin == node.parent.Begin+2 {
+			return dependencyLabel(node.parent, q)
+		}
 		if TEST(q, `$node/../node[@ud:pos="PROPN"]`) {
 			return "flat"
 		}
@@ -199,13 +202,13 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
 			return modLabelInsideNp(node, q)
 		}
-		if node == nLeft(FIND(q, `$node/../node[@rel="mod" and (@pt or @cat)]`)) { // gapping with multiple mods
+		if node == nLeft(FIND(q, `$node/../node[@rel=("mod") and (@pt or @cat)]`)) { // gapping with multiple mods
 			return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 		}
 		return modLabelInsideNp(node, q) //was "orphan"
 	}
 
-	if TEST(q, `$node[@rel=("mod","pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")]`) {
+	if TEST(q, `$node[@rel=("pc","ld") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")]`) {  // give pc priority GB 8/2/21
 		// modification of verbal, adjectival heads
 		// nb some oti's directly dominate (preceding) modifiers
 		// [advp weg ermee ]
@@ -215,7 +218,24 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/../node[@rel=("su","obj1","predc","vc") and (@pt or @cat)]`) {
 			return "orphan"
 		}
-		// combined mod/ld/pc for consistency with dephead position
+		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
+	}
+
+	if TEST(q, `$node[@rel=("mod") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")]`) {
+		// modification of verbal, adjectival heads
+		// nb some oti's directly dominate (preceding) modifiers
+		// [advp weg ermee ]
+		if TEST(q, `$node/../node[@rel=("hd","body") and (@pt or @cat)]`) { // body for mods dangling outside cmp/body: maar niet om ...
+			return labelVmod(node, q)
+		}
+		if TEST(q, `$node[not(../node[@rel="hd"]) and ../node[@rel="predc" and (@pt or @cat)]]`) { // mod in context of predc but no empty head 
+			// avoid orphan, because that would not disappear in enhanced
+			return  labelVmod(node,q)
+		}
+		if TEST(q, `$node/../node[@rel=("su","obj1","predc","vc","pc") and (@pt or @cat)]`) {  // added pc 16/2/21 
+			return "orphan"
+		}
+		// combined mod/ld/pc for consistency with dephead position & superfluous again, see above. Gb 8/2 BN begin-position checks dont work as these are renumbered internally
 		if TEST(q, `$node[@rel=("mod","ld","pc") and ../node[@rel=("mod","pc","ld") and (@pt or @cat)]/@begin < @begin ]`) { // gapping with multiple mods
 			return "orphan" //  added (@pt or @cat) to prevent match with an empty mod, eventhough those do not have a @begin attribute
 		} // seems like a BUG
@@ -224,6 +244,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node[@rel="mod" and ../@cat="pp"]`) { // [mod hd/ADP obj1/empty]  --> make mod the external head
 		if TEST(q, `$node/../node[@rel="obj1" and (@pt or @cat)]`) {
 			return "amod"
+		}
+		if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADV"]`) { // daarom dus
+			return "advmod"
 		}
 		return dependencyLabel(node.parent, q)
 	}
@@ -268,6 +291,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Cat == "pp" {
 			return "nmod" // onder wie michael boogerd
 		}
+		if node.udPos == "PRON" {  // [whd wat] [body nu]  
+			return "obl"
+		}
 		return "advmod" // [whq waarom jij]
 	}
 	if node.Rel == "body" {
@@ -308,7 +334,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "root" // only one non-punct/sym/foreign element in the string
 		}
 		if node.Cat == "mwu" {
-			if node.Begin == node.parent.Begin && node.End == node.parent.End {
+			if node.Begin == node.parent.Begin { // && node.End == node.parent.End
 				return "root"
 			}
 			if TEST(q, `$node/node[@ud:pos=("PUNCT","SYM")]`) { // fix for mwu punctuation in Alpino output
@@ -332,7 +358,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			if TEST(q, `$node/../node[@rel="predc"]`) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
-			if TEST(q, `$node/../node[@rel=("obj1","vc","se") and (@pt or @cat)]`) {
+			if TEST(q, `$node/../node[@rel=("obj1","vc","se","me") and (@pt or @cat)]`) {  // examples in paqus suggest me case is already covered (advmod), yet leuven/253 gives error without me here..
 				return "case" //
 			}
 			if TEST(q, `$node/../node[@rel="pc"]`) { // superfluous ??
@@ -487,7 +513,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	if node.Cat == "detp" {
 		return "det" // [detp niet veel] meer error?
 	}
-	if node.Cat == "rel" || node.Cat == "whrel" {
+	if node.Cat == "rel" || node.Cat == "whrel" || node.Cat == "ssub" {
 		return "acl:relcl"
 	}
 	// v2 added relcl -- whrel= met name waar ...

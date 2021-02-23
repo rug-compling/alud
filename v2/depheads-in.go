@@ -186,12 +186,17 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		panic("No external head")
 	}
 
-	if node.Rel == "vc" {
-		if TEST(q, `$node/../node[@rel="hd" and
-	                            ( @ud:pos="AUX" or
-	                              $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index
-	                            )
-	                        ]
+	if node.Rel == "vc" { // only consider vc as head if it has a head itself or is a word (rare cases where subj-index is missing), otherwise attach orphans to subj GB 16/02/21
+		if TEST(q, `$node[node[@rel="hd" and @pt] or 
+			              node[@rel=("body","cnj")]/node[@rel="hd" and @pt] or
+			              node[@rel="cnj"]/node[@rel="body"]/node[@rel="hd" and @pt] or 
+			              @pt
+			             ]
+			        and $node/../node[@rel="hd" and   
+	                                   ( @ud:pos="AUX" or
+	                                      $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index
+	                                   )
+	                                 ]
 	                   and not($node/../node[@rel="predc"])`) {
 			return externalHeadPosition(node.axParent, q)
 		}
@@ -266,6 +271,12 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		if TEST(q, `$node/../node[@rel=("hd","su","obj1") and (@pt or @cat)]`) { // gapping, as su but now su could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
+		if n := FIND(q, `$node/../node[@rel=("modERR","appERR","pcERR") and (@cat or @pt)]`); len(n) > 0 { // whatever comes first 4/2/21: added pc GB
+			if node == nLeft(n) { // gapping with multiple mods
+				return externalHeadPosition(node.axParent, q)
+			}
+			return internalHeadPositionWithGapping(node.axParent, q)
+                } 
 		return externalHeadPosition(node.axParent, q)
 	}
 
@@ -273,11 +284,12 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		if predc := FIND(q, `$node/../node[@rel="predc"]`); len(predc) > 0 { // debugging only -- this case should be covered by case below!
 			return internalHeadPositionWithGapping(predc, q)
 		}
-		if TEST(q, `$node/../node[( @rel=("su","obj1","pc","predc","body") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) { // gapping, as su but now su or obj1  could be head as well
+		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) {  // added pc 16/2/21
+               // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 
-		if n := FIND(q, `$node/../node[@rel=("mod","app") and (@cat or @pt)]`); len(n) > 0 { // whatever comes first
+		if n := FIND(q, `$node/../node[@rel=("mod","app") and (@cat or @pt)]`); len(n) > 0 { // whatever comes first 4/2/21: added pc GB
 			if node == nLeft(n) { // gapping with multiple mods
 				return externalHeadPosition(node.axParent, q)
 			}
@@ -512,7 +524,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="vc"][1]`), q)
 	}
 
-	if TEST(q, `$node/node[@rel="pc" and (@pt or @cat)]`) {
+	if TEST(q, `$node/node[@rel="pc" and (@pt or @cat)]`) {  // commenting out this case and added to case below GB 5/2/21 and put back in 8/2
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="pc"][1]`), q)
 	}
 

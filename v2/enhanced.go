@@ -2260,6 +2260,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "casu_quo"
 	case "dwz.", "d.w.z.":
 		lemma = "dat_wil_zeggen"
+	case "dat wil zeggen":
+		lemma = "dat_wil_zeggen"
 	case "e.d.":
 		lemma = "en_dergelijke"
 	case "en/of":

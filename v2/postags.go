@@ -63,7 +63,7 @@ func universalPosTags(node *nodeType, q *context) string {
 		if node.Spectype == "deeleigen" {
 			return "PROPN"
 		}
-		if node.Spectype == "symb" || node.Spectype == "enof" {
+		if node.Spectype == "symb" || node.Spectype == "enof"  || node.Spectype == "afgebr" || node.Spectype == "vreemd" {
 			if node.Rel == "det" || node.parent.Rel == "det" {
 				return "DET"
 			}
@@ -72,6 +72,9 @@ func universalPosTags(node *nodeType, q *context) string {
 		return "X" // afk vreemd afgebr enof meta
 	}
 	if pt == "tsw" {
+		if rel == "mod" {
+			return "ADV"
+		}
 		return "INTJ"
 	}
 	if pt == "tw" {
