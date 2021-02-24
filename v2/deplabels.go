@@ -1350,9 +1350,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Begin >= 0 && node.Begin == node.parent.Begin {
 			return dependencyLabel(node.parent, q)
 		}
-		if node.Begin >= 0 && node.Begin == node.parent.Begin+2 {
+		/* if node.Begin >= 0 && node.Begin == node.parent.Begin+2 {  // superfluous? (and +2 should be +2000 anyway)
 			return dependencyLabel(node.parent, q)
-		}
+		} */
 		if test(q /* $node/../node[@ud:pos="PROPN"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
