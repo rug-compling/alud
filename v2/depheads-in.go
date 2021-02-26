@@ -40,14 +40,13 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				return internalHeadPosition(FIND(q, `$node/ancestor::node/node[@rel=("rhd","whd")
                                        and @index = $node/../node[@rel=("obj1","vc","se","me")]/@index]`), q)
 			}
-			if pobj1 := FIND(q, `$node/../node[@rel=("pobj1","mod")]`); len(pobj1) > 0 {
-				return internalHeadPosition(if1(pobj1), q)
-			}
 			// in de eerste rond --> typo in LassySmall/Wiki , binnen en [advp later buiten ]
 			return externalHeadPosition(node.axParent, q)
-		} else {
-			return externalHeadPosition(node.axParent, q)
-		}
+		} 
+		if pobj1 := FIND(q, `$node/../node[@rel=("pobj1")]`); len(pobj1) > 0 {  // removed mod, assume ADP is the head here GB 26/2/21
+				return internalHeadPosition(if1(pobj1), q)
+			} 
+		return externalHeadPosition(node.axParent, q)
 	}
 
 	if aux, err := auxiliary1(node, q); err == nil {
@@ -281,9 +280,6 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "mod" || node.Rel == "app" {
-		if predc := FIND(q, `$node/../node[@rel="predc"]`); len(predc) > 0 { // debugging only -- this case should be covered by case below!
-			return internalHeadPositionWithGapping(predc, q)
-		}
 		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) {  // added pc 16/2/21
                // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
@@ -375,10 +371,12 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 
 	if TEST(q, `$node[@cat="mwu"]`) {
 		// TODO: CHECK THIS
-		if f := FIND(q, `$node/node[@rel="mwp" and not(../node/@begin < @begin)]/@end`); len(f) > 0 {
-			return f[0].(int)
+		if f := FIND(q, `$node/node[@rel="mwp" and @pt]`); len(f) > 0 {
+			return internalHeadPosition(ifLeft(FIND(q, `$node/node[@rel="mwp"]`)), q)     //   f[0].(int)
 		}
+		return i1(FIND(q,`$node/@end`))
 	}
+
 
 	if TEST(q, `$node[@cat="conj"]`) {
 		return internalHeadPosition(ifLeft(FIND(q, `$node/node[@rel="cnj"]`)), q)
@@ -496,8 +494,8 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 	}
 
 	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
-		if TEST(q, `$node/node[@rel=("vc","predc") and (@pt or node[@cat or @pt])]`) {
-			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","pred")]`), q) // testing should be vc,pred
+		if TEST(q, `$node/node[@rel=("vc","predc") and (@pt or @cat or node[@cat or @pt])]`) {  // what does this final node mean ?? added cat instead GB 26/2/21 
+			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","predc")]`), q) // testing should be vc,predc , fixed typo pred -> predc GB 26/2/21
 		} else {
 			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q)
 		}
@@ -592,7 +590,10 @@ func headPositionOfConjunction(node *nodeType, q *context) int {
 		}
 	}
 	if len(endpos_of_leftmost_conj_constituents) == 0 {
-		return leftmost_conj_daughter.Node[0].End // this should not happen really -- give error msg?
+		// return leftmost_conj_daughter.Node[0].End // this should not happen really -- give error msg?
+		// happens in elliptical (right-node-raising) cases like cdb/4863, 
+		// door zaterdag met 7-9 ... en zondag met 11-1... te winnen , [zaterdag met 11-7 ... te winnen] is seen as single constituent, [zondag met ...] as elliptical conj
+		return leftmost_internal_head // accept that conj points in the wrong direction in such cases 
 	}
 	sort.Ints(endpos_of_leftmost_conj_constituents)
 	return endpos_of_leftmost_conj_constituents[len(endpos_of_leftmost_conj_constituents)-1]

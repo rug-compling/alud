@@ -186,7 +186,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "ccomp"
 		}
 		if TEST(q, `$node/../node[@rel=("su","obj1") and (@pt or @cat)]`) {
-			return "orphan"
+			return "orphan"		
 		}
 		return dependencyLabel(node.parent, q) // gapping
 	}
@@ -567,7 +567,7 @@ func labelVmod(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat="advp"]/node[@ud:pos=("NOUN","VERB","ADP")]`) {
 		return "obl"
 	}
-	if TEST(q, `$node[@cat="ap"]/node[@ud:pos="NOUN"]`) {
+	if TEST(q, `$node[@cat="ap"]/node[@ud:pos="NOUN" or @cat="np"]`) {   // added NP for 'het hele jaar door' h_suite/53 GB 26/02/21
 		return "obl"
 	}
 	if TEST(q, `$node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")]`) {

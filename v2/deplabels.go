@@ -1350,9 +1350,6 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Begin >= 0 && node.Begin == node.parent.Begin {
 			return dependencyLabel(node.parent, q)
 		}
-		/* if node.Begin >= 0 && node.Begin == node.parent.Begin+2 {  // superfluous? (and +2 should be +2000 anyway)
-			return dependencyLabel(node.parent, q)
-		} */
 		if test(q /* $node/../node[@ud:pos="PROPN"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -5598,7 +5595,7 @@ func labelVmod(node *nodeType, q *context) string {
 	}) {
 		return "obl"
 	}
-	if test(q /* $node[@cat="ap"]/node[@ud:pos="NOUN"] */, &xPath{
+	if test(q /* $node[@cat="ap"]/node[@ud:pos="NOUN" or @cat="np"] */, &xPath{
 		arg1: &dSort{
 			arg1: &dCollect{
 				ARG: collect__child__node,
@@ -5624,24 +5621,40 @@ func labelVmod(node *nodeType, q *context) string {
 					},
 				},
 				arg2: &dPredicate{
-					arg1: &dEqual{
-						ARG: equal__is,
-						arg1: &dCollect{
-							ARG:  collect__attributes__ud_3apos,
-							arg1: &dNode{},
-						},
-						arg2: &dElem{
-							DATA: []interface{}{"NOUN"},
+					arg1: &dOr{
+						arg1: &dEqual{
+							ARG: equal__is,
 							arg1: &dCollect{
 								ARG:  collect__attributes__ud_3apos,
 								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"NOUN"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+							},
+						},
+						arg2: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__cat,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"np"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
 							},
 						},
 					},
 				},
 			},
 		},
-	}) {
+	}) { // added NP for 'het hele jaar door' h_suite/53 GB 26/02/21
 		return "obl"
 	}
 	if test(q /* $node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")] */, &xPath{
