@@ -26,6 +26,7 @@ var (
 	opt_M = flag.Bool("M", false, "don't copy metadata to comments")
 	opt_p = flag.Bool("p", false, "panic on error (for development)")
 	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
+	opt_v = flag.Bool("v", false, "print version and exit")
 
 	x = util.CheckErr
 
@@ -63,6 +64,7 @@ Options:
     -M : don't copy metadata to comments
     -p : panic on error
     -t : don't try to restore detokenized sentence
+    -v : print version and exit
 
 `, p, p, p)
 }
@@ -71,6 +73,11 @@ func main() {
 
 	flag.Usage = usage
 	flag.Parse()
+
+	if *opt_v {
+		fmt.Println(alud.VersionID())
+		return
+	}
 
 	filenames := []string{}
 	filenames = append(filenames, flag.Args()...)
