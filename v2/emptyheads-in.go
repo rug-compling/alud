@@ -4,8 +4,6 @@ package alud
 
 import (
 	"github.com/rug-compling/alpinods"
-
-	"sort"
 )
 
 func reconstructEmptyHead(q *context) bool {
@@ -104,10 +102,7 @@ func reconstructEmptyHead(q *context) bool {
 		node.udERelation = antenode.udERelation
 		node.udEHeadPosition = antenode.udEHeadPosition
 
-		if !mwu {
-			q.ptnodes = append(q.ptnodes, node)
-			q.varptnodes = append(q.varptnodes, node)
-		} else {
+		if mwu {
 			node.Node = make([]*nodeType, len(antenode.Node))
 			for i, n := range antenode.Node {
 				var copied int
@@ -129,18 +124,11 @@ func reconstructEmptyHead(q *context) bool {
 				n2.udHeadPosition = underscore
 				n2.udCopiedFrom = copied
 				node.Node[i] = n2
-				q.ptnodes = append(q.ptnodes, n2)
-				q.varptnodes = append(q.varallnodes, n2)
 			}
 		}
 	}
 	if found {
-		sort.Slice(q.ptnodes, func(i, j int) bool {
-			return q.ptnodes[i].End < q.ptnodes[j].End
-		})
-		sort.Slice(q.varptnodes, func(i, j int) bool {
-			return q.varptnodes[i].(*nodeType).End < q.varptnodes[j].(*nodeType).End
-		})
+		inspect(q)
 	}
 	return found
 }
