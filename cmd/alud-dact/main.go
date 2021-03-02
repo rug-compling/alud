@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/pebbe/dbxml"
+	"github.com/rug-compling/alpinods"
 	"github.com/rug-compling/alud/internal/util"
 	"github.com/rug-compling/alud/v2"
 
@@ -79,6 +80,7 @@ func main() {
 
 	if *opt_v {
 		fmt.Println(alud.VersionID())
+		fmt.Println("alpino_ds.dtd version", alpinods.DtdVersion)
 		major, minor, patch := dbxml.Version()
 		fmt.Printf("DbXML %d.%d.%d\n", major, minor, patch)
 		return

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/rug-compling/alpinods"
 	"github.com/rug-compling/alud/internal/util"
 	"github.com/rug-compling/alud/v2"
 
@@ -76,6 +77,7 @@ func main() {
 
 	if *opt_v {
 		fmt.Println(alud.VersionID())
+		fmt.Println("alpino_ds.dtd version", alpinods.DtdVersion)
 		return
 	}
 
