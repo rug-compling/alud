@@ -137,7 +137,7 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 	if options&OPT_NO_DETOKENIZE == 0 {
 		untokenize(q)
 	}
-	check(q)
+	check(q, options)
 	return conll(q, options), q, nil
 }
 
@@ -214,7 +214,7 @@ func inspect(q *context) {
 
 }
 
-func check(q *context) {
+func check(q *context, options int) {
 	root := -1
 	items := make(map[string]int)
 	for i, node := range q.ptnodes {
