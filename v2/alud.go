@@ -137,6 +137,7 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 	if options&OPT_NO_DETOKENIZE == 0 {
 		untokenize(q)
 	}
+	check(q)
 	return conll(q, options), q, nil
 }
 
@@ -211,4 +212,77 @@ func inspect(q *context) {
 	q.ptnodes = ptnodes
 	q.varptnodes = varptnodes
 
+}
+
+func check(q *context) {
+	root := -1
+	items := make(map[string]int)
+	for i, node := range q.ptnodes {
+		if node.udHeadPosition == 0 && node.udRelation == "root" {
+			if root >= 0 {
+				panic("Multiple roots")
+			}
+			root = i
+		}
+		if node.udHeadPosition == 0 && node.udRelation != "root" {
+			panic(fmt.Sprintf("Not a root %s %q", number(node.End), node.Word))
+		}
+		if node.udHeadPosition != 0 && node.udRelation == "root" {
+			panic(fmt.Sprintf("Invalid root %s %q", number(node.End), node.Word))
+		}
+		items[number(node.End)] = i
+	}
+	if root < 0 {
+		panic("Missing root")
+	}
+
+	// dit controleert standaard UD
+	for _, node := range q.ptnodes {
+		seen := make(map[int]bool)
+		p := node.udHeadPosition
+		if p < 0 {
+			continue
+		}
+		for {
+			if p == 0 {
+				break
+			}
+			if seen[p] {
+				panic(fmt.Sprintf("Loop in standard UD for word %s %q", number(node.End), node.Word))
+			}
+			seen[p] = true
+			i, ok := items[number(p)]
+			if ok {
+				p = q.ptnodes[i].udHeadPosition
+			}
+			if !ok || p == node.udHeadPosition {
+				panic(fmt.Sprintf("Unreachable word %s %q", number(node.End), node.Word))
+			}
+		}
+	}
+
+	// dit controleert enhanced UD
+	for _, node := range q.ptnodes {
+		found := false
+		seen := make(map[string]bool)
+		queue := []string{number(node.End)}
+		for i := 0; i < len(queue); i++ {
+			id := queue[i]
+			if id == "0" {
+				found = true
+				break
+			}
+			if seen[id] {
+				continue
+			}
+			seen[id] = true
+			n := q.ptnodes[items[id]]
+			for _, s := range strings.Split(n.udEnhanced, "|") {
+				queue = append(queue, strings.Split(s, ":")[0])
+			}
+		}
+		if !found {
+			panic(fmt.Sprintf("Unreachable word %s %q", number(node.End), node.Word))
+		}
+	}
 }
