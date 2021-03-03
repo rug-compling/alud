@@ -3582,7 +3582,7 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 		}), q)
 	}
 
-	if test(q /* $node[@cat="mwu"] */, &xPath{
+	if test(q /* $node[@cat="mwuERROR"] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -3596,7 +3596,7 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 							arg1: &dNode{},
 						},
 						arg2: &dElem{
-							DATA: []interface{}{"mwu"},
+							DATA: []interface{}{"mwuERROR"},
 							arg1: &dCollect{
 								ARG:  collect__attributes__cat,
 								arg1: &dNode{},
@@ -3640,7 +3640,7 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 				},
 			},
 		}); len(f) > 0 {
-			return internalHeadPosition(ifLeft(find(q /* $node/node[@rel="mwp"] */, &xPath{
+			return internalHeadPosition(find(q /* $node/node[@rel="mwp"][1] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
 						ARG: collect__child__node,
@@ -3648,24 +3648,29 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 							VAR: node,
 						},
 						arg2: &dPredicate{
-							arg1: &dEqual{
-								ARG: equal__is,
-								arg1: &dCollect{
-									ARG:  collect__attributes__rel,
-									arg1: &dNode{},
-								},
-								arg2: &dElem{
-									DATA: []interface{}{"mwp"},
+							arg1: &dPredicate{
+								arg1: &dEqual{
+									ARG: equal__is,
 									arg1: &dCollect{
 										ARG:  collect__attributes__rel,
 										arg1: &dNode{},
 									},
+									arg2: &dElem{
+										DATA: []interface{}{"mwp"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
 								},
+							},
+							arg2: &dFunction{
+								ARG: function__first__0__args,
 							},
 						},
 					},
 				},
-			})), q) //   f[0].(int)
+			}), q) //   f[0].(int)
 		}
 		return i1(find(q /* $node/@end */, &xPath{
 			arg1: &dSort{
@@ -3677,6 +3682,51 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 				},
 			},
 		}))
+	}
+
+	if test(q /* $node[@cat="mwu"]/node */, &xPath{
+		arg1: &dSort{
+			arg1: &dCollect{
+				ARG: collect__child__node,
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__cat,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"mwu"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		return internalHeadPosition(find(q /* $node/node[1] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dFunction{
+							ARG: function__first__0__args,
+						},
+					},
+				},
+			},
+		}), q)
 	}
 
 	if test(q /* $node[@cat="conj"] */, &xPath{
