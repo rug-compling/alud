@@ -262,27 +262,29 @@ func check(q *context) {
 	}
 
 	// dit controleert enhanced UD
-	for _, node := range q.ptnodes {
-		found := false
-		seen := make(map[string]bool)
-		queue := []string{number(node.End)}
-		for i := 0; i < len(queue); i++ {
-			id := queue[i]
-			if id == "0" {
-				found = true
-				break
+	if options&OPT_NO_ENHANCED == 0 {
+		for _, node := range q.ptnodes {
+			found := false
+			seen := make(map[string]bool)
+			queue := []string{number(node.End)}
+			for i := 0; i < len(queue); i++ {
+				id := queue[i]
+				if id == "0" {
+					found = true
+					break
+				}
+				if seen[id] {
+					continue
+				}
+				seen[id] = true
+				n := q.ptnodes[items[id]]
+				for _, s := range strings.Split(n.udEnhanced, "|") {
+					queue = append(queue, strings.Split(s, ":")[0])
+				}
 			}
-			if seen[id] {
-				continue
+			if !found {
+				panic(fmt.Sprintf("Unreachable word %s %q", number(node.End), node.Word))
 			}
-			seen[id] = true
-			n := q.ptnodes[items[id]]
-			for _, s := range strings.Split(n.udEnhanced, "|") {
-				queue = append(queue, strings.Split(s, ":")[0])
-			}
-		}
-		if !found {
-			panic(fmt.Sprintf("Unreachable word %s %q", number(node.End), node.Word))
 		}
 	}
 }
