@@ -97,34 +97,34 @@ For visualisation of the result, see http://www.let.rug.nl/kleiweg/conllu/
  * Derive Universal Dependencies and insert into the alpino_ds format
  * Insert given Universal Dependencies into the alpino_ds format
 
-## Installation
+## Example programs
+
+The package comes with two example programs, `alud` and `alud-dact`.
 
 To install the demo program `alud-dact`, you need to have
 [Oracle Berkeley DB XML](https://www.oracle.com/database/berkeley-db/xml.html)
 installed. With `alud-dact` you can process [dact](https://rug-compling.github.io/dact/) files.
 
-The package itself, and the demo program `alud` have no external dependencies.
-
-Install everything:
+Install both:
 
 ```
-go get github.com/rug-compling/alud/...
+go get github.com/rug-compling/alud/cmd/...
 ```
 
-Package only:
-
-```
-go get github.com/rug-compling/alud/v2
-```
-
-Demo programs:
+... or install `alud` only:
 
 ```
 go get github.com/rug-compling/alud/cmd/alud
 ```
 
-...or:
+... or install `alud-dact` only:
 
 ```
 go get github.com/rug-compling/alud/cmd/alud-dact
 ```
+
+You will find the programs in one of these directories:
+
+ 1. in `$GOBIN` if variable is set
+ 2. else in `$GOPATH/bin` if variable is set
+ 3. else in `~/go/bin`
