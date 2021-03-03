@@ -369,12 +369,16 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 		return internalHeadPosition(FIND(q, `$node/node[1]`), q)
 	}
 
-	if TEST(q, `$node[@cat="mwu"]`) {
+	if TEST(q, `$node[@cat="mwuERROR"]`) {
 		// TODO: CHECK THIS
 		if f := FIND(q, `$node/node[@rel="mwp" and @pt]`); len(f) > 0 {
-			return internalHeadPosition(ifLeft(FIND(q, `$node/node[@rel="mwp"]`)), q)     //   f[0].(int)
+			return internalHeadPosition(FIND(q, `$node/node[@rel="mwp"][1]`), q)     //   f[0].(int)
 		}
 		return i1(FIND(q,`$node/@end`))
+	}
+
+	if TEST(q, `$node[@cat="mwu"]/node`) {
+		return internalHeadPosition(FIND(q, `$node/node[1]`), q)
 	}
 
 
