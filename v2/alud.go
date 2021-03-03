@@ -215,6 +215,13 @@ func inspect(q *context) {
 }
 
 func check(q *context, options int) {
+
+	defer func() {
+		if r := recover(); r != nil {
+			panic(trace(r, "\t"+strings.TrimSpace(strings.Replace(conll(q, options), "\n", "\n\t", -1)), q))
+		}
+	}()
+
 	root := -1
 	items := make(map[string]int)
 	for i, node := range q.ptnodes {
@@ -225,10 +232,10 @@ func check(q *context, options int) {
 			root = i
 		}
 		if node.udHeadPosition == 0 && node.udRelation != "root" {
-			panic(fmt.Sprintf("Not a root %s %q", number(node.End), node.Word))
+			panic(fmt.Sprintf("Not a root: %s %q", number(node.End), node.Word))
 		}
 		if node.udHeadPosition != 0 && node.udRelation == "root" {
-			panic(fmt.Sprintf("Invalid root %s %q", number(node.End), node.Word))
+			panic(fmt.Sprintf("Invalid root: %s %q", number(node.End), node.Word))
 		}
 		items[number(node.End)] = i
 	}
@@ -248,7 +255,7 @@ func check(q *context, options int) {
 				break
 			}
 			if seen[p] {
-				panic(fmt.Sprintf("Loop in standard UD for word %s %q", number(node.End), node.Word))
+				panic(fmt.Sprintf("Loop in standard UD for word: %s %q", number(node.End), node.Word))
 			}
 			seen[p] = true
 			i, ok := items[number(p)]
@@ -256,7 +263,7 @@ func check(q *context, options int) {
 				p = q.ptnodes[i].udHeadPosition
 			}
 			if !ok || p == node.udHeadPosition {
-				panic(fmt.Sprintf("Unreachable word %s %q", number(node.End), node.Word))
+				panic(fmt.Sprintf("Unreachable word in standard UD: %s %q", number(node.End), node.Word))
 			}
 		}
 	}
@@ -283,7 +290,7 @@ func check(q *context, options int) {
 				}
 			}
 			if !found {
-				panic(fmt.Sprintf("Unreachable word %s %q", number(node.End), node.Word))
+				panic(fmt.Sprintf("Unreachable word in enhanced UD: %s %q", number(node.End), node.Word))
 			}
 		}
 	}
