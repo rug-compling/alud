@@ -231,7 +231,7 @@ func doFile(doc []byte, filename, archname, sentid string, options int) {
 		}
 
 		if *opt_s {
-			fmt.Printf("# source = %s\n%s# error = %s\n\n", filename, id1, s)
+			fmt.Printf("# source = %s\n%s# error = %s\n# auto = %s\n\n", filename, id1, s, alud.VersionID())
 		}
 		if *opt_x {
 			fmt.Println(result)

@@ -326,7 +326,7 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 # sent_id = %s
 # error = %s
 # auto = %s
-`, filename, sentid, strings.Split(errin.Error(), "\n")[0], version)
+`, filename, sentid, strings.Split(errin.Error(), "\n")[0], VersionID())
 
 	if err != nil {
 		deps := "_"
