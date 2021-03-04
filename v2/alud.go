@@ -3,6 +3,7 @@ package alud
 import (
 	"github.com/rug-compling/alpinods"
 
+	"bytes"
 	"encoding/xml"
 	"fmt"
 	"path/filepath"
@@ -13,6 +14,7 @@ import (
 // options can be or'ed as last argument to Ud()
 const (
 	OPT_DEBUG                  = 1 << iota // include debug messages in comments
+	OPT_DUMMY_OUTPUT                       // include dummy output if parse fails
 	OPT_NO_COMMENTS                        // don't include comments
 	OPT_NO_DETOKENIZE                      // don't try to restore detokenized sentence
 	OPT_NO_ENHANCED                        // skip enhanced dependencies
@@ -69,12 +71,19 @@ func ud(alpino_doc []byte, filename, sentid string, options int) (conllu string,
 	if options&OPT_PANIC == 0 {
 		defer func() {
 			if r := recover(); r != nil {
-				conllu = ""
 				err = fmt.Errorf("%v", untrace(r))
+				if options&OPT_DUMMY_OUTPUT == 0 {
+					conllu = ""
+				} else {
+					conllu = dummyOutput(alpino_doc, filename, sentid, options, err)
+				}
 			}
 		}()
 	}
 	conllu, q, err = udTry(alpino_doc, filename, sentid, options)
+	if err != nil && options&OPT_DUMMY_OUTPUT != 0 {
+		conllu = dummyOutput(alpino_doc, filename, sentid, options, err)
+	}
 	return // geen argumenten i.v.m. recover
 }
 
@@ -294,4 +303,108 @@ func check(q *context, options int) {
 			}
 		}
 	}
+}
+
+func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin error) string {
+
+	var buf bytes.Buffer
+
+	if sentid == "" {
+		sentid = filepath.Base(filename)
+		if strings.HasSuffix(sentid, ".xml") {
+			sentid = sentid[:len(sentid)-4]
+		}
+	}
+
+	fmt.Fprintf(&buf, `# source = %s
+# sent_id = %s
+# auto = ALUD2.5.1-alpha009
+# error = %s
+`, filename, sentid, strings.Split(errin.Error(), "\n")[0])
+
+	var alpino alpino_ds
+	err := xml.Unmarshal(alpino_doc, &alpino)
+	if err != nil {
+		deps := "_"
+		if options&OPT_NO_ENHANCED == 0 {
+			deps = "0:root"
+		}
+
+		fmt.Fprintln(&buf, "# text = Fout\n1\tFout\tfout\tX\t_\t_\t0\troot\t"+deps+"\tError=Yes")
+		return buf.String()
+	}
+
+	var walk func(*nodeType)
+	walk = func(node *nodeType) {
+		node.Begin *= 1000
+		node.End *= 1000
+		node.ID *= 1000
+		if node.Node == nil {
+			node.Node = make([]*nodeType, 0)
+		} else {
+			for _, n := range node.Node {
+				walk(n)
+			}
+		}
+	}
+	walk(alpino.Node)
+
+	q := &context{
+		alpino:   &alpino,
+		filename: filename,
+		sentence: alpino.Sentence.Sent,
+		sentid:   alpino.Sentence.SentId,
+		varroot:  []interface{}{alpino.Node},
+		swapped:  [][2]*nodeType{},
+	}
+
+	inspect(q)
+
+	if options&OPT_NO_DETOKENIZE == 0 {
+		untokenize(q)
+	}
+
+	head := "0"
+	deprel := "root"
+	deps := "_"
+
+	u := func(s string) string {
+		if s == "" {
+			return "_"
+		}
+		return s
+	}
+	postag := func(s string) string {
+		return strings.Join(strings.FieldsFunc(s, func(r rune) bool {
+			return r == '(' || r == ')' || r == ','
+		}), "|")
+	}
+
+	fmt.Fprintf(&buf, "# text = %s\n", q.sentence)
+	for i, node := range q.ptnodes {
+		if i == 1 {
+			head = "1"
+			deprel = "dep"
+		}
+		if i < 2 && options&OPT_NO_ENHANCED == 0 {
+			deps = head + ":" + deprel
+		}
+		misc := "Error=Yes"
+		if node.udNoSpaceAfter {
+			misc = "SpaceAfter=No|Error=Yes"
+		}
+		fmt.Fprintf(&buf, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
+			number(node.End),       // ID
+			node.Word,              // FORM
+			node.Lemma,             // LEMMA
+			"X",                    // UPOS
+			u(postag(node.Postag)), // XPOS
+			"_",                    // FEATS
+			head,                   // HEAD
+			deprel,                 // DEPREL
+			deps,                   // DEPS
+			misc)                   // MISC
+	}
+
+	return buf.String()
 }

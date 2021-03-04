@@ -29,6 +29,7 @@ var (
 	opt_p = flag.Bool("p", false, "panic on error (for development)")
 	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
 	opt_v = flag.Bool("v", false, "print version and exit")
+	opt_x = flag.Bool("x", false, "include dummy output if parse fails")
 
 	x = util.CheckErr
 
@@ -69,6 +70,7 @@ Options:
     -p : panic on error
     -t : don't try to restore detokenized sentence
     -v : print version and exit
+	-x : include dummy output if parse fails
 
 `, p, p, p, p, p)
 }
@@ -131,6 +133,9 @@ func main() {
 	}
 	if *opt_t {
 		options |= alud.OPT_NO_DETOKENIZE
+	}
+	if *opt_x {
+		options |= alud.OPT_DUMMY_OUTPUT
 	}
 
 	for _, filename := range filenames {
@@ -214,18 +219,19 @@ func doFile(doc []byte, filename, archname, sentid string, options int) {
 			s = s[:i]
 		}
 		m := reSentID.FindSubmatch(doc)
-		id1 := ""
-		id2 := ""
+		id := ""
 		if len(m) == 2 {
 			id := string(m[1])
-			id1 = "# sent_id = " + id + "\n"
-			id2 = "  sentence ID: " + id + "\n"
+			id = "  sentence ID: " + id + "\n"
 		}
-		fmt.Printf("# source = %s\n%s# error = %s\n\n", filename, id1, s)
+
+		if *opt_x {
+			fmt.Println(result)
+		}
 		if archname == "" {
-			fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id2, err)
+			fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id, err)
 		} else {
-			fmt.Fprintf(os.Stderr, "%s: %s\n%s  error: %v\n", archname, filename, id2, err)
+			fmt.Fprintf(os.Stderr, "%s: %s\n%s  error: %v\n", archname, filename, id, err)
 		}
 	}
 }
