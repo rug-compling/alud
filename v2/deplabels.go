@@ -3395,7 +3395,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) {
 			return "root" // Arthur .
 		}
-		if test(q /* $node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","VERB","INTJ")] */, &xPath{
+		if test(q /* $node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","PROPN","VERB","INTJ")] */, &xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
 					arg1: &dVariable{
@@ -3409,7 +3409,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 								arg1: &dNode{},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"ADP", "ADV", "ADJ", "DET", "PRON", "CCONJ", "NOUN", "VERB", "INTJ"},
+								DATA: []interface{}{"ADP", "ADV", "ADJ", "DET", "PRON", "CCONJ", "NOUN", "PROPN", "VERB", "INTJ"},
 								arg1: &dCollect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &dNode{},

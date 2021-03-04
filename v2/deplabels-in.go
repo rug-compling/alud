@@ -345,7 +345,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node[@ud:pos="PROPN" and not(../node[@cat]) ]`) {
 			return "root" // Arthur .
 		}
-		if TEST(q, `$node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","VERB","INTJ")]`) {
+		if TEST(q, `$node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","PROPN","VERB","INTJ")]`) {
 			return "parataxis"
 		}
 		panic("No label --")

@@ -1616,7 +1616,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "--" && node.udPos != "" {
-		if n := find(q /* $node/../node[@rel="--" and @cat="smain"] */, &xPath{
+		if n := find(q /* $node/../node[@rel="--" and @cat=("smain","whq")] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -1649,7 +1649,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 									arg1: &dNode{},
 								},
 								arg2: &dElem{
-									DATA: []interface{}{"smain"},
+									DATA: []interface{}{"smain", "whq"},
 									arg1: &dCollect{
 										ARG:  collect__attributes__cat,
 										arg1: &dNode{},

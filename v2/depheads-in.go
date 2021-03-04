@@ -149,7 +149,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "--" && node.udPos != "" {
-		if n := FIND(q, `$node/../node[@rel="--" and @cat="smain"]`); len(n) > 0 { // fixing problematic case in dpc
+		if n := FIND(q, `$node/../node[@rel="--" and @cat=("smain","whq")]`); len(n) > 0 { // fixing problematic case in dpc
 			return internalHeadPositionWithGapping(n, q) // why does internalHeadPositionWithGapping not work here?
 		}
 		if TEST(q, `$node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
