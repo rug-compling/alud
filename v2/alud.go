@@ -307,8 +307,12 @@ func check(q *context, options int) {
 
 func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin error) string {
 
-	var buf bytes.Buffer
+	var alpino alpino_ds
+	err := xml.Unmarshal(alpino_doc, &alpino)
 
+	if sentid == "" && err == nil {
+		sentid = alpino.Sentence.SentId
+	}
 	if sentid == "" {
 		sentid = filepath.Base(filename)
 		if strings.HasSuffix(sentid, ".xml") {
@@ -316,14 +320,14 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 		}
 	}
 
+	var buf bytes.Buffer
+
 	fmt.Fprintf(&buf, `# source = %s
 # sent_id = %s
-# auto = ALUD2.5.1-alpha009
 # error = %s
-`, filename, sentid, strings.Split(errin.Error(), "\n")[0])
+# auto = %s
+`, filename, sentid, strings.Split(errin.Error(), "\n")[0], version)
 
-	var alpino alpino_ds
-	err := xml.Unmarshal(alpino_doc, &alpino)
 	if err != nil {
 		deps := "_"
 		if options&OPT_NO_ENHANCED == 0 {
