@@ -27,6 +27,7 @@ var (
 	opt_m = flag.Bool("m", false, "don't fix mixplaced heads in coordination")
 	opt_M = flag.Bool("M", false, "don't copy metadata to comments")
 	opt_p = flag.Bool("p", false, "panic on error (for development)")
+	opt_s = flag.Bool("s", false, "include short error comments if parse fails")
 	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
 	opt_v = flag.Bool("v", false, "print version and exit")
 	opt_x = flag.Bool("x", false, "include dummy output if parse fails")
@@ -68,9 +69,10 @@ Options:
     -m : don't fix misplaced heads in coordication
     -M : don't copy metadata to comments
     -p : panic on error
+    -s : include short error comments if parse fails
     -t : don't try to restore detokenized sentence
     -v : print version and exit
-	-x : include dummy output if parse fails
+    -x : include dummy output if parse fails
 
 `, p, p, p, p, p)
 }
@@ -219,19 +221,25 @@ func doFile(doc []byte, filename, archname, sentid string, options int) {
 			s = s[:i]
 		}
 		m := reSentID.FindSubmatch(doc)
-		id := ""
+
+		id1 := ""
+		id2 := ""
 		if len(m) == 2 {
 			id := string(m[1])
-			id = "  sentence ID: " + id + "\n"
+			id1 = "# sent_id = " + id + "\n"
+			id2 = "  sentence ID: " + id + "\n"
 		}
 
+		if *opt_s {
+			fmt.Printf("# source = %s\n%s# error = %s\n\n", filename, id1, s)
+		}
 		if *opt_x {
 			fmt.Println(result)
 		}
 		if archname == "" {
-			fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id, err)
+			fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id2, err)
 		} else {
-			fmt.Fprintf(os.Stderr, "%s: %s\n%s  error: %v\n", archname, filename, id, err)
+			fmt.Fprintf(os.Stderr, "%s: %s\n%s  error: %v\n", archname, filename, id2, err)
 		}
 	}
 }
