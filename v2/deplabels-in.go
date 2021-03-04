@@ -71,8 +71,8 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "expl:pv"
 	}
 	if node.Rel == "su" {
-		if TEST(q, `$node[../@rel=("cnj","dp","body") and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel=("vc","predc") and (@pt or node[@rel=("hd","cnj")  and (@pt or @cat)] )] )]`) { // gapping
-			return dependencyLabel(node.parent, q)
+		if TEST(q, `$node[../@rel=("cnj","dp","body","nucl") and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel=("vc","predc") and (@pt or node[@rel=("hd","cnj")  and (@pt or @cat)] )] )]`) { // gapping
+			return dependencyLabel(node.parent, q)  // added nucl GB 4/3/21
 		}
 		if TEST(q, `$node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
 	                                 and ../parent::node[@rel="cnj"]]`) { // gapping with subj downstairs
@@ -149,7 +149,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
-		if node == n1(FIND(q, `$node/../node[@rel="cnj"][1]`)) {
+		if node == nLeft(FIND(q, `$node/../node[@rel="cnj"]`)) {  //changed picking first cnj in XML to nLeft test GB 4/3/21
 			return dependencyLabel(node.parent, q)
 		}
 		return "conj"
@@ -242,7 +242,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/../node[@rel="obj1" and (@pt or @cat)]`) {
 			return "amod"
 		}
-		if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADV"]`) { // daarom dus
+		if TEST(q, `$node/../node[@rel="hd" and @ud:pos=("ADV","ADP")]`) { // daarom dus, vlak voor en tijdens de oorlog --> orphan or advmod?
 			return "advmod"
 		}
 		return dependencyLabel(node.parent, q)
@@ -362,7 +362,8 @@ func dependencyLabel(node *nodeType, q *context) string {
 				return dependencyLabel(node.parent, q) // er blijft weinig over van het lijk : over heads a predc and has pc as sister
 			}
 			if TEST(q, `$node[../node[@rel="mod" and (@pt or @cat)] and ../@cat="pp"]`) { //
-				return "parataxis" // [mod om wat te zonnen] in [1] en bij [1 de kleine meertjes]
+				return dependencyLabel(node.parent, q) // [mod om wat te zonnen] in [1] en bij [1 de kleine meertjes]  , changed from parataxis, GB 3/3/21 (consistent with treatment in depheads)
+				  // actually, this case is redundant now
 			}
 			return dependencyLabel(node.parent, q) // [predc [mod het beste] af/hd,ADP] here af heads a predc --> go to parent
 		}
@@ -461,7 +462,7 @@ func detLabel(node *nodeType, q *context) string {
 		}
 		return "det"
 	}
-	if TEST(q, `$node[@cat=("np","ap") or @ud:pos=("SYM","ADJ","ADV") ]`) {
+	if TEST(q, `$node[@cat=("np","ap") or @ud:pos=("SYM","ADJ","ADV","NOUN") ]`) {
 		return "nmod"
 	}
 	if TEST(q, `$node/@cat = ("mwu","smain")`) {
@@ -480,6 +481,9 @@ func detLabel(node *nodeType, q *context) string {
 	if node.Cat == "conj" {
 
 		return detLabel(n1(FIND(q, `($node/node[@rel="cnj"])[1]`)), q)
+	}
+	if node.Cat == "cp" {   //ik heb boeken gezien [cp/det dan hem] weird...
+		return "nmod"
 	}
 	panic("No label det")
 }

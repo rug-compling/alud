@@ -185,8 +185,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		panic("No external head")
 	}
 
+    // ten ondergaan is a mwp head in extra/972, added cat to first disjunct GB 3/3/21
 	if node.Rel == "vc" { // only consider vc as head if it has a head itself or is a word (rare cases where subj-index is missing), otherwise attach orphans to subj GB 16/02/21
-		if TEST(q, `$node[node[@rel="hd" and @pt] or 
+		if TEST(q, `$node[node[@rel="hd" and (@pt or @cat)] or 
 			              node[@rel=("body","cnj")]/node[@rel="hd" and @pt] or
 			              node[@rel="cnj"]/node[@rel="body"]/node[@rel="hd" and @pt] or 
 			              @pt
@@ -283,6 +284,10 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) {  // added pc 16/2/21
                // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
+		}
+		
+		if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADP"]`) {   // vlak voor [index obj1] en na de winter  GB 4/3/21
+			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
 		}
 
 		if n := FIND(q, `$node/../node[@rel=("mod","app") and (@cat or @pt)]`); len(n) > 0 { // whatever comes first 4/2/21: added pc GB
@@ -530,6 +535,15 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="pc"][1]`), q)
 	}
 
+	// moved the next case up to take precendence over mod rule that follows for consistency with deplabel GB 3/3/21
+	if n := FIND(q, `$node/node[@rel="hd" and @ud:pos="ADP"]`); len(n) > 0 { // in en rond Brussel, case not necessary in xquery code (run-time issue?)
+		return internalHeadPositionWithGapping(if1(n), q) 
+	}
+
+	if n := FIND(q, `$node[@cat="pp"]/node[@rel="hd" and @cat="mwu"]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
+		return internalHeadPositionWithGapping(if1(n), q)
+	}
+
 	if n := FIND(q, `$node/node[@rel=("mod","app","me") and (@pt or @cat)]`); len(n) > 0 { // pick leftmost
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
@@ -538,7 +552,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
-	if n := FIND(q, `$node/node[@rel="body" and (@pt or @cat)]`); len(n) > 0 {
+	if n := FIND(q, `$node/node[@rel=("body","nucl") and (@pt or @cat)]`); len(n) > 0 { // added nucl GB 4/3/21
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
@@ -550,12 +564,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
-	if n := FIND(q, `$node/node[@rel="hd" and @ud:pos="ADP"]`); len(n) > 0 { // in en rond Brussel, case not necessary in xquery code (run-time issue?)
-		return internalHeadPositionWithGapping(if1(n), q)
-	}
-	if n := FIND(q, `$node[@cat="pp"]/node[@rel="hd" and @cat="mwu"]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
-		return internalHeadPositionWithGapping(if1(n), q)
-	}
+	
 	if n := FIND(q, `$node[@cat="mwu"]/node[@rel="mwp"]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
