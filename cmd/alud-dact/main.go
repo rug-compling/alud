@@ -32,6 +32,8 @@ var (
 	opt_v = flag.Bool("v", false, "print version and exit")
 	opt_x = flag.Bool("x", false, "include dummy output if parse fails")
 
+	multi = false
+
 	x = util.CheckErr
 
 	reSentID = regexp.MustCompile(`<sentence.*?sentid="(.*?)".*</sentence>`)
@@ -105,6 +107,10 @@ func main() {
 		return
 	}
 
+	if len(filenames) > 1 {
+		multi = true
+	}
+
 	var reID *regexp.Regexp
 	var options int
 	if *opt_c {
@@ -142,6 +148,7 @@ func main() {
 
 	for _, filename := range filenames {
 		if strings.HasSuffix(filename, ".dact") {
+			multi = true
 			db, err := dbxml.OpenRead(filename)
 			x(err)
 			docs, err := db.All()
@@ -173,6 +180,7 @@ func main() {
 			continue
 		}
 
+		multi = true
 		dir, err := os.Getwd()
 		x(err)
 		x(os.Chdir(filepath.Dir(filename)))
@@ -192,13 +200,17 @@ func main() {
 func doFile(doc []byte, filename, archname, sentid string, options int) {
 	if *opt_a {
 		result, err := alud.UdAlpino(doc, filename, sentid)
-		if archname == "" {
-			fmt.Printf("<!-- %s -->\n", filename)
-		} else {
-			fmt.Printf("<!-- %s : %s -->\n", archname, filename)
+		if multi {
+			if archname == "" {
+				fmt.Printf("<!-- %s -->\n", filename)
+			} else {
+				fmt.Printf("<!-- %s : %s -->\n", archname, filename)
+			}
 		}
 		fmt.Println(result)
-		fmt.Println()
+		if multi {
+			fmt.Println()
+		}
 		if err != nil {
 			if archname == "" {
 				fmt.Fprintf(os.Stderr, "%s\n  error: %v\n", filename, err)
