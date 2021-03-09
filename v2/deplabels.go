@@ -390,7 +390,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 				}) {
 					return "acl"
 				}
-				if test(q /* $node/../../@cat="top" */, &xPath{
+				if test(q /* $node/../../@cat=("top","du") */, &xPath{
 					arg1: &dSort{
 						arg1: &dEqual{
 							ARG: equal__is,
@@ -407,7 +407,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 								},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"top"},
+								DATA: []interface{}{"top", "du"},
 								arg1: &dCollect{
 									ARG: collect__attributes__cat,
 									arg1: &dCollect{
@@ -423,7 +423,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 							},
 						},
 					},
-				}) { // met als gevolg een neiging tot...
+				}) { // met als gevolg een neiging tot...  added du GB 9/3/21
 					return "root"
 				}
 				return "advcl"
@@ -3253,9 +3253,6 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "root" // only one non-punct/sym/foreign element in the string
 		}
 		if node.Cat == "mwu" {
-			if node.Begin == node.parent.Begin { // && node.End == node.parent.End
-				return "root"
-			}
 			if test(q /* $node/node[@ud:pos=("PUNCT","SYM")] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
@@ -3284,7 +3281,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 			}) { // fix for mwu punctuation in Alpino output
 				return "punct"
 			}
-			panic("No label --")
+			if node.Begin == node.parent.Begin { // && node.End == node.parent.End
+				return "root"
+			}
+			return "parataxis" // added to deal with time out parse 9/3/21 GB
+			// panic("No label --")
 		}
 		if test(q /* $node[not(@ud:pos)]/../@rel="top" */, &xPath{
 			arg1: &dSort{
@@ -3395,7 +3396,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) {
 			return "root" // Arthur .
 		}
-		if test(q /* $node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","PROPN","VERB","INTJ")] */, &xPath{
+		if test(q /* $node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","VERB","INTJ")] */, &xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
 					arg1: &dVariable{
@@ -3409,7 +3410,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 								arg1: &dNode{},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"ADP", "ADV", "ADJ", "DET", "PRON", "CCONJ", "NOUN", "PROPN", "VERB", "INTJ"},
+								DATA: []interface{}{"ADP", "ADV", "ADJ", "DET", "PRON", "CCONJ", "SCONJ", "NOUN", "PROPN", "VERB", "INTJ"},
 								arg1: &dCollect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &dNode{},
@@ -5135,7 +5136,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 		return "nmod"
 	}
 	// zijn loopbaan [CP als schrijver]
-	if test(q /* $node[@cat=("cp","sv1","smain","ppres","ppart","inf","ti","oti","du","whq") or @ud:pos="SCONJ"] */, &xPath{
+	if test(q /* $node[@cat=("cp","sv1","smain","ppres","ppart","inf","ti","oti","du","whq", "whsub") or @ud:pos="SCONJ"] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -5150,7 +5151,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 								arg1: &dNode{},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"cp", "sv1", "smain", "ppres", "ppart", "inf", "ti", "oti", "du", "whq"},
+								DATA: []interface{}{"cp", "sv1", "smain", "ppres", "ppart", "inf", "ti", "oti", "du", "whq", "whsub"},
 								arg1: &dCollect{
 									ARG:  collect__attributes__cat,
 									arg1: &dNode{},
@@ -5175,7 +5176,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 				},
 			},
 		},
-	}) {
+	}) { // added whsub for robustness in automatic parser output
 		return "acl"
 	}
 	// oa zinnen tussen haakjes
@@ -6075,6 +6076,33 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 			},
 		}) {
 			return "advmod" // hoe vaak -- AP, daar waar, waar en wanneer, voor als rhd
+		}
+		if test(q /* $head[@ud:pos="ADJ"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: head,
+					},
+					arg2: &dSort{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"ADJ"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // added GB 9/3/21
+			return "amod" // zeker_i vier a i vijf miljard
 		}
 		panic("No label index mod")
 	}

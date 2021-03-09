@@ -52,7 +52,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 				if TEST(q, `$node/../../@cat="np"`) {
 					return "acl"
 				}
-				if TEST(q, `$node/../../@cat="top"`) { // met als gevolg een neiging tot...
+				if TEST(q, `$node/../../@cat=("top","du")`) { // met als gevolg een neiging tot...  added du GB 9/3/21
 					return "root"
 				}
 				return "advcl"
@@ -331,13 +331,14 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "root" // only one non-punct/sym/foreign element in the string
 		}
 		if node.Cat == "mwu" {
-			if node.Begin == node.parent.Begin { // && node.End == node.parent.End
-				return "root"
-			}
 			if TEST(q, `$node/node[@ud:pos=("PUNCT","SYM")]`) { // fix for mwu punctuation in Alpino output
 				return "punct"
 			}
-			panic("No label --")
+			if node.Begin == node.parent.Begin { // && node.End == node.parent.End
+				return "root"
+			}
+			return "parataxis"   // added to deal with time out parse 9/3/21 GB
+			// panic("No label --")
 		}
 		if TEST(q, `$node[not(@ud:pos)]/../@rel="top"`) {
 			return "root"
@@ -345,7 +346,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node[@ud:pos="PROPN" and not(../node[@cat]) ]`) {
 			return "root" // Arthur .
 		}
-		if TEST(q, `$node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","NOUN","PROPN","VERB","INTJ")]`) {
+		if TEST(q, `$node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","VERB","INTJ")]`) {
 			return "parataxis"
 		}
 		panic("No label --")
@@ -514,7 +515,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	if node.Cat == "detp" {
 		return "det" // [detp niet veel] meer error?
 	}
-	if node.Cat == "rel" || node.Cat == "whrel" || node.Cat == "ssub" {
+	if node.Cat == "rel" || node.Cat == "whrel" || node.Cat == "ssub" {  
 		return "acl:relcl"
 	}
 	// v2 added relcl -- whrel= met name waar ...
@@ -522,7 +523,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 		return "nmod"
 	}
 	// zijn loopbaan [CP als schrijver]
-	if TEST(q, `$node[@cat=("cp","sv1","smain","ppres","ppart","inf","ti","oti","du","whq") or @ud:pos="SCONJ"]`) {
+	if TEST(q, `$node[@cat=("cp","sv1","smain","ppres","ppart","inf","ti","oti","du","whq", "whsub") or @ud:pos="SCONJ"]`) {  // added whsub for robustness in automatic parser output
 		return "acl"
 	}
 	// oa zinnen tussen haakjes
@@ -650,8 +651,11 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 		if TEST(q, `$head[@cat=("pp","np") or @ud:pos=("NOUN","PRON")]`) {
 			return "nmod"
 		}
-		if TEST(q, `$head[@ud:pos=("ADV","ADP") or @cat= ("advp","ap","mwu","conj")]`) {
+		if TEST(q, `$head[@ud:pos=("ADV","ADP") or @cat= ("advp","ap","mwu","conj")]`) {  
 			return "advmod" // hoe vaak -- AP, daar waar, waar en wanneer, voor als rhd
+		}
+		if TEST(q, `$head[@ud:pos="ADJ"]`) {  // added GB 9/3/21
+			return "amod" // zeker_i vier a i vijf miljard 
 		}
 		panic("No label index mod")
 	}

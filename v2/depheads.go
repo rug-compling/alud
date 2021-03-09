@@ -1610,6 +1610,85 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 					},
 				}), q)
 			}
+			if node.Begin != node.parent.Begin { // make consistent with deplabel condition GB 9/3/21
+				if node == nLeft(find(q /* $node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")] */, &xPath{
+					arg1: &dSort{
+						arg1: &dCollect{
+							ARG: collect__child__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dVariable{
+									VAR: node,
+								},
+							},
+							arg2: &dPredicate{
+								arg1: &dOr{
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dEqual{
+										ARG: equal__is,
+										arg1: &dCollect{
+											ARG:  collect__attributes__ud_3apos,
+											arg1: &dNode{},
+										},
+										arg2: &dElem{
+											DATA: []interface{}{"CONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
+											arg1: &dCollect{
+												ARG:  collect__attributes__ud_3apos,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				})) {
+					return externalHeadPosition(node.axParent, q)
+				}
+				return internalHeadPosition(find(q /* $node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")][1] */, &xPath{
+					arg1: &dSort{
+						arg1: &dCollect{
+							ARG: collect__child__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dVariable{
+									VAR: node,
+								},
+							},
+							arg2: &dPredicate{
+								arg1: &dPredicate{
+									arg1: &dOr{
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+										arg2: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__ud_3apos,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"CONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+								arg2: &dFunction{
+									ARG: function__first__0__args,
+								},
+							},
+						},
+					},
+				}), q)
+			}
 			return externalHeadPosition(node.axParent, q)
 		}
 		return externalHeadPosition(node.axParent, q)

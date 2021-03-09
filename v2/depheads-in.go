@@ -143,6 +143,12 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			if TEST(q, `$node/../node[@cat and not(@cat="mwu")]`) { // fix for multiword punctuation in Alpino output
 				return internalHeadPosition(FIND(q, `$node/../node[@cat and not(@cat="mwu")][1]`), q)
 			}
+			if node.Begin != node.parent.Begin {    // make consistent with deplabel condition GB 9/3/21
+				if node == nLeft(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")]`)) {
+						return externalHeadPosition(node.axParent, q)
+					}
+				return internalHeadPosition(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")][1]`), q)
+			}
 			return externalHeadPosition(node.axParent, q)
 		}
 		return externalHeadPosition(node.axParent, q)
