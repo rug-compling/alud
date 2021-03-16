@@ -158,18 +158,20 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		if n := FIND(q, `$node/../node[@rel="--" and @cat=("smain","whq")]`); len(n) > 0 { // fixing problematic case in dpc
 			return internalHeadPositionWithGapping(n, q) // why does internalHeadPositionWithGapping not work here?
 		}
-		if TEST(q, `$node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
+
+		if TEST(q, `$node[@ud:pos = ("PUNCT","SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON")
 	                   and ../node[@rel="--" and
-	                               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
+	                               not(@ud:pos=("PUNCT","SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON")) ]
 	                  ]`) {
 			return internalHeadPositionWithGapping(
-				FIND(q, `($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON"))])[1]`),
+				FIND(q, `($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON"))])[1]`),
 				q)
 		}
+
 		if n := FIND(q, `$node/../node[@cat][1]`); len(n) > 0 {
 			return internalHeadPosition(n, q)
 		}
-		if TEST(q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) {
+		if TEST(q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) {  // moved this case up, seems safer for PUNCT  GB 16/3/21
 			if n := FIND(q, `$node/../node[not(@ud:pos="PUNCT")][1]`); len(n) > 0 {
 				return internalHeadPosition(n, q)
 			}
@@ -178,6 +180,15 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			}
 			return 1000 // ie end of first punct token
 		}
+		if TEST(q, `$node[@ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`) {  // removed PUNCT here as we never want PUNCT as root or PUNCT having deps GB 16/3/21
+			if node == nLeft(FIND(q, `$node/../node[@rel="--" and @ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`)) {
+				return externalHeadPosition(node.axParent, q)
+			}
+			return internalHeadPositionWithGapping(
+				FIND(q, `($node/../node[@rel="--" and @ud:pos=("SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")])[1]`),
+				q)
+		}
+		
 		if node.parent.Begin >= 0 {
 			return externalHeadPosition(node.axParent, q)
 		}

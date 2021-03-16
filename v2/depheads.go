@@ -1742,9 +1742,10 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		}); len(n) > 0 { // fixing problematic case in dpc
 			return internalHeadPositionWithGapping(n, q) // why does internalHeadPositionWithGapping not work here?
 		}
-		if test(q, /* $node[@ud:pos = ("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")
+
+		if test(q, /* $node[@ud:pos = ("PUNCT","SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON")
 			   and ../node[@rel="--" and
-			               not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ]
+			               not(@ud:pos=("PUNCT","SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON")) ]
 			  ] */&xPath{
 				arg1: &dSort{
 					arg1: &dFilter{
@@ -1760,7 +1761,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 										arg1: &dNode{},
 									},
 									arg2: &dElem{
-										DATA: []interface{}{"PUNCT", "SYM", "X", "CONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
+										DATA: []interface{}{"PUNCT", "SYM", "X", "NOUN", "PROPN", "SCONJ", "CCONJ", "NUM", "ADP", "ADV", "DET", "PRON"},
 										arg1: &dCollect{
 											ARG:  collect__attributes__ud_3apos,
 											arg1: &dNode{},
@@ -1800,7 +1801,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 																arg1: &dNode{},
 															},
 															arg2: &dElem{
-																DATA: []interface{}{"PUNCT", "SYM", "X", "CONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
+																DATA: []interface{}{"PUNCT", "SYM", "X", "NOUN", "PROPN", "SCONJ", "CCONJ", "NUM", "ADP", "ADV", "DET", "PRON"},
 																arg1: &dCollect{
 																	ARG:  collect__attributes__ud_3apos,
 																	arg1: &dNode{},
@@ -1819,7 +1820,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				},
 			}) {
 			return internalHeadPositionWithGapping(
-				find(q /* ($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON"))])[1] */, &xPath{
+				find(q /* ($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON"))])[1] */, &xPath{
 					arg1: &dSort{
 						arg1: &dFilter{
 							arg1: &dSort{
@@ -1858,7 +1859,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 																arg1: &dNode{},
 															},
 															arg2: &dElem{
-																DATA: []interface{}{"PUNCT", "SYM", "X", "CONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
+																DATA: []interface{}{"PUNCT", "SYM", "X", "SCONJ", "CCONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
 																arg1: &dCollect{
 																	ARG:  collect__attributes__ud_3apos,
 																	arg1: &dNode{},
@@ -1882,6 +1883,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				}),
 				q)
 		}
+
 		if n := find(q /* $node/../node[@cat][1] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -1964,7 +1966,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 					},
 				},
 			},
-		}) {
+		}) { // moved this case up, seems safer for PUNCT  GB 16/3/21
 			if n := find(q /* $node/../node[not(@ud:pos="PUNCT")][1] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
@@ -2055,6 +2057,136 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			}
 			return 1000 // ie end of first punct token
 		}
+		if test(q /* $node[@ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"SYM", "X", "NOUN", "PROPN", "SCONJ", "CCONJ", "NUM", "ADP", "ADV", "DET", "PRON"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // removed PUNCT here as we never want PUNCT as root or PUNCT having deps GB 16/3/21
+			if node == nLeft(find(q /* $node/../node[@rel="--" and @ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dVariable{
+								VAR: node,
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"--"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"SYM", "X", "NOUN", "PROPN", "SCONJ", "CCONJ", "NUM", "ADP", "ADV", "DET", "PRON"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__ud_3apos,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			})) {
+				return externalHeadPosition(node.axParent, q)
+			}
+			return internalHeadPositionWithGapping(
+				find(q /* ($node/../node[@rel="--" and @ud:pos=("SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")])[1] */, &xPath{
+					arg1: &dSort{
+						arg1: &dFilter{
+							arg1: &dSort{
+								arg1: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG: collect__parent__type__node,
+										arg1: &dVariable{
+											VAR: node,
+										},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"--"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+											arg2: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"SYM", "X", "SCONJ", "CCONJ", "NOUN", "PROPN", "NUM", "ADP", "ADV", "DET", "PRON"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dSort{
+								arg1: &dFunction{
+									ARG: function__first__0__args,
+								},
+							},
+						},
+					},
+				}),
+				q)
+		}
+
 		if node.parent.Begin >= 0 {
 			return externalHeadPosition(node.axParent, q)
 		}

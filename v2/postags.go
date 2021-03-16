@@ -131,5 +131,8 @@ func universalPosTags(node *nodeType, q *context) string {
 		}
 		return "AUX" // v2: cop and aux:pass --> AUX  (already in place in v1?)
 	}
+	if pt == "na" { // only in automatic parser output if something went wrong, added for robustness
+		return "X"
+	}
 	panic(fmt.Sprintf("No pos found for %s:%s", number(node.End), node.Word))
 }
