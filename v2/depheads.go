@@ -3375,6 +3375,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "mod" || node.Rel == "app" {
+
 		if test(q /* $node/../node[( @rel=("su","obj1","predc","body","pc") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -4526,7 +4527,7 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 
 	/*
 		distinguish empty nodes due to gapping/RNR from nonlocal dependencies
-		use 'empty head' as string to signal precence of gapping/RNR
+		use 'empty head' as string to signal presence of gapping/RNR
 	*/
 	if test(q /* $node[@index and not(@word or @cat)] */, &xPath{
 		arg1: &dSort{

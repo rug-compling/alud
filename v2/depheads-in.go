@@ -298,15 +298,16 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "mod" || node.Rel == "app" {
+
 		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) {  // added pc 16/2/21
                // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
-		
+			
 		if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADP"]`) {   // vlak voor [index obj1] en na de winter  GB 4/3/21
 			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
 		}
-
+		
 		if n := FIND(q, `$node/../node[@rel=("mod","app") and (@cat or @pt)]`); len(n) > 0 { // whatever comes first 4/2/21: added pc GB
 			if node == nLeft(n) { // gapping with multiple mods
 				return externalHeadPosition(node.axParent, q)
@@ -456,7 +457,7 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 
 	/*
 		distinguish empty nodes due to gapping/RNR from nonlocal dependencies
-		use 'empty head' as string to signal precence of gapping/RNR
+		use 'empty head' as string to signal presence of gapping/RNR
 	*/
 	if TEST(q, `$node[@index and not(@word or @cat)]`) {
 		if TEST(q, `$node/ancestor::node[@rel="top"]//node[@rel=("whd","rhd") and @index = $node/@index and (@word or @cat)]`) {

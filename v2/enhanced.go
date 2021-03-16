@@ -1792,7 +1792,7 @@ func distributeDependents(node *nodeType, q *context) []depT {
 	result := []depT{}
 	for _, conj_head := range conj_heads {
 		//NP
-		result = append(result, depT{head: internalHeadPosition([]interface{}{conj_head.(*nodeType)}, q), dep: EudRelation})
+		result = append(result, depT{head: internalHeadPositionWithGapping([]interface{}{conj_head.(*nodeType)}, q), dep: EudRelation})
 
 	}
 	return result

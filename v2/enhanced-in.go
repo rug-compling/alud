@@ -354,11 +354,12 @@ func distributeDependents(node *nodeType, q *context) []depT {
 	result := []depT{}
 	for _, conj_head := range conj_heads {
 		//NP
-		result = append(result, depT{head: internalHeadPosition([]interface{}{conj_head.(*nodeType)}, q), dep: EudRelation})
+		result = append(result, depT{head: internalHeadPositionWithGapping([]interface{}{conj_head.(*nodeType)}, q), dep: EudRelation})  // added WithGapping to fix evalud/h_suite938, but does this work ?? 
 
 	}
 	return result
 }
+// note that result is a weird case [er/1 vlak/2 voor en 1  2 na] where er and vlak are not copied, but vlak does become mod of na in EUD now. Certainly not correct either. 
 
 // should work in coordinations like te laten reizen en te laten beleven,
 // and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
