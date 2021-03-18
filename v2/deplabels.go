@@ -424,7 +424,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 						},
 					},
 				}) { // met als gevolg een neiging tot...  added du GB 9/3/21
-					return "root"
+					return dependencyLabel(node.parent, q) //  replaced "root" with this to account for dp-dp cases, where met-PP is second element (hoe doe je dat met sokken aan) GB 18/03/21
 				}
 				return "advcl"
 			}

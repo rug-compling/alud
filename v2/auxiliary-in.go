@@ -36,8 +36,7 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 		return "cop", nil
 	}
 
-	if TEST(q, `$node[@lemma=("zijn","worden") and
-	                  ( @sc="passive"  or
+	if TEST(q, `$node[@lemma=("zijn","worden") and 
 	                  	 ( ../node[@rel="vc"] and
 	                        ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj1"]/@index or
 	                          ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="cnj"]/node[@rel="obj1"]/@index or
@@ -46,7 +45,7 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 	                         or not(../node[@rel="su"])
 	                         )
 	                     )
-	                  ) ]`) {
+	                   ]`) { // removed reference to @sc=passive as this is less reliable in automatic parses GB 18/03/21
 		return "aux:pass", nil
 	}
 
@@ -60,8 +59,8 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 
 	// alpino has no principled distinction between AUX and VERB, should be TAME verbs semantically, we follow ENGLISH
 	// blijken and hoeven removed from list
-	if TEST(q, `$node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  :)
-	                 ( starts-with(@sc,'aux') or
+	if TEST(q, `$node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses Gb 18/03/21 :)
+	                 
 	                   ( ../node[@rel="vc"  and
 	                              ( @cat=("ppart","inf","ti") or
 	                                ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
@@ -70,7 +69,7 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 	                            ]   and
 	                     @lemma=("hebben","kunnen","moeten","mogen","zijn","zullen")
 	                   )
-	                 )
+	                 
 	               ]`) {
 		return "aux", nil
 	}
