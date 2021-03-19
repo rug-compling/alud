@@ -3542,7 +3542,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			}), q)
 		}
 
-		if n := find(q /* $node/../node[@rel=("mod","app") and (@cat or @pt)] */, &xPath{
+		if n := find(q /* $node/../node[@rel=("mod","app") and descendant-or-self::node/@pt] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -3568,16 +3568,11 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 									},
 								},
 							},
-							arg2: &dSort{
-								arg1: &dOr{
-									arg1: &dCollect{
-										ARG:  collect__attributes__cat,
-										arg1: &dNode{},
-									},
-									arg2: &dCollect{
-										ARG:  collect__attributes__pt,
-										arg1: &dNode{},
-									},
+							arg2: &dCollect{
+								ARG: collect__attributes__pt,
+								arg1: &dCollect{
+									ARG:  collect__descendant__or__self__node,
+									arg1: &dNode{},
 								},
 							},
 						},
@@ -5582,7 +5577,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
-	if n := find(q /* $node/node[@rel=("mod","app","me") and (@pt or @cat)] */, &xPath{
+	if n := find(q /* $node/node[@rel=("mod","app","me") and descendant-or-self::node/@pt] */, &xPath{
 		arg1: &dSort{
 			arg1: &dCollect{
 				ARG: collect__child__node,
@@ -5605,16 +5600,11 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 								},
 							},
 						},
-						arg2: &dSort{
-							arg1: &dOr{
-								arg1: &dCollect{
-									ARG:  collect__attributes__pt,
-									arg1: &dNode{},
-								},
-								arg2: &dCollect{
-									ARG:  collect__attributes__cat,
-									arg1: &dNode{},
-								},
+						arg2: &dCollect{
+							ARG: collect__attributes__pt,
+							arg1: &dCollect{
+								ARG:  collect__descendant__or__self__node,
+								arg1: &dNode{},
 							},
 						},
 					},

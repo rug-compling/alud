@@ -308,7 +308,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
 		}
 		
-		if n := FIND(q, `$node/../node[@rel=("mod","app") and (@cat or @pt)]`); len(n) > 0 { // whatever comes first 4/2/21: added pc GB
+		if n := FIND(q, `$node/../node[@rel=("mod","app") and descendant-or-self::node/@pt]`); len(n) > 0 { // whatever comes first 4/2/21: added pc GB
 			if node == nLeft(n) { // gapping with multiple mods
 				return externalHeadPosition(node.axParent, q)
 			}
@@ -562,7 +562,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
-	if n := FIND(q, `$node/node[@rel=("mod","app","me") and (@pt or @cat)]`); len(n) > 0 { // pick leftmost
+	if n := FIND(q, `$node/node[@rel=("mod","app","me") and descendant-or-self::node/@pt]`); len(n) > 0 { // pick leftmost
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
