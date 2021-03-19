@@ -705,7 +705,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			}) {
 				return externalHeadPosition(node.axParent, q) // met als presentator Bruno W , met als gevolg [vc dat ...]
 			}
-			return internalHeadPosition(find(q /* $node/../node[@rel="hd"] */, &xPath{
+			return internalHeadPosition(find(q /* $node/../node[@rel="hd"][1] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
 						ARG: collect__child__node,
@@ -716,24 +716,29 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 							},
 						},
 						arg2: &dPredicate{
-							arg1: &dEqual{
-								ARG: equal__is,
-								arg1: &dCollect{
-									ARG:  collect__attributes__rel,
-									arg1: &dNode{},
-								},
-								arg2: &dElem{
-									DATA: []interface{}{"hd"},
+							arg1: &dPredicate{
+								arg1: &dEqual{
+									ARG: equal__is,
 									arg1: &dCollect{
 										ARG:  collect__attributes__rel,
 										arg1: &dNode{},
 									},
+									arg2: &dElem{
+										DATA: []interface{}{"hd"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
 								},
+							},
+							arg2: &dFunction{
+								ARG: function__first__0__args,
 							},
 						},
 					},
 				},
-			}), q)
+			}), q) //make robust for double hd in CGN GB 19/03/21
 		}
 		if test(q /* $node/parent::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ] */, &xPath{
 			arg1: &dSort{
@@ -4144,7 +4149,7 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 		}) {
 			return internalHeadPosition(predc, q)
 		}
-		hd := find(q /* $node/node[@rel="hd"] */, &xPath{
+		hd := find(q /* $node/node[@rel="hd"][1] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -4152,24 +4157,29 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 						VAR: node,
 					},
 					arg2: &dPredicate{
-						arg1: &dEqual{
-							ARG: equal__is,
-							arg1: &dCollect{
-								ARG:  collect__attributes__rel,
-								arg1: &dNode{},
-							},
-							arg2: &dElem{
-								DATA: []interface{}{"hd"},
+						arg1: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
 								arg1: &dCollect{
 									ARG:  collect__attributes__rel,
 									arg1: &dNode{},
 								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
 							},
+						},
+						arg2: &dFunction{
+							ARG: function__first__0__args,
 						},
 					},
 				},
 			},
-		})
+		}) // make robust in CGN cases GB 19/03/21
 		if len(hd) == 0 { // cases where copula is missing by accident (ungrammatical, not gapping)
 			return internalHeadPosition(predc, q)
 		}
@@ -4838,7 +4848,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 			},
 		},
 	}) {
-		return internalHeadPositionWithGapping(find(q /* $node/node[@rel="hd"] */, &xPath{
+		return internalHeadPositionWithGapping(find(q /* $node/node[@rel="hd"][1] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -4846,24 +4856,29 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 						VAR: node,
 					},
 					arg2: &dPredicate{
-						arg1: &dEqual{
-							ARG: equal__is,
-							arg1: &dCollect{
-								ARG:  collect__attributes__rel,
-								arg1: &dNode{},
-							},
-							arg2: &dElem{
-								DATA: []interface{}{"hd"},
+						arg1: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
 								arg1: &dCollect{
 									ARG:  collect__attributes__rel,
 									arg1: &dNode{},
 								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
 							},
+						},
+						arg2: &dFunction{
+							ARG: function__first__0__args,
 						},
 					},
 				},
 			},
-		}), q) // aux, prepositions
+		}), q) // aux, prepositions   added [1] to make robust for CGN cases GB 19/03/21
 	}
 
 	if test(q /* $node/node[@rel="hd" and @ud:pos="AUX"] */, &xPath{

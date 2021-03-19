@@ -89,7 +89,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADP"]`) {
 				return externalHeadPosition(node.axParent, q) // met als presentator Bruno W , met als gevolg [vc dat ...]
 			}
-			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
+			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"][1]`), q)   //make robust for double hd in CGN GB 19/03/21
 		}
 		if TEST(q, `$node/parent::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ]`) {
 			//reduced relatives , make sure head is not empty (ellipsis)
@@ -413,7 +413,7 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
 			return internalHeadPosition(predc, q)
 		}
-		hd := FIND(q, `$node/node[@rel="hd"]`)
+		hd := FIND(q, `$node/node[@rel="hd"][1]`)     // make robust in CGN cases GB 19/03/21
 		if len(hd) == 0 { // cases where copula is missing by accident (ungrammatical, not gapping)
 			return internalHeadPosition(predc, q)
 		}
@@ -517,7 +517,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 	depthCheck(q)
 
 	if TEST(q, `$node[not(@cat="pp")]/node[@rel="hd" and (@pt or @cat) and not(@ud:pos=("AUX","ADP"))]`) {
-		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q) // aux, prepositions
+		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"][1]`), q) // aux, prepositions   added [1] to make robust for CGN cases GB 19/03/21
 	}
 
 	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
