@@ -47,13 +47,16 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "expl"
 	}
 	if node.Rel == "predc" {
-		if TEST(q, `$node/../node[@rel=("obj1","se") and (@pt or @cat)] or $node/../node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX")]`) {
+		if TEST(q, `$node/../node[@rel=("obj1","se","vc") and (@pt or @cat)] or $node/../node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX")]`) {
 			if TEST(q, `$node/../@cat="pp"`) { // check for absolutive (met) constructions, https://github.com/UniversalDependencies/docs/issues/408
 				if TEST(q, `$node/../../@cat="np"`) {
 					return "acl"
 				}
-				if TEST(q, `$node/../../@cat=("top","du")`) { // met als gevolg een neiging tot...  added du GB 9/3/21
+				if TEST(q, `$node/../../@cat=("top","du")`) { // met als gevolg een neiging tot...  added du GB 9/3/21 
 					return dependencyLabel(node.parent,q)  //  replaced "root" with this to account for dp-dp cases, where met-PP is second element (hoe doe je dat met sokken aan) GB 18/03/21
+				}
+				if TEST(q, `$node[../../../@cat=("top","du") and ../@rel="body"]`) { // [cmp alleen dan] [body met een langer 75 mm kanon ], in automatic output GB 22/03/21
+					return dependencyLabel(node.parent,q)  //  
 				}
 				return "advcl"
 			}
@@ -250,6 +253,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node[@rel="mod" and ../@cat=("detp","advp")]`) {
 		return "amod"
 	}
+
+	if TEST(q, `$node[@rel="mod" and ../@cat="conj"]`) {  // occurs in automatic parse output, should be more finegrained if it happens more often GB 22/03/21
+		return "nmod"
+	}
+
 	if TEST(q, `$node[@rel="mod" and ../@cat=("cp", "whrel", "whq", "whsub")]`) {
 		// [cp net  [cmp als] [body de Belgische regering]], net wat het land nodig heeft
 		if TEST(q, `$node/../node[@rel="body"]/node[@rel="hd" and @ud:pos="VERB"]`) {
@@ -297,6 +305,15 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return dependencyLabel(node.parent, q)
 	}
 	if node.Rel == "--" {
+		// debugging, removed last escape for punct/num/sym from this position
+		// commented out, as seems to be covered by clause below and gives errors in some cases 
+		// restricted to PUNCT now...26/03/21
+		if TEST(q, `$node[@cat="mwu" and node/@ud:pos=("PUNCT","SYM")]`) {			 // fix for mwu punctuation in Alpino output
+			if TEST(q, `$node/../node[not(@ud:pos="PUNCT" or (@cat="mwu" and node/@ud:pos=("PUNCT","SYM")))]`) {
+				return "punct"
+			}
+			return "root"
+		}
 		if node.udPos == "PUNCT" {
 			if TEST(q, `$node[not(../node[not(@ud:pos="PUNCT")]) and @begin = ../@begin]`) {
 				return "root" // just punctuation
@@ -307,16 +324,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 			if TEST(q, `$node/../node[@cat]`) {
 				return "parataxis" // 1. Jantje is ziek  1-->appos??
 			}
-			return "root"
+			// return "root"
 		}
 		if node.Lemma == "\\" {
 			return "punct" // hack for tagging errors in lassy small 250
 		}
-		/*
-			if node.Spectype == "deeleigen" {
-				return "punct" // hack for tagging errors in lassy small 250
-			}
-		*/
 		if TEST(q, `$node[@ud:pos="NUM" and ../node[@cat] ]`) {
 			return "parataxis" // dangling number 1.
 		}
@@ -324,35 +336,39 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "cc"
 		}
 		// sentence initial or final 'en'
-		if TEST(q, `$node[@ud:pos=("NOUN","PROPN","VERB") and ../node[@cat=("du","smain")]]`) {
-			return "parataxis" // dangling words
+		if TEST(q, `$node[@ud:pos=("NOUN","PROPN","DET","ADP","ADV") and ../node[@cat=("du","smain","conj")]]`) {
+			return "parataxis" // dangling words, generalize to all POS ? GB 26/03/21
 		}
+		
+		if TEST(q, `$node[@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM")]`) { // make exception for du nodes as well GB 22/03/21
+			if node == nLeft(FIND(q, `$node/../node[@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM") and not(../node[@ud:pos=("ADJ","VERB") or @cat="du"]) ]`)) {
+				return "root"
+			}
+			return "parataxis"
+		}
+		if TEST(q, `$node[@ud:pos=("ADJ","VERB")]`) {
+			if node == nLeft(FIND(q, `$node/../node[@ud:pos=("ADJ","VERB")]`)) {
+				return "root"
+			}
+			return "parataxis"
+		}
+		if TEST(q, `$node[not(@ud:pos)]/../@rel="top"`) {
+			if TEST(q, `$node/../node[@ud:pos=("VERB","ADJ")]`) {
+				return "parataxis"
+			}
+			return "root"
+		}
+
+		//debugging, moved this to last escape option fixing [MISSING PARA] error messages ...
+
 		if TEST(q, `count($node/../node[not(@ud:pos=("PUNCT","SYM","X"))]) < 2`) {
 			return "root" // only one non-punct/sym/foreign element in the string
 		}
-		if node.Cat == "mwu" {
-			if TEST(q, `$node/node[@ud:pos=("PUNCT","SYM")]`) { // fix for mwu punctuation in Alpino output
-				return "punct"
-			}
-			if node.Begin == node.parent.Begin { // && node.End == node.parent.End
-				return "root"
-			}
-			return "parataxis"   // added to deal with time out parse 9/3/21 GB
-			// panic("No label --")
-		}
-		if TEST(q, `$node[not(@ud:pos)]/../@rel="top"`) {
-			return "root"
-		}
-		if TEST(q, `$node[@ud:pos="PROPN" and not(../node[@cat]) ]`) {
-			return "root" // Arthur .
-		}
-		if TEST(q, `$node[@ud:pos=("ADP","ADV","ADJ","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","VERB","INTJ","NUM")]`) {
-			return "parataxis"
-		}
 		panic("No label --")
 	}
+
 	if node.Rel == "hd" {
-		if node.udPos == "ADP" {
+		if node.udPos == "ADP" || node.parent.Cat == "pp" {  // added pp check for PPs headed by a verb (gezien de structuur....) GB 23/03/21
 			if TEST(q, `$node/../node[@rel="predc"]`) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
@@ -575,7 +591,7 @@ func labelVmod(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat="ap"]/node[@ud:pos="NOUN" or @cat="np"]`) {   // added NP for 'het hele jaar door' h_suite/53 GB 26/02/21
 		return "obl"
 	}
-	if TEST(q, `$node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel")]`) {
+	if TEST(q, `$node[@cat=("cp","sv1","smain","ssub","ppres","ppart","ti","oti","inf","du","whq","whrel","rel","whsub")]`) {  
 		return "advcl"
 	}
 	if TEST(q, `$node[@ud:pos= ("ADJ","ADV","SCONJ","INTJ")
@@ -629,6 +645,9 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 		}
 		if TEST(q, `$head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")]`) {
 			return "advmod" // waar precies zit je ..
+		}
+		if TEST(q, `$head[@ud:pos="PRON"]`) {  // het voorstel, [rhd_i dat] de commissie [ld_i] introk (from automatic parses)
+			return "obl"
 		}
 		panic("No label index PC")
 	}

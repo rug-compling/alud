@@ -38,6 +38,7 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 
 	if TEST(q, `$node[@lemma=("zijn","worden") and 
 	                  	 ( ../node[@rel="vc"] and
+	                  	 	not(../node[@rel="svp"]) and  (: is van plan om te ... : not a passive :)
 	                        ( ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="obj1"]/@index or
 	                          ../node[@rel="su"]/@index = ../node[@rel="vc"]/node[@rel="cnj"]/node[@rel="obj1"]/@index or
 	                          ../node[@rel="vc" and not(@pt or @cat)]/@index =
@@ -59,12 +60,13 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 
 	// alpino has no principled distinction between AUX and VERB, should be TAME verbs semantically, we follow ENGLISH
 	// blijken and hoeven removed from list
-	if TEST(q, `$node[not(../node[@rel="predc"]) and  (: hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses Gb 18/03/21 :)
-	                 
+	// hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses GB 18/03/21 
+	// dangling aux in gapped coordination 
+	if TEST(q, `$node[not(../node[@rel="predc"]) and
 	                   ( ../node[@rel="vc"  and
 	                              ( @cat=("ppart","inf","ti") or
 	                                ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
-	                                ( @index and not(@pt or @cat))  (: dangling aux in gapped coordination :)
+	                                ( @index and not(@pt or @cat))  
 	                              )
 	                            ]   and
 	                     @lemma=("hebben","kunnen","moeten","mogen","zijn","zullen")

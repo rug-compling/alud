@@ -151,26 +151,38 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			}
 			return externalHeadPosition(node.axParent, q)
 		}
+		if TEST(q, `$node/../node[@ud:pos=("VERB","ADJ")]`) {
+			return internalHeadPosition(FIND(q,`$node/../node[@ud:pos=("VERB","ADJ")][1]`), q)
+		}
 		return externalHeadPosition(node.axParent, q)
 	}
 
 	if node.Rel == "--" && node.udPos != "" {
-		if n := FIND(q, `$node/../node[@rel="--" and @cat=("smain","whq")]`); len(n) > 0 { // fixing problematic case in dpc
+		if n := FIND(q, `$node[not(@ud:pos=("VERB","ADJ"))]/../node[@rel="--" and @cat=("smain","whq","du")][1]`); len(n) > 0 { // fixing problematic case in dpc
 			return internalHeadPositionWithGapping(n, q) // why does internalHeadPositionWithGapping not work here?
 		}
 
 		if TEST(q, `$node[@ud:pos = ("PUNCT","SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON")
 	                   and ../node[@rel="--" and
-	                               not(@ud:pos=("PUNCT","SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON")) ]
+	                               not(@cat="mwu" or @ud:pos=("PUNCT","SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON")) ]
 	                  ]`) {
 			return internalHeadPositionWithGapping(
-				FIND(q, `($node/../node[@rel="--" and not(@ud:pos=("PUNCT","SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON"))])[1]`),
+				FIND(q, `($node/../node[@rel="--" and not(@cat="mwu" or @ud:pos=("PUNCT","SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON"))])[1]`),
 				q)
 		}
-
-		if n := FIND(q, `$node/../node[@cat][1]`); len(n) > 0 {
+		// moved this clause to take precedence over next (cat) case for consistency with deplabel GB 22/03/31
+		if TEST(q, `$node[@ud:pos = ("ADJ","VERB") ]`) {  // deal with time out parses GB 19/03/21
+			if node == nLeft(FIND(q, `$node/../node[@rel="--" and @ud:pos = ("ADJ","VERB") ]`)) {
+				return externalHeadPosition(node.axParent, q)
+			}
+			return internalHeadPositionWithGapping(
+				FIND(q, `($node/../node[@rel="--" and @ud:pos=("ADJ","VERB")])[1]`),
+				q)
+		}
+		if n := FIND(q, `$node/../node[@cat and not(@cat="mwu")][1]`); len(n) > 0 {
 			return internalHeadPosition(n, q)
 		}
+
 		if TEST(q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) {  // moved this case up, seems safer for PUNCT  GB 16/3/21
 			if n := FIND(q, `$node/../node[not(@ud:pos="PUNCT")][1]`); len(n) > 0 {
 				return internalHeadPosition(n, q)
@@ -180,6 +192,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			}
 			return 1000 // ie end of first punct token
 		}
+
 		if TEST(q, `$node[@ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`) {  // removed PUNCT here as we never want PUNCT as root or PUNCT having deps GB 16/3/21
 			if node == nLeft(FIND(q, `$node/../node[@rel="--" and @ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`)) {
 				return externalHeadPosition(node.axParent, q)
@@ -203,21 +216,26 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
     // ten ondergaan is a mwp head in extra/972, added cat to first disjunct GB 3/3/21
-	if node.Rel == "vc" { // only consider vc as head if it has a head itself or is a word (rare cases where subj-index is missing), otherwise attach orphans to subj GB 16/02/21
+	if node.Rel == "vc" { // only consider vc as head if it has a head itself or is a word (rare cases where subj-index is missing, also in conjuctions!), otherwise attach orphans to subj GB 16/02/21
 		if TEST(q, `$node[node[@rel="hd" and (@pt or @cat)] or 
 			              node[@rel=("body","cnj")]/node[@rel="hd" and @pt] or
 			              node[@rel="cnj"]/node[@rel="body"]/node[@rel="hd" and @pt] or 
+			              node[@rel=("body","cnj") and @pt] or
 			              @pt
 			             ]
 			        and $node/../node[@rel="hd" and   
-	                                   ( @ud:pos="AUX" or
+	                                   ( @ud:pos="AUX" or  
 	                                      $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index
+	                                      
 	                                   )
 	                                 ]
 	                   and not($node/../node[@rel="predc"])`) {
 			return externalHeadPosition(node.axParent, q)
 		}
-		if TEST(q, `$node/../@cat="pp"`) { // eraan dat
+		if TEST(q, `$node/../@cat="pp"`) { // eraan dat, added exception for predc GB 22/03/21
+			if TEST(q, `$node/../node[@rel="predc"]`) {
+				internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
+			}
 			return externalHeadPosition(node.axParent, q)
 		}
 		if TEST(q, `$node/../node[@rel=("hd","su","obj1") and (@pt or @cat)]`) {
@@ -299,7 +317,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 
 	if node.Rel == "mod" || node.Rel == "app" {
 
-		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) {  // added pc 16/2/21
+		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc", "cnj") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) {  // added pc 16/2/21, added cnj 22/03/21
                // gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
