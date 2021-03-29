@@ -108,19 +108,19 @@ installed. With `alud-dact` you can process [dact](https://rug-compling.github.i
 Install both:
 
 ```
-go get github.com/rug-compling/alud/cmd/...
+make bin
 ```
 
 ... or install `alud` only:
 
 ```
-go get github.com/rug-compling/alud/cmd/alud
+make alud
 ```
 
 ... or install `alud-dact` only:
 
 ```
-go get github.com/rug-compling/alud/cmd/alud-dact
+make alud-dact
 ```
 
 You will find the programs in one of these directories:
