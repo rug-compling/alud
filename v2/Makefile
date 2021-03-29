@@ -7,12 +7,14 @@ SRC = \
 	enhanced.go \
 	misplacedheads.go
 
-%.go : %-in.go ../compile
+%.go : %-in.go compile
 	rm -f $@ $@.tmp.go
-	../compile $< > $@.tmp.go
+	./compile $< > $@.tmp.go
 	gofmt -w $@.tmp.go || ( chmod 444 $@.tmp.go && false )
 	mv $@.tmp.go $@
 	chmod 444 $@
 
 all: $(SRC)
 
+compile: compile.go
+	go build -tags compile $^

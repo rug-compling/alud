@@ -1,8 +1,5 @@
 
-all: compile v2make
-
-compile: compile.go
-	go build -tags compile $^
+all: v2make
 
 v2make:
 	make -C v2

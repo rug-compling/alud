@@ -1,8 +1,8 @@
-module github.com/rug-compling/alud
+module github.com/rug-compling/alud/v2/cmd/alud-dact
 
 go 1.16
 
-replace github.com/rug-compling/alud/v2 => ./v2
+replace github.com/rug-compling/alud/v2 => ../..
 
 require (
 	github.com/pebbe/dbxml v1.3.1

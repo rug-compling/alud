@@ -3,7 +3,7 @@
 package main
 
 import (
-	"github.com/rug-compling/alud/internal/util"
+	"github.com/rug-compling/alud/v2/internal/util"
 
 	"bytes"
 	"crypto/md5"

@@ -1,9 +1,11 @@
 package main
 
 import (
-	"github.com/rug-compling/alpinods"
-	"github.com/rug-compling/alud/internal/util"
+	"github.com/rug-compling/alud/v2/internal/util"
 	"github.com/rug-compling/alud/v2"
+
+	"github.com/pebbe/dbxml"
+	"github.com/rug-compling/alpinods"
 
 	"bufio"
 	"encoding/xml"
@@ -54,7 +56,9 @@ Usage, examples:
 
     %s [options] file.xml ...
     %s [options] collection.xml ...
+    %s [options] file.dact ...
     find . -name '*.xml' | %s [options]
+    find . -name '*.dact' | %s [options]
 
 Options:
 
@@ -73,7 +77,7 @@ Options:
     -v : print version and exit
     -x : include dummy output if parse fails
 
-`, p, p, p)
+`, p, p, p, p, p)
 }
 
 func main() {
@@ -84,6 +88,8 @@ func main() {
 	if *opt_v {
 		fmt.Println(alud.VersionID())
 		fmt.Println("alpino_ds.dtd version", alpinods.DtdVersion)
+		major, minor, patch := dbxml.Version()
+		fmt.Printf("DbXML %d.%d.%d\n", major, minor, patch)
 		return
 	}
 
@@ -142,6 +148,25 @@ func main() {
 	}
 
 	for _, filename := range filenames {
+		if strings.HasSuffix(filename, ".dact") {
+			multi = true
+			db, err := dbxml.OpenRead(filename)
+			x(err)
+			docs, err := db.All()
+			x(err)
+
+			for docs.Next() {
+				var sentid string
+				if *opt_i != "" {
+					sentid = reID.FindStringSubmatch(docs.Name())[1]
+				}
+				doFile([]byte(docs.Content()), docs.Name(), filename, sentid, options)
+			}
+			x(docs.Error())
+			db.Close()
+			continue
+		}
+
 		b, err := ioutil.ReadFile(filename)
 		x(err)
 
@@ -152,7 +177,7 @@ func main() {
 			if *opt_i != "" {
 				sentid = reID.FindStringSubmatch(filename)[1]
 			}
-			doFile(b, filename, sentid, options)
+			doFile(b, filename, "", sentid, options)
 			continue
 		}
 
@@ -167,28 +192,39 @@ func main() {
 			if *opt_i != "" {
 				sentid = reID.FindStringSubmatch(f.Href)[1]
 			}
-			doFile(b, f.Href, sentid, options)
+			doFile(b, f.Href, "", sentid, options)
 		}
 		x(os.Chdir(dir))
 	}
 }
 
-func doFile(doc []byte, filename, sentid string, options int) {
+func doFile(doc []byte, filename, archname, sentid string, options int) {
 	if *opt_a {
 		result, err := alud.UdAlpino(doc, filename, sentid)
 		if multi {
-			fmt.Printf("<!-- %s -->\n", filename)
+			if archname == "" {
+				fmt.Printf("<!-- %s -->\n", filename)
+			} else {
+				fmt.Printf("<!-- %s : %s -->\n", archname, filename)
+			}
 		}
 		fmt.Println(result)
 		if multi {
 			fmt.Println()
 		}
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "%s\n  error: %v\n", filename, err)
+			if archname == "" {
+				fmt.Fprintf(os.Stderr, "%s\n  error: %v\n", filename, err)
+			} else {
+				fmt.Fprintf(os.Stderr, "%s : %s\n  error: %v\n", archname, filename, err)
+			}
 		}
 		return
 	}
 
+	if archname != "" {
+		fmt.Println("# archive =", archname)
+	}
 	result, err := alud.Ud(doc, filename, sentid, options)
 	if err == nil {
 		fmt.Print(result)
@@ -198,6 +234,7 @@ func doFile(doc []byte, filename, sentid string, options int) {
 			s = s[:i]
 		}
 		m := reSentID.FindSubmatch(doc)
+
 		id1 := ""
 		id2 := ""
 		if len(m) == 2 {
@@ -205,12 +242,17 @@ func doFile(doc []byte, filename, sentid string, options int) {
 			id1 = "# sent_id = " + id + "\n"
 			id2 = "  sentence ID: " + id + "\n"
 		}
+
 		if *opt_s {
 			fmt.Printf("# source = %s\n%s# error = %s\n# auto = %s\n\n", filename, id1, s, alud.VersionID())
 		}
 		if *opt_x {
 			fmt.Println(result)
 		}
-		fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id2, err)
+		if archname == "" {
+			fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id2, err)
+		} else {
+			fmt.Fprintf(os.Stderr, "%s: %s\n%s  error: %v\n", archname, filename, id2, err)
+		}
 	}
 }
