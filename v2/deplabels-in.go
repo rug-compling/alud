@@ -16,6 +16,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
 	}
+	
 	if node.Rel == "app" {
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
 			return "appos"
@@ -91,7 +92,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.Rel == "sup" {
 		return "expl"
 	}
-	if node.Rel == "svp" {
+	if node.Rel == "svp"  {  
 		return "compound:prt" // v2: added prt extension
 	}
 	if aux, err := auxiliary1(node, q); err == nil {
@@ -241,7 +242,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		} // seems like a BUG
 		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 	}
-	if TEST(q, `$node[@rel="mod" and ../@cat="pp"]`) { // [mod hd/ADP obj1/empty]  --> make mod the external head
+	if TEST(q, `$node[@rel="mod" and ../@cat=("pp","part")]`) { // [mod hd/ADP obj1/empty]  --> make mod the external head , added part for automatic parse output GB 31/03/21
 		if TEST(q, `$node/../node[@rel="obj1" and (@pt or @cat)]`) {
 			return "amod"
 		}
@@ -320,7 +321,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			}
 			return "punct"
 		}
-		if node.udPos == "SYM" || node.udPos == "X" {
+		if node.udPos == "X" { // SYM covered below 
 			if TEST(q, `$node/../node[@cat]`) {
 				return "parataxis" // 1. Jantje is ziek  1-->appos??
 			}
@@ -335,13 +336,14 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node[@ud:pos="CCONJ" and ../node[@cat="smain" or @cat="conj"]]`) {
 			return "cc"
 		}
-		// sentence initial or final 'en'
-		if TEST(q, `$node[@ud:pos=("NOUN","PROPN","DET","ADP","ADV") and ../node[@cat=("du","smain","conj")]]`) {
+		// sentence initial or final 'en' etc , merge with statement below?? 
+		if TEST(q, `$node[@ud:pos=("NOUN","PROPN","DET","ADP","ADV","INTJ","PRON","SYM","CCONJ","SCONJ") and ../node[@cat=("du","smain","conj","sv1","np","whq","pp","ppart","inf","advp")]]`) {
 			return "parataxis" // dangling words, generalize to all POS ? GB 26/03/21
 		}
 		
 		if TEST(q, `$node[@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM")]`) { // make exception for du nodes as well GB 22/03/21
-			if node == nLeft(FIND(q, `$node/../node[@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM") and not(../node[@ud:pos=("ADJ","VERB") or @cat="du"]) ]`)) {
+			if node == nLeft(FIND(q, `$node/../node[(@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM")) 
+			                                    and not(../node[@ud:pos=("ADJ","VERB") or @cat="du"]) ]`)) {
 				return "root"
 			}
 			return "parataxis"

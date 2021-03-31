@@ -18,6 +18,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
 	}
+
 	if node.Rel == "app" {
 		if test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &xPath{
 			arg1: &dSort{
@@ -2522,7 +2523,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		} // seems like a BUG
 		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 	}
-	if test(q /* $node[@rel="mod" and ../@cat="pp"] */, &xPath{
+	if test(q /* $node[@rel="mod" and ../@cat=("pp","part")] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -2554,7 +2555,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 								},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"pp"},
+								DATA: []interface{}{"pp", "part"},
 								arg1: &dCollect{
 									ARG: collect__attributes__cat,
 									arg1: &dCollect{
@@ -2568,7 +2569,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 				},
 			},
 		},
-	}) { // [mod hd/ADP obj1/empty]  --> make mod the external head
+	}) { // [mod hd/ADP obj1/empty]  --> make mod the external head , added part for automatic parse output GB 31/03/21
 		if test(q /* $node/../node[@rel="obj1" and (@pt or @cat)] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -3219,7 +3220,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			}
 			return "punct"
 		}
-		if node.udPos == "SYM" || node.udPos == "X" {
+		if node.udPos == "X" { // SYM covered below
 			if test(q /* $node/../node[@cat] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
@@ -3356,8 +3357,8 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) {
 			return "cc"
 		}
-		// sentence initial or final 'en'
-		if test(q /* $node[@ud:pos=("NOUN","PROPN","DET","ADP","ADV") and ../node[@cat=("du","smain","conj")]] */, &xPath{
+		// sentence initial or final 'en' etc , merge with statement below??
+		if test(q /* $node[@ud:pos=("NOUN","PROPN","DET","ADP","ADV","INTJ","PRON","SYM","CCONJ","SCONJ") and ../node[@cat=("du","smain","conj","sv1","np","whq","pp","ppart","inf","advp")]] */, &xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
 					arg1: &dVariable{
@@ -3372,7 +3373,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 									arg1: &dNode{},
 								},
 								arg2: &dElem{
-									DATA: []interface{}{"NOUN", "PROPN", "DET", "ADP", "ADV"},
+									DATA: []interface{}{"NOUN", "PROPN", "DET", "ADP", "ADV", "INTJ", "PRON", "SYM", "CCONJ", "SCONJ"},
 									arg1: &dCollect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &dNode{},
@@ -3393,7 +3394,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 											arg1: &dNode{},
 										},
 										arg2: &dElem{
-											DATA: []interface{}{"du", "smain", "conj"},
+											DATA: []interface{}{"du", "smain", "conj", "sv1", "np", "whq", "pp", "ppart", "inf", "advp"},
 											arg1: &dCollect{
 												ARG:  collect__attributes__cat,
 												arg1: &dNode{},
@@ -3451,44 +3452,48 @@ func dependencyLabel(node *nodeType, q *context) string {
 				},
 			},
 		}) { // make exception for du nodes as well GB 22/03/21
-			if node == nLeft(find(q /* $node/../node[@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM") and not(../node[@ud:pos=("ADJ","VERB") or @cat="du"]) ] */, &xPath{
-				arg1: &dSort{
-					arg1: &dCollect{
-						ARG: collect__child__node,
+			if node == nLeft(find(q, /* $node/../node[(@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM"))
+				   and not(../node[@ud:pos=("ADJ","VERB") or @cat="du"]) ] */&xPath{
+					arg1: &dSort{
 						arg1: &dCollect{
-							ARG: collect__parent__type__node,
-							arg1: &dVariable{
-								VAR: node,
-							},
-						},
-						arg2: &dPredicate{
-							arg1: &dOr{
-								arg1: &dEqual{
-									ARG: equal__is,
-									arg1: &dCollect{
-										ARG:  collect__attributes__cat,
-										arg1: &dNode{},
-									},
-									arg2: &dElem{
-										DATA: []interface{}{"mwu"},
-										arg1: &dCollect{
-											ARG:  collect__attributes__cat,
-											arg1: &dNode{},
-										},
-									},
+							ARG: collect__child__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dVariable{
+									VAR: node,
 								},
-								arg2: &dAnd{
-									arg1: &dEqual{
-										ARG: equal__is,
-										arg1: &dCollect{
-											ARG:  collect__attributes__ud_3apos,
-											arg1: &dNode{},
-										},
-										arg2: &dElem{
-											DATA: []interface{}{"ADP", "ADV", "DET", "PRON", "CCONJ", "SCONJ", "NOUN", "PROPN", "INTJ", "NUM", "SYM"},
-											arg1: &dCollect{
-												ARG:  collect__attributes__ud_3apos,
-												arg1: &dNode{},
+							},
+							arg2: &dPredicate{
+								arg1: &dAnd{
+									arg1: &dSort{
+										arg1: &dOr{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"mwu"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+												},
+											},
+											arg2: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__ud_3apos,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"ADP", "ADV", "DET", "PRON", "CCONJ", "SCONJ", "NOUN", "PROPN", "INTJ", "NUM", "SYM"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__ud_3apos,
+														arg1: &dNode{},
+													},
+												},
 											},
 										},
 									},
@@ -3542,8 +3547,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 							},
 						},
 					},
-				},
-			})) {
+				})) {
 				return "root"
 			}
 			return "parataxis"

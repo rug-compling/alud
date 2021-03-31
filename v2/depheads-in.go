@@ -139,20 +139,20 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if node.Rel == "--" && node.Cat != "" {
+		if TEST(q, `$node/../node[@ud:pos=("VERB","ADJ")]`) {
+			return internalHeadPosition(FIND(q,`$node/../node[@ud:pos=("VERB","ADJ")][1]`), q)
+		}
 		if node.Cat == "mwu" {
 			if TEST(q, `$node/../node[@cat and not(@cat="mwu")]`) { // fix for multiword punctuation in Alpino output
 				return internalHeadPosition(FIND(q, `$node/../node[@cat and not(@cat="mwu")][1]`), q)
 			}
 			if node.Begin != node.parent.Begin {    // make consistent with deplabel condition GB 9/3/21
-				if node == nLeft(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")]`)) {
+				if node == nLeft(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON","SYM")]`)) {
 						return externalHeadPosition(node.axParent, q)
 					}
-				return internalHeadPosition(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")][1]`), q)
+				return internalHeadPosition(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON","SYM")][1]`), q)
 			}
 			return externalHeadPosition(node.axParent, q)
-		}
-		if TEST(q, `$node/../node[@ud:pos=("VERB","ADJ")]`) {
-			return internalHeadPosition(FIND(q,`$node/../node[@ud:pos=("VERB","ADJ")][1]`), q)
 		}
 		return externalHeadPosition(node.axParent, q)
 	}
@@ -194,11 +194,11 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		}
 
 		if TEST(q, `$node[@ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`) {  // removed PUNCT here as we never want PUNCT as root or PUNCT having deps GB 16/3/21
-			if node == nLeft(FIND(q, `$node/../node[@rel="--" and @ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`)) {
+			if node == nLeft(FIND(q, `$node/../node[@rel="--" and (@cat="mwu" or @ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON"))]`)) {
 				return externalHeadPosition(node.axParent, q)
 			}
 			return internalHeadPositionWithGapping(
-				FIND(q, `($node/../node[@rel="--" and @ud:pos=("SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")])[1]`),
+				FIND(q, `($node/../node[@rel="--" and (@cat="mwu" or @ud:pos=("SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ])[1]`),
 				q)
 		}
 		
@@ -215,6 +215,13 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		panic("No external head")
 	}
 
+	if node.Rel== "vc" && node.parent.Cat == "pp" {// eraan dat, added exception for predc GB 22/03/21
+		if TEST(q, `$node/../node/@rel="predc"`) {
+			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
+		}
+		return externalHeadPosition(node.axParent, q)
+	}
+
     // ten ondergaan is a mwp head in extra/972, added cat to first disjunct GB 3/3/21
 	if node.Rel == "vc" { // only consider vc as head if it has a head itself or is a word (rare cases where subj-index is missing, also in conjuctions!), otherwise attach orphans to subj GB 16/02/21
 		if TEST(q, `$node[node[@rel="hd" and (@pt or @cat)] or 
@@ -229,15 +236,10 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	                                      
 	                                   )
 	                                 ]
-	                   and not($node/../node[@rel="predc"])`) {
+	                and not($node/../node[@rel="predc"])`) {
 			return externalHeadPosition(node.axParent, q)
 		}
-		if TEST(q, `$node/../@cat="pp"`) { // eraan dat, added exception for predc GB 22/03/21
-			if TEST(q, `$node/../node[@rel="predc"]`) {
-				internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
-			}
-			return externalHeadPosition(node.axParent, q)
-		}
+		
 		if TEST(q, `$node/../node[@rel=("hd","su","obj1") and (@pt or @cat)]`) {
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
