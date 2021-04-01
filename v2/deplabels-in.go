@@ -343,7 +343,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		
 		if TEST(q, `$node[@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM")]`) { // make exception for du nodes as well GB 22/03/21
 			if node == nLeft(FIND(q, `$node/../node[(@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM")) 
-			                                    and not(../node[@ud:pos=("ADJ","VERB") or @cat="du"]) ]`)) {
+			                                    and not(../node[@ud:pos=("ADJ","VERB") or @cat=("du","ap","smain","ppart","ti")]) ]`)) {
 				return "root"
 			}
 			return "parataxis"

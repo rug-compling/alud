@@ -3453,7 +3453,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			},
 		}) { // make exception for du nodes as well GB 22/03/21
 			if node == nLeft(find(q, /* $node/../node[(@cat="mwu" or @ud:pos=("ADP","ADV","DET","PRON","CCONJ","SCONJ","NOUN","PROPN","INTJ","NUM","SYM"))
-				   and not(../node[@ud:pos=("ADJ","VERB") or @cat="du"]) ] */&xPath{
+				   and not(../node[@ud:pos=("ADJ","VERB") or @cat=("du","ap","smain","ppart","ti")]) ] */&xPath{
 					arg1: &dSort{
 						arg1: &dCollect{
 							ARG: collect__child__node,
@@ -3530,7 +3530,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 																	arg1: &dNode{},
 																},
 																arg2: &dElem{
-																	DATA: []interface{}{"du"},
+																	DATA: []interface{}{"du", "ap", "smain", "ppart", "ti"},
 																	arg1: &dCollect{
 																		ARG:  collect__attributes__cat,
 																		arg1: &dNode{},
