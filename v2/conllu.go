@@ -80,19 +80,19 @@ func conll(q *context, options int) string {
 func featuresToString(node *nodeType) string {
 	features := make([]string, 0)
 	for _, f := range [][2]string{
-		[2]string{node.udAbbr, "Abbr"},
-		[2]string{node.udCase, "Case"},
-		[2]string{node.udDefinite, "Definite"},
-		[2]string{node.udDegree, "Degree"},
-		[2]string{node.udForeign, "Foreign"},
-		[2]string{node.udGender, "Gender"},
-		[2]string{node.udNumber, "Number"},
-		[2]string{node.udPerson, "Person"},
-		[2]string{node.udPoss, "Poss"},
-		[2]string{node.udPronType, "PronType"},
-		[2]string{node.udReflex, "Reflex"},
-		[2]string{node.udTense, "Tense"},
-		[2]string{node.udVerbForm, "VerbForm"},
+		{node.udAbbr, "Abbr"},
+		{node.udCase, "Case"},
+		{node.udDefinite, "Definite"},
+		{node.udDegree, "Degree"},
+		{node.udForeign, "Foreign"},
+		{node.udGender, "Gender"},
+		{node.udNumber, "Number"},
+		{node.udPerson, "Person"},
+		{node.udPoss, "Poss"},
+		{node.udPronType, "PronType"},
+		{node.udReflex, "Reflex"},
+		{node.udTense, "Tense"},
+		{node.udVerbForm, "VerbForm"},
 	} {
 		if f[0] != "" {
 			features = append(features, f[1]+"="+f[0])

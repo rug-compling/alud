@@ -141,8 +141,8 @@ func enhancedDependencies1(node *nodeType, q *context) {
 			if len(so) > 0 {
 				soIndex := i1(so)
 				//NP
-				enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-				enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
+				enhanced = []depT{{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
+				enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                          // self
 				//NP
 				enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 				//NP
@@ -290,7 +290,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 			// de enige _i die voldoet aan de eisen -- make sure empty heads are covered as well
 			if len(rhdNp) > 0 {
 				//NP
-				enhanced = []depT{depT{head: internalHeadPositionWithGapping(rhdNp, q), dep: "ref"}} // rhdref
+				enhanced = []depT{{head: internalHeadPositionWithGapping(rhdNp, q), dep: "ref"}} // rhdref
 				//NP
 				enhanced = append(enhanced, xcompControl(node, q, rhdIndex)...)
 				//NP
@@ -299,8 +299,8 @@ func enhancedDependencies1(node *nodeType, q *context) {
 			}
 			// if there is no antecedent, lets keep the basic relation
 			//NP
-			enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
+			enhanced = []depT{{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                          // self
 			//NP
 			enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 			//NP
@@ -391,8 +391,8 @@ func enhancedDependencies1(node *nodeType, q *context) {
 		if len(relSister) > 0 {
 			relSisterIndex := i1(relSister)
 			//NP
-			enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
+			enhanced = []depT{{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                          // self
 			//NP
 			enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 			//NP
@@ -407,8 +407,8 @@ func enhancedDependencies1(node *nodeType, q *context) {
 		// underscore is resultaat van reconstructEmptyHead()
 		if node.udHeadPosition >= 0 || node.udHeadPosition == underscore {
 			//NP
-			enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
-			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                              // self
+			enhanced = []depT{{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                          // self
 			//NP
 			enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
 			//NP
@@ -417,7 +417,7 @@ func enhancedDependencies1(node *nodeType, q *context) {
 		}
 
 		//NP
-		enhanced = []depT{depT{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
+		enhanced = []depT{{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}}
 		break
 	}
 
@@ -942,7 +942,7 @@ func distributeConjuncts(node *nodeType, q *context) []depT {
 		if coordHead != noNode {
 			// in A en B vs in A en naast B --> use enh_dep_label($node) in the latter case...
 			depLabel := enhanceDependencyLabel(coordHead, q)
-			return []depT{depT{head: coordHead.udHeadPosition, dep: depLabel}}
+			return []depT{{head: coordHead.udHeadPosition, dep: depLabel}}
 		}
 	}
 	return []depT{}

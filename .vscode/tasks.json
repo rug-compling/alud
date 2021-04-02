@@ -6,7 +6,7 @@
         {
             "label": "make",
             "type": "shell",
-            "command": "make && go install -v github.com/rug-compling/alud/...",
+            "command": "make devel bin",
             "group": {
                 "kind": "build",
                 "isDefault": true
