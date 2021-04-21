@@ -574,7 +574,7 @@ func (d *dSort) do(subdoc []interface{}, q *context) []interface{} {
 			}
 		}
 	case bool:
-		// niks te doen
+		result = result[:1]
 	case string:
 		sort.Slice(result, func(i, j int) bool {
 			return result[i].(string) < result[j].(string)
