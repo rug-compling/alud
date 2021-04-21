@@ -12,12 +12,6 @@ type doer interface {
 	do(subdoc []interface{}, q *context) []interface{}
 }
 
-type parent interface {
-	children() []interface{}
-	descendants() []interface{}
-	descendantsOrSelf() []interface{}
-}
-
 const (
 	cmp__lt = iota
 	cmp__gt
@@ -107,41 +101,43 @@ func (d *dCmp) do(subdoc []interface{}, q *context) []interface{} {
 	arg2 := d.arg2.do(subdoc, q)
 	switch d.ARG {
 	case cmp__lt: // <
+		result := make([]interface{}, 0)
 		for _, a1 := range arg1 {
 			for _, a2 := range arg2 {
 				switch a1t := a1.(type) {
 				case int:
 					if a1t < a2.(int) {
-						return nTRUE
+						result = append(result, true)
 					}
 				case string:
 					if a1t < a2.(string) {
-						return nTRUE
+						result = append(result, true)
 					}
 				default:
 					panic(fmt.Sprintf("Cmp<: Missing case for type %T in %s", a1, q.filename))
 				}
 			}
 		}
-		return nFALSE
+		return result
 	case cmp__gt: // >
+		result := make([]interface{}, 0)
 		for _, a1 := range arg1 {
 			for _, a2 := range arg2 {
 				switch a1t := a1.(type) {
 				case int:
 					if a1t > a2.(int) {
-						return nTRUE
+						result = append(result, true)
 					}
 				case string:
 					if a1t > a2.(string) {
-						return nTRUE
+						result = append(result, true)
 					}
 				default:
 					panic(fmt.Sprintf("Cmp>: Missing case for type %T in %s", a1, q.filename))
 				}
 			}
 		}
-		return nFALSE
+		return result
 	default:
 		panic("Cmp: Missing case in " + q.filename)
 	}
@@ -235,11 +231,11 @@ func (d *dCollect) do(subdoc []interface{}, q *context) []interface{} {
 				result1 = append(result1, i)
 			}
 		case collect__child__node:
-			lists = append(lists, r.(parent).children())
+			lists = append(lists, r.(*nodeType).axChildren)
 		case collect__descendant__node:
-			lists = append(lists, r.(parent).descendants())
+			lists = append(lists, r.(*nodeType).axDescendants)
 		case collect__descendant__or__self__type__node, collect__descendant__or__self__node:
-			lists = append(lists, r.(parent).descendantsOrSelf())
+			lists = append(lists, r.(*nodeType).axDescendantsOrSelf)
 		case collect__parent__type__node, collect__parent__node:
 			lists = append(lists, r.(*nodeType).axParent)
 		case collect__self__all__node, collect__self__node:
@@ -351,6 +347,7 @@ type dEqual struct {
 }
 
 func (d *dEqual) do(subdoc []interface{}, q *context) []interface{} {
+	result := make([]interface{}, 0)
 	switch d.ARG {
 	case equal__is:
 		a1 := d.arg1.do(subdoc, q)
@@ -358,11 +355,11 @@ func (d *dEqual) do(subdoc []interface{}, q *context) []interface{} {
 		for _, aa1 := range a1 {
 			for _, aa2 := range a2 {
 				if aa1 == aa2 {
-					return nTRUE
+					result = append(result, true)
 				}
 			}
 		}
-		return nFALSE
+		return result
 	default:
 		panic("Equal: Missing case in " + q.filename)
 	}
@@ -553,6 +550,18 @@ func (d *dSort) do(subdoc []interface{}, q *context) []interface{} {
 	if len(result) < 2 {
 		return result
 	}
+
+	if _, ok := result[0].([]interface{}); ok {
+		res := make([]interface{}, 0)
+		for _, r := range result {
+			res = append(res, r.([]interface{})...)
+		}
+		result = res
+		if len(result) < 2 {
+			return result
+		}
+	}
+
 	switch result[0].(type) {
 	case *nodeType:
 		sort.Slice(result, func(i, j int) bool {
@@ -666,28 +675,4 @@ func flatten(aa []interface{}) []interface{} {
 		}
 	}
 	return result
-}
-
-/*
-func (a *alpino_ds) children() []interface{} {
-	return []interface{}{a.Node}
-}
-*/
-
-/*
-func (a *alpino_ds) descendantsOrSelf() []interface{} {
-	return a.Node.axDescendantsOrSelf
-}
-*/
-
-func (n *nodeType) children() []interface{} {
-	return n.axChildren
-}
-
-func (n *nodeType) descendants() []interface{} {
-	return n.axDescendants
-}
-
-func (n *nodeType) descendantsOrSelf() []interface{} {
-	return n.axDescendantsOrSelf
 }

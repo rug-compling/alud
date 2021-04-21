@@ -17,4 +17,5 @@ SRC = \
 all: $(SRC)
 
 compile: compile.go
+	if [ "`testXPath --alud`" != "ALUD" ]; then exit 1; fi
 	go build -tags compile $^
