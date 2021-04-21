@@ -551,16 +551,18 @@ func (d *dSort) do(subdoc []interface{}, q *context) []interface{} {
 		return result
 	}
 
-	if _, ok := result[0].([]interface{}); ok {
-		res := make([]interface{}, 0)
-		for _, r := range result {
-			res = append(res, r.([]interface{})...)
+	/*
+		if _, ok := result[0].([]interface{}); ok {
+			res := make([]interface{}, 0)
+			for _, r := range result {
+				res = append(res, r.([]interface{})...)
+			}
+			result = res
+			if len(result) < 2 {
+				return result
+			}
 		}
-		result = res
-		if len(result) < 2 {
-			return result
-		}
-	}
+	*/
 
 	switch result[0].(type) {
 	case *nodeType:
