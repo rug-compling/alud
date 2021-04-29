@@ -125,7 +125,13 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if TEST(q, `$node[@rel=("cnj","dp","mwp")]`) {
-		if node == nLeft(FIND(q, `$node/../node[@rel=("cnj","dp","mwp")]`)) {
+		if n := FIND(q, `$node[@pt and ../node/@index]/ancestor::node[@cat="whq"]/node[@rel="whd" and @index = ..//node[@rel="mwp"]/@index]`) ; len(n) > 0 {  // wat voor cases: attach voor to wat
+			return internalHeadPosition(n, q)
+		}
+		if node == nLeft(FIND(q, `$node/../node[@rel=("cnj","dp","mwp") and (@pt or @cat)]`)) {
+			return externalHeadPosition(node.axParent, q)
+		}
+		if TEST(q, `$node[@rel="mwp" and @index and not(@pt)]`) {  // wat heb je voor .. where wat is extracted from mwu! TODO: ensure other mwp attach to 'wat' as fixed 
 			return externalHeadPosition(node.axParent, q)
 		}
 		if node.Rel == "cnj" {
@@ -134,6 +140,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		return internalHeadPositionWithGapping(node.axParent, q)
 	}
 
+
+    // note that this gives highly counterintuitive results for 'te+AUX,COP', but fixing it gives UD validation errors GB 9-4-21
+    // on the other hand, English does the same: ... are going to be bloody days, mark(days,to)
 	if TEST(q, `$node[@rel="cmp" and ../node[@rel="body"]]`) {
 		return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="body"][1]`), q)
 	}
@@ -246,7 +255,10 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		return externalHeadPosition(node.axParent, q)
 	}
 
-	if node.Rel == "whd" || node.Rel == "rhd" {
+	if node.Rel == "whd" || node.Rel == "rhd" {  // hack for '[whd hoe [du/1 du [de nevel van de tijd]]'
+		if TEST(q, `$node[../node[@rel="body"]/node[@rel="dp"]/@index = @index ]`) {
+			return externalHeadPosition(node.axParent, q)
+		}
 		if node.Index > 0 {
 			return externalHeadPosition(FIND(q, `($node/../node[@rel="body"]//node[@index = $node/@index ])[1]`), q)
 		}
@@ -540,8 +552,8 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"][1]`), q) // aux, prepositions   added [1] to make robust for CGN cases GB 19/03/21
 	}
 
-	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
-		if TEST(q, `$node/node[@rel=("vc","predc") and (@pt or @cat or node[@cat or @pt])]`) {  // what does this final node mean ?? added cat instead GB 26/2/21 
+	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {  // (@pt or @cat or node[@cat or @pt])
+		if TEST(q, `$node/node[@rel=("vc","predc") and descendant-or-self::node/@pt ]`) {  // what does this final node mean ?? added cat instead GB 26/2/21 
 			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","predc")]`), q) // testing should be vc,predc , fixed typo pred -> predc GB 26/2/21
 		} else {
 			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q)
@@ -571,6 +583,10 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 
 	if TEST(q, `$node/node[@rel="pc" and (@pt or @cat)]`) {  // commenting out this case and added to case below GB 5/2/21 and put back in 8/2
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="pc"][1]`), q)
+	}
+
+	if TEST(q, `$node/node[@rel="ld" and (@pt or @cat)]`) {  // fixing EANS case 
+		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="ld"][1]`), q)
 	}
 
 	// moved the next case up to take precendence over mod rule that follows for consistency with deplabel GB 3/3/21
@@ -603,7 +619,7 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 	}
 
 	
-	if n := FIND(q, `$node[@cat="mwu"]/node[@rel="mwp"]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
+	if n := FIND(q, `$node[@cat="mwu"]/node[@rel="mwp" and (@pt or @cat)]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 

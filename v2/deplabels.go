@@ -1418,6 +1418,125 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Begin >= 0 && node.Begin == node.parent.Begin {
 			return dependencyLabel(node.parent, q)
 		}
+		if test(q /* $node[@pt and ../node/@index = ancestor::node[@cat="whq"]/node[@rel="whd"]/@index] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dCollect{
+								ARG:  collect__attributes__pt,
+								arg1: &dNode{},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG: collect__attributes__index,
+									arg1: &dCollect{
+										ARG: collect__child__node,
+										arg1: &dCollect{
+											ARG:  collect__parent__type__node,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dCollect{
+									ARG: collect__attributes__index,
+									arg1: &dCollect{
+										ARG: collect__child__node,
+										arg1: &dCollect{
+											ARG:  collect__ancestors__node,
+											arg1: &dNode{},
+											arg2: &dPredicate{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"whq"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__cat,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+										},
+										arg2: &dPredicate{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"whd"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // wat voor constructions, where wat is dislocated
+			return "fixed"
+		}
+		if node == nLeft(find(q /* $node/../node[@rel="mwp" and (@pt or @cat)] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"mwp"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dSort{
+								arg1: &dOr{
+									arg1: &dCollect{
+										ARG:  collect__attributes__pt,
+										arg1: &dNode{},
+									},
+									arg2: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})) {
+			return dependencyLabel(node.parent, q)
+		}
 		if test(q /* $node/../node[@ud:pos="PROPN"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{

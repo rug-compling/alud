@@ -147,6 +147,12 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Begin >= 0 && node.Begin == node.parent.Begin {
 			return dependencyLabel(node.parent, q)
 		}
+		if TEST(q, `$node[@pt and ../node/@index = ancestor::node[@cat="whq"]/node[@rel="whd"]/@index]`) {  // wat voor constructions, where wat is dislocated 
+			return "fixed"
+		}
+		if node == nLeft(FIND(q, `$node/../node[@rel="mwp" and (@pt or @cat)]`)) {
+			return dependencyLabel(node.parent, q)
+		}
 		if TEST(q, `$node/../node[@ud:pos="PROPN"]`) {
 			return "flat"
 		}

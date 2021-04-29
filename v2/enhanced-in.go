@@ -463,6 +463,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "respectievelijk"
 	case "t/m":
 		lemma = "tot_en_met"
+	case "tot en met":
+		lemma = "tot_en_met"
 	case "t.a.v.":
 		lemma = "ten_aanzien_van"
 	case "t.g.v.":
