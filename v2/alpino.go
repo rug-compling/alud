@@ -119,6 +119,9 @@ func UdAlpino(alpino_doc []byte, filename, sentid string) (alpino string, err er
 }
 
 func alpinoRestore(q *context) {
+	// ingevoegde topnode weer verwijderen
+	q.alpino.Node = q.alpino.Node.Node[0]
+
 	for i := len(q.swapped) - 1; i >= 0; i-- {
 		swap(q.swapped[i][1], q.swapped[i][0])
 	}

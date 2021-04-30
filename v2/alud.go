@@ -105,6 +105,17 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 		alpino.Sentence.SentId = id
 	}
 
+	// Extra node bovenaan vanwege gedoe met //node
+	// Wordt weer verwijderd in alpinoRestore()
+	alpino.Node = &nodeType{
+		NodeAttributes: alpinods.NodeAttributes{
+			Begin: alpino.Node.Begin,
+			End:   alpino.Node.End,
+			ID:    -2, // ??? TODO
+		},
+		Node: []*nodeType{alpino.Node},
+	}
+
 	var walk func(*nodeType)
 	walk = func(node *nodeType) {
 		node.Begin *= 1000
