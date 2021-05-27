@@ -15,4 +15,4 @@ Zie:
 
 */
 
-var version = "2.8.0"
+var version = "2.8.1"

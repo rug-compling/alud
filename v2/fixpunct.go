@@ -51,7 +51,7 @@ var (
 	finalPunct = ".?!"
 )
 
-func fixpunct(q *context) {
+func fixpunct(q *context, doEnhanced bool) {
 
 	nodes := make([]*pNode, 0)
 	rootDescendants := make([]*pNode, 0)
@@ -158,7 +158,9 @@ func fixpunct(q *context) {
 	// TODO: klopt dit?
 	if root.f.udRelation != "root" {
 		root.f.udRelation = "root"
-		root.f.udEnhanced = number(root.f.udHeadPosition) + ":root"
+		if doEnhanced {
+			root.f.udEnhanced = number(root.f.udHeadPosition) + ":root"
+		}
 		for _, node2 := range rootDescendants {
 			if node2.parent.f.End > 0 && node2.f.udRelation == "root" {
 				node2.f.udRelation = "punct"
@@ -167,9 +169,11 @@ func fixpunct(q *context) {
 	}
 
 	// update DEPS
-	for _, node := range rootDescendants {
-		if node.f.udPos == "PUNCT" {
-			node.f.udEnhanced = number(node.f.udHeadPosition) + ":" + node.f.udRelation
+	if doEnhanced {
+		for _, node := range rootDescendants {
+			if node.f.udPos == "PUNCT" {
+				node.f.udEnhanced = number(node.f.udHeadPosition) + ":" + node.f.udRelation
+			}
 		}
 	}
 }

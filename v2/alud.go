@@ -152,7 +152,7 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 		enhancedDependencies(q)
 	}
 	if options&OPT_NO_FIX_PUNCT == 0 {
-		fixpunct(q)
+		fixpunct(q, options&OPT_NO_ENHANCED == 0)
 	}
 	if options&OPT_NO_DETOKENIZE == 0 {
 		untokenize(q)
