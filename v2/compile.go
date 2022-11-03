@@ -1,3 +1,4 @@
+//go:build compile
 // +build compile
 
 package main
@@ -37,6 +38,7 @@ func main() {
 	b, err := ioutil.ReadFile(os.Args[1])
 	x(err)
 	program = strings.Replace(string(b), "// +build ignore", "", 1)
+	program = strings.Replace(program, "//go:build ignore", "", 1)
 
 	program = reTest.ReplaceAllStringFunc(program, compile)
 
