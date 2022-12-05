@@ -3943,6 +3943,113 @@ xmlXPathNodeSetMerge(xmlNodeSetPtr val1, xmlNodeSetPtr val2) {
     return(val1);
 }
 
+/**
+ * xmlXPathNodeSetExcept:
+ * @val1:  the first NodeSet or NULL
+ * @val2:  the second NodeSet
+ *
+ * Removes all nodes in @val2 from @val1
+ * if @val1 is NULL, a new set is created
+ *
+ * Returns @val1 once done or NULL in case of error.
+ */
+xmlNodeSetPtr
+xmlXPathNodeSetExcept(xmlNodeSetPtr val1, xmlNodeSetPtr val2) {
+    int i, j, initNr, skip;
+    xmlNodePtr n1, n2;
+
+    if (val1 == NULL)
+	val1 = xmlXPathNodeSetCreate(NULL);
+    if (val1 == NULL || val2 == NULL)
+	return val1;
+
+    /* @@ with_ns to check whether namespace nodes should be looked at @@ */
+    initNr = val2->nodeNr;
+
+    for (i = 0; i < val1->nodeNr; i++) {
+	n1 = val1->nodeTab[i];
+	skip = 0;
+	for (j = 0; j < initNr; j++) {
+	    n2 = val2->nodeTab[j];
+	    if (n1 == n2) {
+		skip = 1;
+		break;
+	    }
+	    if ((n1->type == XML_NAMESPACE_DECL) &&
+		(n2->type == XML_NAMESPACE_DECL)) {
+		if ((((xmlNsPtr) n1)->next == ((xmlNsPtr) n2)->next) &&
+		    (xmlStrEqual(((xmlNsPtr) n1)->prefix,
+				 ((xmlNsPtr) n2)->prefix)))
+		    {
+			skip = 1;
+			break;
+		    }
+	    }
+	}
+	if (skip) {
+	    xmlXPathNodeSetRemove(val1, i);
+	    i--;
+	}
+    }
+
+    return val1;
+}
+
+/**
+ * xmlXPathNodeSetIntersect:
+ * @val1:  the first NodeSet or NULL
+ * @val2:  the second NodeSet
+ *
+ * Removes all nodes not in @val2 from @val1
+ * if @val1 is NULL, a new set is created
+ *
+ * Returns @val1 once done or NULL in case of error.
+ */
+xmlNodeSetPtr
+xmlXPathNodeSetIntersect(xmlNodeSetPtr val1, xmlNodeSetPtr val2) {
+    int i, j, initNr, skip;
+    xmlNodePtr n1, n2;
+
+    if (val1 == NULL)
+	val1 = xmlXPathNodeSetCreate(NULL);
+    if (val1 == NULL)
+	return NULL;
+
+    /* @@ with_ns to check whether namespace nodes should be looked at @@ */
+    initNr = val2->nodeNr;
+
+    for (i = 0; i < val1->nodeNr; i++) {
+	n1 = val1->nodeTab[i];
+	skip = 1;
+	if (val2 != NULL) {
+	    for (j = 0; j < initNr; j++) {
+		n2 = val2->nodeTab[j];
+		if (n1 == n2) {
+		    skip = 0;
+		    break;
+		}
+		if ((n1->type == XML_NAMESPACE_DECL) &&
+		    (n2->type == XML_NAMESPACE_DECL)) {
+		    if ((((xmlNsPtr) n1)->next == ((xmlNsPtr) n2)->next) &&
+			(xmlStrEqual(((xmlNsPtr) n1)->prefix,
+				     ((xmlNsPtr) n2)->prefix)))
+			{
+			    skip = 0;
+			    break;
+			}
+		}
+	    }
+	}
+	if (skip) {
+	    xmlXPathNodeSetRemove(val1, i);
+	    i--;
+	}
+    }
+
+    return val1;
+}
+
+
 
 /**
  * xmlXPathNodeSetMergeAndClear:
@@ -12704,8 +12811,15 @@ xmlXPathCompOpEvalFirst(xmlXPathParserContextPtr ctxt,
             }
 
             /* TODO: Check memory error. */
-            arg1->nodesetval = xmlXPathNodeSetMerge(arg1->nodesetval,
-                                                    arg2->nodesetval);
+	    if (op->op == XPATH_OP_EXCEPT)
+		arg1->nodesetval = xmlXPathNodeSetExcept(arg1->nodesetval,
+							arg2->nodesetval);
+	    else if (op->op == XPATH_OP_INTERSECT)
+		arg1->nodesetval = xmlXPathNodeSetIntersect(arg1->nodesetval,
+							arg2->nodesetval);
+	    else
+		arg1->nodesetval = xmlXPathNodeSetMerge(arg1->nodesetval,
+							arg2->nodesetval);
             valuePush(ctxt, arg1);
 	    xmlXPathReleaseObject(ctxt->context, arg2);
             /* optimizer */
@@ -12846,8 +12960,15 @@ xmlXPathCompOpEvalLast(xmlXPathParserContextPtr ctxt, xmlXPathStepOpPtr op,
             }
 
             /* TODO: Check memory error. */
-            arg1->nodesetval = xmlXPathNodeSetMerge(arg1->nodesetval,
-                                                    arg2->nodesetval);
+	    if (op->op == XPATH_OP_EXCEPT)
+		arg1->nodesetval = xmlXPathNodeSetExcept(arg1->nodesetval,
+							arg2->nodesetval);
+	    else if (op->op == XPATH_OP_INTERSECT)
+		arg1->nodesetval = xmlXPathNodeSetIntersect(arg1->nodesetval,
+							arg2->nodesetval);
+	    else
+		arg1->nodesetval = xmlXPathNodeSetMerge(arg1->nodesetval,
+							arg2->nodesetval);
             valuePush(ctxt, arg1);
 	    xmlXPathReleaseObject(ctxt->context, arg2);
             /* optimizer */
@@ -13132,8 +13253,15 @@ xmlXPathCompOpEval(xmlXPathParserContextPtr ctxt, xmlXPathStepOpPtr op)
 		 (arg2->nodesetval->nodeNr != 0)))
 	    {
                 /* TODO: Check memory error. */
-		arg1->nodesetval = xmlXPathNodeSetMerge(arg1->nodesetval,
-							arg2->nodesetval);
+		if (op->op == XPATH_OP_EXCEPT)
+		    arg1->nodesetval = xmlXPathNodeSetExcept(arg1->nodesetval,
+							     arg2->nodesetval);
+		else if (op->op == XPATH_OP_INTERSECT)
+		    arg1->nodesetval = xmlXPathNodeSetIntersect(arg1->nodesetval,
+								arg2->nodesetval);
+		else
+		    arg1->nodesetval = xmlXPathNodeSetMerge(arg1->nodesetval,
+							    arg2->nodesetval);
 	    }
 
             valuePush(ctxt, arg1);
