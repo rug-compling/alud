@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package alud
@@ -196,8 +197,10 @@ func enhanceDependencyLabel(node *nodeType, q *context) string {
 
 	label := node.udERelation
 	if label == "conj" {
+		// TODO: selecting last() crd sister works for 'zowel X als Y cases (zowel=preconj),
+		// requiring that crd does not follow the conjunct works for 'A en B of C' cases
 		if crd := n1(FIND(q, `($node/ancestor::node[@cat="conj" and
-	       not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd"])[1]`)); crd != noNode {
+	       not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd" and not(@end > $node/@begin)])[last()]`)); crd != noNode {
 			if crd.Lemma != "" {
 				return join(label, enhancedLemmaString1(crd, q))
 			}
@@ -243,9 +246,9 @@ func anaphoricRelpronoun(node *nodeType, q *context) []depT {
 		anrel := a.(*nodeType)
 		var label string
 		if r := anrel.udRelation; r == "nsubj" || r == "nsubj:pass" {
-			label = r + ":relsubj"
+			label = r // + ":relsubj"  validation suggests relsubj/obj is superfluous
 		} else if r == "obj" || r == "obl" {
-			label = r + ":relobj"
+			label = r // + ":relobj"
 		} else {
 			label = r
 		}
@@ -364,7 +367,8 @@ func distributeDependents(node *nodeType, q *context) []depT {
 
 // should work in coordinations like te laten reizen en te laten beleven,
 // and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
-//    .. of hij ook voor hen wilde komen tekenen :)
+//
+//	.. of hij ook voor hen wilde komen tekenen :)
 func xcompControl(node *nodeType, q *context, so_index int) []depT {
 
 	defer func() {
@@ -443,6 +447,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "also_known_as"
 	case "c.q.":
 		lemma = "casu_quo"
+	case "cum suis":
+		lemma = "cum_suis"
 	case "dwz.", "d.w.z.":
 		lemma = "dat_wil_zeggen"
 	case "dat wil zeggen":
@@ -453,8 +459,12 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "en_of"
 	case "enz.":
 		lemma = "enzovoort"
+	case "enzovoorts":
+		lemma = "enzovoort"
 	case "etc.":
 		lemma = "etcetera"
+	case "zien":
+		lemma = "gezien"
 	case "m.a.w.":
 		lemma = "met_andere_woorden"
 	case "nl.":
@@ -466,13 +476,13 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 	case "tot en met":
 		lemma = "tot_en_met"
 	case "t.a.v.":
-		lemma = "ten_aanzien_van"
+		lemma = "te_aan_zien_van"
 	case "t.g.v.":
 		lemma = "ten_gunste_van"
 	case "t.n.v.":
 		lemma = "ten_name_van"
 	case "t.o.v.":
-		lemma = "ten_opzichte_van"
+		lemma = "te_opzicht_van"
 	default:
 		lemma = node.Lemma
 	}
@@ -495,7 +505,12 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 			lemma += "_" + f.(*nodeType).Lemma
 		}
 	}
-	lemma = strings.Replace(lemma, "/", "schuine_streep", -1)
+	lemma = strings.Replace(lemma, "/", "schuine_streep", -1) // this works for 't/m'
 	lemma = strings.Replace(lemma, "-", "_", -1)
+	lemma = strings.Replace(lemma, "en_schuine_streep_of", "en_of", -1) //this works for 'en / of' (multi-token)
+	lemma = strings.Replace(lemma, "tot_schuine_streep_met", "tot_en_met", -1)
+	lemma = strings.Replace(lemma, "te_gevolg_van", "tengevolge_van", -1)
+	lemma = strings.Replace(lemma, "te_aanzien_van", "te_aan_zien_van", -1)
+	lemma = strings.Replace(lemma, "dat_willen_zeggen", "dat_wil_zeggen", -1)
 	return strings.ToLower(lemma)
 }

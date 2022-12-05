@@ -116,6 +116,256 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "mark"
 	}
 	if node.Rel == "crd" {
+		if node.Lemma == "zowel" && test(q /* $node/../node[@rel="crd" and @lemma="als"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"crd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"als"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "cc:preconj"
+		}
+		if node.Lemma == "niet" && test(q /* $node/../node[@rel="crd" and @lemma="maar"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"crd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"maar"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "cc:preconj"
+		}
+		if node.Lemma == "respectievelijk" && test(q /* $node/../node[@rel="crd" and @lemma="en"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"crd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"en"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "cc:preconj"
+		}
+		if node.Lemma == "van" && test(q /* $node/../node[@rel="crd" and @lemma="tot"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"crd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"tot"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "cc:preconj"
+		}
+		if node.Lemma == "noch" && test(q /* $node/../node[@rel="crd" and @lemma="noch" and $node/@begin < @begin ] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"crd"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"noch"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__lemma,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+							arg2: &dCmp{
+								ARG: cmp__lt,
+								arg1: &dCollect{
+									ARG: collect__attributes__begin,
+									arg1: &dVariable{
+										VAR: node,
+									},
+								},
+								arg2: &dCollect{
+									ARG:  collect__attributes__begin,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "cc:preconj"
+		}
 		return "cc"
 	}
 	if node.Rel == "me" && test(q /* $node[@rel="me" and ../node[@rel="hd" and (@pt or @cat) and not(@ud:pos="ADP")]] */, &xPath{
@@ -782,7 +1032,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if aux, err := auxiliary1(node, q); err == nil {
 		if aux == "aux:pass" {
 			if test(q, /* $node[../node[@rel="su" and not(@pt or @cat)] and
-				   ../node[@rel="vc" and not(@pt or @cat)] and
+				   ../node[@rel="vc" and not(descendant-or-self::node/@pt)] and
 				   ../@rel="cnj"] */&xPath{
 					arg1: &dSort{
 						arg1: &dFilter{
@@ -860,13 +1110,10 @@ func dependencyLabel(node *nodeType, q *context) string {
 														ARG: function__not__1__args,
 														arg1: &dArg{
 															arg1: &dSort{
-																arg1: &dOr{
+																arg1: &dCollect{
+																	ARG: collect__attributes__pt,
 																	arg1: &dCollect{
-																		ARG:  collect__attributes__pt,
-																		arg1: &dNode{},
-																	},
-																	arg2: &dCollect{
-																		ARG:  collect__attributes__cat,
+																		ARG:  collect__descendant__or__self__node,
 																		arg1: &dNode{},
 																	},
 																},
@@ -908,7 +1155,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		if aux == "aux" {
 			if test(q, /* $node[../node[@rel="su" and not(@pt or @cat)] and
-				   ../node[@rel="vc" and not(@pt or @cat)] and
+				   ../node[@rel="vc" and not(descendant-or-self::node/@pt)] and
 				   ../@rel="cnj"] */&xPath{
 					arg1: &dSort{
 						arg1: &dFilter{
@@ -986,13 +1233,10 @@ func dependencyLabel(node *nodeType, q *context) string {
 														ARG: function__not__1__args,
 														arg1: &dArg{
 															arg1: &dSort{
-																arg1: &dOr{
+																arg1: &dCollect{
+																	ARG: collect__attributes__pt,
 																	arg1: &dCollect{
-																		ARG:  collect__attributes__pt,
-																		arg1: &dNode{},
-																	},
-																	arg2: &dCollect{
-																		ARG:  collect__attributes__cat,
+																		ARG:  collect__descendant__or__self__node,
 																		arg1: &dNode{},
 																	},
 																},
@@ -4391,7 +4635,9 @@ func determineNominalModLabel(node *nodeType, q *context) string {
 }
 
 func subjectLabel(subj *nodeType, q *context) string {
+	// pass (requires pass aux) and outer (requires copula) never co-occur I assume
 	pass := passiveSubject(subj, q)
+	outer := outerSubject(subj, q)
 	if test(q, /* $subj[@cat=("whsub","ssub","ti","cp","oti")] or
 		   $subj[@cat="conj" and node/@cat=("whsub","ssub","ti","cp","oti")] */&xPath{
 			arg1: &dSort{
@@ -4463,7 +4709,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 				},
 			},
 		}) {
-		return "csubj" + pass
+		return "csubj" + pass + outer
 	}
 	// weather verbs and other expletive subject verbs
 	if test(q, /* $subj[@lemma="het"] and
@@ -4707,7 +4953,101 @@ func subjectLabel(subj *nodeType, q *context) string {
 		}) {
 		return "expl" + pass
 	}
-	return "nsubj" + pass
+	return "nsubj" + pass + outer
+}
+
+// add :outer to subject in copula construction with clausal predicate (whrel, other?)
+func outerSubject(subj *nodeType, q *context) string {
+	if test(q /* $subj/../node[@rel="predc" and (@cat="whrel" or (@cat="cnj" and node[@cat="whrel"]))] */, &xPath{
+		arg1: &dSort{
+			arg1: &dCollect{
+				ARG: collect__child__node,
+				arg1: &dCollect{
+					ARG: collect__parent__type__node,
+					arg1: &dVariable{
+						VAR: subj,
+					},
+				},
+				arg2: &dPredicate{
+					arg1: &dAnd{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__rel,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"predc"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+							},
+						},
+						arg2: &dSort{
+							arg1: &dOr{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"whrel"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dSort{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__cat,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"cnj"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dCollect{
+											ARG:  collect__child__node,
+											arg1: &dNode{},
+											arg2: &dPredicate{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"whrel"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__cat,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) {
+		return ":outer"
+	}
+	return ""
 }
 
 // recursive
@@ -5126,6 +5466,66 @@ func detLabel(node *nodeType, q *context) string {
 		}) {
 			return "nmod"
 		}
+		if test(q /* $node/node[@rel="hd" and @ud:pos="PRON" and @vwtype="bez"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"hd"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"PRON"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__ud_3apos,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__vwtype,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"bez"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__vwtype,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "nmod:poss"
+		}
 		return "det"
 	}
 	if test(q /* $node[@cat=("np","ap") or @ud:pos=("SYM","ADJ","ADV","NOUN") ] */, &xPath{
@@ -5324,7 +5724,8 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	}) {
 		return "acl" // pp containing a clause
 	}
-	if test(q /* $node[@ud:pos="ADJ" or @cat="ap" or node[@cat="conj" and node[@ud:pos="ADJ" or @cat="ap"] ]] */, &xPath{
+	// fixing issue noted by Anouck
+	if test(q /* $node[@ud:pos="ADJ" or @cat="ap" or node[@cat="conj" and @begin = node[@ud:pos="ADJ" or @cat="ap"]/@begin ]] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -5381,36 +5782,46 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 											},
 										},
 									},
-									arg2: &dCollect{
-										ARG:  collect__child__node,
-										arg1: &dNode{},
-										arg2: &dPredicate{
-											arg1: &dOr{
-												arg1: &dEqual{
-													ARG: equal__is,
-													arg1: &dCollect{
-														ARG:  collect__attributes__ud_3apos,
-														arg1: &dNode{},
-													},
-													arg2: &dElem{
-														DATA: []interface{}{"ADJ"},
-														arg1: &dCollect{
-															ARG:  collect__attributes__ud_3apos,
-															arg1: &dNode{},
+									arg2: &dEqual{
+										ARG: equal__is,
+										arg1: &dCollect{
+											ARG:  collect__attributes__begin,
+											arg1: &dNode{},
+										},
+										arg2: &dCollect{
+											ARG: collect__attributes__begin,
+											arg1: &dCollect{
+												ARG:  collect__child__node,
+												arg1: &dNode{},
+												arg2: &dPredicate{
+													arg1: &dOr{
+														arg1: &dEqual{
+															ARG: equal__is,
+															arg1: &dCollect{
+																ARG:  collect__attributes__ud_3apos,
+																arg1: &dNode{},
+															},
+															arg2: &dElem{
+																DATA: []interface{}{"ADJ"},
+																arg1: &dCollect{
+																	ARG:  collect__attributes__ud_3apos,
+																	arg1: &dNode{},
+																},
+															},
 														},
-													},
-												},
-												arg2: &dEqual{
-													ARG: equal__is,
-													arg1: &dCollect{
-														ARG:  collect__attributes__cat,
-														arg1: &dNode{},
-													},
-													arg2: &dElem{
-														DATA: []interface{}{"ap"},
-														arg1: &dCollect{
-															ARG:  collect__attributes__cat,
-															arg1: &dNode{},
+														arg2: &dEqual{
+															ARG: equal__is,
+															arg1: &dCollect{
+																ARG:  collect__attributes__cat,
+																arg1: &dNode{},
+															},
+															arg2: &dElem{
+																DATA: []interface{}{"ap"},
+																arg1: &dCollect{
+																	ARG:  collect__attributes__cat,
+																	arg1: &dNode{},
+																},
+															},
 														},
 													},
 												},

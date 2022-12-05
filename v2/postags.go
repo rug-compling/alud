@@ -63,7 +63,7 @@ func universalPosTags(node *nodeType, q *context) string {
 		if node.Spectype == "deeleigen" {
 			return "PROPN"
 		}
-		if node.Spectype == "symb" || node.Spectype == "enof"  || node.Spectype == "afgebr" || node.Spectype == "vreemd" {
+		if node.Spectype == "symb" || node.Spectype == "enof" || node.Spectype == "afgebr" || node.Spectype == "vreemd" {
 			if node.Rel == "det" || node.parent.Rel == "det" {
 				return "DET"
 			}
@@ -93,7 +93,8 @@ func universalPosTags(node *nodeType, q *context) string {
 		if rel == "det" && node.Vwtype != "bez" {
 			return "DET"
 		}
-		if rel == "hd" && node.parent.Cat == "detp" { // niet veel meer dan
+		if rel == "hd" && node.parent.Cat == "detp" && node.Vwtype != "bez" { // niet veel meer dan
+			// added != bez to account for 'al zijn boeken' GB 03/11/22
 			return "DET"
 		}
 		if rel == "hd" && node.parent.Rel == "mod" { // heel wat fleuriger
