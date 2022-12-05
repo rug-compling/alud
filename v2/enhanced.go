@@ -1802,7 +1802,8 @@ func distributeDependents(node *nodeType, q *context) []depT {
 
 // should work in coordinations like te laten reizen en te laten beleven,
 // and recursive cases: Andras blijft ontkennen sexuele relaties met Timea te hebben gehad ,
-//    .. of hij ook voor hen wilde komen tekenen :)
+//
+//	.. of hij ook voor hen wilde komen tekenen :)
 func xcompControl(node *nodeType, q *context, so_index int) []depT {
 
 	defer func() {

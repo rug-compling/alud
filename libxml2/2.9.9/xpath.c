@@ -879,6 +879,8 @@ typedef enum {
 #ifdef LIBXML_XPTR_ENABLED
     ,XPATH_OP_RANGETO
 #endif
+    ,XPATH_OP_EXCEPT
+    ,XPATH_OP_INTERSECT
 } xmlXPathOp;
 
 typedef enum {
@@ -1521,6 +1523,10 @@ xmlXPathDebugDumpStepOp(FILE *output, xmlXPathCompExprPtr comp,
 	     break;
         case XPATH_OP_UNION:
 	     fprintf(output, "UNION"); break;
+        case XPATH_OP_EXCEPT:
+	     fprintf(output, "EXCEPT"); break;
+        case XPATH_OP_INTERSECT:
+	     fprintf(output, "INTERSECT"); break;
         case XPATH_OP_ROOT:
 	     fprintf(output, "ROOT"); break;
         case XPATH_OP_NODE:
@@ -10755,17 +10761,55 @@ xmlXPathCompUnionExpr(xmlXPathParserContextPtr ctxt) {
     xmlXPathCompPathExpr(ctxt);
     CHECK_ERROR;
     SKIP_BLANKS;
-    while (CUR == '|') {
-	int op1 = ctxt->comp->last;
-	PUSH_LEAVE_EXPR(XPATH_OP_NODE, 0, 0);
+    while (1) {
+	if (CUR == '|') {
+	    int op1 = ctxt->comp->last;
+	    PUSH_LEAVE_EXPR(XPATH_OP_NODE, 0, 0);
 
-	NEXT;
-	SKIP_BLANKS;
-	xmlXPathCompPathExpr(ctxt);
+	    NEXT;
+	    SKIP_BLANKS;
+	    xmlXPathCompPathExpr(ctxt);
 
-	PUSH_BINARY_EXPR(XPATH_OP_UNION, op1, ctxt->comp->last, 0, 0);
+	    PUSH_BINARY_EXPR(XPATH_OP_UNION, op1, ctxt->comp->last, 0, 0);
 
-	SKIP_BLANKS;
+	    SKIP_BLANKS;
+	} else if ((CUR == 'e') && (NXT(1) == 'x') && (NXT(2) == 'c') && (NXT(3) == 'e') && (NXT(4) == 'p') && (NXT(5) == 't')) {
+	    int op1 = ctxt->comp->last;
+	    PUSH_LEAVE_EXPR(XPATH_OP_NODE, 0, 0);
+
+	    SKIP(6);
+	    SKIP_BLANKS;
+	    xmlXPathCompPathExpr(ctxt);
+
+	    PUSH_BINARY_EXPR(XPATH_OP_EXCEPT, op1, ctxt->comp->last, 0, 0);
+
+	    SKIP_BLANKS;
+	} else if ((CUR == 'i') && (NXT(1) == 'n') && (NXT(2) == 't') && (NXT(3) == 'e') && (NXT(4) == 'r') && (NXT(5) == 's') && (NXT(6) == 'e') && (NXT(7) == 'c') && (NXT(8) == 't')) {
+	    int op1 = ctxt->comp->last;
+	    PUSH_LEAVE_EXPR(XPATH_OP_NODE, 0, 0);
+
+	    SKIP(9);
+	    SKIP_BLANKS;
+	    xmlXPathCompPathExpr(ctxt);
+
+	    PUSH_BINARY_EXPR(XPATH_OP_INTERSECT, op1, ctxt->comp->last, 0, 0);
+
+	    SKIP_BLANKS;
+	} else if ((CUR == 'u') && (NXT(1) == 'n') && (NXT(2) == 'i') && (NXT(3) == 'o') && (NXT(4) == 'n')) {
+	    int op1 = ctxt->comp->last;
+	    PUSH_LEAVE_EXPR(XPATH_OP_NODE, 0, 0);
+
+	    SKIP(5);
+	    SKIP_BLANKS;
+	    xmlXPathCompPathExpr(ctxt);
+
+	    PUSH_BINARY_EXPR(XPATH_OP_UNION, op1, ctxt->comp->last, 0, 0);
+
+	    SKIP_BLANKS;
+	} else {
+	    break;
+	}
+		
     }
 }
 
@@ -10974,9 +11018,9 @@ xmlXPathCompAndExpr(xmlXPathParserContextPtr ctxt) {
     SKIP_BLANKS;
     while ((CUR == 'a') && (NXT(1) == 'n') && (NXT(2) == 'd')) {
 	int op1 = ctxt->comp->last;
-        SKIP(3);
+	SKIP(3);
 	SKIP_BLANKS;
-        xmlXPathCompEqualityExpr(ctxt);
+	xmlXPathCompEqualityExpr(ctxt);
 	CHECK_ERROR;
 	PUSH_BINARY_EXPR(XPATH_OP_AND, op1, ctxt->comp->last, 0, 0);
 	SKIP_BLANKS;
@@ -12722,6 +12766,8 @@ xmlXPathCompOpEvalFirst(xmlXPathParserContextPtr ctxt,
     switch (op->op) {
         case XPATH_OP_END:
             return (0);
+        case XPATH_OP_EXCEPT:
+        case XPATH_OP_INTERSECT:
         case XPATH_OP_UNION:
             total =
                 xmlXPathCompOpEvalFirst(ctxt, &comp->steps[op->ch1],
@@ -12841,6 +12887,8 @@ xmlXPathCompOpEvalLast(xmlXPathParserContextPtr ctxt, xmlXPathStepOpPtr op,
     switch (op->op) {
         case XPATH_OP_END:
             return (0);
+        case XPATH_OP_EXCEPT:
+        case XPATH_OP_INTERSECT:
         case XPATH_OP_UNION:
             total =
                 xmlXPathCompOpEvalLast(ctxt, &comp->steps[op->ch1], last);
@@ -13304,6 +13352,8 @@ xmlXPathCompOpEval(xmlXPathParserContextPtr ctxt, xmlXPathStepOpPtr op)
             else if (op->value == 2)
                 xmlXPathModValues(ctxt);
             return (total);
+        case XPATH_OP_EXCEPT:
+        case XPATH_OP_INTERSECT:
         case XPATH_OP_UNION:
             total += xmlXPathCompOpEval(ctxt, &comp->steps[op->ch1]);
 	    CHECK_ERROR0;
