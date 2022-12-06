@@ -449,17 +449,13 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "casu_quo"
 	case "cum suis":
 		lemma = "cum_suis"
-	case "dwz.", "d.w.z.":
-		lemma = "dat_wil_zeggen"
-	case "dat wil zeggen":
+	case "dwz.", "d.w.z.", "dat wil zeggen":
 		lemma = "dat_wil_zeggen"
 	case "e.d.":
 		lemma = "en_dergelijke"
 	case "en/of":
 		lemma = "en_of"
-	case "enz.":
-		lemma = "enzovoort"
-	case "enzovoorts":
+	case "enz.", "enzovoorts":
 		lemma = "enzovoort"
 	case "etc.":
 		lemma = "etcetera"
@@ -471,9 +467,7 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "namelijk"
 	case "resp.":
 		lemma = "respectievelijk"
-	case "t/m":
-		lemma = "tot_en_met"
-	case "tot en met":
+	case "t/m", "tot en met":
 		lemma = "tot_en_met"
 	case "t.a.v.":
 		lemma = "te_aan_zien_van"
@@ -481,7 +475,7 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "ten_gunste_van"
 	case "t.n.v.":
 		lemma = "ten_name_van"
-	case "t.o.v.":
+	case "t.o.v.", "ten opzichte van":
 		lemma = "te_opzicht_van"
 	default:
 		lemma = node.Lemma
