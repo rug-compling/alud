@@ -170,6 +170,9 @@ int main(int argc, char **argv) {
 	else if ((!strcmp(argv[i], "-alud")) || (!strcmp(argv[i], "--alud"))) {
 	    printf("ALUD\n");
 	    return 0;
+	} else if ((!strcmp(argv[i], "-alud2")) || (!strcmp(argv[i], "--alud2"))) {
+	    printf("ALUD2\n");
+	    return 0;
 	}
     }
     if (valid != 0) xmlDoValidityCheckingDefaultValue = 1;
@@ -216,7 +219,8 @@ int main(int argc, char **argv) {
 	printf("\t-i filename      : read the document from filename\n");
 	printf("\t--file : or\n");
 	printf("\t-f     : read queries from files, args\n\n");
-	printf("\t--alud : checking this is the version hacked voor alud\n");
+	printf("\t--alud  : checking this is the version hacked for alud\n");
+	printf("\t--alud2 : checking this is the version hacked for alud version 2\n");
     }
     if (document != NULL)
 	xmlFreeDoc(document);
