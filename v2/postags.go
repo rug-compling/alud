@@ -69,6 +69,9 @@ func universalPosTags(node *nodeType, q *context) string {
 			}
 			return "SYM"
 		}
+		if node.Spectype == "afk" && node.Rel == "hd" && node.parent.Cat == "ap" { // incl. Rwanda
+			return "ADJ"
+		}
 		return "X" // afk vreemd afgebr enof meta
 	}
 	if pt == "tsw" {
@@ -97,7 +100,7 @@ func universalPosTags(node *nodeType, q *context) string {
 			// added != bez to account for 'al zijn boeken' GB 03/11/22
 			return "DET"
 		}
-		if rel == "hd" && node.parent.Rel == "mod" { // heel wat fleuriger
+		if rel == "hd" && (node.parent.Rel == "mod" || node.parent.Rel == "rhd") { // heel wat fleuriger, hoe meer ik over deze oorlog hoor,
 			return "ADV"
 		}
 		if rel == "mod" && node.parent.Rel == "det" { // [detp/det vnw/al deze] stripreeksen] --> al wordt advmod

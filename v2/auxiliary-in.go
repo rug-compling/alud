@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package alud
@@ -60,9 +61,10 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 
 	// alpino has no principled distinction between AUX and VERB, should be TAME verbs semantically, we follow ENGLISH
 	// blijken and hoeven removed from list
-	// hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses GB 18/03/21 
-	// dangling aux in gapped coordination 
-	if TEST(q, `$node[not(../node[@rel="predc"]) and
+	// hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses GB 18/03/21
+	// dangling aux in gapped coordination
+	// ze hebben thuis nog een varken zitten -- hebben as aci verb takes a obj1 and vc, but is not aux in this construction GB 10/01/23
+	if TEST(q, `$node[not(../node[@rel=("predc","obj1")]) and
 	                   ( ../node[@rel="vc"  and
 	                              ( @cat=("ppart","inf","ti") or
 	                                ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or

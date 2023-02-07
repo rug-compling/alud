@@ -199,8 +199,12 @@ func enhanceDependencyLabel(node *nodeType, q *context) string {
 	if label == "conj" {
 		// TODO: selecting last() crd sister works for 'zowel X als Y cases (zowel=preconj),
 		// requiring that crd does not follow the conjunct works for 'A en B of C' cases
-		if crd := n1(FIND(q, `($node/ancestor::node[@cat="conj" and
-	       not(.//node[@cat="conj"]//node/@begin = $node/@begin)]/node[@rel="crd" and not(@end > $node/@begin)])[last()]`)); crd != noNode {
+		// ... want zijn ogen waren niet verlicht maar verduisterd -- pick want, not niet
+		// superfluous if we use last()?? and  not(.//node[@cat="conj"]//node/@begin = $node/@begin)
+		// TODO: A, B, en C --> B should get 'conj:en' as label, check for presence of comma?
+		// should generalize to cases where constituent B is preceded by ',' : now approximation: check for next level up node as well (no guarantee node is actually head of this phrase..)
+		if crd := n1(FIND(q, `($node/ancestor::node[@cat="conj" 
+		]/node[@rel="crd" and not(@ud:Relation="cc:preconj") and (not(@end > $node/@begin) or $node/@begin = $node/ancestor::node[@rel="top"]/node[@word=","]/@end or $node/../@begin = $node/ancestor::node[@rel="top"]/node[@word=","]/@end )])[last()]`)); crd != noNode {
 			if crd.Lemma != "" {
 				return join(label, enhancedLemmaString1(crd, q))
 			}
@@ -452,7 +456,7 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 	case "dwz.", "d.w.z.", "dat wil zeggen":
 		lemma = "dat_wil_zeggen"
 	case "e.d.":
-		lemma = "en_dergelijke"
+		lemma = "en_dergelijk"
 	case "en/of":
 		lemma = "en_of"
 	case "enz.", "enzovoorts":
@@ -461,6 +465,10 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "etcetera"
 	case "zien":
 		lemma = "gezien"
+	case "inplaats":
+		lemma = "in_plaats"
+	case "in plaats van":
+		lemma = "in_plaats_van"
 	case "m.a.w.":
 		lemma = "met_andere_woorden"
 	case "nl.":
@@ -502,9 +510,11 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 	lemma = strings.Replace(lemma, "/", "schuine_streep", -1) // this works for 't/m'
 	lemma = strings.Replace(lemma, "-", "_", -1)
 	lemma = strings.Replace(lemma, "en_schuine_streep_of", "en_of", -1) //this works for 'en / of' (multi-token)
+	lemma = strings.Replace(lemma, "inplaats_van", "in_plaats_van", -1) // fixing typo in cdb/7002
 	lemma = strings.Replace(lemma, "tot_schuine_streep_met", "tot_en_met", -1)
 	lemma = strings.Replace(lemma, "te_gevolg_van", "tengevolge_van", -1)
 	lemma = strings.Replace(lemma, "te_aanzien_van", "te_aan_zien_van", -1)
+	lemma = strings.Replace(lemma, "te_gunst_van", "ten_gunste_van", -1)
 	lemma = strings.Replace(lemma, "dat_willen_zeggen", "dat_wil_zeggen", -1)
 	return strings.ToLower(lemma)
 }

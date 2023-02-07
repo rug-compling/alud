@@ -40,10 +40,19 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.Lemma == "respectievelijk" && TEST(q, `$node/../node[@rel="crd" and @lemma="en"]`) {
 			return "cc:preconj"
 		}
+		if node.Lemma == "ver" && TEST(q, `$node/../node[@rel="crd" and @lemma="en"]`) { // verder A, B, en C
+			return "cc:preconj"
+		}
+		if node.Lemma == "achtereenvolgens" && TEST(q, `$node/../node[@rel="crd" and @lemma="en"]`) { // [PP door [NP achtereenvolgens A en B]]
+			return "cc:preconj"
+		}
 		if node.Lemma == "van" && TEST(q, `$node/../node[@rel="crd" and @lemma="tot"]`) {
 			return "cc:preconj"
 		}
 		if node.Lemma == "noch" && TEST(q, `$node/../node[@rel="crd" and @lemma="noch" and $node/@begin < @begin ]`) {
+			return "cc:preconj"
+		}
+		if node.Lemma == "eerder" && TEST(q, `$node/../node[@rel="crd" and @lemma="dan" and $node/@begin < @begin ]`) {
 			return "cc:preconj"
 		}
 		return "cc"
@@ -396,6 +405,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 			if TEST(q, `$node/../node[@rel="predc"]`) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
+			if TEST(q, `$node[../node[@rel="obj1" and @index and not(@pt or @cat)] and not(../@rel="cnj")]`) {
+				return "case" // waar-relatives with P-stranding: waar hij Gabbema voor bedankt
+			}
 			if TEST(q, `$node/../node[@rel=("obj1","vc","se","me") and (@pt or @cat)]`) { // examples in paqus suggest me case is already covered (advmod), yet leuven/253 gives error without me here..
 				return "case" //
 			}
@@ -459,7 +471,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 
 // add :outer to subject in copula construction with clausal predicate (whrel, other?)
 func outerSubject(subj *nodeType, q *context) string {
-	if TEST(q, `$subj/../node[@rel="predc" and (@cat="whrel" or (@cat="cnj" and node[@cat="whrel"]))]`) {
+	if TEST(q, `$subj/../node[@rel="predc" and (@cat="whrel" or (@cat="conj" and node[@cat="whrel"]))]`) {
 		return ":outer"
 	}
 	return ""
@@ -662,6 +674,9 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 	if gap.Rel == "obj1" {
 		if head.Rel == "su" {
 			return "nsubj:pass"
+		}
+		if TEST(q, `$gap/../@cat="pp"`) { // waar men de patienten [ i naar toe] schuift om hen vervolgens te vergeten . ✤
+			return "obl"
 		}
 		return "obj" // ppart coordination -- see comment above
 	}
