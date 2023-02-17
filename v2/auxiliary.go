@@ -760,7 +760,8 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 	// blijken and hoeven removed from list
 	// hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses GB 18/03/21
 	// dangling aux in gapped coordination
-	if test(q, /* $node[not(../node[@rel="predc"]) and
+	// ze hebben thuis nog een varken zitten -- hebben as aci verb takes a obj1 and vc, but is not aux in this construction GB 10/01/23
+	if test(q, /* $node[not(../node[@rel=("predc","obj1")]) and
 		    ( ../node[@rel="vc"  and
 		               ( @cat=("ppart","inf","ti") or
 		                 ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
@@ -796,7 +797,7 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 														arg1: &dNode{},
 													},
 													arg2: &dElem{
-														DATA: []interface{}{"predc"},
+														DATA: []interface{}{"predc", "obj1"},
 														arg1: &dCollect{
 															ARG:  collect__attributes__rel,
 															arg1: &dNode{},

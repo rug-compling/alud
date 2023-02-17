@@ -112,9 +112,27 @@ func enhancedDependencies1(node *nodeType, q *context) {
 			break
 		}
 
-		relSister := FIND(q, `($node/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[1]`)
+		relSister := FIND(q, `($node[@rel="hd"]/../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[1]`) // get rid of xsubj on det etc non head elements
 		if len(relSister) > 0 {
 			relSisterIndex := i1(relSister)
+			//NP
+			enhanced = []depT{{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
+			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                          // self
+			//NP
+			enhanced = append(enhanced, distributeConjuncts(node, q)...) // self
+			//NP
+			enhanced = append(enhanced, distributeDependents(node, q)...) // self
+			//NP
+			enhanced = append(enhanced, xcompControl(node, q, relSisterIndex)...)
+			//NP
+			enhanced = append(enhanced, passiveVpControl(node, q, relSisterIndex)...)
+			break
+		}
+
+		relSister2 := FIND(q, `($node[@rel="mwp" and @begin = ../@begin]/../../node[@rel="mod" and @cat="rel"]/node[@rel="rhd"]/@index)[1]`)
+		// heads of MWU, could not get disjunction of paths (|) or disjunctive condition in go language to work
+		if len(relSister2) > 0 {
+			relSisterIndex := i1(relSister2)
 			//NP
 			enhanced = []depT{{head: node.udEHeadPosition, dep: enhanceDependencyLabel(node, q)}} // self
 			enhanced = append(enhanced, anaphoricRelpronoun(node, q)...)                          // self

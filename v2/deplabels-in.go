@@ -304,8 +304,8 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "case"
 	}
 	if node.Rel == "predm" {
-		if node.udPos == "VERB" {
-			return "xcomp"
+		if node.udPos == "VERB" || node.udPos == "ADJ" {
+			return "advcl"
 		}
 		if node.udPos == "PRON" { //floating quantifiers
 			return "obl"
