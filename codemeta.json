@@ -21,6 +21,9 @@
       "softwareRequirements": {
         "@id": "schema:softwareRequirements",
         "@type": "@id"
+      },
+      "releaseNotes": {
+        "@type": ""
       }
     }
   ],
