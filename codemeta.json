@@ -1,51 +1,121 @@
 {
-    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
-    "@type": "SoftwareSourceCode",
-    "license": "https://spdx.org/licenses/BSD-2-Clause",
-    "codeRepository": "git+https://github.com/rug-compling/alud.git",
-    "dateCreated": "2019-06-30",
-    "datePublished": "2019-11-27",
-    "dateModified": "2023-02-22",
-    "downloadUrl": "https://github.com/rug-compling/alud/archive/refs/tags/v2.8.9.tar.gz",
-    "issueTracker": "https://github.com/rug-compling/alud/issues",
-    "name": "alud",
-    "version": "2.8.9",
-    "identifier": "https://github.com/rug-compling/alud",
-    "description": "A Go package for deriving Universal Dependencies from Dutch sentences parsed with Alpino",
-    "applicationCategory": "Linguistics",
-    "releaseNotes": "fix version mismatch",
-    "developmentStatus": "active",
-    "keywords": [
-        "Universal Dependencies, Alpino"
-    ],
-    "programmingLanguage": [
-        "Go"
-    ],
-    "softwareRequirements": [
-        "https://github.com/rug-compling/alpinods"
-    ],
-    "contributor": [
-        {
-            "@type": "Person",
-            "@id": "https://orcid.org/0000-0003-1106-3181",
-            "givenName": "Gosse",
-            "familyName": "Bouma",
-            "email": "g.bouma@rug.nl",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "Computationele semantiek, Faculteit der Letteren, Rijskuniversiteit Groningen"
-            }
-        },
-        {
-            "@type": "Person",
-            "@id": "https://orcid.org/my-orcid?orcid=0000-0001-8364-3201",
-            "givenName": "Peter",
-            "familyName": "Kleiweg",
-            "email": "p.c.j.kleiweg@rug.nl",
-            "affiliation": {
-                "@type": "Organization",
-                "name": "Taaltechnologie, Faculteit der Letteren, Rijksuniversiteit Groningen"
-            }
-        }
-    ]
+  "@context": [
+    "https://schema.org",
+    "https://doi.org/10.5063/schema/codemeta-2.0",
+    "https://w3id.org/software-iodata",
+    "https://w3id.org/software-types",
+    "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld",
+    {
+      "author": {
+        "@container": "@list",
+        "@id": "schema:author"
+      },
+      "contributor": {
+        "@container": "@list",
+        "@id": "schema:contributor"
+      },
+      "referencePublication": {
+        "@id": "codemeta:referencePublication",
+        "@type": "@id"
+      },
+      "softwareRequirements": {
+        "@id": "schema:softwareRequirements",
+        "@type": "@id"
+      }
+    }
+  ],
+  "@id": "https://github.com/rug-compling/alud",
+  "@type": "SoftwareSourceCode",
+  "identifier": "https://github.com/rug-compling/alud",
+  "name": "alud",
+  "description": "A Go package for deriving Universal Dependencies from Dutch sentences parsed with Alpino",
+  "dateCreated": "2019-06-30",
+  "datePublished": "2019-11-27",
+  "dateModified": "2023-02-22",
+  "version": "2.8.9",
+  "releaseNotes": "fix version mismatch",
+  "codeRepository": "git+https://github.com/rug-compling/alud.git",
+  "issueTracker": "https://github.com/rug-compling/alud/issues",
+  "license": "https://spdx.org/licenses/BSD-2-Clause",
+  "developmentStatus": "https://www.repostatus.org/#active",
+  "applicationCategory": [
+    "https://w3id.org/nwo-research-fields#SoftwareForHumanities",
+    "https://w3id.org/nwo-research-fields#Linguistics",
+    "https://w3id.org/nwo-research-fields#ComputationalLinguisticsAndPhilology"
+  ],
+  "producer": {
+    "@type": "Organization",
+    "name": "Taaltechnologie, Faculteit der Letteren, Rijksuniversiteit Groningen",
+    "url": "https://www.rug.nl/research/clcg/research/cl/"
+  },
+  "downloadUrl": "https://github.com/rug-compling/alud/archive/refs/heads/master.zip",
+  "keywords": ["Universal Dependencies", "Alpino"],
+  "programmingLanguage": ["Go"],
+  "operatingSystem": [
+    "aix",
+    "android",
+    "darwin",
+    "dragonfly",
+    "freebsd",
+    "illumos",
+    "ios",
+    "js",
+    "linux",
+    "netbsd",
+    "openbsd",
+    "plan9",
+    "solaris",
+    "windows"
+  ],
+  "softwareHelp": [
+    {
+      "@id": "https://pkg.go.dev/github.com/rug-compling/alud/v2",
+      "@type": "WebSite",
+      "name": "alud package - github.com/rug-compling/alud/v2 - Go Packages",
+      "url": "https://pkg.go.dev/github.com/rug-compling/alud/v2"
+    }
+  ],
+  "author": [
+    {
+      "@type": "Person",
+      "@id": "https://orcid.org/0000-0003-1106-3181",
+      "givenName": "Gosse",
+      "familyName": "Bouma",
+      "email": "g.bouma@rug.nl",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Computationele semantiek, Faculteit der Letteren, Rijskuniversiteit Groningen"
+      }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://orcid.org/0000-0001-8364-3201",
+      "givenName": "Peter",
+      "familyName": "Kleiweg",
+      "email": "p.c.j.kleiweg@rug.nl",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Taaltechnologie, Faculteit der Letteren, Rijksuniversiteit Groningen"
+      }
+    }
+  ],
+  "maintainer": [
+    {
+      "@id": "https://orcid.org/0000-0003-1106-3181"
+    },
+    {
+      "@id": "https://orcid.org/0000-0001-8364-3201"
+    }
+  ],
+  "targetProduct": [
+    {
+      "@type": "CommandLineApplication",
+      "name": "alud",
+      "executableName": "alud"
+    },
+    {
+      "@type": "SoftwareLibrary",
+      "name": "github.com/rug-compling/alud"
+    }
+  ]
 }
