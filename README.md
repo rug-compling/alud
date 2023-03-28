@@ -1,6 +1,6 @@
 # Van Alpino naar Universal Dependencies
 
-A [Go](https://golang.org/) package for deriving [Universal Dependencies](https://universaldependencies.org/) from Dutch sentences parsed with [Alpino](https://www.let.rug.nl/vannoord/alp/Alpino/).
+A [Go](https://go.dev/) package for deriving [Universal Dependencies](https://universaldependencies.org/) from Dutch sentences parsed with [Alpino](https://www.let.rug.nl/vannoord/alp/Alpino/).
 
 [![GoDoc](https://godoc.org/github.com/rug-compling/alud/v2?status.svg)](https://godoc.org/github.com/rug-compling/alud/v2)
 ![Technology Readiness Stage 4/4 - The technology is complete, stable and deployed in production scenarios for end-users](https://w3id.org/research-technology-readiness-levels/Stage4Complete.svg)
