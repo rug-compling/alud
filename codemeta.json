@@ -34,9 +34,9 @@
   "description": "A Go package for deriving Universal Dependencies from Dutch sentences parsed with Alpino",
   "dateCreated": "2019-06-30",
   "datePublished": "2019-11-27",
-  "dateModified": "2023-03-24",
-  "version": "2.8.10",
-  "releaseNotes": "updated codemeta.json",
+  "dateModified": "2023-03-31",
+  "version": "2.12.0",
+  "releaseNotes": "Release for UD version 2.12",
   "codeRepository": "git+https://github.com/rug-compling/alud.git",
   "issueTracker": "https://github.com/rug-compling/alud/issues",
   "license": "https://spdx.org/licenses/BSD-2-Clause",
@@ -124,5 +124,45 @@
       "@type": "SoftwareLibrary",
       "name": "github.com/rug-compling/alud"
     }
-  ]
+  ],
+  "referencePublication": [
+    {
+      "@type": "ScholarlyArticle",
+      "sameAs": "https://research.rug.nl/en/publications/increasing-return-on-annotation-investment-the-automatic-construc",
+      "name": "Increasing return on annotation investment: the automatic construction of a Universal Dependency treebank for Dutch",
+      "author": ["Gosse Bouma", "Gertjan van Noord"],
+      "isPartOf": {
+        "@type": "PublicationIssue",
+        "datePublished": "2017",
+        "name": "Proceedings of the NoDaLiDa 2017 Workshop on Universal Dependencies (UDW 2017)",
+        "pageStart": "19",
+        "pageEnd": "26"
+      },
+      "url": "https://research.rug.nl/files/50364749/Increasing_return_on_annotation_investment.pdf"
+    },
+    {
+      "@type": "ScholarlyArticle",
+      "sameAs": "https://research.rug.nl/en/publications/comparing-two-methods-for-adding-enhanced-dependencies-to-ud-tree",
+      "name": "Comparing two methods for adding Enhanced Dependencies to UD treebanks",
+      "author": "Gosse Bouma",
+      "isPartOf": {
+        "@type": "PublicationIssue",
+        "datePublished": "2018",
+        "name": "Proceedings of the 17th International Workshop on Treebanks and Linguistic Theories (TLT 2018), December 13–14, 2018, Oslo University, Norway",
+        "location": "Linköping, Sweden",
+        "pageStart": "17",
+        "pageEnd": "30"
+      }
+    }
+  ],
+  "funding": {
+    "@type": "Grant",
+    "name": "Projectnummer CP-WP3-19-004, PaQuUd, Parse and Query with Universal Dependencies",
+    "url": "https://www.clariah.nl/wp3-linguistics",
+    "funder": {
+      "@type": "Organization",
+      "name": "Clariah",
+      "url": "https://www.clariah.nl/"
+    }
+  }
 }
