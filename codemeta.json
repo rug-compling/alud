@@ -38,6 +38,7 @@
   "version": "2.12.0",
   "releaseNotes": "Release for UD version 2.12",
   "codeRepository": "git+https://github.com/rug-compling/alud.git",
+  "readme": "https://github.com/rug-compling/alud/blob/master/README.md",
   "issueTracker": "https://github.com/rug-compling/alud/issues",
   "license": "https://spdx.org/licenses/BSD-2-Clause",
   "developmentStatus": [
@@ -88,7 +89,7 @@
       "@id": "https://orcid.org/0000-0003-1106-3181",
       "givenName": "Gosse",
       "familyName": "Bouma",
-      "email": "g.bouma@rug.nl",
+      "email": "mailto:g.bouma@rug.nl",
       "affiliation": {
         "@type": "Organization",
         "name": "Computationele semantiek, Faculteit der Letteren, Rijskuniversiteit Groningen"
@@ -99,7 +100,7 @@
       "@id": "https://orcid.org/0000-0001-8364-3201",
       "givenName": "Peter",
       "familyName": "Kleiweg",
-      "email": "p.c.j.kleiweg@rug.nl",
+      "email": "mailto:p.c.j.kleiweg@rug.nl",
       "affiliation": {
         "@type": "Organization",
         "name": "Taaltechnologie, Faculteit der Letteren, Rijksuniversiteit Groningen"
