@@ -1,0 +1,119 @@
+@prefix codemeta: <https://codemeta.github.io/terms/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix stype: <https://w3id.org/software-types#> .
+
+<https://rug-compling.github.io/alud/> a schema:SoftwareSourceCode ;
+    schema:applicationCategory <https://vocabs.dariah.eu/tadirah/structuralAnalysis>,
+        <https://w3id.org/nwo-research-fields#ComputationalLinguisticsandPhilology>,
+        <https://w3id.org/nwo-research-fields#Linguistics>,
+        <https://w3id.org/nwo-research-fields#SoftwareForHumanities> ;
+    schema:author ( _:gbouma _:pkleiweg ) ;
+    schema:codeRepository <https://github.com/rug-compling/alud.git> ;
+    schema:dateCreated "2019-06-30"^^schema:Date ;
+    schema:dateModified "2023-04-07"^^schema:Date ;
+    schema:datePublished "2019-11-27"^^schema:Date ;
+    schema:description "A Go package for deriving Universal Dependencies from Dutch sentences parsed with Alpino" ;
+    schema:downloadUrl <https://github.com/rug-compling/alud/archive/refs/heads/master.zip> ;
+    schema:keywords "Alpino",
+        "UD: Universal Dependencies" ;
+    schema:license <https://spdx.org/licenses/BSD-2-Clause> ;
+    schema:name "alud" ;
+    schema:operatingSystem "aix",
+        "android",
+        "darwin",
+        "dragonfly",
+        "freebsd",
+        "illumos",
+        "ios",
+        "js",
+        "linux",
+        "netbsd",
+        "openbsd",
+        "plan9",
+        "solaris",
+        "windows" ;
+    schema:producer _:cl ;
+    schema:programmingLanguage "Go" ;
+    schema:releaseNotes <https://github.com/rug-compling/alud/blob/master/Changes.txt> ;
+    schema:softwareHelp [ a schema:WebSite ;
+            schema:name "alud package - github.com/rug-compling/alud/v2 - Go Packages" ;
+            schema:url <https://pkg.go.dev/github.com/rug-compling/alud/v2> ] ;
+    schema:targetProduct [ a stype:CommandLineApplication ;
+            schema:name "alud" ;
+            stype:executableName "alud" ],
+        [ a stype:SoftwareLibrary ;
+            schema:name "github.com/rug-compling/alud" ] ;
+    schema:version "2.12.1" ;
+    codemeta:developmentStatus <https://w3id.org/research-technology-readiness-levels#Stage4Complete>,
+        <https://www.repostatus.org/#active> ;
+    codemeta:funding [ a schema:Grant ;
+            schema:funder [ a schema:Organization ;
+                    schema:name "Clariah" ;
+                    schema:url <https://www.clariah.nl/> ] ;
+            schema:name "Projectnummer CP-WP3-19-004, PaQuUd, Parse and Query with Universal Dependencies" ;
+            schema:url <https://www.clariah.nl/wp3-linguistics> ] ;
+    codemeta:issueTracker <https://github.com/rug-compling/alud/issues> ;
+    codemeta:maintainer _:gbouma,
+        _:pkleiweg ;
+    codemeta:readme <https://github.com/rug-compling/alud/blob/master/README.md> ;
+    codemeta:referencePublication [ a schema:ScholarlyArticle ;
+            schema:author ( "Gosse Bouma" ) ;
+            schema:isPartOf [ a schema:PublicationIssue ;
+                    schema:datePublished "2018"^^schema:Date ;
+                    schema:location "Linköping, Sweden" ;
+                    schema:name "Proceedings of the 17th International Workshop on Treebanks and Linguistic Theories (TLT 2018), December 13–14, 2018, Oslo University, Norway" ;
+                    schema:pageEnd "30" ;
+                    schema:pageStart "17" ] ;
+            schema:name "Comparing two methods for adding Enhanced Dependencies to UD treebanks" ;
+            schema:sameAs <https://research.rug.nl/en/publications/comparing-two-methods-for-adding-enhanced-dependencies-to-ud-tree> ],
+        [ a schema:ScholarlyArticle ;
+            schema:author ( "Gosse Bouma" "Gertjan van Noord" ) ;
+            schema:isPartOf [ a schema:PublicationIssue ;
+                    schema:datePublished "2017"^^schema:Date ;
+                    schema:name "Proceedings of the NoDaLiDa 2017 Workshop on Universal Dependencies (UDW 2017)" ;
+                    schema:pageEnd "26" ;
+                    schema:pageStart "19" ] ;
+            schema:name "Increasing return on annotation investment: the automatic construction of a Universal Dependency treebank for Dutch" ;
+            schema:sameAs <https://research.rug.nl/en/publications/increasing-return-on-annotation-investment-the-automatic-construc> ;
+            schema:url <https://research.rug.nl/files/50364749/Increasing_return_on_annotation_investment.pdf> ] .
+
+_:grnNL a schema:PostalAddress ;
+    schema:addressCountry "NL" ;
+    schema:addressLocality "Groningen" ;
+    schema:addressRegion "Groningen" .
+
+_:groningen a schema:Place ;
+    schema:address _:grnNL ;
+    schema:name "Groningen" ;
+    schema:sameAs <http://www.wikidata.org/entity/Q749>,
+        <https://sws.geonames.org/2755251/> .
+
+_:rug a schema:Organization ;
+    schema:location _:groningen ;
+    schema:name "Groningen University"@en,
+        "Rijksuniversiteit Groningen"@nl ;
+    schema:sameAs <http://www.wikidata.org/entity/Q850730> ;
+    schema:url <https://www.rug.nl/> .
+
+_:gbouma a schema:Person ;
+    schema:affiliation _:cl ;
+    schema:email "mailto:g.bouma@rug.nl" ;
+    schema:familyName "Bouma" ;
+    schema:givenName "Gosse" ;
+    schema:sameAs <https://orcid.org/0000-0003-1106-3181> .
+
+_:pkleiweg a schema:Person ;
+    schema:affiliation _:cl ;
+    schema:email "mailto:p.c.j.kleiweg@rug.nl" ;
+    schema:familyName "Kleiweg" ;
+    schema:givenName "Peter" ;
+    schema:sameAs <https://orcid.org/0000-0001-8364-3201> .
+
+_:cl a schema:Organization ;
+    schema:name "Computational Linguistics, Faculty of Arts, Groningen University"@en,
+        "Computationele Taalkunde, Faculteit der Letteren, Rijksuniversiteit Groningen"@nl ;
+    schema:parentOrganization _:rug ;
+    schema:url <https://www.rug.nl/research/clcg/research/cl/> .
+
+
