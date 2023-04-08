@@ -46,6 +46,7 @@
     <schema:producer rdf:nodeID="cl"/>
     <schema:programmingLanguage>Go</schema:programmingLanguage>
     <schema:releaseNotes rdf:resource="https://github.com/rug-compling/alud/blob/master/Changes.txt"/>
+    <schema:sameAs rdf:resource="https://tools.clariah.nl/alud"/>
     <schema:softwareHelp>
       <schema:WebSite>
         <schema:name>alud package - github.com/rug-compling/alud/v2 - Go Packages</schema:name>
@@ -53,15 +54,15 @@
       </schema:WebSite>
     </schema:softwareHelp>
     <schema:targetProduct>
+      <stype:SoftwareLibrary>
+        <schema:name>github.com/rug-compling/alud</schema:name>
+      </stype:SoftwareLibrary>
+    </schema:targetProduct>
+    <schema:targetProduct>
       <stype:CommandLineApplication>
         <schema:name>alud</schema:name>
         <stype:executableName>alud</stype:executableName>
       </stype:CommandLineApplication>
-    </schema:targetProduct>
-    <schema:targetProduct>
-      <stype:SoftwareLibrary>
-        <schema:name>github.com/rug-compling/alud</schema:name>
-      </stype:SoftwareLibrary>
     </schema:targetProduct>
     <schema:version>2.12.1</schema:version>
     <codemeta:developmentStatus rdf:resource="https://w3id.org/research-technology-readiness-levels#Stage4Complete"/>
@@ -87,27 +88,6 @@
         <schema:author>
           <rdf:Description>
             <rdf:first>Gosse Bouma</rdf:first>
-            <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
-          </rdf:Description>
-        </schema:author>
-        <schema:isPartOf>
-          <schema:PublicationIssue>
-            <schema:datePublished rdf:datatype="http://schema.org/Date">2018</schema:datePublished>
-            <schema:location>Linköping, Sweden</schema:location>
-            <schema:name>Proceedings of the 17th International Workshop on Treebanks and Linguistic Theories (TLT 2018), December 13–14, 2018, Oslo University, Norway</schema:name>
-            <schema:pageEnd>30</schema:pageEnd>
-            <schema:pageStart>17</schema:pageStart>
-          </schema:PublicationIssue>
-        </schema:isPartOf>
-        <schema:name>Comparing two methods for adding Enhanced Dependencies to UD treebanks</schema:name>
-        <schema:sameAs rdf:resource="https://research.rug.nl/en/publications/comparing-two-methods-for-adding-enhanced-dependencies-to-ud-tree"/>
-      </schema:ScholarlyArticle>
-    </codemeta:referencePublication>
-    <codemeta:referencePublication>
-      <schema:ScholarlyArticle>
-        <schema:author>
-          <rdf:Description>
-            <rdf:first>Gosse Bouma</rdf:first>
             <rdf:rest>
               <rdf:Description>
                 <rdf:first>Gertjan van Noord</rdf:first>
@@ -127,6 +107,27 @@
         <schema:name>Increasing return on annotation investment: the automatic construction of a Universal Dependency treebank for Dutch</schema:name>
         <schema:sameAs rdf:resource="https://research.rug.nl/en/publications/increasing-return-on-annotation-investment-the-automatic-construc"/>
         <schema:url rdf:resource="https://research.rug.nl/files/50364749/Increasing_return_on_annotation_investment.pdf"/>
+      </schema:ScholarlyArticle>
+    </codemeta:referencePublication>
+    <codemeta:referencePublication>
+      <schema:ScholarlyArticle>
+        <schema:author>
+          <rdf:Description>
+            <rdf:first>Gosse Bouma</rdf:first>
+            <rdf:rest rdf:resource="http://www.w3.org/1999/02/22-rdf-syntax-ns#nil"/>
+          </rdf:Description>
+        </schema:author>
+        <schema:isPartOf>
+          <schema:PublicationIssue>
+            <schema:datePublished rdf:datatype="http://schema.org/Date">2018</schema:datePublished>
+            <schema:location>Linköping, Sweden</schema:location>
+            <schema:name>Proceedings of the 17th International Workshop on Treebanks and Linguistic Theories (TLT 2018), December 13–14, 2018, Oslo University, Norway</schema:name>
+            <schema:pageEnd>30</schema:pageEnd>
+            <schema:pageStart>17</schema:pageStart>
+          </schema:PublicationIssue>
+        </schema:isPartOf>
+        <schema:name>Comparing two methods for adding Enhanced Dependencies to UD treebanks</schema:name>
+        <schema:sameAs rdf:resource="https://research.rug.nl/en/publications/comparing-two-methods-for-adding-enhanced-dependencies-to-ud-tree"/>
       </schema:ScholarlyArticle>
     </codemeta:referencePublication>
   </schema:SoftwareSourceCode>

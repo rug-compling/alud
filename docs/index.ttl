@@ -36,14 +36,15 @@
     schema:producer _:cl ;
     schema:programmingLanguage "Go" ;
     schema:releaseNotes <https://github.com/rug-compling/alud/blob/master/Changes.txt> ;
+    schema:sameAs <https://tools.clariah.nl/alud> ;
     schema:softwareHelp [ a schema:WebSite ;
             schema:name "alud package - github.com/rug-compling/alud/v2 - Go Packages" ;
             schema:url <https://pkg.go.dev/github.com/rug-compling/alud/v2> ] ;
-    schema:targetProduct [ a stype:CommandLineApplication ;
+    schema:targetProduct [ a stype:SoftwareLibrary ;
+            schema:name "github.com/rug-compling/alud" ],
+        [ a stype:CommandLineApplication ;
             schema:name "alud" ;
-            stype:executableName "alud" ],
-        [ a stype:SoftwareLibrary ;
-            schema:name "github.com/rug-compling/alud" ] ;
+            stype:executableName "alud" ] ;
     schema:version "2.12.1" ;
     codemeta:developmentStatus <https://w3id.org/research-technology-readiness-levels#Stage4Complete>,
         <https://www.repostatus.org/#active> ;
@@ -58,16 +59,6 @@
         _:pkleiweg ;
     codemeta:readme <https://github.com/rug-compling/alud/blob/master/README.md> ;
     codemeta:referencePublication [ a schema:ScholarlyArticle ;
-            schema:author ( "Gosse Bouma" ) ;
-            schema:isPartOf [ a schema:PublicationIssue ;
-                    schema:datePublished "2018"^^schema:Date ;
-                    schema:location "Linköping, Sweden" ;
-                    schema:name "Proceedings of the 17th International Workshop on Treebanks and Linguistic Theories (TLT 2018), December 13–14, 2018, Oslo University, Norway" ;
-                    schema:pageEnd "30" ;
-                    schema:pageStart "17" ] ;
-            schema:name "Comparing two methods for adding Enhanced Dependencies to UD treebanks" ;
-            schema:sameAs <https://research.rug.nl/en/publications/comparing-two-methods-for-adding-enhanced-dependencies-to-ud-tree> ],
-        [ a schema:ScholarlyArticle ;
             schema:author ( "Gosse Bouma" "Gertjan van Noord" ) ;
             schema:isPartOf [ a schema:PublicationIssue ;
                     schema:datePublished "2017"^^schema:Date ;
@@ -76,7 +67,17 @@
                     schema:pageStart "19" ] ;
             schema:name "Increasing return on annotation investment: the automatic construction of a Universal Dependency treebank for Dutch" ;
             schema:sameAs <https://research.rug.nl/en/publications/increasing-return-on-annotation-investment-the-automatic-construc> ;
-            schema:url <https://research.rug.nl/files/50364749/Increasing_return_on_annotation_investment.pdf> ] .
+            schema:url <https://research.rug.nl/files/50364749/Increasing_return_on_annotation_investment.pdf> ],
+        [ a schema:ScholarlyArticle ;
+            schema:author ( "Gosse Bouma" ) ;
+            schema:isPartOf [ a schema:PublicationIssue ;
+                    schema:datePublished "2018"^^schema:Date ;
+                    schema:location "Linköping, Sweden" ;
+                    schema:name "Proceedings of the 17th International Workshop on Treebanks and Linguistic Theories (TLT 2018), December 13–14, 2018, Oslo University, Norway" ;
+                    schema:pageEnd "30" ;
+                    schema:pageStart "17" ] ;
+            schema:name "Comparing two methods for adding Enhanced Dependencies to UD treebanks" ;
+            schema:sameAs <https://research.rug.nl/en/publications/comparing-two-methods-for-adding-enhanced-dependencies-to-ud-tree> ] .
 
 _:grnNL a schema:PostalAddress ;
     schema:addressCountry "NL" ;

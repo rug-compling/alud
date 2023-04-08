@@ -10,6 +10,7 @@
   "@type": "SoftwareSourceCode",
   "name": "alud",
   "description": "A Go package for deriving Universal Dependencies from Dutch sentences parsed with Alpino",
+  "sameAs": "https://tools.clariah.nl/alud",
   "dateCreated": "2019-06-30",
   "datePublished": "2019-11-27",
   "dateModified": "2023-04-07",
