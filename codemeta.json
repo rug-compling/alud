@@ -6,7 +6,7 @@
     "https://w3id.org/software-types",
     "https://raw.githubusercontent.com/jantman/repostatus.org/master/badges/latest/ontology.jsonld"
   ],
-  "@id": "https://www.let.rug.nl/alfa/rdf/alud/",
+  "@id": "https://www.let.rug.nl/alfa/rdf/alud",
   "@type": "SoftwareSourceCode",
   "name": "alud",
   "description": "A Go package for deriving Universal Dependencies from Dutch sentences parsed with Alpino",
@@ -14,7 +14,7 @@
   "dateCreated": "2019-06-30",
   "datePublished": "2019-11-27",
   "dateModified": "2023-04-10",
-  "version": "2.12.2",
+  "version": "2.12.3",
   "releaseNotes": "https://github.com/rug-compling/alud/blob/master/Changes.txt",
   "codeRepository": "https://github.com/rug-compling/alud.git",
   "readme": "https://github.com/rug-compling/alud/blob/master/README.md",

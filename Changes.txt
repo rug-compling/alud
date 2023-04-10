@@ -1,3 +1,10 @@
+Version 2.12.3
+2023-04-10
+
+ * update codemeta.json
+ * webpage with rdf data moved to https://www.let.rug.nl/alfa/rdf/alud
+
+
 Version 2.12.2
 2023-04-10
 
