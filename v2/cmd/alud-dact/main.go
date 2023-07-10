@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/rug-compling/alud/v2/internal/util"
 	"github.com/rug-compling/alud/v2"
+	"github.com/rug-compling/alud/v2/internal/util"
 
+	"github.com/pebbe/compactcorpus"
 	"github.com/pebbe/dbxml"
 	"github.com/rug-compling/alpinods"
 
@@ -56,8 +57,10 @@ Usage, examples:
 
     %s [options] file.xml ...
     %s [options] collection.xml ...
+    %s [options] file.data.dz ...
     %s [options] file.dact ...
     find . -name '*.xml' | %s [options]
+    find . -name '*.data.dz' | %s [options]
     find . -name '*.dact' | %s [options]
 
 Options:
@@ -77,7 +80,7 @@ Options:
     -v : print version and exit
     -x : include dummy output if parse fails
 
-`, p, p, p, p, p)
+`, p, p, p, p, p, p, p)
 }
 
 func main() {
@@ -167,12 +170,30 @@ func main() {
 			continue
 		}
 
+		if strings.HasSuffix(filename, ".data.dz") {
+			multi = true
+			corpus, err := compactcorpus.Open(filename)
+			x(err)
+			r, err := corpus.NewRange()
+			x(err)
+			for r.HasNext() {
+				name, data := r.Next()
+				var sentid string
+				if *opt_i != "" {
+					sentid = reID.FindStringSubmatch(name)[1]
+				}
+				doFile(data, name, filename, sentid, options)
+			}
+			continue
+		}
+
 		b, err := ioutil.ReadFile(filename)
 		x(err)
 
 		var collection Collection
 
 		if xml.Unmarshal(b, &collection) != nil {
+			multi = false
 			var sentid string
 			if *opt_i != "" {
 				sentid = reID.FindStringSubmatch(filename)[1]
