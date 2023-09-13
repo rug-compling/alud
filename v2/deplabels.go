@@ -257,6 +257,100 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) {
 			return "cc:preconj"
 		}
+		if node.Lemma == "ver" && test(q /* $node/../node[@rel="crd" and @lemma="en"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"crd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"en"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // verder A, B, en C
+			return "cc:preconj"
+		}
+		if node.Lemma == "achtereenvolgens" && test(q /* $node/../node[@rel="crd" and @lemma="en"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"crd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"en"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // [PP door [NP achtereenvolgens A en B]]
+			return "cc:preconj"
+		}
 		if node.Lemma == "van" && test(q /* $node/../node[@rel="crd" and @lemma="tot"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -339,6 +433,68 @@ func dependencyLabel(node *nodeType, q *context) string {
 									},
 									arg2: &dElem{
 										DATA: []interface{}{"noch"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__lemma,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+							arg2: &dCmp{
+								ARG: cmp__lt,
+								arg1: &dCollect{
+									ARG: collect__attributes__begin,
+									arg1: &dVariable{
+										VAR: node,
+									},
+								},
+								arg2: &dCollect{
+									ARG:  collect__attributes__begin,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "cc:preconj"
+		}
+		if node.Lemma == "eerder" && test(q /* $node/../node[@rel="crd" and @lemma="dan" and $node/@begin < @begin ] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"crd"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"dan"},
 										arg1: &dCollect{
 											ARG:  collect__attributes__lemma,
 											arg1: &dNode{},
@@ -460,8 +616,73 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.Rel == "obcomp" {
 		return "advcl"
 	}
-	if node.Rel == "obj2" {
-		if node.Cat == "pp" {
+	if node.Rel == "obj2" { // added case for coordination of aan-PP -- GB 2/3/23
+		if node.Cat == "pp" || test(q /* $node[@cat="conj" and node[@cat="pp"]/node[@lemma="aan"]] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"conj"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG:  collect__child__node,
+									arg1: &dNode{},
+									arg2: &dPredicate{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__cat,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"pp"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dEqual{
+										ARG: equal__is,
+										arg1: &dCollect{
+											ARG:  collect__attributes__lemma,
+											arg1: &dNode{},
+										},
+										arg2: &dElem{
+											DATA: []interface{}{"aan"},
+											arg1: &dCollect{
+												ARG:  collect__attributes__lemma,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
 			return "obl"
 		}
 		return "iobj"
@@ -3250,14 +3471,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "case"
 	}
 	if node.Rel == "predm" {
-		if node.udPos == "VERB" {
-			return "xcomp"
+		if node.udPos == "VERB" || node.udPos == "ADJ" {
+			return "advcl"
 		}
-		if node.udPos == "PRON" { //floating quantifiers
-			return "obl"
-		}
-		if node.udPos == "NOUN" { // zich politiek bezoedelen
-			return "obl"
+		if node.udPos == "PRON" || node.udPos == "NOUN" { //floating quantifiers, zich politiek bezoedelen
+			return "obl" // , https://github.com/UniversalDependencies/docs/issues/581, https://github.com/UniversalDependencies/UD_French-Sequoia/issues/6,
 		}
 		if node.udPos != "" {
 			return "advmod"
@@ -4189,6 +4407,96 @@ func dependencyLabel(node *nodeType, q *context) string {
 			}) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
+			if test(q /* $node[../node[@rel="obj1" and @index and not(@pt or @cat)] and not(../@rel="cnj")] */, &xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dSort{
+							arg1: &dAnd{
+								arg1: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dAnd{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"obj1"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
+												arg2: &dCollect{
+													ARG:  collect__attributes__index,
+													arg1: &dNode{},
+												},
+											},
+											arg2: &dFunction{
+												ARG: function__not__1__args,
+												arg1: &dArg{
+													arg1: &dSort{
+														arg1: &dOr{
+															arg1: &dCollect{
+																ARG:  collect__attributes__pt,
+																arg1: &dNode{},
+															},
+															arg2: &dCollect{
+																ARG:  collect__attributes__cat,
+																arg1: &dNode{},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								arg2: &dFunction{
+									ARG: function__not__1__args,
+									arg1: &dArg{
+										arg1: &dSort{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG: collect__attributes__rel,
+													arg1: &dCollect{
+														ARG:  collect__parent__type__node,
+														arg1: &dNode{},
+													},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"cnj"},
+													arg1: &dCollect{
+														ARG: collect__attributes__rel,
+														arg1: &dCollect{
+															ARG:  collect__parent__type__node,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+				return "case" // waar-relatives with P-stranding: waar hij Gabbema voor bedankt
+			}
 			if test(q /* $node/../node[@rel=("obj1","vc","se","me") and (@pt or @cat)] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
@@ -4958,7 +5266,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 
 // add :outer to subject in copula construction with clausal predicate (whrel, other?)
 func outerSubject(subj *nodeType, q *context) string {
-	if test(q /* $subj/../node[@rel="predc" and (@cat="whrel" or (@cat="cnj" and node[@cat="whrel"]))] */, &xPath{
+	if test(q /* $subj/../node[@rel="predc" and (@cat="whrel" or (@cat="conj" and node[@cat="whrel"]))] */, &xPath{
 		arg1: &dSort{
 			arg1: &dCollect{
 				ARG: collect__child__node,
@@ -5009,7 +5317,7 @@ func outerSubject(subj *nodeType, q *context) string {
 												arg1: &dNode{},
 											},
 											arg2: &dElem{
-												DATA: []interface{}{"cnj"},
+												DATA: []interface{}{"conj"},
 												arg1: &dCollect{
 													ARG:  collect__attributes__cat,
 													arg1: &dNode{},
@@ -6186,112 +6494,104 @@ func labelVmod(node *nodeType, q *context) string {
 	}) {
 		return "advcl"
 	}
-	if test(q, /* $node[ (  node[@rel="hd" and @lemma="door"]
-		    or (@pt="bw" and ends-with(@lemma,"door"))
-		    )
-		    and parent::node[@cat="ppart"]/../node[@rel="hd" and @lemma=("zijn","worden")]
-		    and ../../node[@rel="su"]/@index = ../node[@rel="obj1"]/@index
-		] */&xPath{
+	if test(q, /* $node[ (   node[@rel="hd" and @lemma="door"]
+			                or node[@rel="cnj"]/node[@rel="hd" and @lemma="door"]
+		                    or (@pt="bw" and ends-with(@lemma,"door"))
+		                   )
+		                 ] */&xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
 					arg1: &dVariable{
 						VAR: node,
 					},
 					arg2: &dSort{
-						arg1: &dAnd{
-							arg1: &dAnd{
-								arg1: &dSort{
-									arg1: &dOr{
-										arg1: &dCollect{
-											ARG:  collect__child__node,
-											arg1: &dNode{},
-											arg2: &dPredicate{
-												arg1: &dAnd{
-													arg1: &dEqual{
-														ARG: equal__is,
-														arg1: &dCollect{
-															ARG:  collect__attributes__rel,
-															arg1: &dNode{},
-														},
-														arg2: &dElem{
-															DATA: []interface{}{"hd"},
-															arg1: &dCollect{
-																ARG:  collect__attributes__rel,
-																arg1: &dNode{},
-															},
-														},
-													},
-													arg2: &dEqual{
-														ARG: equal__is,
-														arg1: &dCollect{
-															ARG:  collect__attributes__lemma,
-															arg1: &dNode{},
-														},
-														arg2: &dElem{
-															DATA: []interface{}{"door"},
-															arg1: &dCollect{
-																ARG:  collect__attributes__lemma,
-																arg1: &dNode{},
-															},
-														},
-													},
-												},
-											},
-										},
-										arg2: &dSort{
+						arg1: &dSort{
+							arg1: &dOr{
+								arg1: &dOr{
+									arg1: &dCollect{
+										ARG:  collect__child__node,
+										arg1: &dNode{},
+										arg2: &dPredicate{
 											arg1: &dAnd{
 												arg1: &dEqual{
 													ARG: equal__is,
 													arg1: &dCollect{
-														ARG:  collect__attributes__pt,
+														ARG:  collect__attributes__rel,
 														arg1: &dNode{},
 													},
 													arg2: &dElem{
-														DATA: []interface{}{"bw"},
+														DATA: []interface{}{"hd"},
 														arg1: &dCollect{
-															ARG:  collect__attributes__pt,
+															ARG:  collect__attributes__rel,
 															arg1: &dNode{},
 														},
 													},
 												},
-												arg2: &dFunction{
-													ARG: function__ends__with__2__args,
-													arg1: &dArg{
-														arg1: &dArg{
-															arg1: &dSort{
-																arg1: &dCollect{
-																	ARG:  collect__attributes__lemma,
-																	arg1: &dNode{},
-																},
-															},
-														},
-														arg2: &dElem{
-															DATA: []interface{}{"door"},
+												arg2: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__lemma,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"door"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__lemma,
+															arg1: &dNode{},
 														},
 													},
 												},
 											},
 										},
 									},
-								},
-								arg2: &dCollect{
-									ARG: collect__child__node,
-									arg1: &dCollect{
-										ARG: collect__parent__type__node,
+									arg2: &dCollect{
+										ARG: collect__child__node,
 										arg1: &dCollect{
-											ARG:  collect__parent__node,
+											ARG:  collect__child__node,
 											arg1: &dNode{},
 											arg2: &dPredicate{
 												arg1: &dEqual{
 													ARG: equal__is,
 													arg1: &dCollect{
-														ARG:  collect__attributes__cat,
+														ARG:  collect__attributes__rel,
 														arg1: &dNode{},
 													},
 													arg2: &dElem{
-														DATA: []interface{}{"ppart"},
+														DATA: []interface{}{"cnj"},
 														arg1: &dCollect{
-															ARG:  collect__attributes__cat,
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+										},
+										arg2: &dPredicate{
+											arg1: &dAnd{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"hd"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
+												arg2: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__lemma,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"door"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__lemma,
 															arg1: &dNode{},
 														},
 													},
@@ -6299,92 +6599,36 @@ func labelVmod(node *nodeType, q *context) string {
 											},
 										},
 									},
-									arg2: &dPredicate{
-										arg1: &dAnd{
-											arg1: &dEqual{
-												ARG: equal__is,
-												arg1: &dCollect{
-													ARG:  collect__attributes__rel,
-													arg1: &dNode{},
-												},
-												arg2: &dElem{
-													DATA: []interface{}{"hd"},
-													arg1: &dCollect{
-														ARG:  collect__attributes__rel,
-														arg1: &dNode{},
-													},
-												},
-											},
-											arg2: &dEqual{
-												ARG: equal__is,
-												arg1: &dCollect{
-													ARG:  collect__attributes__lemma,
-													arg1: &dNode{},
-												},
-												arg2: &dElem{
-													DATA: []interface{}{"zijn", "worden"},
-													arg1: &dCollect{
-														ARG:  collect__attributes__lemma,
-														arg1: &dNode{},
-													},
-												},
-											},
-										},
-									},
 								},
-							},
-							arg2: &dEqual{
-								ARG: equal__is,
-								arg1: &dCollect{
-									ARG: collect__attributes__index,
-									arg1: &dCollect{
-										ARG: collect__child__node,
-										arg1: &dCollect{
-											ARG: collect__parent__type__node,
+								arg2: &dSort{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
 											arg1: &dCollect{
-												ARG:  collect__parent__type__node,
+												ARG:  collect__attributes__pt,
 												arg1: &dNode{},
 											},
-										},
-										arg2: &dPredicate{
-											arg1: &dEqual{
-												ARG: equal__is,
+											arg2: &dElem{
+												DATA: []interface{}{"bw"},
 												arg1: &dCollect{
-													ARG:  collect__attributes__rel,
+													ARG:  collect__attributes__pt,
 													arg1: &dNode{},
-												},
-												arg2: &dElem{
-													DATA: []interface{}{"su"},
-													arg1: &dCollect{
-														ARG:  collect__attributes__rel,
-														arg1: &dNode{},
-													},
 												},
 											},
 										},
-									},
-								},
-								arg2: &dCollect{
-									ARG: collect__attributes__index,
-									arg1: &dCollect{
-										ARG: collect__child__node,
-										arg1: &dCollect{
-											ARG:  collect__parent__type__node,
-											arg1: &dNode{},
-										},
-										arg2: &dPredicate{
-											arg1: &dEqual{
-												ARG: equal__is,
-												arg1: &dCollect{
-													ARG:  collect__attributes__rel,
-													arg1: &dNode{},
+										arg2: &dFunction{
+											ARG: function__ends__with__2__args,
+											arg1: &dArg{
+												arg1: &dArg{
+													arg1: &dSort{
+														arg1: &dCollect{
+															ARG:  collect__attributes__lemma,
+															arg1: &dNode{},
+														},
+													},
 												},
 												arg2: &dElem{
-													DATA: []interface{}{"obj1"},
-													arg1: &dCollect{
-														ARG:  collect__attributes__rel,
-														arg1: &dNode{},
-													},
+													DATA: []interface{}{"door"},
 												},
 											},
 										},
@@ -6396,14 +6640,65 @@ func labelVmod(node *nodeType, q *context) string {
 				},
 			},
 		}) {
-		return "obl:agent"
-		/*
-			but NOT: door rookontwikkeling om het leven gekomen
-			-- already filtered by constraint of su/obj1 control
-			NOT: bij Bakema is een stoeptegel door de ruit gegooid
-			NO/YES: hierdoor werd Prince door het grote publiek ontdekt
-		*/
+		if aux, err := auxiliary1(n1(find(q /* $node/../../node[@rel="hd" and @lemma=("zijn","worden")] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dVariable{
+								VAR: node,
+							},
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"zijn", "worden"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})), q); err == nil && aux == "aux:pass" {
+			return "obl:agent"
+		}
 	}
+	/*
+		but NOT: door rookontwikkeling om het leven gekomen
+		-- already filtered by constraint of su/obj1 control or @sc=passive (cheating, for impersonal passives) GB 20/04/23
+		NOT: bij Bakema is een stoeptegel door de ruit gegooid
+		NO/YES: hierdoor werd Prince door het grote publiek ontdekt
+		ADDED: coordination cases GB 11/04/23
+	*/
+
 	if test(q /* $node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","VERB","PRON","PROPN","X","PUNCT","SYM","ADP") ] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
@@ -6693,11 +6988,44 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 		if head.Rel == "su" {
 			return "nsubj:pass"
 		}
+		if test(q /* $gap/../@cat="pp" */, &xPath{
+			arg1: &dSort{
+				arg1: &dEqual{
+					ARG: equal__is,
+					arg1: &dCollect{
+						ARG: collect__attributes__cat,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dVariable{
+								VAR: gap,
+							},
+						},
+					},
+					arg2: &dElem{
+						DATA: []interface{}{"pp"},
+						arg1: &dCollect{
+							ARG: collect__attributes__cat,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dVariable{
+									VAR: gap,
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // waar men de patienten [ i naar toe] schuift om hen vervolgens te vergeten . ✤
+			return "obl"
+		}
 		return "obj" // ppart coordination -- see comment above
 	}
 	if gap.Rel == "obj2" {
 		if head.udPos == "ADV" {
 			return "advmod"
+		}
+		if head.udPos == "ADP" { // fixed for questions 'aan wie werd het gegeven' -- GB 2/3/23
+			return "obl"
 		}
 		return "iobj"
 	}

@@ -288,10 +288,16 @@ func distributeConjuncts(node *nodeType, q *context) []depT {
 		}
 	}()
 
+	// ensure obl:agent is only added if conj is introduced by 'door' GB 17/04/23
 	if node.udRelation == "conj" {
 		coordHead := n1(FIND(q, `$q.varallnodes[@end = $node/@ud:HeadPosition
 	       and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")]`))
-		if coordHead != noNode {
+		casee := n1(FIND(q, `($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[1]`))
+		caselemma := enhancedLemmaString1(casee, q)
+		if coordHead.udRelation == "obl:agent" && caselemma == "door" {
+			depLabel := "obl:agent"
+			return []depT{{head: coordHead.udHeadPosition, dep: depLabel}}
+		} else if coordHead != noNode {
 			// in A en B vs in A en naast B --> use enh_dep_label($node) in the latter case...
 			depLabel := enhanceDependencyLabel(coordHead, q)
 			return []depT{{head: coordHead.udHeadPosition, dep: depLabel}}
@@ -465,15 +471,19 @@ func enhancedLemmaString(nodes []interface{}, q *context) string {
 func enhancedLemmaString1(node *nodeType, q *context) string {
 	var lemma string
 	switch node.Lemma {
+	case "&":
+		lemma = "en"
 	case "a.k.a":
 		lemma = "also_known_as"
-	case "c.q.":
+	case "c.q.", "casu quo":
 		lemma = "casu_quo"
 	case "cum suis":
 		lemma = "cum_suis"
+	case "de dato":
+		lemma = "dd"
 	case "dwz.", "d.w.z.", "dat wil zeggen":
 		lemma = "dat_wil_zeggen"
-	case "e.d.":
+	case "e.d.", "en dergelijke":
 		lemma = "en_dergelijk"
 	case "en/of":
 		lemma = "en_of"
@@ -499,6 +509,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "te_aan_zien_van"
 	case "t.g.v.":
 		lemma = "ten_gunste_van"
+	case "ten gevolge van":
+		lemma = "tengevolge_van"
 	case "t.n.v.":
 		lemma = "ten_name_van"
 	case "t.o.v.", "ten opzichte van":
@@ -534,5 +546,6 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 	lemma = strings.Replace(lemma, "te_aanzien_van", "te_aan_zien_van", -1)
 	lemma = strings.Replace(lemma, "te_gunst_van", "ten_gunste_van", -1)
 	lemma = strings.Replace(lemma, "dat_willen_zeggen", "dat_wil_zeggen", -1)
+	lemma = strings.Replace(lemma, " ", "_", -1) // default for expanded abbreviations GB 2/3/23
 	return strings.ToLower(lemma)
 }

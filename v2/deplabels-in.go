@@ -63,8 +63,8 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.Rel == "obcomp" {
 		return "advcl"
 	}
-	if node.Rel == "obj2" {
-		if node.Cat == "pp" {
+	if node.Rel == "obj2" { // added case for coordination of aan-PP -- GB 2/3/23
+		if node.Cat == "pp" || TEST(q, `$node[@cat="conj" and node[@cat="pp"]/node[@lemma="aan"]]`) {
 			return "obl"
 		}
 		return "iobj"
@@ -307,11 +307,8 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.udPos == "VERB" || node.udPos == "ADJ" {
 			return "advcl"
 		}
-		if node.udPos == "PRON" { //floating quantifiers
-			return "obl"
-		}
-		if node.udPos == "NOUN" { // zich politiek bezoedelen
-			return "obl"
+		if node.udPos == "PRON" || node.udPos == "NOUN" { //floating quantifiers, zich politiek bezoedelen
+			return "obl" // , https://github.com/UniversalDependencies/docs/issues/581, https://github.com/UniversalDependencies/UD_French-Sequoia/issues/6,
 		}
 		if node.udPos != "" {
 			return "advmod"
@@ -618,20 +615,23 @@ func labelVmod(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat="pp"]/node[@rel="vc"]`) {
 		return "advcl"
 	}
-	if TEST(q, `$node[ (  node[@rel="hd" and @lemma="door"]
-	                                  or (@pt="bw" and ends-with(@lemma,"door"))
-	                                  )
-	                                  and parent::node[@cat="ppart"]/../node[@rel="hd" and @lemma=("zijn","worden")]
-	                                  and ../../node[@rel="su"]/@index = ../node[@rel="obj1"]/@index
-	                              ]`) {
-		return "obl:agent"
-		/*
-			but NOT: door rookontwikkeling om het leven gekomen
-			-- already filtered by constraint of su/obj1 control
-			NOT: bij Bakema is een stoeptegel door de ruit gegooid
-			NO/YES: hierdoor werd Prince door het grote publiek ontdekt
-		*/
+	if TEST(q, `$node[ (   node[@rel="hd" and @lemma="door"]
+		                or node[@rel="cnj"]/node[@rel="hd" and @lemma="door"]
+	                    or (@pt="bw" and ends-with(@lemma,"door"))
+	                   )
+	                 ]`) {
+		if aux, err := auxiliary1(n1(FIND(q, `$node/../../node[@rel="hd" and @lemma=("zijn","worden")]`)), q); err == nil && aux == "aux:pass" {
+			return "obl:agent"
+		}
 	}
+	/*
+		but NOT: door rookontwikkeling om het leven gekomen
+		-- already filtered by constraint of su/obj1 control or @sc=passive (cheating, for impersonal passives) GB 20/04/23
+		NOT: bij Bakema is een stoeptegel door de ruit gegooid
+		NO/YES: hierdoor werd Prince door het grote publiek ontdekt
+		ADDED: coordination cases GB 11/04/23
+	*/
+
 	if TEST(q, `$node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","VERB","PRON","PROPN","X","PUNCT","SYM","ADP") ]`) {
 		return "obl"
 	}
@@ -683,6 +683,9 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 	if gap.Rel == "obj2" {
 		if head.udPos == "ADV" {
 			return "advmod"
+		}
+		if head.udPos == "ADP" { // fixed for questions 'aan wie werd het gegeven' -- GB 2/3/23
+			return "obl"
 		}
 		return "iobj"
 	}
