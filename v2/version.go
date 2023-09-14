@@ -15,4 +15,4 @@ Zie:
 
 */
 
-const version = "2.12.3"
+const version = "2.13.0"
