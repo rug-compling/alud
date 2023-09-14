@@ -72,7 +72,7 @@ Options:
     -f : don't fix punctuation
     -i regexp : make sent_id from regexp applied to filename
                 example: /skip/this/prefix/(.*).xml
-    -m : don't fix misplaced heads in coordication
+    -m : don't fix misplaced heads in coordination
     -M : don't copy metadata to comments
     -p : panic on error
     -s : include short error comments if parse fails
