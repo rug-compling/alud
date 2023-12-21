@@ -891,7 +891,7 @@ func enhanceDependencyLabel(node *nodeType, q *context) string {
 		}
 	}
 
-	if label == "nmod" || label == "obl" {
+	if label == "nmod" || label == "obl" || label == "obl:arg" {
 		if casee := n1(find(q /* ($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[1] */, &xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
@@ -1167,7 +1167,7 @@ func distributeConjuncts(node *nodeType, q *context) []depT {
 	// ensure obl:agent is only added if conj is introduced by 'door' GB 17/04/23
 	if node.udRelation == "conj" {
 		coordHead := n1(find(q, /* $q.varallnodes[@end = $node/@ud:HeadPosition
-			   and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")] */&xPath{
+			and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","obl:arg","advcl")] */&xPath{
 				arg1: &dSort{
 					arg1: &dFilter{
 						arg1: &dVariable{
@@ -1195,7 +1195,7 @@ func distributeConjuncts(node *nodeType, q *context) []depT {
 										arg1: &dNode{},
 									},
 									arg2: &dElem{
-										DATA: []interface{}{"amod", "appos", "nmod", "nsubj", "nsubj:pass", "nummod", "obj", "iobj", "obl", "obl:agent", "advcl"},
+										DATA: []interface{}{"amod", "appos", "nmod", "nsubj", "nsubj:pass", "nummod", "obj", "iobj", "obl", "obl:agent", "obl:arg", "advcl"},
 										arg1: &dCollect{
 											ARG:  collect__attributes__ud_3aRelation,
 											arg1: &dNode{},

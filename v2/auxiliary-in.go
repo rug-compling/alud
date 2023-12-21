@@ -25,15 +25,10 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 		return "verb", nil
 	}
 
-	if TEST(q, `$node[not(../node[@rel=("obj1","se","vc")]) and
-			        (: ud documentation suggests 1 cop per lg, van Eynde suggests much more, compromise: the traditional ones :)
-			        (: @lemma=("zijn","lijken","blijken","blijven","schijnen","heten","voorkomen","worden","dunken") and :)
-			        @lemma="zijn" and
-		             (:    ( contains(@sc,'copula') or
-		                   contains(@sc,'pred')   or
-		                   contains(@sc,'cleft')  or :)
-		                   ../node[@rel="predc"]
-		                  ]`) {
+	if TEST(q, `$node[@lemma="zijn" and 
+		              ../node[@rel="predc"] and 
+		              not(../node[@rel=("obj1","se","vc")])  
+			         ]`) {
 		return "cop", nil
 	}
 
@@ -64,15 +59,16 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 	// hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses GB 18/03/21
 	// dangling aux in gapped coordination
 	// ze hebben thuis nog een varken zitten -- hebben as aci verb takes a obj1 and vc, but is not aux in this construction GB 10/01/23
-	if TEST(q, `$node[not(../node[@rel=("predc","obj1")]) and
-	                   ( ../node[@rel="vc"  and
+	// van plan zijn -- exclude svp sister as well (otherwise, svp ends up as compound:prt of the embedded verb ) GB 20/11/23
+	if TEST(q, `$node[@lemma=("hebben","kunnen","moeten","mogen","zijn","zullen")  and
+                      ( ../node[@rel="vc"  and
 	                              ( @cat=("ppart","inf","ti") or
 	                                ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
 	                                ( @index and not(@pt or @cat))  
 	                              )
-	                            ]   and
-	                     @lemma=("hebben","kunnen","moeten","mogen","zijn","zullen")
-	                   )
+	                            ]   	                 
+	                   ) and 
+	                   not(../node[@rel=("predc","obj1","svp")]) 
 	                 
 	               ]`) {
 		return "aux", nil

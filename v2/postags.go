@@ -63,16 +63,19 @@ func universalPosTags(node *nodeType, q *context) string {
 		if node.Spectype == "deeleigen" {
 			return "PROPN"
 		}
-		if node.Spectype == "symb" || node.Spectype == "enof" || node.Spectype == "afgebr" || node.Spectype == "vreemd" {
-			if node.Rel == "det" || node.parent.Rel == "det" {
-				return "DET"
-			}
+		if node.Rel == "crd" { //resp. 33 en 44 %
+			return "CCONJ" // exception needed to avoid validation errors
+		}
+		if node.Rel == "det" || node.parent.Rel == "det" { //49% (symb), zes- a zevenduizend (afgebr), the (vreemd) zijn/haar (enof)
+			return "DET" // exception needed to avoid validation errors
+		}
+		if node.Spectype == "symb" { // 49%
 			return "SYM"
 		}
 		if node.Spectype == "afk" && node.Rel == "hd" && node.parent.Cat == "ap" { // incl. Rwanda
 			return "ADJ"
 		}
-		return "X" // afk vreemd afgebr enof meta
+		return "X" // vreemd afgebr meta enof
 	}
 	if pt == "tsw" {
 		if rel == "mod" {

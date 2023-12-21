@@ -6699,6 +6699,49 @@ func labelVmod(node *nodeType, q *context) string {
 		ADDED: coordination cases GB 11/04/23
 	*/
 
+	if test(q /* $node[@cat=("pp","conj") and @rel="pc"] */, &xPath{
+		arg1: &dSort{
+			arg1: &dFilter{
+				arg1: &dVariable{
+					VAR: node,
+				},
+				arg2: &dSort{
+					arg1: &dAnd{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__cat,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"pp", "conj"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+							},
+						},
+						arg2: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__rel,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"pc"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) { // added GB 20/11/23
+		return "obl:arg" // what about enhanced deps (obl:arg:aan ? yes, see CZ treebanks)
+	}
 	if test(q /* $node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","VERB","PRON","PROPN","X","PUNCT","SYM","ADP") ] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
@@ -7061,7 +7104,7 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 					},
 				},
 			},
-		}) {
+		}) { // is dit onzin? de head kan een pp met een np inside zijn, maar dat zegt niets over nmod, dit moet gewoon obl zijn GB 17/11/23
 			return "nmod"
 		}
 		if test(q /* $head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")] */, &xPath{

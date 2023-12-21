@@ -239,7 +239,7 @@ func enhanceDependencyLabel(node *nodeType, q *context) string {
 		}
 	}
 
-	if label == "nmod" || label == "obl" {
+	if label == "nmod" || label == "obl" || label == "obl:arg" {
 		if casee := n1(FIND(q, `($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[1]`)); casee != noNode {
 			return join(label, enhancedLemmaString1(casee, q))
 		}
@@ -291,7 +291,7 @@ func distributeConjuncts(node *nodeType, q *context) []depT {
 	// ensure obl:agent is only added if conj is introduced by 'door' GB 17/04/23
 	if node.udRelation == "conj" {
 		coordHead := n1(FIND(q, `$q.varallnodes[@end = $node/@ud:HeadPosition
-	       and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","advcl")]`))
+		and @ud:Relation=("amod","appos","nmod","nsubj","nsubj:pass","nummod","obj","iobj","obl","obl:agent","obl:arg","advcl")]`))
 		casee := n1(FIND(q, `($q.varptnodes[@ud:ERelation="case" and @ud:EHeadPosition=$node/@end])[1]`))
 		caselemma := enhancedLemmaString1(casee, q)
 		if coordHead.udRelation == "obl:agent" && caselemma == "door" {

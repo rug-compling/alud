@@ -632,6 +632,9 @@ func labelVmod(node *nodeType, q *context) string {
 		ADDED: coordination cases GB 11/04/23
 	*/
 
+	if TEST(q, `$node[@cat=("pp","conj") and @rel="pc"]`) { // added GB 20/11/23
+		return "obl:arg" // what about enhanced deps (obl:arg:aan ? yes, see CZ treebanks)
+	}
 	if TEST(q, `$node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","VERB","PRON","PROPN","X","PUNCT","SYM","ADP") ]`) {
 		return "obl"
 	}
@@ -696,7 +699,7 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 		return dependencyLabel(gap, q)
 	}
 	if gap.Rel == "pc" || gap.Rel == "ld" {
-		if TEST(q, `$head/node[@rel="obj1"]`) {
+		if TEST(q, `$head/node[@rel="obj1"]`) { // is dit onzin? de head kan een pp met een np inside zijn, maar dat zegt niets over nmod, dit moet gewoon obl zijn GB 17/11/23
 			return "nmod"
 		}
 		if TEST(q, `$head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")]`) {

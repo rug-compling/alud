@@ -26,15 +26,10 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 		return "verb", nil
 	}
 
-	if test(q, /* $node[not(../node[@rel=("obj1","se","vc")]) and
-			        (: ud documentation suggests 1 cop per lg, van Eynde suggests much more, compromise: the traditional ones :)
-			        (: @lemma=("zijn","lijken","blijken","blijven","schijnen","heten","voorkomen","worden","dunken") and :)
-			        @lemma="zijn" and
-		             (:    ( contains(@sc,'copula') or
-		                   contains(@sc,'pred')   or
-		                   contains(@sc,'cleft')  or :)
-		                   ../node[@rel="predc"]
-		                  ] */&xPath{
+	if test(q, /* $node[@lemma="zijn" and
+		              ../node[@rel="predc"] and
+		              not(../node[@rel=("obj1","se","vc")])
+			         ] */&xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
 					arg1: &dVariable{
@@ -43,37 +38,7 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 					arg2: &dSort{
 						arg1: &dAnd{
 							arg1: &dAnd{
-								arg1: &dFunction{
-									ARG: function__not__1__args,
-									arg1: &dArg{
-										arg1: &dSort{
-											arg1: &dCollect{
-												ARG: collect__child__node,
-												arg1: &dCollect{
-													ARG:  collect__parent__type__node,
-													arg1: &dNode{},
-												},
-												arg2: &dPredicate{
-													arg1: &dEqual{
-														ARG: equal__is,
-														arg1: &dCollect{
-															ARG:  collect__attributes__rel,
-															arg1: &dNode{},
-														},
-														arg2: &dElem{
-															DATA: []interface{}{"obj1", "se", "vc"},
-															arg1: &dCollect{
-																ARG:  collect__attributes__rel,
-																arg1: &dNode{},
-															},
-														},
-													},
-												},
-											},
-										},
-									},
-								},
-								arg2: &dEqual{
+								arg1: &dEqual{
 									ARG: equal__is,
 									arg1: &dCollect{
 										ARG:  collect__attributes__lemma,
@@ -87,25 +52,55 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 										},
 									},
 								},
-							},
-							arg2: &dCollect{
-								ARG: collect__child__node,
-								arg1: &dCollect{
-									ARG:  collect__parent__type__node,
-									arg1: &dNode{},
-								},
-								arg2: &dPredicate{
-									arg1: &dEqual{
-										ARG: equal__is,
-										arg1: &dCollect{
-											ARG:  collect__attributes__rel,
-											arg1: &dNode{},
-										},
-										arg2: &dElem{
-											DATA: []interface{}{"predc"},
+								arg2: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+									arg2: &dPredicate{
+										arg1: &dEqual{
+											ARG: equal__is,
 											arg1: &dCollect{
 												ARG:  collect__attributes__rel,
 												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"predc"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dFunction{
+								ARG: function__not__1__args,
+								arg1: &dArg{
+									arg1: &dSort{
+										arg1: &dCollect{
+											ARG: collect__child__node,
+											arg1: &dCollect{
+												ARG:  collect__parent__type__node,
+												arg1: &dNode{},
+											},
+											arg2: &dPredicate{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"obj1", "se", "vc"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
 											},
 										},
 									},
@@ -761,17 +756,18 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 	// hij heeft als opdracht stammen uit elkaar te houden  , removed starts-with(sc,aux) as less reliable in automatic parses GB 18/03/21
 	// dangling aux in gapped coordination
 	// ze hebben thuis nog een varken zitten -- hebben as aci verb takes a obj1 and vc, but is not aux in this construction GB 10/01/23
-	if test(q, /* $node[not(../node[@rel=("predc","obj1")]) and
-		    ( ../node[@rel="vc"  and
-		               ( @cat=("ppart","inf","ti") or
-		                 ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
-		                 ( @index and not(@pt or @cat))
-		               )
-		             ]   and
-		      @lemma=("hebben","kunnen","moeten","mogen","zijn","zullen")
-		    )
+	// van plan zijn -- exclude svp sister as well (otherwise, svp ends up as compound:prt of the embedded verb ) GB 20/11/23
+	if test(q, /* $node[@lemma=("hebben","kunnen","moeten","mogen","zijn","zullen")  and
+		                      ( ../node[@rel="vc"  and
+			                              ( @cat=("ppart","inf","ti") or
+			                                ( @cat="conj" and node[@rel="cnj" and @cat=("ppart","inf","ti")] ) or
+			                                ( @index and not(@pt or @cat))
+			                              )
+			                            ]
+			                   ) and
+			                   not(../node[@rel=("predc","obj1","svp")])
 
-		] */&xPath{
+			               ] */&xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
 					arg1: &dVariable{
@@ -779,38 +775,22 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 					},
 					arg2: &dSort{
 						arg1: &dAnd{
-							arg1: &dFunction{
-								ARG: function__not__1__args,
-								arg1: &dArg{
-									arg1: &dSort{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"hebben", "kunnen", "moeten", "mogen", "zijn", "zullen"},
 										arg1: &dCollect{
-											ARG: collect__child__node,
-											arg1: &dCollect{
-												ARG:  collect__parent__type__node,
-												arg1: &dNode{},
-											},
-											arg2: &dPredicate{
-												arg1: &dEqual{
-													ARG: equal__is,
-													arg1: &dCollect{
-														ARG:  collect__attributes__rel,
-														arg1: &dNode{},
-													},
-													arg2: &dElem{
-														DATA: []interface{}{"predc", "obj1"},
-														arg1: &dCollect{
-															ARG:  collect__attributes__rel,
-															arg1: &dNode{},
-														},
-													},
-												},
-											},
+											ARG:  collect__attributes__lemma,
+											arg1: &dNode{},
 										},
 									},
 								},
-							},
-							arg2: &dSort{
-								arg1: &dAnd{
+								arg2: &dSort{
 									arg1: &dCollect{
 										ARG: collect__child__node,
 										arg1: &dCollect{
@@ -935,17 +915,33 @@ func auxiliary1(node *nodeType, q *context) (aux string, err error) {
 											},
 										},
 									},
-									arg2: &dEqual{
-										ARG: equal__is,
+								},
+							},
+							arg2: &dFunction{
+								ARG: function__not__1__args,
+								arg1: &dArg{
+									arg1: &dSort{
 										arg1: &dCollect{
-											ARG:  collect__attributes__lemma,
-											arg1: &dNode{},
-										},
-										arg2: &dElem{
-											DATA: []interface{}{"hebben", "kunnen", "moeten", "mogen", "zijn", "zullen"},
+											ARG: collect__child__node,
 											arg1: &dCollect{
-												ARG:  collect__attributes__lemma,
+												ARG:  collect__parent__type__node,
 												arg1: &dNode{},
+											},
+											arg2: &dPredicate{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"predc", "obj1", "svp"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
 											},
 										},
 									},
