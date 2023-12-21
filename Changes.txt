@@ -1,3 +1,21 @@
+Version 2.13.0
+2023-09-14
+
+ * UD parser
+     * added case for coordination of aan-PP -- GB 2/3/23
+     * floating quantifiers, zich politiek bezoedelen
+           https://github.com/UniversalDependencies/docs/issues/581
+           https://github.com/UniversalDependencies/UD_French-Sequoia/issues/6
+     * some coordination cases GB 11/04/23
+     * fixed for questions 'aan wie werd het gegeven' -- GB 2/3/23
+     * ensure obl:agent is only added if conj is introduced by 'door' GB 17/04/23
+     * some abbreviations
+ * other
+     * update codemeta.json to 2.13.0
+     * alpino_ds.dtd version 1.16
+     * cmd/alud, cmd/alud-dact: support for compact corpora
+
+
 Version 2.12.3
 2023-04-10
 
