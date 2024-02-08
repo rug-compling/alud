@@ -2,5 +2,6 @@ github.com/pebbe/compactcorpus v1.0.1 h1:7aOH+wWmBXj1Q36YOv7YYIkt5M+r6jng/eMi4Nj
 github.com/pebbe/compactcorpus v1.0.1/go.mod h1:SSpTeCZataCjjs82RJb8SOGdjkB3PlR7Z19EY4rInoQ=
 github.com/pebbe/dbxml v1.3.1 h1:36vm7gj4e4rYic6TaHT3MCt9EjaIJPqSjJGARSAjjxc=
 github.com/pebbe/dbxml v1.3.1/go.mod h1:g5Nu8pQcuIsuZveVYYZmqgya//k4SLbtVhnZ6DDuyN4=
-github.com/rug-compling/alpinods v1.16.2 h1:fsbjU4hy6o6GSPlBIuCR3m5zZUtHsk95HMm2c34We30=
 github.com/rug-compling/alpinods v1.16.2/go.mod h1:R3BBX8RIw9InVqHZ+1W+MsX8WX8uBkoVNNGE38mqF1Q=
+github.com/rug-compling/alpinods v1.16.3 h1:28KB7fB49ODrsa7h9x95GTXyi+1r6VzYe070zVQwdrE=
+github.com/rug-compling/alpinods v1.16.3/go.mod h1:R3BBX8RIw9InVqHZ+1W+MsX8WX8uBkoVNNGE38mqF1Q=
