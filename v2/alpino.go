@@ -1,14 +1,14 @@
 package alud
 
 import (
-	"github.com/rug-compling/alpinods"
-
 	"encoding/xml"
 	"fmt"
 	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
+
+	"github.com/rug-compling/alpinods"
 )
 
 var (
@@ -33,7 +33,6 @@ var (
 //
 // The value from auto is copied to the output.
 func Alpino(alpino_doc []byte, conllu, auto string) (alpino string, err error) {
-
 	defer func() {
 		if r := recover(); r != nil {
 			alpino = ""
@@ -70,8 +69,23 @@ func Alpino(alpino_doc []byte, conllu, auto string) (alpino string, err error) {
 // If sentid is "" it is derived from the filename.
 //
 // When err is not nil and alpino is not "" it contains the err in the alpino_ds format.
+//
+// This includes commments
+func UdAlpinoWithComments(alpino_doc []byte, filename, sentid string) (alpino string, err error) {
+	return doUdAlpino(alpino_doc, filename, sentid, 0)
+}
+
+// Derive Universal Dependencies and insert into alpino_ds format.
+//
+// If sentid is "" it is derived from the filename.
+//
+// When err is not nil and alpino is not "" it contains the err in the alpino_ds format.
 func UdAlpino(alpino_doc []byte, filename, sentid string) (alpino string, err error) {
-	conllu, q, err := ud(alpino_doc, filename, sentid, OPT_NO_COMMENTS|OPT_NO_DETOKENIZE)
+	return doUdAlpino(alpino_doc, filename, sentid, OPT_NO_COMMENTS|OPT_NO_DETOKENIZE)
+}
+
+func doUdAlpino(alpino_doc []byte, filename, sentid string, options int) (alpino string, err error) {
+	conllu, q, err := ud(alpino_doc, filename, sentid, options)
 
 	if err == nil {
 		alpinoRestore(q)
@@ -179,7 +193,6 @@ func alpinoFormat(alpino *alpino_ds) string {
 }
 
 func alpinoDo(conllu string, alpino *alpino_ds) {
-
 	lines := make([]string, 0)
 
 	for _, line := range strings.Split(conllu, "\n") {
@@ -387,8 +400,8 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 }
 
 /*
-  bedoeling:
-  - zorg ervoor dat ",omitempty" werkt
+bedoeling:
+- zorg ervoor dat ",omitempty" werkt
 */
 func minify(alpino *alpino_ds) {
 	if alpino.Metadata != nil && (alpino.Metadata.Meta == nil || len(alpino.Metadata.Meta) == 0) {
