@@ -123,6 +123,9 @@ func universalPosTags(node *nodeType, q *context) string {
 		return "PRON"
 	}
 	if pt == "vg" {
+		if rel == "rhd" && node.Lemma == "zoals" {  // 
+			return "ADV" 
+		}
 		if node.Conjtype == "neven" {
 			return "CCONJ" // V2: CONJ ==> CCONJ
 		}

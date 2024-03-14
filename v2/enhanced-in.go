@@ -473,6 +473,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 	switch node.Lemma {
 	case "&":
 		lemma = "en"
+	case "+":
+		lemma = "plus"
 	case "a.k.a":
 		lemma = "also_known_as"
 	case "c.q.", "casu quo":
@@ -483,6 +485,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "dd"
 	case "dwz.", "d.w.z.", "dat wil zeggen":
 		lemma = "dat_wil_zeggen"
+	case "e.a.", "en andere":
+		lemma = "en_andere"
 	case "e.d.", "en dergelijke":
 		lemma = "en_dergelijk"
 	case "en/of":
@@ -515,6 +519,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 		lemma = "ten_name_van"
 	case "t.o.v.", "ten opzichte van":
 		lemma = "te_opzicht_van"
+	case "tusssen":
+		lemma = "tussen"
 	default:
 		lemma = node.Lemma
 	}
@@ -546,6 +552,8 @@ func enhancedLemmaString1(node *nodeType, q *context) string {
 	lemma = strings.Replace(lemma, "te_aanzien_van", "te_aan_zien_van", -1)
 	lemma = strings.Replace(lemma, "te_gunst_van", "ten_gunste_van", -1)
 	lemma = strings.Replace(lemma, "dat_willen_zeggen", "dat_wil_zeggen", -1)
+	lemma = strings.Replace(lemma, "en andere", "en_andere", -1)
+	lemma = strings.Replace(lemma, "met name", "met_name", -1)
 	lemma = strings.Replace(lemma, " ", "_", -1) // default for expanded abbreviations GB 2/3/23
 	return strings.ToLower(lemma)
 }

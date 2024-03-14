@@ -88,7 +88,14 @@ func dependencyLabel(node *nodeType, q *context) string {
 			}
 			return "xcomp"
 		}
-		return dependencyLabel(node.parent, q) // covers gapping cases where predc is promoted to head as well
+		if TEST(q, `$node[../node[@rel="su" and (@pt or @cat)] and ../node[@rel="hd" and not(@pt or @cat)] and ../@rel="cnj"]`) { // [su _ predc] cases, here we assume predc is the hd and predc an orphan GB 8/1/24
+			if TEST(q, `$node/../node[@rel="hd" and 
+		                               ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index )]`) {
+				return dependencyLabel(node.parent, q)
+			}
+			return "orphan" // but return orphan if the missing verb is not AUX (ie X werd koning en Y koningin)
+		}
+		return dependencyLabel(node.parent, q) // covers gapping cases where predc is promoted to head as well (not anymore, see above GB 8/1/24)
 		/*
 		   hack for now: de keuze is gauw gemaakt
 		   was amod, is this more accurate??
@@ -99,8 +106,17 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.Rel == "se" {
 		return "expl:pv"
 	}
-	if node.Rel == "su" {
-		if TEST(q, `$node[../@rel=("cnj","dp","body","nucl") and ../node[@rel="hd" and not(@pt or @cat)] and not(../node[@rel=("vc","predc") and (@pt or node[@rel=("hd","cnj")  and (@pt or @cat)] )] )]`) { // gapping
+	if node.Rel == "su" { // predc can be the head, even if its own hd is empty -- GB 21/2/24
+		if TEST(q, `$node[../@rel=("cnj","dp","body","nucl") and 
+		                       ../node[@rel="hd" and 
+		                               ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]
+										and ../node[@rel="predc" and (@pt or @cat)] 
+						]`) { // gapping with predc
+			return subjectLabel(node, q)
+		}
+		if TEST(q, `$node[../@rel=("cnj","dp","body","nucl") and 
+		                  ../node[@rel="hd" and not(@pt or @cat)] and  
+		                  not(../node[@rel=("vc","XXXpredc") and (@pt or node[@rel=("hd","cnj","vc")  and (@pt or @cat)] )] )]`) { // gapping, added vc for recursive cases GB 26/2/24
 			return dependencyLabel(node.parent, q) // added nucl GB 4/3/21
 		}
 		if TEST(q, `$node[../@rel="vc" and ../node[@rel="hd" and not(@pt or @cat)]
@@ -138,6 +154,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "aux"
 		}
 		if aux == "cop" {
+			if TEST(q, `$node[../node[@rel="su" and not(@pt or @cat)] and
+	                 ../node[@rel="predc" and not(descendant-or-self::node/@pt)] and
+	                 ../@rel="cnj"]`) {
+				return "conj"
+			}
 			return "cop"
 		}
 	}
@@ -184,6 +205,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
+		if TEST(q, `$node[@cat="pp"]/node[@rel="obj1" and @index and (@pt or @cat)]`) { // binnen en buiten de kerk --> kerk becomes obl or nmod GB 4/3/24
+			return dependencyLabel(node.parent, q)
+		}
 		if node == nLeft(FIND(q, `$node/../node[@rel="cnj"]`)) { //changed picking first cnj in XML to nLeft test GB 4/3/21
 			return dependencyLabel(node.parent, q)
 		}
@@ -205,7 +229,10 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return dependencyLabel(node.parent, q)
 	}
 	if node.Rel == "vc" {
-		if TEST(q, `$node/../node[@rel="hd" and @ud:pos=("AUX","ADP")] and not($node/../node[@rel="predc"])`) {
+		if TEST(q, `$node/../node[@rel="hd" and 
+			                      ( @ud:pos=("AUX","ADP")  or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) 
+			                      ] and
+	                not($node/../node[@rel="predc"])`) {
 			return dependencyLabel(node.parent, q)
 		}
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
@@ -253,7 +280,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		return dependencyLabel(node.parent, q) // gapping, where this mod is the head
 	}
 
-	if TEST(q, `$node[@rel=("mod") and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")]`) {
+	if TEST(q, `$node[@rel="mod" and ../@cat=("sv1","smain","ssub","inf","ppres","ppart","oti","ap","advp","cp","whrel")]`) {
 		// modification of verbal, adjectival heads
 		// nb some oti's directly dominate (preceding) modifiers
 		// [advp weg ermee ]
@@ -265,6 +292,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return labelVmod(node, q)
 		}
 		if TEST(q, `$node/../node[@rel=("su","obj1","predc","vc","pc") and (@pt or @cat)]`) { // added pc 16/2/21
+			return "orphan"
+		}
+		if TEST(q, `$node[../@rel="body" and ../@cat="ssub"]`) { // wat cool is en wat niet GB 24/1/24
 			return "orphan"
 		}
 		// combined mod/ld/pc for consistency with dephead position & superfluous again, see above. Gb 8/2 BN begin-position checks dont work as these are renumbered internally
@@ -365,7 +395,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 			return "cc"
 		}
 		// sentence initial or final 'en' etc , merge with statement below??
-		if TEST(q, `$node[@ud:pos=("NOUN","PROPN","DET","ADP","ADV","INTJ","PRON","SYM","CCONJ","SCONJ") and ../node[@cat=("du","smain","conj","sv1","np","whq","pp","ppart","inf","advp")]]`) {
+		if TEST(q, `$node[@ud:pos=("NOUN","PROPN","DET","ADP","ADV","INTJ","PRON","SYM","CCONJ","SCONJ") and ../node[(@pt="spec" and @rel="dp") or @cat=("du","smain","conj","sv1","np","whq","pp","ppart","inf","advp")]]`) {
 			return "parataxis" // dangling words, generalize to all POS ? GB 26/03/21
 		}
 
@@ -402,7 +432,16 @@ func dependencyLabel(node *nodeType, q *context) string {
 			if TEST(q, `$node/../node[@rel="predc"]`) {
 				return "mark" // absolute met constructie -- analoog aan with X being Y
 			}
-			if TEST(q, `$node[../node[@rel="obj1" and @index and not(@pt or @cat)] and not(../@rel="cnj")]`) {
+			if TEST(q, `$node[../node[@rel="obj1" and @index]]`) {
+				if TEST(q, `$node[../@rel="cnj" and ../node[@rel="obj1" and not(@pt or @cat)]]`) { // binnen en buiten de kerk, binnen is case of kerk GB 4/3/24
+					return "case"
+				}
+				if TEST(q, `$node[../@rel="cnj" and ../node[@rel="obj1" and (@pt or @cat)] and ../../node[@rel="cnj" and @cat="ap"]]`) { // op weg naar en in het Heilige Land  -- op weg = ap GB 12/3/24
+					return "case"
+				}
+				if TEST(q, `$node[../@rel="cnj"]`) { // binnen en buiten de kerk, buiten is conj of binnen GB 4/3/24
+					return "conj"
+				}
 				return "case" // waar-relatives with P-stranding: waar hij Gabbema voor bedankt
 			}
 			if TEST(q, `$node/../node[@rel=("obj1","vc","se","me") and (@pt or @cat)]`) { // examples in paqus suggest me case is already covered (advmod), yet leuven/253 gives error without me here..
@@ -463,12 +502,26 @@ func subjectLabel(subj *nodeType, q *context) string {
 	                   )`) {
 		return "expl" + pass
 	}
+	if TEST(q, `$subj[../@rel=("cnj","dp","body","nucl") and ../node[@rel="hd" and not(@pt or @cat)] and ../node[@rel="predc" and (@pt or @cat)] ]`) {
+		return "nsubj" + pass + outer //  predc is the head if it has any content GB 21/2/24
+	}
+	// do we ever reach the case below, if this is already checked for before calling this function (ie at rel=su level)
+	if TEST(q, `$subj[../@rel=("cnj","dp","body","nucl") and ../node[@rel="hd" and not(@pt or @cat)] and 
+	                  not(../node[@rel=("vc","predc") and (@pt or node[@rel=("hd","cnj","vc")  and (@pt or @cat)] )   ] )]`) { // gapping, added vc for recursive cases GB 26/2/24
+		return dependencyLabel(subj.parent, q) // copied from regular rel=su case GB 24/1/24 but now the predc is an orphan to su, and we should always go to parent??? GB 5/2/24
+	}
 	return "nsubj" + pass + outer
 }
 
-// add :outer to subject in copula construction with clausal predicate (whrel, other?)
+// add :outer to subject in copula construction with clausal predicate (whrel, cp (dat +finite clause), other?)
 func outerSubject(subj *nodeType, q *context) string {
 	if TEST(q, `$subj/../node[@rel="predc" and (@cat="whrel" or (@cat="conj" and node[@cat="whrel"]))]`) {
+		return ":outer"
+	}
+	if TEST(q, `$subj/../node[@rel="predc" and @cat="cp"]/node[@cat="ssub" or (@cat="conj" and node[@cat="ssub"])]`) {
+		return ":outer"
+	}
+	if TEST(q, `$subj/../node[@rel="predc" and @cat="smain"]`) {
 		return ":outer"
 	}
 	return ""
@@ -504,13 +557,14 @@ func detLabel(node *nodeType, q *context) string {
 		}
 	}()
 
-	// zijn boek, diens boek, ieders boek, aller landen, Ron's probleem, Fidel Castro's belang, zuids schoppenaas
+	// zijn boek, diens boek, ieders boek, aller landen, Ron's probleem, Fidel Castro's belang, Ditvoorst carriere (ie spelling error?), zuids schoppenaas
 	if TEST(q, `$node[@ud:pos = "PRON" and @vwtype="bez"] or
-	          $node[@ud:pos = ("PRON","PROPN","NOUN") and @naamval="gen"] or
-	          $node[@cat="mwu" and node[@spectype="deeleigen"]]`) {
+	          $node[@ud:pos = ("PRON", "NOUN") and @naamval="gen"] or
+	          $node[@cat="mwu" and node[@spectype="deeleigen"]] or
+	          $node[@ud:pos = "PROPN"]`) {
 		return "nmod:poss"
 	}
-	if TEST(q, `$node/@ud:pos = ("DET","PROPN","PRON","X")`) {
+	if TEST(q, `$node/@ud:pos = ("DET","PRON","X")`) {
 		return "det" // meer // genoeg // the
 	}
 	if node.Cat == "detp" {

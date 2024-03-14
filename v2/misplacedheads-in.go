@@ -27,8 +27,9 @@ START:
 	for true {
 		for _, n1 := range q.varallnodes {
 			// FIND op varallnodes niet mogelijk omdat twee keer naar $node wordt verwezen, en dat moet dezelfde node zijn
+				// added mwu as possible hd GB 05/03/24
 			for _, n2 := range FIND(q, `
-$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and
+$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and
       @index and
       (@pt or @cat) and
       ancestor::node[@rel="cnj"] and
@@ -43,8 +44,9 @@ $n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and
                                                                ]
                                        ]]`) {
 				node2 := n2.(*nodeType)
+				// added mwu as possible hd GB 05/03/24
 				for _, n3 := range FIND(q, `
-$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and @index and not(@pt or @cat) and
+$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and @index and not(@pt or @cat) and
                  ancestor::node[@rel="cnj"]  and
                                     ( @begin        = ..//node[@cat or @pt]/@end or
                                       ( @begin      = ../..//node[@cat or @pt]/@end and ../@cat="pp") or

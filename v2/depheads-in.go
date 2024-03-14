@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package alud
@@ -32,6 +33,19 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return internalHeadPositionWithGapping(n[:1], q)
 		}
 		if obj1_vc_se_me := FIND(q, `$node/../node[@rel=("obj1","vc","se","me")]`); len(obj1_vc_se_me) > 0 {
+			if TEST(q, `$node[../@rel="cnj" and ../node[@index and @rel="obj1"]]`) {
+				if TEST(q, `$node[../node[@rel="obj1" and (@pt or @cat)] and ../../node[@cat=("pp","ppres") and node[@rel="obj1" and @index and not(@pt or @cat)]]]`) {
+					// rightmost conj -- attach as conj to first preposition GB 27/2/24
+					leftmost_preposition := nLeft(FIND(q, `$node/../../node[@cat=("pp","ppres") and node[@rel="obj1" and @index and not(@pt or @cat)]]/node[@rel="hd"]`))
+					return internalHeadPositionWithGapping([]interface{}{leftmost_preposition}, q)
+				}
+				// otherwise: attach as case to obj1 in 2nd conj
+				if TEST(q, `$node/../../node[@cat=("pp","ppres")]/node[@rel="obj1" and @index and (@pt or @cat)]`) {
+					return internalHeadPositionWithGapping(FIND(q,
+						`$node/../../node[@cat=("pp","ppres")]/node[@rel="obj1" and @index and (@pt or @cat)]`), q)
+				}
+				return externalHeadPosition(node.axParent, q)
+			}
 			// adding pt/cat enough for gapping cases?
 			if TEST(q, `$obj1_vc_se_me[@pt or @cat]`) {
 				return internalHeadPositionWithGapping(if1(obj1_vc_se_me), q)
@@ -40,12 +54,15 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				return internalHeadPosition(FIND(q, `$node/ancestor::node/node[@rel=("rhd","whd")
                                        and @index = $node/../node[@rel=("obj1","vc","se","me")]/@index]`), q)
 			}
+			if node.parent.Rel == "cnj" && TEST(q, `$obj1_vc_se_me[@index = $node/ancestor::node//node[@rel="obj1"]/@index]`) { // ten zuiden i en ten noorden van de begraafplaats  GB 26/2/24
+				return internalHeadPosition(FIND(q, `$node/ancestor::node//node[@cat="pp" and node[@rel="obj1" and (@pt or @cat) and @index = $obj1_vc_se_me/@index]]/node[@rel="hd"]`), q)
+			}
 			// in de eerste rond --> typo in LassySmall/Wiki , binnen en [advp later buiten ]
 			return externalHeadPosition(node.axParent, q)
-		} 
-		if pobj1 := FIND(q, `$node/../node[@rel=("pobj1")]`); len(pobj1) > 0 {  // removed mod, assume ADP is the head here GB 26/2/21
-				return internalHeadPosition(if1(pobj1), q)
-			} 
+		}
+		if pobj1 := FIND(q, `$node/../node[@rel=("pobj1")]`); len(pobj1) > 0 { // removed mod, assume ADP is the head here GB 26/2/21
+			return internalHeadPosition(if1(pobj1), q)
+		}
 		return externalHeadPosition(node.axParent, q)
 	}
 
@@ -89,7 +106,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADP"]`) {
 				return externalHeadPosition(node.axParent, q) // met als presentator Bruno W , met als gevolg [vc dat ...]
 			}
-			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"][1]`), q)   //make robust for double hd in CGN GB 19/03/21
+			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"][1]`), q) //make robust for double hd in CGN GB 19/03/21
 		}
 		if TEST(q, `$node/parent::node[@cat=("np","ap") and node[@rel="hd" and (@pt or @cat) and not(@ud:pos="AUX") ]  ]`) {
 			//reduced relatives , make sure head is not empty (ellipsis)
@@ -98,6 +115,12 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		}
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat) and not(@ud:pos=("AUX","ADP"))]`) { // [met als titel] -- obj1/vc missing
 			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
+		}
+		if TEST(q, `$node[../node[@rel="su" and (@pt or @cat)] and 
+		                  ../node[@rel="hd" and 
+		                          not(@ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index )]
+		                  ]`) {
+			return internalHeadPosition(FIND(q, `$node/../node[@rel="su"]`), q)
 		}
 		return externalHeadPosition(node.axParent, q) // covers gapping as well?
 	}
@@ -125,13 +148,16 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	}
 
 	if TEST(q, `$node[@rel=("cnj","dp","mwp")]`) {
-		if n := FIND(q, `$node[@pt and ../node/@index]/ancestor::node[@cat="whq"]/node[@rel="whd" and @index = ..//node[@rel="mwp"]/@index]`) ; len(n) > 0 {  // wat voor cases: attach voor to wat
+		if n := FIND(q, `$node[@pt and ../node/@index]/ancestor::node[@cat="whq"]/node[@rel="whd" and @index = ..//node[@rel="mwp"]/@index]`); len(n) > 0 { // wat voor cases: attach voor to wat
 			return internalHeadPosition(n, q)
 		}
 		if node == nLeft(FIND(q, `$node/../node[@rel=("cnj","dp","mwp") and (@pt or @cat)]`)) {
 			return externalHeadPosition(node.axParent, q)
 		}
-		if TEST(q, `$node[@rel="mwp" and @index and not(@pt)]`) {  // wat heb je voor .. where wat is extracted from mwu! TODO: ensure other mwp attach to 'wat' as fixed 
+		if TEST(q, `$node[@cat="pp" and node[@index and @rel="obj1" and (@cat or @pt)]]`) { // coordinated prepositions with indexed obj1 GB 27/2/24
+			return externalHeadPosition(node.axParent, q)
+		}
+		if TEST(q, `$node[@rel="mwp" and @index and not(@pt)]`) { // wat heb je voor .. where wat is extracted from mwu! TODO: ensure other mwp attach to 'wat' as fixed
 			return externalHeadPosition(node.axParent, q)
 		}
 		if node.Rel == "cnj" {
@@ -140,25 +166,24 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		return internalHeadPositionWithGapping(node.axParent, q)
 	}
 
-
-    // note that this gives highly counterintuitive results for 'te+AUX,COP', but fixing it gives UD validation errors GB 9-4-21
-    // on the other hand, English does the same: ... are going to be bloody days, mark(days,to)
+	// note that this gives highly counterintuitive results for 'te+AUX,COP', but fixing it gives UD validation errors GB 9-4-21
+	// on the other hand, English does the same: ... are going to be bloody days, mark(days,to)
 	if TEST(q, `$node[@rel="cmp" and ../node[@rel="body"]]`) {
 		return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="body"][1]`), q)
 	}
 
 	if node.Rel == "--" && node.Cat != "" {
 		if TEST(q, `$node/../node[@ud:pos=("VERB","ADJ")]`) {
-			return internalHeadPosition(FIND(q,`$node/../node[@ud:pos=("VERB","ADJ")][1]`), q)
+			return internalHeadPosition(FIND(q, `$node/../node[@ud:pos=("VERB","ADJ")][1]`), q)
 		}
 		if node.Cat == "mwu" {
 			if TEST(q, `$node/../node[@cat and not(@cat="mwu")]`) { // fix for multiword punctuation in Alpino output
 				return internalHeadPosition(FIND(q, `$node/../node[@cat and not(@cat="mwu")][1]`), q)
 			}
-			if node.Begin != node.parent.Begin {    // make consistent with deplabel condition GB 9/3/21
+			if node.Begin != node.parent.Begin { // make consistent with deplabel condition GB 9/3/21
 				if node == nLeft(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON","SYM")]`)) {
-						return externalHeadPosition(node.axParent, q)
-					}
+					return externalHeadPosition(node.axParent, q)
+				}
 				return internalHeadPosition(FIND(q, `$node/../node[@cat or @ud:pos = ("CONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON","SYM")][1]`), q)
 			}
 			return externalHeadPosition(node.axParent, q)
@@ -180,7 +205,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				q)
 		}
 		// moved this clause to take precedence over next (cat) case for consistency with deplabel GB 22/03/31
-		if TEST(q, `$node[@ud:pos = ("ADJ","VERB") ]`) {  // deal with time out parses GB 19/03/21
+		if TEST(q, `$node[@ud:pos = ("ADJ","VERB") ]`) { // deal with time out parses GB 19/03/21
 			if node == nLeft(FIND(q, `$node/../node[@rel="--" and @ud:pos = ("ADJ","VERB") ]`)) {
 				return externalHeadPosition(node.axParent, q)
 			}
@@ -192,7 +217,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return internalHeadPosition(n, q)
 		}
 
-		if TEST(q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) {  // moved this case up, seems safer for PUNCT  GB 16/3/21
+		if TEST(q, `$node[@ud:pos="PUNCT" and count(../node) > 1]`) { // moved this case up, seems safer for PUNCT  GB 16/3/21
 			if n := FIND(q, `$node/../node[not(@ud:pos="PUNCT")][1]`); len(n) > 0 {
 				return internalHeadPosition(n, q)
 			}
@@ -202,7 +227,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return 1000 // ie end of first punct token
 		}
 
-		if TEST(q, `$node[@ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`) {  // removed PUNCT here as we never want PUNCT as root or PUNCT having deps GB 16/3/21
+		if TEST(q, `$node[@ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON") ]`) { // removed PUNCT here as we never want PUNCT as root or PUNCT having deps GB 16/3/21
 			if node == nLeft(FIND(q, `$node/../node[@rel="--" and (@cat="mwu" or @ud:pos = ("SYM","X","NOUN","PROPN","SCONJ","CCONJ","NUM","ADP","ADV","DET","PRON"))]`)) {
 				return externalHeadPosition(node.axParent, q)
 			}
@@ -210,7 +235,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				FIND(q, `($node/../node[@rel="--" and (@cat="mwu" or @ud:pos=("SYM","X","SCONJ","CCONJ","NOUN","PROPN","NUM","ADP","ADV","DET","PRON")) ])[1]`),
 				q)
 		}
-		
+
 		if node.parent.Begin >= 0 {
 			return externalHeadPosition(node.axParent, q)
 		}
@@ -224,17 +249,18 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		panic("No external head")
 	}
 
-	if node.Rel== "vc" && node.parent.Cat == "pp" {// eraan dat, added exception for predc GB 22/03/21
+	if node.Rel == "vc" && node.parent.Cat == "pp" { // eraan dat, added exception for predc GB 22/03/21
 		if TEST(q, `$node/../node/@rel="predc"`) {
 			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
 		}
 		return externalHeadPosition(node.axParent, q)
 	}
 
-    // ten ondergaan is a mwp head in extra/972, added cat to first disjunct GB 3/3/21
+	// ten ondergaan is a mwp head in extra/972, added cat to first disjunct GB 3/3/21
 	if node.Rel == "vc" { // only consider vc as head if it has a head itself or is a word (rare cases where subj-index is missing, also in conjuctions!), otherwise attach orphans to subj GB 16/02/21
+		// added vc node as possible embedded node as well, as hd can be hidden there as well -- GB 4/1/24
 		if TEST(q, `$node[node[@rel="hd" and (@pt or @cat)] or 
-			              node[@rel=("body","cnj")]/node[@rel="hd" and @pt] or
+			              node[@rel=("body","cnj","vc")]/node[@rel="hd" and @pt] or
 			              node[@rel="cnj"]/node[@rel="body"]/node[@rel="hd" and @pt] or 
 			              node[@rel=("body","cnj") and @pt] or
 			              @pt
@@ -248,14 +274,14 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	                and not($node/../node[@rel="predc"])`) {
 			return externalHeadPosition(node.axParent, q)
 		}
-		
+
 		if TEST(q, `$node/../node[@rel=("hd","su","obj1") and (@pt or @cat)]`) {
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 		return externalHeadPosition(node.axParent, q)
 	}
 
-	if node.Rel == "whd" || node.Rel == "rhd" {  // hack for '[whd hoe [du/1 du [de nevel van de tijd]]'
+	if node.Rel == "whd" || node.Rel == "rhd" { // hack for '[whd hoe [du/1 du [de nevel van de tijd]]'
 		if TEST(q, `$node[../node[@rel="body"]/node[@rel="dp"]/@index = @index ]`) {
 			return externalHeadPosition(node.axParent, q)
 		}
@@ -275,14 +301,22 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	if node.Rel == "crd" {
 		//NP -> OK, followingCnjSister geeft geen panic
 		tmp := followingCnjSister(node, q)
+		// coordination of gapped PPs -- attach cc to 2nd prep GB 4/3/24
+		if TEST(q, `$node/../node[@rel="cnj" and @cat="pp"]/node[@rel="obj1" and @index and not(@pt or @cat)]`) {
+			return internalHeadPositionWithGapping(ifZ(FIND(q, `$node/../node[@rel="cnj" and
+	          	                 @begin=$tmp/@begin and
+	          	                 @end=$tmp/@end
+	          	                ]/node[@rel="hd"]`)), q)
+		}
 		return internalHeadPositionWithGapping(ifZ(FIND(q, `$node/../node[@rel="cnj" and
 	          	                 @begin=$tmp/@begin and
 	          	                 @end=$tmp/@end
 	          	                ]`)), q)
 	}
 
-	if node.Rel == "su" {
-		if TEST(q, `$node[../node[@rel="predc" and (@pt or @cat)] and ../node[@rel="hd" and @ud:pos="AUX"]]`) {
+	if node.Rel == "su" { // similar condition for empty aux node as for vc case -- GB 21/2/24
+		if TEST(q, `$node[../node[@rel="predc" and (@pt or @cat)] and ../node[@rel="hd" and 
+			                   ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]]`) {
 			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
 		}
 		if TEST(q, `$node/../node[@rel="vc"] and $node/../node[@rel="hd" and
@@ -303,7 +337,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return internalHeadPositionWithGapping(node.axParent, q) // ud head could still be a predc
 		}
 		// only for 1 case where verb is missing -- die eigendom ... (no verb))
-		if TEST(q, `$node[../node[@rel="predc" and (@pt or @cat)] and not(../node[@rel="hd" and (@pt or @cat)])]`) {
+		// switched off (XXX) for now, as it gives wrong results in [su [predc _ mod]] cases, there, su should be head, and mod an orphan
+		// GB 8/1/24
+		if TEST(q, `$node[../node[@rel="XXXXpredc" and (@pt or @cat)] and not(../node[@rel="hd" and (@pt or @cat)])]`) {
 			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
 		}
 		return externalHeadPosition(node.axParent, q) // this probably does no change anything, as we are still attaching to head of left conjunct
@@ -325,21 +361,35 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				return externalHeadPosition(node.axParent, q)
 			}
 			return internalHeadPositionWithGapping(node.axParent, q)
-                } 
+		}
 		return externalHeadPosition(node.axParent, q)
 	}
 
 	if node.Rel == "mod" || node.Rel == "app" {
 
-		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc", "cnj") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) {  // added pc 16/2/21, added cnj 22/03/21
-               // gapping, as su but now su or obj1  could be head as well
+		if TEST(q, `$node/../node[( @rel=("su","obj1","predc","body","pc", "cnj") or (@rel="hd" and not(@ud:pos="ADP"))) and (@pt or @cat)]`) { // added pc 16/2/21, added cnj 22/03/21
+			// gapping, as su but now su or obj1  could be head as well
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
-			
-		if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADP"]`) {   // vlak voor [index obj1] en na de winter  GB 4/3/21
+
+		if TEST(q, `$node/../node[@rel="hd" and @ud:pos="ADP"]`) { // vlak voor [index obj1] en na de winter  GB 4/3/21
 			return internalHeadPosition(FIND(q, `$node/../node[@rel="hd"]`), q)
 		}
-		
+
+		// if mod in otherwise empty predc --> externalheadposition GB 21/2/24
+		if TEST(q, `$node/../@rel="predc"`) { // a mod in an otherwise empty predc
+			return externalHeadPosition(node.axParent, q)
+		}
+		// ordered case below before multiple mod cases, to deal with su [predc _ mod] cases GB 8/1/24
+		if TEST(q, `$node[not(../@rel="su") and ../../node[@rel="su" and (@pt or @cat)]]`) { // a mod in an otherwise empty tree (after fixing heads in conj)
+			return internalHeadPosition(FIND(q, `$node/../../node[@rel="su"]`), q)
+		}
+		if TEST(q, `$node/../../@cat="ti" and $node/../../../node[@rel="su" and (@pt or @cat)]`) { // an mod in a te-inf VP with a subject GB 20/2/24
+			return internalHeadPosition(FIND(q, `$node/../../../node[@rel="su"]`), q)
+		}
+		if TEST(q, `$node[../@cat="ssub" and ../@rel="body" and ../../node[@rel=("whd","rhd") and @pt]]`) {
+			return internalHeadPosition(FIND(q, `$node/../../node[@rel=("whd","rhd")]`), q) // wat cool/mogelijk is en wat niet, GB 24/1/24 added rhd GB 26/2/24
+		}
 		if n := FIND(q, `$node/../node[@rel=("mod","app") and descendant-or-self::node/@pt]`); len(n) > 0 { // whatever comes first 4/2/21: added pc GB
 			if node == nLeft(n) { // gapping with multiple mods
 				return externalHeadPosition(node.axParent, q)
@@ -347,9 +397,6 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 
-		if TEST(q, `$node/../../node[@rel="su" and (@pt or @cat)]`) { // an mod in an otherwise empty tree (after fixing heads in conj)
-			return internalHeadPosition(FIND(q, `$node/../../node[@rel="su"]`), q)
-		}
 		return externalHeadPosition(node.axParent, q) /* an empty mod in an otherwise empty tree
 		   -- mod is co-indexed with rhd, rest is elided,
 		   LassySmall4/wiki-7064/wiki-7064.p.28.s.3.xml */
@@ -427,15 +474,14 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 	if TEST(q, `$node[@cat="mwuERROR"]`) {
 		// TODO: CHECK THIS
 		if f := FIND(q, `$node/node[@rel="mwp" and @pt]`); len(f) > 0 {
-			return internalHeadPosition(FIND(q, `$node/node[@rel="mwp"][1]`), q)     //   f[0].(int)
+			return internalHeadPosition(FIND(q, `$node/node[@rel="mwp"][1]`), q) //   f[0].(int)
 		}
-		return i1(FIND(q,`$node/@end`))
+		return i1(FIND(q, `$node/@end`))
 	}
 
 	if TEST(q, `$node[@cat="mwu"]/node`) {
 		return internalHeadPosition(FIND(q, `$node/node[1]`), q)
 	}
-
 
 	if TEST(q, `$node[@cat="conj"]`) {
 		return internalHeadPosition(ifLeft(FIND(q, `$node/node[@rel="cnj"]`)), q)
@@ -445,8 +491,8 @@ func internalHeadPosition(nodes []interface{}, q *context) int {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {
 			return internalHeadPosition(predc, q)
 		}
-		hd := FIND(q, `$node/node[@rel="hd"][1]`)     // make robust in CGN cases GB 19/03/21
-		if len(hd) == 0 { // cases where copula is missing by accident (ungrammatical, not gapping)
+		hd := FIND(q, `$node/node[@rel="hd"][1]`) // make robust in CGN cases GB 19/03/21
+		if len(hd) == 0 {                         // cases where copula is missing by accident (ungrammatical, not gapping)
 			return internalHeadPosition(predc, q)
 		}
 		return internalHeadPosition(hd, q)
@@ -552,8 +598,8 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"][1]`), q) // aux, prepositions   added [1] to make robust for CGN cases GB 19/03/21
 	}
 
-	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) {  // (@pt or @cat or node[@cat or @pt])
-		if TEST(q, `$node/node[@rel=("vc","predc") and descendant-or-self::node/@pt ]`) {  // what does this final node mean ?? added cat instead GB 26/2/21 
+	if TEST(q, `$node/node[@rel="hd" and @ud:pos="AUX"]`) { // (@pt or @cat or node[@cat or @pt])
+		if TEST(q, `$node/node[@rel=("vc","predc") and descendant-or-self::node/@pt ]`) { // what does this final node mean ?? added cat instead GB 26/2/21
 			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel=("vc","predc")]`), q) // testing should be vc,predc , fixed typo pred -> predc GB 26/2/21
 		} else {
 			return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="hd"]`), q)
@@ -581,17 +627,17 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="vc"][1]`), q)
 	}
 
-	if TEST(q, `$node/node[@rel="pc" and (@pt or @cat)]`) {  // commenting out this case and added to case below GB 5/2/21 and put back in 8/2
+	if TEST(q, `$node/node[@rel="pc" and (@pt or @cat)]`) { // commenting out this case and added to case below GB 5/2/21 and put back in 8/2
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="pc"][1]`), q)
 	}
 
-	if TEST(q, `$node/node[@rel="ld" and (@pt or @cat)]`) {  // fixing EANS case 
+	if TEST(q, `$node/node[@rel="ld" and (@pt or @cat)]`) { // fixing EANS case
 		return internalHeadPositionWithGapping(FIND(q, `$node/node[@rel="ld"][1]`), q)
 	}
 
 	// moved the next case up to take precendence over mod rule that follows for consistency with deplabel GB 3/3/21
 	if n := FIND(q, `$node/node[@rel="hd" and @ud:pos="ADP"]`); len(n) > 0 { // in en rond Brussel, case not necessary in xquery code (run-time issue?)
-		return internalHeadPositionWithGapping(if1(n), q) 
+		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
 	if n := FIND(q, `$node[@cat="pp"]/node[@rel="hd" and @cat="mwu"]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
@@ -618,7 +664,6 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 
-	
 	if n := FIND(q, `$node[@cat="mwu"]/node[@rel="mwp" and (@pt or @cat)]`); len(n) > 0 { // zowel voorafgaand als na afloop van X
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
@@ -658,9 +703,9 @@ func headPositionOfConjunction(node *nodeType, q *context) int {
 	}
 	if len(endpos_of_leftmost_conj_constituents) == 0 {
 		// return leftmost_conj_daughter.Node[0].End // this should not happen really -- give error msg?
-		// happens in elliptical (right-node-raising) cases like cdb/4863, 
+		// happens in elliptical (right-node-raising) cases like cdb/4863,
 		// door zaterdag met 7-9 ... en zondag met 11-1... te winnen , [zaterdag met 11-7 ... te winnen] is seen as single constituent, [zondag met ...] as elliptical conj
-		return leftmost_internal_head // accept that conj points in the wrong direction in such cases 
+		return leftmost_internal_head // accept that conj points in the wrong direction in such cases
 	}
 	sort.Ints(endpos_of_leftmost_conj_constituents)
 	return endpos_of_leftmost_conj_constituents[len(endpos_of_leftmost_conj_constituents)-1]
