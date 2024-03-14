@@ -29,8 +29,9 @@ START:
 	for true {
 		for _, n1 := range q.varallnodes {
 			// FIND op varallnodes niet mogelijk omdat twee keer naar $node wordt verwezen, en dat moet dezelfde node zijn
+			// added mwu as possible hd GB 05/03/24
 			for _, n2 := range find(q, /*
-				$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and
+				$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and
 				      @index and
 				      (@pt or @cat) and
 				      ancestor::node[@rel="cnj"] and
@@ -108,17 +109,59 @@ START:
 																					},
 																				},
 																			},
-																			arg2: &dEqual{
-																				ARG: equal__is,
-																				arg1: &dCollect{
-																					ARG:  collect__attributes__pt,
-																					arg1: &dNode{},
-																				},
-																				arg2: &dElem{
-																					DATA: []interface{}{"vz"},
-																					arg1: &dCollect{
-																						ARG:  collect__attributes__pt,
-																						arg1: &dNode{},
+																			arg2: &dSort{
+																				arg1: &dOr{
+																					arg1: &dEqual{
+																						ARG: equal__is,
+																						arg1: &dCollect{
+																							ARG:  collect__attributes__pt,
+																							arg1: &dNode{},
+																						},
+																						arg2: &dElem{
+																							DATA: []interface{}{"vz"},
+																							arg1: &dCollect{
+																								ARG:  collect__attributes__pt,
+																								arg1: &dNode{},
+																							},
+																						},
+																					},
+																					arg2: &dSort{
+																						arg1: &dAnd{
+																							arg1: &dEqual{
+																								ARG: equal__is,
+																								arg1: &dCollect{
+																									ARG:  collect__attributes__cat,
+																									arg1: &dNode{},
+																								},
+																								arg2: &dElem{
+																									DATA: []interface{}{"mwu"},
+																									arg1: &dCollect{
+																										ARG:  collect__attributes__cat,
+																										arg1: &dNode{},
+																									},
+																								},
+																							},
+																							arg2: &dCollect{
+																								ARG:  collect__child__node,
+																								arg1: &dNode{},
+																								arg2: &dPredicate{
+																									arg1: &dEqual{
+																										ARG: equal__is,
+																										arg1: &dCollect{
+																											ARG:  collect__attributes__pt,
+																											arg1: &dNode{},
+																										},
+																										arg2: &dElem{
+																											DATA: []interface{}{"vz"},
+																											arg1: &dCollect{
+																												ARG:  collect__attributes__pt,
+																												arg1: &dNode{},
+																											},
+																										},
+																									},
+																								},
+																							},
+																						},
 																					},
 																				},
 																			},
@@ -410,8 +453,9 @@ START:
 					},
 				}) {
 				node2 := n2.(*nodeType)
+				// added mwu as possible hd GB 05/03/24
 				for _, n3 := range find(q, /*
-					$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and @pt="vz"])) and @index and not(@pt or @cat) and
+					$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and @index and not(@pt or @cat) and
 					                 ancestor::node[@rel="cnj"]  and
 					                                    ( @begin        = ..//node[@cat or @pt]/@end or
 					                                      ( @begin      = ../..//node[@cat or @pt]/@end and ../@cat="pp") or
@@ -481,17 +525,59 @@ START:
 																						},
 																					},
 																				},
-																				arg2: &dEqual{
-																					ARG: equal__is,
-																					arg1: &dCollect{
-																						ARG:  collect__attributes__pt,
-																						arg1: &dNode{},
-																					},
-																					arg2: &dElem{
-																						DATA: []interface{}{"vz"},
-																						arg1: &dCollect{
-																							ARG:  collect__attributes__pt,
-																							arg1: &dNode{},
+																				arg2: &dSort{
+																					arg1: &dOr{
+																						arg1: &dEqual{
+																							ARG: equal__is,
+																							arg1: &dCollect{
+																								ARG:  collect__attributes__pt,
+																								arg1: &dNode{},
+																							},
+																							arg2: &dElem{
+																								DATA: []interface{}{"vz"},
+																								arg1: &dCollect{
+																									ARG:  collect__attributes__pt,
+																									arg1: &dNode{},
+																								},
+																							},
+																						},
+																						arg2: &dSort{
+																							arg1: &dAnd{
+																								arg1: &dEqual{
+																									ARG: equal__is,
+																									arg1: &dCollect{
+																										ARG:  collect__attributes__cat,
+																										arg1: &dNode{},
+																									},
+																									arg2: &dElem{
+																										DATA: []interface{}{"mwu"},
+																										arg1: &dCollect{
+																											ARG:  collect__attributes__cat,
+																											arg1: &dNode{},
+																										},
+																									},
+																								},
+																								arg2: &dCollect{
+																									ARG:  collect__child__node,
+																									arg1: &dNode{},
+																									arg2: &dPredicate{
+																										arg1: &dEqual{
+																											ARG: equal__is,
+																											arg1: &dCollect{
+																												ARG:  collect__attributes__pt,
+																												arg1: &dNode{},
+																											},
+																											arg2: &dElem{
+																												DATA: []interface{}{"vz"},
+																												arg1: &dCollect{
+																													ARG:  collect__attributes__pt,
+																													arg1: &dNode{},
+																												},
+																											},
+																										},
+																									},
+																								},
+																							},
 																						},
 																					},
 																				},

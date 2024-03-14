@@ -90,6 +90,439 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				},
 			},
 		}); len(obj1_vc_se_me) > 0 {
+			if test(q /* $node[../@rel="cnj" and ../node[@index and @rel="obj1"]] */, &xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dSort{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG: collect__attributes__rel,
+										arg1: &dCollect{
+											ARG:  collect__parent__type__node,
+											arg1: &dNode{},
+										},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"cnj"},
+										arg1: &dCollect{
+											ARG: collect__attributes__rel,
+											arg1: &dCollect{
+												ARG:  collect__parent__type__node,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+								arg2: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dCollect{
+												ARG:  collect__attributes__index,
+												arg1: &dNode{},
+											},
+											arg2: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"obj1"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+				if test(q /* $node[../node[@rel="obj1" and (@pt or @cat)] and ../../node[@cat=("pp","ppres") and node[@rel="obj1" and @index and not(@pt or @cat)]]] */, &xPath{
+					arg1: &dSort{
+						arg1: &dFilter{
+							arg1: &dVariable{
+								VAR: node,
+							},
+							arg2: &dSort{
+								arg1: &dAnd{
+									arg1: &dCollect{
+										ARG: collect__child__node,
+										arg1: &dCollect{
+											ARG:  collect__parent__type__node,
+											arg1: &dNode{},
+										},
+										arg2: &dPredicate{
+											arg1: &dAnd{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"obj1"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
+												arg2: &dSort{
+													arg1: &dOr{
+														arg1: &dCollect{
+															ARG:  collect__attributes__pt,
+															arg1: &dNode{},
+														},
+														arg2: &dCollect{
+															ARG:  collect__attributes__cat,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+										},
+									},
+									arg2: &dCollect{
+										ARG: collect__child__node,
+										arg1: &dCollect{
+											ARG: collect__parent__type__node,
+											arg1: &dCollect{
+												ARG:  collect__parent__type__node,
+												arg1: &dNode{},
+											},
+										},
+										arg2: &dPredicate{
+											arg1: &dAnd{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"pp", "ppres"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__cat,
+															arg1: &dNode{},
+														},
+													},
+												},
+												arg2: &dCollect{
+													ARG:  collect__child__node,
+													arg1: &dNode{},
+													arg2: &dPredicate{
+														arg1: &dAnd{
+															arg1: &dAnd{
+																arg1: &dEqual{
+																	ARG: equal__is,
+																	arg1: &dCollect{
+																		ARG:  collect__attributes__rel,
+																		arg1: &dNode{},
+																	},
+																	arg2: &dElem{
+																		DATA: []interface{}{"obj1"},
+																		arg1: &dCollect{
+																			ARG:  collect__attributes__rel,
+																			arg1: &dNode{},
+																		},
+																	},
+																},
+																arg2: &dCollect{
+																	ARG:  collect__attributes__index,
+																	arg1: &dNode{},
+																},
+															},
+															arg2: &dFunction{
+																ARG: function__not__1__args,
+																arg1: &dArg{
+																	arg1: &dSort{
+																		arg1: &dOr{
+																			arg1: &dCollect{
+																				ARG:  collect__attributes__pt,
+																				arg1: &dNode{},
+																			},
+																			arg2: &dCollect{
+																				ARG:  collect__attributes__cat,
+																				arg1: &dNode{},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}) {
+					// rightmost conj -- attach as conj to first preposition GB 27/2/24
+					leftmost_preposition := nLeft(find(q /* $node/../../node[@cat=("pp","ppres") and node[@rel="obj1" and @index and not(@pt or @cat)]]/node[@rel="hd"] */, &xPath{
+						arg1: &dSort{
+							arg1: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG: collect__parent__type__node,
+										arg1: &dCollect{
+											ARG: collect__parent__type__node,
+											arg1: &dVariable{
+												VAR: node,
+											},
+										},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"pp", "ppres"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+												},
+											},
+											arg2: &dCollect{
+												ARG:  collect__child__node,
+												arg1: &dNode{},
+												arg2: &dPredicate{
+													arg1: &dAnd{
+														arg1: &dAnd{
+															arg1: &dEqual{
+																ARG: equal__is,
+																arg1: &dCollect{
+																	ARG:  collect__attributes__rel,
+																	arg1: &dNode{},
+																},
+																arg2: &dElem{
+																	DATA: []interface{}{"obj1"},
+																	arg1: &dCollect{
+																		ARG:  collect__attributes__rel,
+																		arg1: &dNode{},
+																	},
+																},
+															},
+															arg2: &dCollect{
+																ARG:  collect__attributes__index,
+																arg1: &dNode{},
+															},
+														},
+														arg2: &dFunction{
+															ARG: function__not__1__args,
+															arg1: &dArg{
+																arg1: &dSort{
+																	arg1: &dOr{
+																		arg1: &dCollect{
+																			ARG:  collect__attributes__pt,
+																			arg1: &dNode{},
+																		},
+																		arg2: &dCollect{
+																			ARG:  collect__attributes__cat,
+																			arg1: &dNode{},
+																		},
+																	},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dEqual{
+										ARG: equal__is,
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+										arg2: &dElem{
+											DATA: []interface{}{"hd"},
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+						},
+					}))
+					return internalHeadPositionWithGapping([]interface{}{leftmost_preposition}, q)
+				}
+				// otherwise: attach as case to obj1 in 2nd conj
+				if test(q /* $node/../../node[@cat=("pp","ppres")]/node[@rel="obj1" and @index and (@pt or @cat)] */, &xPath{
+					arg1: &dSort{
+						arg1: &dCollect{
+							ARG: collect__child__node,
+							arg1: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dCollect{
+										ARG: collect__parent__type__node,
+										arg1: &dVariable{
+											VAR: node,
+										},
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dEqual{
+										ARG: equal__is,
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+										arg2: &dElem{
+											DATA: []interface{}{"pp", "ppres"},
+											arg1: &dCollect{
+												ARG:  collect__attributes__cat,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dPredicate{
+								arg1: &dAnd{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"obj1"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dCollect{
+											ARG:  collect__attributes__index,
+											arg1: &dNode{},
+										},
+									},
+									arg2: &dSort{
+										arg1: &dOr{
+											arg1: &dCollect{
+												ARG:  collect__attributes__pt,
+												arg1: &dNode{},
+											},
+											arg2: &dCollect{
+												ARG:  collect__attributes__cat,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				}) {
+					return internalHeadPositionWithGapping(find(q,
+						/* $node/../../node[@cat=("pp","ppres")]/node[@rel="obj1" and @index and (@pt or @cat)] */ &xPath{
+							arg1: &dSort{
+								arg1: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG: collect__child__node,
+										arg1: &dCollect{
+											ARG: collect__parent__type__node,
+											arg1: &dCollect{
+												ARG: collect__parent__type__node,
+												arg1: &dVariable{
+													VAR: node,
+												},
+											},
+										},
+										arg2: &dPredicate{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"pp", "ppres"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dAnd{
+												arg1: &dEqual{
+													ARG: equal__is,
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+													arg2: &dElem{
+														DATA: []interface{}{"obj1"},
+														arg1: &dCollect{
+															ARG:  collect__attributes__rel,
+															arg1: &dNode{},
+														},
+													},
+												},
+												arg2: &dCollect{
+													ARG:  collect__attributes__index,
+													arg1: &dNode{},
+												},
+											},
+											arg2: &dSort{
+												arg1: &dOr{
+													arg1: &dCollect{
+														ARG:  collect__attributes__pt,
+														arg1: &dNode{},
+													},
+													arg2: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						}), q)
+				}
+				return externalHeadPosition(node.axParent, q)
+			}
 			// adding pt/cat enough for gapping cases?
 			if test(q /* $obj1_vc_se_me[@pt or @cat] */, &xPath{
 				arg1: &dSort{
@@ -225,6 +658,158 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 							},
 						},
 					}), q)
+			}
+			if node.parent.Rel == "cnj" && test(q /* $obj1_vc_se_me[@index = $node/ancestor::node//node[@rel="obj1"]/@index] */, &xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: obj1_vc_se_me,
+						},
+						arg2: &dSort{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__index,
+									arg1: &dNode{},
+								},
+								arg2: &dCollect{
+									ARG: collect__attributes__index,
+									arg1: &dCollect{
+										ARG: collect__child__node,
+										arg1: &dCollect{
+											ARG: collect__descendant__or__self__type__node,
+											arg1: &dCollect{
+												ARG: collect__ancestors__node,
+												arg1: &dVariable{
+													VAR: node,
+												},
+											},
+										},
+										arg2: &dPredicate{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"obj1"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) { // ten zuiden i en ten noorden van de begraafplaats  GB 26/2/24
+				return internalHeadPosition(find(q /* $node/ancestor::node//node[@cat="pp" and node[@rel="obj1" and (@pt or @cat) and @index = $obj1_vc_se_me/@index]]/node[@rel="hd"] */, &xPath{
+					arg1: &dSort{
+						arg1: &dCollect{
+							ARG: collect__child__node,
+							arg1: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG: collect__descendant__or__self__type__node,
+									arg1: &dCollect{
+										ARG: collect__ancestors__node,
+										arg1: &dVariable{
+											VAR: node,
+										},
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__cat,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"pp"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dCollect{
+											ARG:  collect__child__node,
+											arg1: &dNode{},
+											arg2: &dPredicate{
+												arg1: &dAnd{
+													arg1: &dAnd{
+														arg1: &dEqual{
+															ARG: equal__is,
+															arg1: &dCollect{
+																ARG:  collect__attributes__rel,
+																arg1: &dNode{},
+															},
+															arg2: &dElem{
+																DATA: []interface{}{"obj1"},
+																arg1: &dCollect{
+																	ARG:  collect__attributes__rel,
+																	arg1: &dNode{},
+																},
+															},
+														},
+														arg2: &dSort{
+															arg1: &dOr{
+																arg1: &dCollect{
+																	ARG:  collect__attributes__pt,
+																	arg1: &dNode{},
+																},
+																arg2: &dCollect{
+																	ARG:  collect__attributes__cat,
+																	arg1: &dNode{},
+																},
+															},
+														},
+													},
+													arg2: &dEqual{
+														ARG: equal__is,
+														arg1: &dCollect{
+															ARG:  collect__attributes__index,
+															arg1: &dNode{},
+														},
+														arg2: &dCollect{
+															ARG: collect__attributes__index,
+															arg1: &dVariable{
+																VAR: obj1_vc_se_me,
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dPredicate{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"hd"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				}), q)
 			}
 			// in de eerste rond --> typo in LassySmall/Wiki , binnen en [advp later buiten ]
 			return externalHeadPosition(node.axParent, q)
@@ -953,6 +1538,191 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				},
 			}), q)
 		}
+		if test(q, /* $node[../node[@rel="su" and (@pt or @cat)] and
+			   ../node[@rel="hd" and
+			           not(@ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index )]
+			   ] */&xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dSort{
+							arg1: &dAnd{
+								arg1: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"su"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+											arg2: &dSort{
+												arg1: &dOr{
+													arg1: &dCollect{
+														ARG:  collect__attributes__pt,
+														arg1: &dNode{},
+													},
+													arg2: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+								},
+								arg2: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"hd"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+											arg2: &dFunction{
+												ARG: function__not__1__args,
+												arg1: &dArg{
+													arg1: &dSort{
+														arg1: &dOr{
+															arg1: &dEqual{
+																ARG: equal__is,
+																arg1: &dCollect{
+																	ARG:  collect__attributes__ud_3apos,
+																	arg1: &dNode{},
+																},
+																arg2: &dElem{
+																	DATA: []interface{}{"AUX"},
+																	arg1: &dCollect{
+																		ARG:  collect__attributes__ud_3apos,
+																		arg1: &dNode{},
+																	},
+																},
+															},
+															arg2: &dEqual{
+																ARG: equal__is,
+																arg1: &dCollect{
+																	ARG: collect__attributes__index,
+																	arg1: &dCollect{
+																		ARG: collect__child__node,
+																		arg1: &dCollect{
+																			ARG: collect__descendant__or__self__type__node,
+																			arg1: &dCollect{
+																				ARG: collect__ancestors__node,
+																				arg1: &dVariable{
+																					VAR: node,
+																				},
+																				arg2: &dPredicate{
+																					arg1: &dEqual{
+																						ARG: equal__is,
+																						arg1: &dCollect{
+																							ARG:  collect__attributes__rel,
+																							arg1: &dNode{},
+																						},
+																						arg2: &dElem{
+																							DATA: []interface{}{"top"},
+																							arg1: &dCollect{
+																								ARG:  collect__attributes__rel,
+																								arg1: &dNode{},
+																							},
+																						},
+																					},
+																				},
+																			},
+																		},
+																		arg2: &dPredicate{
+																			arg1: &dEqual{
+																				ARG: equal__is,
+																				arg1: &dCollect{
+																					ARG:  collect__attributes__ud_3apos,
+																					arg1: &dNode{},
+																				},
+																				arg2: &dElem{
+																					DATA: []interface{}{"AUX"},
+																					arg1: &dCollect{
+																						ARG:  collect__attributes__ud_3apos,
+																						arg1: &dNode{},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+																arg2: &dCollect{
+																	ARG:  collect__attributes__index,
+																	arg1: &dNode{},
+																},
+															},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+			return internalHeadPosition(find(q /* $node/../node[@rel="su"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dVariable{
+								VAR: node,
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"su"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}), q)
+		}
 		return externalHeadPosition(node.axParent, q) // covers gapping as well?
 	}
 
@@ -1548,6 +2318,75 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				},
 			},
 		})) {
+			return externalHeadPosition(node.axParent, q)
+		}
+		if test(q /* $node[@cat="pp" and node[@index and @rel="obj1" and (@cat or @pt)]] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"pp"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dCollect{
+								ARG:  collect__child__node,
+								arg1: &dNode{},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dAnd{
+											arg1: &dCollect{
+												ARG:  collect__attributes__index,
+												arg1: &dNode{},
+											},
+											arg2: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"obj1"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+										arg2: &dSort{
+											arg1: &dOr{
+												arg1: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+												arg2: &dCollect{
+													ARG:  collect__attributes__pt,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // coordinated prepositions with indexed obj1 GB 27/2/24
 			return externalHeadPosition(node.axParent, q)
 		}
 		if test(q /* $node[@rel="mwp" and @index and not(@pt)] */, &xPath{
@@ -2786,8 +3625,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 
 	// ten ondergaan is a mwp head in extra/972, added cat to first disjunct GB 3/3/21
 	if node.Rel == "vc" { // only consider vc as head if it has a head itself or is a word (rare cases where subj-index is missing, also in conjuctions!), otherwise attach orphans to subj GB 16/02/21
+		// added vc node as possible embedded node as well, as hd can be hidden there as well -- GB 4/1/24
 		if test(q, /* $node[node[@rel="hd" and (@pt or @cat)] or
-					              node[@rel=("body","cnj")]/node[@rel="hd" and @pt] or
+					              node[@rel=("body","cnj","vc")]/node[@rel="hd" and @pt] or
 					              node[@rel="cnj"]/node[@rel="body"]/node[@rel="hd" and @pt] or
 					              node[@rel=("body","cnj") and @pt] or
 					              @pt
@@ -2858,7 +3698,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 																		arg1: &dNode{},
 																	},
 																	arg2: &dElem{
-																		DATA: []interface{}{"body", "cnj"},
+																		DATA: []interface{}{"body", "cnj", "vc"},
 																		arg1: &dCollect{
 																			ARG:  collect__attributes__rel,
 																			arg1: &dNode{},
@@ -3344,6 +4184,178 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 	if node.Rel == "crd" {
 		//NP -> OK, followingCnjSister geeft geen panic
 		tmp := followingCnjSister(node, q)
+		// coordination of gapped PPs -- attach cc to 2nd prep GB 4/3/24
+		if test(q /* $node/../node[@rel="cnj" and @cat="pp"]/node[@rel="obj1" and @index and not(@pt or @cat)] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dVariable{
+								VAR: node,
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"cnj"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"pp"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"obj1"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dCollect{
+									ARG:  collect__attributes__index,
+									arg1: &dNode{},
+								},
+							},
+							arg2: &dFunction{
+								ARG: function__not__1__args,
+								arg1: &dArg{
+									arg1: &dSort{
+										arg1: &dOr{
+											arg1: &dCollect{
+												ARG:  collect__attributes__pt,
+												arg1: &dNode{},
+											},
+											arg2: &dCollect{
+												ARG:  collect__attributes__cat,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return internalHeadPositionWithGapping(ifZ(find(q, /* $node/../node[@rel="cnj" and
+				   @begin=$tmp/@begin and
+				   @end=$tmp/@end
+				  ]/node[@rel="hd"] */&xPath{
+					arg1: &dSort{
+						arg1: &dCollect{
+							ARG: collect__child__node,
+							arg1: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dVariable{
+										VAR: node,
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"cnj"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
+											},
+											arg2: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG:  collect__attributes__begin,
+													arg1: &dNode{},
+												},
+												arg2: &dCollect{
+													ARG: collect__attributes__begin,
+													arg1: &dVariable{
+														VAR: tmp,
+													},
+												},
+											},
+										},
+										arg2: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__end,
+												arg1: &dNode{},
+											},
+											arg2: &dCollect{
+												ARG: collect__attributes__end,
+												arg1: &dVariable{
+													VAR: tmp,
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dPredicate{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"hd"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				})), q)
+		}
 		return internalHeadPositionWithGapping(ifZ(find(q, /* $node/../node[@rel="cnj" and
 			   @begin=$tmp/@begin and
 			   @end=$tmp/@end
@@ -3408,85 +4420,145 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			})), q)
 	}
 
-	if node.Rel == "su" {
-		if test(q /* $node[../node[@rel="predc" and (@pt or @cat)] and ../node[@rel="hd" and @ud:pos="AUX"]] */, &xPath{
-			arg1: &dSort{
-				arg1: &dFilter{
-					arg1: &dVariable{
-						VAR: node,
-					},
-					arg2: &dSort{
-						arg1: &dAnd{
-							arg1: &dCollect{
-								ARG: collect__child__node,
+	if node.Rel == "su" { // similar condition for empty aux node as for vc case -- GB 21/2/24
+		if test(q, /* $node[../node[@rel="predc" and (@pt or @cat)] and ../node[@rel="hd" and
+			   ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]] */&xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dSort{
+							arg1: &dAnd{
 								arg1: &dCollect{
-									ARG:  collect__parent__type__node,
-									arg1: &dNode{},
-								},
-								arg2: &dPredicate{
-									arg1: &dAnd{
-										arg1: &dEqual{
-											ARG: equal__is,
-											arg1: &dCollect{
-												ARG:  collect__attributes__rel,
-												arg1: &dNode{},
-											},
-											arg2: &dElem{
-												DATA: []interface{}{"predc"},
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
 												arg1: &dCollect{
 													ARG:  collect__attributes__rel,
 													arg1: &dNode{},
 												},
-											},
-										},
-										arg2: &dSort{
-											arg1: &dOr{
-												arg1: &dCollect{
-													ARG:  collect__attributes__pt,
-													arg1: &dNode{},
+												arg2: &dElem{
+													DATA: []interface{}{"predc"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
 												},
-												arg2: &dCollect{
-													ARG:  collect__attributes__cat,
-													arg1: &dNode{},
+											},
+											arg2: &dSort{
+												arg1: &dOr{
+													arg1: &dCollect{
+														ARG:  collect__attributes__pt,
+														arg1: &dNode{},
+													},
+													arg2: &dCollect{
+														ARG:  collect__attributes__cat,
+														arg1: &dNode{},
+													},
 												},
 											},
 										},
 									},
 								},
-							},
-							arg2: &dCollect{
-								ARG: collect__child__node,
-								arg1: &dCollect{
-									ARG:  collect__parent__type__node,
-									arg1: &dNode{},
-								},
-								arg2: &dPredicate{
-									arg1: &dAnd{
-										arg1: &dEqual{
-											ARG: equal__is,
-											arg1: &dCollect{
-												ARG:  collect__attributes__rel,
-												arg1: &dNode{},
-											},
-											arg2: &dElem{
-												DATA: []interface{}{"hd"},
+								arg2: &dCollect{
+									ARG: collect__child__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+									arg2: &dPredicate{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
 												arg1: &dCollect{
 													ARG:  collect__attributes__rel,
 													arg1: &dNode{},
 												},
+												arg2: &dElem{
+													DATA: []interface{}{"hd"},
+													arg1: &dCollect{
+														ARG:  collect__attributes__rel,
+														arg1: &dNode{},
+													},
+												},
 											},
-										},
-										arg2: &dEqual{
-											ARG: equal__is,
-											arg1: &dCollect{
-												ARG:  collect__attributes__ud_3apos,
-												arg1: &dNode{},
-											},
-											arg2: &dElem{
-												DATA: []interface{}{"AUX"},
-												arg1: &dCollect{
-													ARG:  collect__attributes__ud_3apos,
-													arg1: &dNode{},
+											arg2: &dSort{
+												arg1: &dOr{
+													arg1: &dEqual{
+														ARG: equal__is,
+														arg1: &dCollect{
+															ARG:  collect__attributes__ud_3apos,
+															arg1: &dNode{},
+														},
+														arg2: &dElem{
+															DATA: []interface{}{"AUX"},
+															arg1: &dCollect{
+																ARG:  collect__attributes__ud_3apos,
+																arg1: &dNode{},
+															},
+														},
+													},
+													arg2: &dEqual{
+														ARG: equal__is,
+														arg1: &dCollect{
+															ARG: collect__attributes__index,
+															arg1: &dCollect{
+																ARG: collect__child__node,
+																arg1: &dCollect{
+																	ARG: collect__descendant__or__self__type__node,
+																	arg1: &dCollect{
+																		ARG: collect__ancestors__node,
+																		arg1: &dVariable{
+																			VAR: node,
+																		},
+																		arg2: &dPredicate{
+																			arg1: &dEqual{
+																				ARG: equal__is,
+																				arg1: &dCollect{
+																					ARG:  collect__attributes__rel,
+																					arg1: &dNode{},
+																				},
+																				arg2: &dElem{
+																					DATA: []interface{}{"top"},
+																					arg1: &dCollect{
+																						ARG:  collect__attributes__rel,
+																						arg1: &dNode{},
+																					},
+																				},
+																			},
+																		},
+																	},
+																},
+																arg2: &dPredicate{
+																	arg1: &dEqual{
+																		ARG: equal__is,
+																		arg1: &dCollect{
+																			ARG:  collect__attributes__ud_3apos,
+																			arg1: &dNode{},
+																		},
+																		arg2: &dElem{
+																			DATA: []interface{}{"AUX"},
+																			arg1: &dCollect{
+																				ARG:  collect__attributes__ud_3apos,
+																				arg1: &dNode{},
+																			},
+																		},
+																	},
+																},
+															},
+														},
+														arg2: &dCollect{
+															ARG:  collect__attributes__index,
+															arg1: &dNode{},
+														},
+													},
 												},
 											},
 										},
@@ -3496,8 +4568,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 						},
 					},
 				},
-			},
-		}) {
+			}) {
 			return internalHeadPositionWithGapping(find(q /* $node/../node[@rel="predc"] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
@@ -3723,7 +4794,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return internalHeadPositionWithGapping(node.axParent, q) // ud head could still be a predc
 		}
 		// only for 1 case where verb is missing -- die eigendom ... (no verb))
-		if test(q /* $node[../node[@rel="predc" and (@pt or @cat)] and not(../node[@rel="hd" and (@pt or @cat)])] */, &xPath{
+		// switched off (XXX) for now, as it gives wrong results in [su [predc _ mod]] cases, there, su should be head, and mod an orphan
+		// GB 8/1/24
+		if test(q /* $node[../node[@rel="XXXXpredc" and (@pt or @cat)] and not(../node[@rel="hd" and (@pt or @cat)])] */, &xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
 					arg1: &dVariable{
@@ -3746,7 +4819,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 												arg1: &dNode{},
 											},
 											arg2: &dElem{
-												DATA: []interface{}{"predc"},
+												DATA: []interface{}{"XXXXpredc"},
 												arg1: &dCollect{
 													ARG:  collect__attributes__rel,
 													arg1: &dNode{},
@@ -4164,6 +5237,388 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			}), q)
 		}
 
+		// if mod in otherwise empty predc --> externalheadposition GB 21/2/24
+		if test(q /* $node/../@rel="predc" */, &xPath{
+			arg1: &dSort{
+				arg1: &dEqual{
+					ARG: equal__is,
+					arg1: &dCollect{
+						ARG: collect__attributes__rel,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dVariable{
+								VAR: node,
+							},
+						},
+					},
+					arg2: &dElem{
+						DATA: []interface{}{"predc"},
+						arg1: &dCollect{
+							ARG: collect__attributes__rel,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dVariable{
+									VAR: node,
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // a mod in an otherwise empty predc
+			return externalHeadPosition(node.axParent, q)
+		}
+		// ordered case below before multiple mod cases, to deal with su [predc _ mod] cases GB 8/1/24
+		if test(q /* $node[not(../@rel="su") and ../../node[@rel="su" and (@pt or @cat)]] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dFunction{
+								ARG: function__not__1__args,
+								arg1: &dArg{
+									arg1: &dSort{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG: collect__attributes__rel,
+												arg1: &dCollect{
+													ARG:  collect__parent__type__node,
+													arg1: &dNode{},
+												},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"su"},
+												arg1: &dCollect{
+													ARG: collect__attributes__rel,
+													arg1: &dCollect{
+														ARG:  collect__parent__type__node,
+														arg1: &dNode{},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"su"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dSort{
+											arg1: &dOr{
+												arg1: &dCollect{
+													ARG:  collect__attributes__pt,
+													arg1: &dNode{},
+												},
+												arg2: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // a mod in an otherwise empty tree (after fixing heads in conj)
+			return internalHeadPosition(find(q /* $node/../../node[@rel="su"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dVariable{
+									VAR: node,
+								},
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"su"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}), q)
+		}
+		if test(q /* $node/../../@cat="ti" and $node/../../../node[@rel="su" and (@pt or @cat)] */, &xPath{
+			arg1: &dSort{
+				arg1: &dAnd{
+					arg1: &dEqual{
+						ARG: equal__is,
+						arg1: &dCollect{
+							ARG: collect__attributes__cat,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dVariable{
+										VAR: node,
+									},
+								},
+							},
+						},
+						arg2: &dElem{
+							DATA: []interface{}{"ti"},
+							arg1: &dCollect{
+								ARG: collect__attributes__cat,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dCollect{
+										ARG: collect__parent__type__node,
+										arg1: &dVariable{
+											VAR: node,
+										},
+									},
+								},
+							},
+						},
+					},
+					arg2: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dVariable{
+										VAR: node,
+									},
+								},
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"su"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dSort{
+									arg1: &dOr{
+										arg1: &dCollect{
+											ARG:  collect__attributes__pt,
+											arg1: &dNode{},
+										},
+										arg2: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // an mod in a te-inf VP with a subject GB 20/2/24
+			return internalHeadPosition(find(q /* $node/../../../node[@rel="su"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dVariable{
+										VAR: node,
+									},
+								},
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"su"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}), q)
+		}
+		if test(q /* $node[../@cat="ssub" and ../@rel="body" and ../../node[@rel=("whd","rhd") and @pt]] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG: collect__attributes__cat,
+										arg1: &dCollect{
+											ARG:  collect__parent__type__node,
+											arg1: &dNode{},
+										},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"ssub"},
+										arg1: &dCollect{
+											ARG: collect__attributes__cat,
+											arg1: &dCollect{
+												ARG:  collect__parent__type__node,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG: collect__attributes__rel,
+										arg1: &dCollect{
+											ARG:  collect__parent__type__node,
+											arg1: &dNode{},
+										},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"body"},
+										arg1: &dCollect{
+											ARG: collect__attributes__rel,
+											arg1: &dCollect{
+												ARG:  collect__parent__type__node,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+							arg2: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"whd", "rhd"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dCollect{
+											ARG:  collect__attributes__pt,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return internalHeadPosition(find(q /* $node/../../node[@rel=("whd","rhd")] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dVariable{
+									VAR: node,
+								},
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"whd", "rhd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}), q) // wat cool/mogelijk is en wat niet, GB 24/1/24 added rhd GB 26/2/24
+		}
 		if n := find(q /* $node/../node[@rel=("mod","app") and descendant-or-self::node/@pt] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -4208,85 +5663,6 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 
-		if test(q /* $node/../../node[@rel="su" and (@pt or @cat)] */, &xPath{
-			arg1: &dSort{
-				arg1: &dCollect{
-					ARG: collect__child__node,
-					arg1: &dCollect{
-						ARG: collect__parent__type__node,
-						arg1: &dCollect{
-							ARG: collect__parent__type__node,
-							arg1: &dVariable{
-								VAR: node,
-							},
-						},
-					},
-					arg2: &dPredicate{
-						arg1: &dAnd{
-							arg1: &dEqual{
-								ARG: equal__is,
-								arg1: &dCollect{
-									ARG:  collect__attributes__rel,
-									arg1: &dNode{},
-								},
-								arg2: &dElem{
-									DATA: []interface{}{"su"},
-									arg1: &dCollect{
-										ARG:  collect__attributes__rel,
-										arg1: &dNode{},
-									},
-								},
-							},
-							arg2: &dSort{
-								arg1: &dOr{
-									arg1: &dCollect{
-										ARG:  collect__attributes__pt,
-										arg1: &dNode{},
-									},
-									arg2: &dCollect{
-										ARG:  collect__attributes__cat,
-										arg1: &dNode{},
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		}) { // an mod in an otherwise empty tree (after fixing heads in conj)
-			return internalHeadPosition(find(q /* $node/../../node[@rel="su"] */, &xPath{
-				arg1: &dSort{
-					arg1: &dCollect{
-						ARG: collect__child__node,
-						arg1: &dCollect{
-							ARG: collect__parent__type__node,
-							arg1: &dCollect{
-								ARG: collect__parent__type__node,
-								arg1: &dVariable{
-									VAR: node,
-								},
-							},
-						},
-						arg2: &dPredicate{
-							arg1: &dEqual{
-								ARG: equal__is,
-								arg1: &dCollect{
-									ARG:  collect__attributes__rel,
-									arg1: &dNode{},
-								},
-								arg2: &dElem{
-									DATA: []interface{}{"su"},
-									arg1: &dCollect{
-										ARG:  collect__attributes__rel,
-										arg1: &dNode{},
-									},
-								},
-							},
-						},
-					},
-				},
-			}), q)
-		}
 		return externalHeadPosition(node.axParent, q) /* an empty mod in an otherwise empty tree
 		   -- mod is co-indexed with rhd, rest is elided,
 		   LassySmall4/wiki-7064/wiki-7064.p.28.s.3.xml */
