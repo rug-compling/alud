@@ -1,14 +1,8 @@
 package main
 
 import (
-	"github.com/rug-compling/alud/v2"
-	"github.com/rug-compling/alud/v2/internal/util"
-
-	"github.com/pebbe/compactcorpus"
-	"github.com/pebbe/dbxml"
-	"github.com/rug-compling/alpinods"
-
 	"bufio"
+	"bytes"
 	"encoding/xml"
 	"flag"
 	"fmt"
@@ -16,10 +10,45 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"runtime"
 	"strings"
+
+	"github.com/rug-compling/alud/v2"
+	"github.com/rug-compling/alud/v2/internal/util"
+
+	"github.com/pebbe/compactcorpus"
+	"github.com/pebbe/dbxml"
+	"github.com/rug-compling/alpinods"
 )
 
+type resultItem struct {
+	output string
+	errors string
+}
+
+type workItem struct {
+	doc      []byte
+	filename string
+	archname string
+	sentid   string
+	options  int
+	chResult chan resultItem
+}
+
+type Collection struct {
+	XMLName xml.Name `xml:"collection"`
+	Doc     []Doc    `xml:"doc"`
+}
+
+type Doc struct {
+	Href string `xml:"href,attr"`
+}
+
 var (
+	chWork    chan workItem
+	chResults chan chan resultItem
+	chDone    chan bool
+
 	opt_a = flag.Bool("a", false, "output in alpino")
 	opt_c = flag.Bool("c", false, "don't include comments")
 	opt_d = flag.Bool("d", false, "include debug messages in comments")
@@ -29,6 +58,7 @@ var (
 	opt_m = flag.Bool("m", false, "don't fix mixplaced heads in coordination")
 	opt_M = flag.Bool("M", false, "don't copy metadata to comments")
 	opt_p = flag.Bool("p", false, "panic on error (for development)")
+	opt_r = flag.Int("r", 1, "number of processes")
 	opt_s = flag.Bool("s", false, "include short error comments if parse fails")
 	opt_t = flag.Bool("t", false, "don't try to restore detokenized sentence")
 	opt_v = flag.Bool("v", false, "print version and exit")
@@ -40,15 +70,6 @@ var (
 
 	reSentID = regexp.MustCompile(`<sentence.*?sentid="(.*?)".*</sentence>`)
 )
-
-type Collection struct {
-	XMLName xml.Name `xml:"collection"`
-	Doc     []Doc    `xml:"doc"`
-}
-
-type Doc struct {
-	Href string `xml:"href,attr"`
-}
 
 func usage() {
 	p := filepath.Base(os.Args[0])
@@ -65,26 +86,26 @@ Usage, examples:
 
 Options:
 
-    -a : output in Alpino, all other options are ignored
-    -c : don't include comments
-    -d : include debug messages in comments
-    -e : skip enhanced dependencies
-    -f : don't fix punctuation
+    -a        : output in Alpino, all other options are ignored
+    -c        : don't include comments
+    -d        : include debug messages in comments
+    -e        : skip enhanced dependencies
+    -f        : don't fix punctuation
     -i regexp : make sent_id from regexp applied to filename
                 example: /skip/this/prefix/(.*).xml
-    -m : don't fix misplaced heads in coordination
-    -M : don't copy metadata to comments
-    -p : panic on error
-    -s : include short error comments if parse fails
-    -t : don't try to restore detokenized sentence
-    -v : print version and exit
-    -x : include dummy output if parse fails
+    -m        : don't fix misplaced heads in coordination
+    -M        : don't copy metadata to comments
+    -p        : panic on error
+    -r int    : number of parallel processes (default: 1, max: %d)
+    -s        : include short error comments if parse fails
+    -t        : don't try to restore detokenized sentence
+    -v        : print version and exit
+    -x        : include dummy output if parse fails
 
-`, p, p, p, p, p, p, p)
+`, p, p, p, p, p, p, p, max(1, runtime.NumCPU()-2))
 }
 
 func main() {
-
 	flag.Usage = usage
 	flag.Parse()
 
@@ -150,6 +171,36 @@ func main() {
 		options |= alud.OPT_DUMMY_OUTPUT
 	}
 
+	*opt_r = min(*opt_r, runtime.NumCPU()-2)
+	if *opt_r > 1 {
+		chWork = make(chan workItem, 100)
+		chResults = make(chan chan resultItem, 100)
+		chDone = make(chan bool)
+
+		// start workers
+		for i := 0; i < *opt_r; i++ {
+			go func() {
+				for work := range chWork {
+					output, errors := doFile(work.doc, work.filename, work.archname, work.sentid, work.options)
+					work.chResult <- resultItem{output: output, errors: errors}
+					close(work.chResult)
+				}
+			}()
+		}
+
+		// start collector
+		go func() {
+			// print results in correct order
+			for chResult := range chResults {
+				result := <-chResult
+				fmt.Print(result.output)
+				fmt.Fprint(os.Stderr, result.errors)
+			}
+			// signal all is done
+			close(chDone)
+		}()
+	}
+
 	for _, filename := range filenames {
 		if strings.HasSuffix(filename, ".dact") {
 			multi = true
@@ -163,14 +214,14 @@ func main() {
 				if *opt_i != "" {
 					sentid = reID.FindStringSubmatch(docs.Name())[1]
 				}
-				doFile([]byte(docs.Content()), docs.Name(), filename, sentid, options)
+				startFile([]byte(docs.Content()), docs.Name(), filename, sentid, options)
 			}
 			x(docs.Error())
 			db.Close()
 			continue
 		}
 
-		if strings.HasSuffix(filename, ".data.dz") {
+		if strings.HasSuffix(filename, ".data.dz") || strings.HasSuffix(filename, ".index") {
 			multi = true
 			corpus, err := compactcorpus.Open(filename)
 			x(err)
@@ -182,7 +233,7 @@ func main() {
 				if *opt_i != "" {
 					sentid = reID.FindStringSubmatch(name)[1]
 				}
-				doFile(data, name, filename, sentid, options)
+				startFile(data, name, filename, sentid, options)
 			}
 			continue
 		}
@@ -198,7 +249,7 @@ func main() {
 			if *opt_i != "" {
 				sentid = reID.FindStringSubmatch(filename)[1]
 			}
-			doFile(b, filename, "", sentid, options)
+			startFile(b, filename, "", sentid, options)
 			continue
 		}
 
@@ -213,42 +264,72 @@ func main() {
 			if *opt_i != "" {
 				sentid = reID.FindStringSubmatch(f.Href)[1]
 			}
-			doFile(b, f.Href, "", sentid, options)
+			startFile(b, f.Href, filename, sentid, options)
 		}
 		x(os.Chdir(dir))
 	}
+
+	// wait for go routines to finish
+	if *opt_r > 1 {
+		close(chResults) // signal collector all jobs are sent
+		<-chDone         // wait for collector to finish
+	}
 }
 
-func doFile(doc []byte, filename, archname, sentid string, options int) {
+func startFile(doc []byte, filename, archname, sentid string, options int) {
+	if *opt_r < 2 {
+		output, errors := doFile(doc, filename, archname, sentid, options)
+		fmt.Print(output)
+		fmt.Fprint(os.Stderr, errors)
+		return
+	}
+
+	chResult := make(chan resultItem, 1)
+
+	chWork <- workItem{
+		doc:      doc,
+		filename: filename,
+		archname: archname,
+		sentid:   sentid,
+		options:  options,
+		chResult: chResult,
+	}
+
+	chResults <- chResult
+}
+
+func doFile(doc []byte, filename, archname, sentid string, options int) (string, string) {
+	var output, errors bytes.Buffer
+
 	if *opt_a {
 		result, err := alud.UdAlpino(doc, filename, sentid)
 		if multi {
 			if archname == "" {
-				fmt.Printf("<!-- %s -->\n", filename)
+				fmt.Fprintf(&output, "<!-- %s -->\n", filename)
 			} else {
-				fmt.Printf("<!-- %s : %s -->\n", archname, filename)
+				fmt.Fprintf(&output, "<!-- %s : %s -->\n", archname, filename)
 			}
 		}
-		fmt.Println(result)
+		fmt.Fprintln(&output, result)
 		if multi {
-			fmt.Println()
+			fmt.Fprintln(&output)
 		}
 		if err != nil {
 			if archname == "" {
-				fmt.Fprintf(os.Stderr, "%s\n  error: %v\n", filename, err)
+				fmt.Fprintf(&errors, "%s\n  error: %v\n", filename, err)
 			} else {
-				fmt.Fprintf(os.Stderr, "%s : %s\n  error: %v\n", archname, filename, err)
+				fmt.Fprintf(&errors, "%s : %s\n  error: %v\n", archname, filename, err)
 			}
 		}
-		return
+		return output.String(), errors.String()
 	}
 
 	if archname != "" {
-		fmt.Println("# archive =", archname)
+		fmt.Fprintln(&output, "# archive =", archname)
 	}
 	result, err := alud.Ud(doc, filename, sentid, options)
 	if err == nil {
-		fmt.Print(result)
+		fmt.Fprint(&output, result)
 	} else {
 		s := err.Error()
 		if i := strings.Index(s, "\n"); i > 0 {
@@ -265,15 +346,30 @@ func doFile(doc []byte, filename, archname, sentid string, options int) {
 		}
 
 		if *opt_s {
-			fmt.Printf("# source = %s\n%s# error = %s\n# auto = %s\n\n", filename, id1, s, alud.VersionID())
+			fmt.Fprintf(&output, "# source = %s\n%s# error = %s\n# auto = %s\n\n", filename, id1, s, alud.VersionID())
 		}
 		if *opt_x {
-			fmt.Println(result)
+			fmt.Fprintln(&output, result)
 		}
 		if archname == "" {
-			fmt.Fprintf(os.Stderr, "%s\n%s  error: %v\n", filename, id2, err)
+			fmt.Fprintf(&errors, "%s\n%s  error: %v\n", filename, id2, err)
 		} else {
-			fmt.Fprintf(os.Stderr, "%s: %s\n%s  error: %v\n", archname, filename, id2, err)
+			fmt.Fprintf(&errors, "%s: %s\n%s  error: %v\n", archname, filename, id2, err)
 		}
 	}
+	return output.String(), errors.String()
+}
+
+func max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
