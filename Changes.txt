@@ -1,3 +1,15 @@
+Version 2.14.0
+2024-14.0
+
+ * UP parser
+     * Updates : adding obl:arg relation, better treatment of fixed + copula,
+       upos=X for foreign and afgebr- cases adding Foreign=Yes attribute
+     * Fixing issues for version 2.14 release, now also including WR-P-E-I
+       sentences
+ * other
+     * alpinods v1.16.2 -> v1.16.4
+     * cmd/alud, cmd-dact: fast, parallel processing
+
 Version 2.13.0
 2023-09-14
 

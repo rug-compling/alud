@@ -13,6 +13,11 @@ Zie:
     https://semver.org/
     https://blog.golang.org/using-go-modules
 
+LET OP:
+
+    ook codemeta.json aanpassen
+    ook Changes.txt aanpassen
+
 */
 
-const version = "2.13.0"
+const version = "2.14.0"

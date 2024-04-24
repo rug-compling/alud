@@ -191,7 +191,7 @@ func main() {
 				fmt.Print(result.output)
 				fmt.Fprint(os.Stderr, result.errors)
 			}
-			// signal all is done
+			// signal collector is done
 			close(chDone)
 		}()
 	}
@@ -246,7 +246,7 @@ func main() {
 		x(os.Chdir(dir))
 	}
 
-	// wait for go routines to finish
+	// wait for goroutines
 	if *opt_r > 1 {
 		close(chResults) // signal collector all jobs are sent
 		<-chDone         // wait for collector to finish
