@@ -7,8 +7,6 @@ all:
 	@echo "  alud      : install alud"
 	@echo "  alud-dact : install alud-dact"
 	@echo
-	@echo '  devel     : only for maintainers'
-	@echo
 
 bin: alud alud-dact
 
@@ -17,6 +15,3 @@ alud:
 
 alud-dact:
 	cd v2/cmd/alud-dact && go install -v .
-
-devel:
-	make -C v2

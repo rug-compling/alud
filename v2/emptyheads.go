@@ -1,7 +1,3 @@
-//
-// // THIS IS A GENERATED FILE. DO NOT EDIT.
-//
-
 package alud
 
 import (
@@ -18,77 +14,10 @@ func reconstructEmptyHead(q *context) bool {
 			continue
 		}
 
-		antecedent := find(q /* $q.varindexnodes[(@pt or @cat) and @index = $node/@index ] */, &xPath{
-			arg1: &dSort{
-				arg1: &dFilter{
-					arg1: &dVariable{
-						VAR: q.varindexnodes,
-					},
-					arg2: &dSort{
-						arg1: &dAnd{
-							arg1: &dSort{
-								arg1: &dOr{
-									arg1: &dCollect{
-										ARG:  collect__attributes__pt,
-										arg1: &dNode{},
-									},
-									arg2: &dCollect{
-										ARG:  collect__attributes__cat,
-										arg1: &dNode{},
-									},
-								},
-							},
-							arg2: &dEqual{
-								ARG: equal__is,
-								arg1: &dCollect{
-									ARG:  collect__attributes__index,
-									arg1: &dNode{},
-								},
-								arg2: &dCollect{
-									ARG: collect__attributes__index,
-									arg1: &dVariable{
-										VAR: node,
-									},
-								},
-							},
-						},
-					},
-				},
-			},
-		})
-		if !test(q, /* $antecedent[@word or @cat = "mwu"] (: onder andere as hd... :)
-			   (: and not(local:auxiliary($antecedent) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
-			*/&xPath{
-				arg1: &dSort{
-					arg1: &dFilter{
-						arg1: &dVariable{
-							VAR: antecedent,
-						},
-						arg2: &dSort{
-							arg1: &dOr{
-								arg1: &dCollect{
-									ARG:  collect__attributes__word,
-									arg1: &dNode{},
-								},
-								arg2: &dEqual{
-									ARG: equal__is,
-									arg1: &dCollect{
-										ARG:  collect__attributes__cat,
-										arg1: &dNode{},
-									},
-									arg2: &dElem{
-										DATA: []interface{}{"mwu"},
-										arg1: &dCollect{
-											ARG:  collect__attributes__cat,
-											arg1: &dNode{},
-										},
-									},
-								},
-							},
-						},
-					},
-				},
-			}) {
+		antecedent := FIND(q, `$q.varindexnodes[(@pt or @cat) and @index = $node/@index ]`)
+		if !TEST(q, `$antecedent[@word or @cat = "mwu"] (: onder andere as hd... :)
+		        (: and not(local:auxiliary($antecedent) = ("aux","aux:pass","cop")) skip auxiliaries and copulas, prepositions as well? :)
+                   `) {
 			continue
 		}
 		found = true
@@ -96,91 +25,16 @@ func reconstructEmptyHead(q *context) bool {
 		antenode := n1(antecedent)
 		mwu := validMwu(antenode)
 
-		others := find(q /* $node/../node[@pt or @cat] */, &xPath{
-			arg1: &dSort{
-				arg1: &dCollect{
-					ARG: collect__child__node,
-					arg1: &dCollect{
-						ARG: collect__parent__type__node,
-						arg1: &dVariable{
-							VAR: node,
-						},
-					},
-					arg2: &dPredicate{
-						arg1: &dOr{
-							arg1: &dCollect{
-								ARG:  collect__attributes__pt,
-								arg1: &dNode{},
-							},
-							arg2: &dCollect{
-								ARG:  collect__attributes__cat,
-								arg1: &dNode{},
-							},
-						},
-					},
-				},
-			},
-		})
+		others := FIND(q, `$node/../node[@pt or @cat]`)
 		var end int
 		if len(others) > 0 {
-			if test(q /* $node/../node[@pt or @cat]/@begin = $node/../@begin */, &xPath{
-				arg1: &dSort{
-					arg1: &dEqual{
-						ARG: equal__is,
-						arg1: &dCollect{
-							ARG: collect__attributes__begin,
-							arg1: &dCollect{
-								ARG: collect__child__node,
-								arg1: &dCollect{
-									ARG: collect__parent__type__node,
-									arg1: &dVariable{
-										VAR: node,
-									},
-								},
-								arg2: &dPredicate{
-									arg1: &dOr{
-										arg1: &dCollect{
-											ARG:  collect__attributes__pt,
-											arg1: &dNode{},
-										},
-										arg2: &dCollect{
-											ARG:  collect__attributes__cat,
-											arg1: &dNode{},
-										},
-									},
-								},
-							},
-						},
-						arg2: &dCollect{
-							ARG: collect__attributes__begin,
-							arg1: &dCollect{
-								ARG: collect__parent__type__node,
-								arg1: &dVariable{
-									VAR: node,
-								},
-							},
-						},
-					},
-				},
-			}) {
+			if TEST(q, `$node/../node[@pt or @cat]/@begin = $node/../@begin`) {
 				end = nZ(others).End + 1 // + 0.1
 			} else {
 				end = leftEdge(n1(others), q) + 1 // + 0.1
 			}
 		} else {
-			end = i1(find(q /* $node/../@end */, &xPath{
-				arg1: &dSort{
-					arg1: &dCollect{
-						ARG: collect__attributes__end,
-						arg1: &dCollect{
-							ARG: collect__parent__type__node,
-							arg1: &dVariable{
-								VAR: node,
-							},
-						},
-					},
-				},
-			})) - 999 // - 0.9 // covers cases where there is no sister with content
+			end = i1(FIND(q, `$node/../@end`)) - 999 // - 0.9 // covers cases where there is no sister with content
 		}
 		for seen[end] {
 			end++
@@ -226,20 +80,20 @@ func reconstructEmptyHead(q *context) bool {
 		// kopieer verder alle ud-attributen
 		node.udAbbr = antenode.udAbbr
 		node.udCase = antenode.udCase
-		//niet: node.udCopiedFrom = antenode.udCopiedFrom
+		// niet: node.udCopiedFrom = antenode.udCopiedFrom
 		node.udDefinite = antenode.udDefinite
 		node.udDegree = antenode.udDegree
 		node.udEnhanced = antenode.udEnhanced
 		node.udForeign = antenode.udForeign
 		node.udGender = antenode.udGender
-		//niet: node.udHeadPosition = antenode.udHeadPosition
+		// niet: node.udHeadPosition = antenode.udHeadPosition
 		node.udNumber = antenode.udNumber
 		node.udPerson = antenode.udPerson
 		node.udPos = antenode.udPos
 		node.udPoss = antenode.udPoss
 		node.udPronType = antenode.udPronType
 		node.udReflex = antenode.udReflex
-		//niet: node.udRelation = antenode.udRelation
+		// niet: node.udRelation = antenode.udRelation
 		node.udTense = antenode.udTense
 		node.udVerbForm = antenode.udVerbForm
 		node.udFirstWordBegin = antenode.udFirstWordBegin
@@ -279,22 +133,7 @@ func reconstructEmptyHead(q *context) bool {
 
 func leftEdge(node *nodeType, q *context) int {
 	left := 1000000
-	for _, n := range find(q /* $node/descendant-or-self::node[@pt] */, &xPath{
-		arg1: &dSort{
-			arg1: &dCollect{
-				ARG: collect__descendant__or__self__node,
-				arg1: &dVariable{
-					VAR: node,
-				},
-				arg2: &dPredicate{
-					arg1: &dCollect{
-						ARG:  collect__attributes__pt,
-						arg1: &dNode{},
-					},
-				},
-			},
-		},
-	}) {
+	for _, n := range FIND(q, `$node/descendant-or-self::node[@pt]`) {
 		if begin := n.(*nodeType).Begin; begin < left {
 			left = begin
 		}

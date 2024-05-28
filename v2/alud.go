@@ -1,14 +1,16 @@
 package alud
 
 import (
-	"github.com/rug-compling/alpinods"
-
 	"bytes"
 	"encoding/xml"
 	"fmt"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
+
+	"github.com/jbowtie/gokogiri"
+	"github.com/rug-compling/alpinods"
 )
 
 // options can be or'ed as last argument to Ud()
@@ -30,29 +32,6 @@ const (
 	error_no_head
 	error_no_value
 )
-
-var (
-	noNode = &nodeType{
-		NodeAttributes: alpinods.NodeAttributes{
-			Begin: -1000,
-			End:   -1000,
-			ID:    -1,
-		},
-		udCopiedFrom:        -1000,
-		Node:                []*nodeType{},
-		axParent:            []interface{}{},
-		axAncestors:         []interface{}{},
-		axChildren:          []interface{}{},
-		axDescendants:       []interface{}{},
-		axDescendantsOrSelf: []interface{}{},
-		udHeadPosition:      error_no_head,
-		udEHeadPosition:     error_no_head,
-	}
-)
-
-func init() {
-	noNode.parent = noNode
-}
 
 // Version ID string
 func VersionID() string {
@@ -88,59 +67,73 @@ func ud(alpino_doc []byte, filename, sentid string, options int) (conllu string,
 }
 
 func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu string, q *context, err error) {
-
-	var alpino alpino_ds
-	err = xml.Unmarshal(alpino_doc, &alpino)
-	if err != nil {
-		return "", nil, err
-	}
-
-	if sentid != "" {
-		alpino.Sentence.SentId = sentid
-	} else if alpino.Sentence.SentId == "" {
+	if sentid == "" && filename != "" {
 		id := filepath.Base(filename)
 		if strings.HasSuffix(id, ".xml") {
 			id = id[:len(id)-4]
 		}
-		alpino.Sentence.SentId = id
+		sentid = id
 	}
 
-	// Extra node bovenaan vanwege gedoe met //node
-	// Wordt weer verwijderd in alpinoRestore()
-	alpino.Node = &nodeType{
-		NodeAttributes: alpinods.NodeAttributes{
-			Begin: alpino.Node.Begin,
-			End:   alpino.Node.End,
-			ID:    -2, // ??? TODO
-		},
-		Node: []*nodeType{alpino.Node},
+	q = &context{
+		filename: filename,
+		sentid:   sentid,
 	}
 
-	var walk func(*nodeType)
-	walk = func(node *nodeType) {
-		node.Begin *= 1000
-		node.End *= 1000
-		node.ID *= 1000
-		if node.Node == nil {
-			node.Node = make([]*nodeType, 0)
-		} else {
-			for _, n := range node.Node {
-				walk(n)
+	q.doc, err = gokogiri.ParseXml(alpino_doc)
+	if err != nil {
+		return
+	}
+	defer q.doc.Free()
+
+	q.root = q.doc.Root()
+	if sentence, err := q.root.Search("./sentence"); err == nil {
+		if len(sentence) > 0 {
+			q.sentence = sentence[0].Content()
+			sentid = sentence[0].Attr("sentid")
+			if sentid != "" {
+				q.sentid = sentid
 			}
 		}
 	}
-	walk(alpino.Node)
 
-	q = &context{
-		alpino:   &alpino,
-		filename: filename,
-		sentence: alpino.Sentence.Sent,
-		sentid:   alpino.Sentence.SentId,
-		varroot:  []interface{}{alpino.Node},
-		swapped:  [][2]*nodeType{},
+	roots, err := q.root.Search("./node")
+	if err != nil {
+		return
+	}
+	if len(roots) != 1 {
+		err = fmt.Errorf("len(roots) == %d", len(roots))
+		return
+	}
+	q.rootnode = roots[0]
+
+	q.allnodes, err = q.root.Search(`.//node`)
+	if err != nil {
+		return
 	}
 
-	inspect(q)
+	for _, node := range q.allnodes {
+		begin, _ := strconv.Atoi(node.Attr("begin"))
+		end, _ := strconv.Atoi(node.Attr("end"))
+		id, _ := strconv.Atoi(node.Attr("id"))
+		node.SetAttr("begin", fmt.Sprintf("%04d000", begin))
+		node.SetAttr("end", fmt.Sprintf("%04d000", end))
+		node.SetAttr("id", fmt.Sprintf("%04d000", id))
+		// TODO: fix terminals zonder pt (bug in sommige alpino-bestanden)
+	}
+
+	q.idxnodes, err = q.rootnode.Search(`.//node[@index and (@cat or @pt)]`)
+	if err != nil {
+		return
+	}
+
+	q.ptnodes, err = q.rootnode.Search(`.//node[@pt]`)
+	if err != nil {
+		return
+	}
+	sort.Slice(q.ptnodes, func(i, j int) bool {
+		return q.ptnodes[i].Attr("begin") < q.ptnodes[j].Attr("begin")
+	})
 
 	if options&OPT_NO_FIX_MISPLACED_HEADS == 0 {
 		fixMisplacedHeadsInCoordination(q)
@@ -161,81 +154,7 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 	return conll(q, options), q, nil
 }
 
-func inspect(q *context) {
-	allnodes := make([]*nodeType, 0)
-	varallnodes := make([]interface{}, 0)
-	ptnodes := make([]*nodeType, 0)
-	varindexnodes := make([]interface{}, 0)
-
-	var walk func(*nodeType)
-	walk = func(node *nodeType) {
-
-		// bug in Alpino: missing pt
-		if node.Word != "" && node.Pt == "" {
-			node.Pt = strings.ToLower(strings.Split(node.Postag, "(")[0])
-			if node.Pt == "" {
-				node.Pt = "na"
-			}
-		}
-
-		allnodes = append(allnodes, node)
-		varallnodes = append(varallnodes, node)
-		if node.Pt != "" {
-			ptnodes = append(ptnodes, node)
-		}
-		if node.Index > 0 {
-			varindexnodes = append(varindexnodes, node)
-		}
-		for _, n := range node.Node {
-			n.parent = node
-			n.axParent = []interface{}{node}
-			walk(n)
-		}
-		node.axChildren = make([]interface{}, 0)
-		node.axDescendants = make([]interface{}, 0)
-		node.axDescendantsOrSelf = make([]interface{}, 1)
-		node.axDescendantsOrSelf[0] = node
-		for _, n := range node.Node {
-			node.axChildren = append(node.axChildren, n)
-			node.axDescendants = append(node.axDescendants, n)
-			node.axDescendants = append(node.axDescendants, n.axDescendants...)
-			node.axDescendantsOrSelf = append(node.axDescendantsOrSelf, n.axDescendantsOrSelf...) // niet n
-		}
-	}
-	walk(q.alpino.Node)
-	q.alpino.Node.parent = noNode
-	q.alpino.Node.axParent = []interface{}{}
-
-	for _, node := range allnodes {
-		node.axAncestors = make([]interface{}, 0)
-		if node != q.alpino.Node {
-			node.axAncestors = append(node.axAncestors, node.parent)
-			node.axAncestors = append(node.axAncestors, node.parent.axAncestors...)
-			if node.axAncestors[len(node.axAncestors)-1] != q.alpino.Node {
-				// zou niet mogelijk moeten zijn
-				panic("Missing ancestors in " + q.filename)
-			}
-		}
-	}
-
-	sort.Slice(ptnodes, func(i, j int) bool {
-		return ptnodes[i].End < ptnodes[j].End
-	})
-	varptnodes := make([]interface{}, len(ptnodes))
-	for i, node := range ptnodes {
-		varptnodes[i] = node
-	}
-
-	q.allnodes = allnodes
-	q.varallnodes = varallnodes
-	q.varindexnodes = varindexnodes
-	q.ptnodes = ptnodes
-	q.varptnodes = varptnodes
-
-}
-
 func check(q *context, options int) {
-
 	defer func() {
 		if r := recover(); r != nil {
 			panic(trace(r, "\t"+strings.TrimSpace(strings.Replace(conll(q, options), "\n", "\n\t", -1)), q))
@@ -317,7 +236,6 @@ func check(q *context, options int) {
 }
 
 func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin error) string {
-
 	var alpino alpino_ds
 	err := xml.Unmarshal(alpino_doc, &alpino)
 
