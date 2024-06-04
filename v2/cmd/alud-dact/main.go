@@ -324,7 +324,7 @@ func doFile(doc []byte, filename, archname, sentid string, options int) (string,
 		return output.String(), errors.String()
 	}
 
-	if archname != "" {
+	if archname != "" && !*opt_c {
 		fmt.Fprintln(&output, "# archive =", archname)
 	}
 	result, err := alud.Ud(doc, filename, sentid, options)
