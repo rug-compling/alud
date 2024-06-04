@@ -8,7 +8,7 @@ import (
 
 // voorkwam dat LPF opnieuw of SGP voor het eerst in de regering zou komen  -- gapped LD
 func fixMisplacedHeadsInCoordination(q *context) {
-	if len(q.varindexnodes) == 0 {
+	if len(q.varidxnodes) == 0 {
 		return
 	}
 
@@ -25,13 +25,13 @@ START:
 		for _, n1 := range q.varallnodes {
 			// FIND op varallnodes niet mogelijk omdat twee keer naar $node wordt verwezen, en dat moet dezelfde node zijn
 			// added mwu as possible hd GB 05/03/24
-			for _, n2 := range FIND(q, `
-$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and
+			for _, n2 := range find(q, `
+$n1[((@rel="hd" or @rel="ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and
       @index and
       (@pt or @cat) and
       ancestor::node[@rel="cnj"] and
       ancestor::node[@cat="conj"]/node[@rel="cnj" and
-                                       descendant-or-self::node[@rel=("hd","ld","obj1") and
+                                       descendant-or-self::node[(@rel="hd" or @rel="ld" or @rel="obj1") and
                                                                 @index=$n1/@index and
                                                                 not(@cat or @pt) and
                                                                 ( @begin        = ..//node[@cat or @pt]/@end or
@@ -39,16 +39,16 @@ $n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@c
                                                                   @begin - 1000 = ..//node[@cat or @pt]/@end
                                                                 )
                                                                ]
-                                       ]]`) {
+                                       ]]`, "n1", n1) {
 				node2 := n2.(*nodeType)
 				// added mwu as possible hd GB 05/03/24
-				for _, n3 := range FIND(q, `
+				for _, n3 := range find(q, `
 $q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and @index and not(@pt or @cat) and
                  ancestor::node[@rel="cnj"]  and
                                     ( @begin        = ..//node[@cat or @pt]/@end or
                                       ( @begin      = ../..//node[@cat or @pt]/@end and ../@cat="pp") or
                                       @begin - 1000 = ..//node[@cat or @pt]/@end
-                                     )]`) {
+                                     )]`, "allnodes", q.varallnodes) {
 					node3 := n3.(*nodeType)
 					if node2.Index == node3.Index {
 

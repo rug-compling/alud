@@ -3,11 +3,11 @@ package alud
 import (
 	"bytes"
 	"fmt"
+	"sort"
 	"strings"
 )
 
 func conll(q *context, options int) string {
-
 	var buf bytes.Buffer
 
 	if options&OPT_NO_COMMENTS == 0 {
@@ -27,6 +27,7 @@ func conll(q *context, options int) string {
 			}
 		}
 
+		/* TODO
 		if options&OPT_NO_METADATA == 0 {
 			if q.alpino.Metadata != nil && q.alpino.Metadata.Meta != nil {
 				for _, m := range q.alpino.Metadata.Meta {
@@ -34,6 +35,7 @@ func conll(q *context, options int) string {
 				}
 			}
 		}
+		*/
 	}
 
 	u := func(s string) string {
@@ -58,18 +60,22 @@ func conll(q *context, options int) string {
 		}), "|")
 	}
 
+	sort.Slice(q.ptnodes, func(i, j int) bool {
+		return q.ptnodes[i].begin < q.ptnodes[j].begin
+	})
+
 	for _, node := range q.ptnodes {
 		fmt.Fprintf(&buf, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
-			number(node.End),            // ID
-			node.Word,                   // FORM
-			node.Lemma,                  // LEMMA
-			u(node.udPos),               // UPOS
-			u(postag(node.Postag)),      // XPOS
-			u(featuresToString(node)),   // FEATS
-			number(node.udHeadPosition), // HEAD
-			u(node.udRelation),          // DEPREL
-			u(node.udEnhanced),          // DEPS
-			u(misc(node)))               // MISC
+			number(node.end),                    // ID
+			node.node.Attr("word"),              // FORM
+			node.node.Attr("lemma"),             // LEMMA
+			u(node.udPos),                       // UPOS
+			u(postag(node.node.Attr("postag"))), // XPOS
+			u(featuresToString(node)),           // FEATS
+			number(node.udHeadPosition),         // HEAD
+			u(node.udRelation),                  // DEPREL
+			u(node.udEnhanced),                  // DEPS
+			u(misc(node)))                       // MISC
 	}
 
 	fmt.Fprintln(&buf)

@@ -2,5 +2,7 @@ github.com/jbowtie/gokogiri v0.0.0-20190301021639-37f655d3078f h1:6UIvzqlGM38lOp
 github.com/jbowtie/gokogiri v0.0.0-20190301021639-37f655d3078f/go.mod h1:C3R3VzPq+DAwilxue7DiV6F2QL1rrQX0L56GyI+sBxM=
 github.com/pebbe/compactcorpus v1.0.1 h1:7aOH+wWmBXj1Q36YOv7YYIkt5M+r6jng/eMi4Nj30WY=
 github.com/pebbe/compactcorpus v1.0.1/go.mod h1:SSpTeCZataCjjs82RJb8SOGdjkB3PlR7Z19EY4rInoQ=
+github.com/pebbe/util v0.9.0 h1:PMZd+CpWb8GbWEmFGlL3qd6XPuywl6xFIbrXWi870OA=
+github.com/pebbe/util v0.9.0/go.mod h1:ynWl/SFX4+Seb9fpjVlYevr1f4TP7FrCmyZHiBCg69Q=
 github.com/rug-compling/alpinods v1.16.4 h1:alLjmdKg3az5qB122aHxdWVWJ+GWfclkbpfpdDEbwpw=
 github.com/rug-compling/alpinods v1.16.4/go.mod h1:R3BBX8RIw9InVqHZ+1W+MsX8WX8uBkoVNNGE38mqF1Q=

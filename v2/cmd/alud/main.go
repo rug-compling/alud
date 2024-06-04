@@ -278,6 +278,7 @@ func startFile(doc []byte, filename, archname, sentid string, options int) {
 func doFile(doc []byte, filename, archname, sentid string, options int) (string, string) {
 	var output, errors bytes.Buffer
 
+	/* TODO
 	if *opt_a {
 		result, err := alud.UdAlpino(doc, filename, sentid)
 		if multi {
@@ -300,8 +301,9 @@ func doFile(doc []byte, filename, archname, sentid string, options int) (string,
 		}
 		return output.String(), errors.String()
 	}
+	*/
 
-	if archname != "" {
+	if archname != "" && !*opt_c {
 		fmt.Fprintln(&output, "# archive =", archname)
 	}
 	result, err := alud.Ud(doc, filename, sentid, options)

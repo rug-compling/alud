@@ -1,16 +1,13 @@
 package alud
 
 import (
-	"bytes"
-	"encoding/xml"
 	"fmt"
 	"path/filepath"
-	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/jbowtie/gokogiri"
-	"github.com/rug-compling/alpinods"
+	"github.com/jbowtie/gokogiri/xml"
 )
 
 // options can be or'ed as last argument to Ud()
@@ -50,18 +47,18 @@ func ud(alpino_doc []byte, filename, sentid string, options int) (conllu string,
 	if options&OPT_PANIC == 0 {
 		defer func() {
 			if r := recover(); r != nil {
-				err = fmt.Errorf("%v", untrace(r))
+				// TODO err = fmt.Errorf("%v", untrace(r))
 				if options&OPT_DUMMY_OUTPUT == 0 {
 					conllu = ""
 				} else {
-					conllu = dummyOutput(alpino_doc, filename, sentid, options, err)
+					// TODO				conllu = dummyOutput(alpino_doc, filename, sentid, options, err)
 				}
 			}
 		}()
 	}
 	conllu, q, err = udTry(alpino_doc, filename, sentid, options)
 	if err != nil && options&OPT_DUMMY_OUTPUT != 0 {
-		conllu = dummyOutput(alpino_doc, filename, sentid, options, err)
+		// TODO  	conllu = dummyOutput(alpino_doc, filename, sentid, options, err)
 	}
 	return // geen argumenten i.v.m. recover
 }
@@ -107,57 +104,66 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 	}
 	q.rootnode = roots[0]
 
-	q.allnodes, err = q.root.Search(`.//node`)
+	nodes, err := q.root.Search(`.//node`)
 	if err != nil {
 		return
 	}
-
-	for _, node := range q.allnodes {
+	q.allnodes = make([]*nodeType, len(nodes))
+	q.idxnodes = make([]*nodeType, 0)
+	q.ptnodes = make([]*nodeType, 0)
+	q.varallnodes = make([]xml.Node, len(nodes))
+	q.varidxnodes = make([]xml.Node, 0)
+	q.varptnodes = make([]xml.Node, 0)
+	for i, node := range nodes {
 		begin, _ := strconv.Atoi(node.Attr("begin"))
 		end, _ := strconv.Atoi(node.Attr("end"))
 		id, _ := strconv.Atoi(node.Attr("id"))
 		node.SetAttr("begin", fmt.Sprintf("%04d000", begin))
 		node.SetAttr("end", fmt.Sprintf("%04d000", end))
 		node.SetAttr("id", fmt.Sprintf("%04d000", id))
-		// TODO: fix terminals zonder pt (bug in sommige alpino-bestanden)
+		q.allnodes[i] = &nodeType{
+			node:  node,
+			begin: begin * 1000,
+			end:   end * 1000,
+			id:    id * 1000,
+		}
+		q.varallnodes[i] = node
+		pt := node.Attr("pt")
+		if pt != "" {
+			q.ptnodes = append(q.ptnodes, q.allnodes[i])
+			q.varptnodes = append(q.varptnodes, node)
+		}
+		if node.Attr("index") != "" && (pt != "" || node.Attr("cat") != "") {
+			q.idxnodes = append(q.idxnodes, q.allnodes[i])
+			q.varidxnodes = append(q.varidxnodes, node)
+		}
 	}
-
-	q.idxnodes, err = q.rootnode.Search(`.//node[@index and (@cat or @pt)]`)
-	if err != nil {
-		return
-	}
-
-	q.ptnodes, err = q.rootnode.Search(`.//node[@pt]`)
-	if err != nil {
-		return
-	}
-	sort.Slice(q.ptnodes, func(i, j int) bool {
-		return q.ptnodes[i].Attr("begin") < q.ptnodes[j].Attr("begin")
-	})
 
 	if options&OPT_NO_FIX_MISPLACED_HEADS == 0 {
-		fixMisplacedHeadsInCoordination(q)
+		// TODO fixMisplacedHeadsInCoordination(q)
 	}
 	addPosTags(q)
-	addFeatures(q)
-	addDependencyRelations(q)
+	// TODO addFeatures(q)
+	// TODO addDependencyRelations(q)
 	if options&OPT_NO_ENHANCED == 0 {
-		enhancedDependencies(q)
+		// TODO enhancedDependencies(q)
 	}
 	if options&OPT_NO_FIX_PUNCT == 0 {
-		fixpunct(q, options&OPT_NO_ENHANCED == 0)
+		// TODO fixpunct(q, options&OPT_NO_ENHANCED == 0)
 	}
 	if options&OPT_NO_DETOKENIZE == 0 {
-		untokenize(q)
+		// TODO untokenize(q)
 	}
-	check(q, options)
+	// TODO check(q, options)
 	return conll(q, options), q, nil
 }
 
 func check(q *context, options int) {
 	defer func() {
 		if r := recover(); r != nil {
-			panic(trace(r, "\t"+strings.TrimSpace(strings.Replace(conll(q, options), "\n", "\n\t", -1)), q))
+			// TODO
+			// panic(trace(r, "\t"+strings.TrimSpace(strings.Replace(conll(q, options), "\n", "\n\t", -1)), q))
+			panic("PANIC")
 		}
 	}()
 
@@ -171,12 +177,12 @@ func check(q *context, options int) {
 			root = i
 		}
 		if node.udHeadPosition == 0 && node.udRelation != "root" {
-			panic(fmt.Sprintf("Not a root: %s %q", number(node.End), node.Word))
+			panic(fmt.Sprintf("Not a root: %s %q", number(node.end), node.node.Attr("word")))
 		}
 		if node.udHeadPosition != 0 && node.udRelation == "root" {
-			panic(fmt.Sprintf("Invalid root: %s %q", number(node.End), node.Word))
+			panic(fmt.Sprintf("Invalid root: %s %q", number(node.end), node.node.Attr("word")))
 		}
-		items[number(node.End)] = i
+		items[number(node.end)] = i
 	}
 	if root < 0 {
 		panic("Missing root")
@@ -194,7 +200,7 @@ func check(q *context, options int) {
 				break
 			}
 			if seen[p] {
-				panic(fmt.Sprintf("Loop in standard UD for word: %s %q", number(node.End), node.Word))
+				panic(fmt.Sprintf("Loop in standard UD for word: %s %q", number(node.end), node.node.Attr("word")))
 			}
 			seen[p] = true
 			i, ok := items[number(p)]
@@ -202,7 +208,7 @@ func check(q *context, options int) {
 				p = q.ptnodes[i].udHeadPosition
 			}
 			if !ok || p == node.udHeadPosition {
-				panic(fmt.Sprintf("Unreachable word in standard UD: %s %q", number(node.End), node.Word))
+				panic(fmt.Sprintf("Unreachable word in standard UD: %s %q", number(node.end), node.node.Attr("word")))
 			}
 		}
 	}
@@ -212,7 +218,7 @@ func check(q *context, options int) {
 		for _, node := range q.ptnodes {
 			found := false
 			seen := make(map[string]bool)
-			queue := []string{number(node.End)}
+			queue := []string{number(node.end)}
 			for i := 0; i < len(queue); i++ {
 				id := queue[i]
 				if id == "0" {
@@ -229,12 +235,13 @@ func check(q *context, options int) {
 				}
 			}
 			if !found {
-				panic(fmt.Sprintf("Unreachable word in enhanced UD: %s %q", number(node.End), node.Word))
+				panic(fmt.Sprintf("Unreachable word in enhanced UD: %s %q", number(node.end), node.node.Attr("word")))
 			}
 		}
 	}
 }
 
+/*
 func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin error) string {
 	var alpino alpino_ds
 	err := xml.Unmarshal(alpino_doc, &alpino)
@@ -341,3 +348,5 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 
 	return buf.String()
 }
+
+*/

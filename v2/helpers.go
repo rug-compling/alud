@@ -1,11 +1,12 @@
 package alud
 
 import (
-	"bytes"
-	"encoding/xml"
-	"fmt"
-	"sort"
+// "bytes"
+// "fmt"
+// "sort"
 )
+
+/* TODO
 
 // meest linkse node
 func nLeft(nodes []interface{}) *nodeType {
@@ -22,14 +23,16 @@ func nLeft(nodes []interface{}) *nodeType {
 		if ii.Begin != jj.Begin {
 			return ii.Begin < jj.Begin // ints
 		}
-		//if ii.End != jj.End {
+		// if ii.End != jj.End {
 		return ii.End < jj.End // ints
 		//}
 		//return ii.ID > jj.ID // ints, omgekeerd
 	})
 	return nodes[0].(*nodeType)
 }
+*/
 
+/* TODO
 // meest linkse node als []interface{}, met lengte 0 of 1
 func ifLeft(nodes []interface{}) []interface{} {
 	n := nLeft(nodes)
@@ -38,6 +41,7 @@ func ifLeft(nodes []interface{}) []interface{} {
 	}
 	return []interface{}{n}
 }
+*/
 
 // eerste interface{} als []interface{}, met lengte 0 of 1
 func if1(nodes []interface{}) []interface{} {
@@ -55,16 +59,19 @@ func ifZ(nodes []interface{}) []interface{} {
 	return []interface{}{}
 }
 
+/* TODO
 // eerste node
 func n1(nodes []interface{}) *nodeType {
-	//return nLeft(nodes)
+	// return nLeft(nodes)
 
 	if len(nodes) > 0 {
 		return nodes[0].(*nodeType)
 	}
 	return noNode
 }
+*/
 
+/* TODO
 // laatste node
 func nZ(nodes []interface{}) *nodeType {
 	if len(nodes) > 0 {
@@ -72,6 +79,7 @@ func nZ(nodes []interface{}) *nodeType {
 	}
 	return noNode
 }
+*/
 
 // eerste int
 func i1(ii []interface{}) int {
@@ -98,6 +106,7 @@ func depthCheck(q *context) {
 	}
 }
 
+/* TODO
 func dump(alpino *alpino_ds) {
 	b, err := xml.MarshalIndent(alpino, "", "  ")
 	if err != nil {
@@ -105,7 +114,9 @@ func dump(alpino *alpino_ds) {
 	}
 	fmt.Println("<?xml version=\"1.0\"?>\n" + string(b))
 }
+*/
 
+/* TODO
 // nodes[0] -> node
 // nodes[1] -> head
 // nodes[2] -> gap
@@ -132,7 +143,9 @@ func trace(r interface{}, s string, q *context, nodes ...*nodeType) traceT {
 		return traceT{msg: fmt.Sprint(rr), debugs: q.debugs, trace: []traceType{tr}}
 	}
 }
+*/
 
+/* TODO
 func untrace(r interface{}) string {
 	var buf bytes.Buffer
 
@@ -232,3 +245,4 @@ func untrace(r interface{}) string {
 	}
 	return buf.String()
 }
+*/
