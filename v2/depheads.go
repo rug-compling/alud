@@ -5349,7 +5349,7 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 				},
 			},
 		}) { // a mod in an otherwise empty tree (after fixing heads in conj)
-			return internalHeadPosition(find(q /* $node/../../node[@rel="su"] */, &xPath{
+			return internalHeadPositionWithGapping(find(q /* $node/../../node[@rel="su"] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
 						ARG: collect__child__node,
@@ -5462,8 +5462,8 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 					},
 				},
 			},
-		}) { // an mod in a te-inf VP with a subject GB 20/2/24
-			return internalHeadPosition(find(q /* $node/../../../node[@rel="su"] */, &xPath{
+		}) { // an mod in a te-inf VP with a subject GB 20/2/24 -- added W Gapping GB 18/4/24
+			return internalHeadPositionWithGapping(find(q /* $node/../../../node[@rel="su"] */, &xPath{
 				arg1: &dSort{
 					arg1: &dCollect{
 						ARG: collect__child__node,

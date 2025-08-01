@@ -122,6 +122,7 @@ type nodeType struct {
 	udRelation       string
 	udTense          string
 	udVerbForm       string
+	udExtPos         string
 
 	axParent            []interface{}
 	axAncestors         []interface{}
@@ -160,6 +161,7 @@ type udNodeType struct {
 type udType struct {
 	Id    string `xml:"id,attr,omitempty"`
 	Form  string `xml:"form,attr,omitempty"`
+	ExtPos string `xml:"extpos,attr,omitempty"`
 	Lemma string `xml:"lemma,attr,omitempty"`
 	Upos  string `xml:"upos,attr,omitempty"`
 	alpinods.Feats

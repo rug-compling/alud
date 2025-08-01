@@ -4,6 +4,10 @@
 
 package alud
 
+import (
+	"strings"
+)
+
 // recursive
 func dependencyLabel(node *nodeType, q *context) string {
 
@@ -2552,6 +2556,24 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) {
 			return "flat"
 		}
+		if strings.Contains(node.Frame, "proper_name") { // using frame from enhanced Alpino annotation GB 28/4/25
+			return "flat"
+		}
+		if first := nLeft(find(q /* $node/../node */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+					},
+				},
+			},
+		})); strings.Contains(first.Frame, "proper_name") { // also use flat if first word of MWE is PROPN
+			return "flat"
+		}
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
@@ -3209,8 +3231,64 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		return dependencyLabel(node.parent, q) // gapping
 	}
+	// if upos is adv, the deprel should also be advmod, see discussion on det-clf-etc on github
+	// so advmod(meer,steeds) and upos of steeds should be adv, not det (error in old conversion)   GB 4-11-24
+	// this causes a validation error for [meer dan NUM] where meer is a PRON. In those cases, return amod (as in the old script) GB 28-4-25
 	if node.Rel == "mod" && node.parent.Rel == "det" { // [ap/det steeds vnw/meer] invloed
-		return "amod"
+		if test(q /* $node/node[@rel="nucl" and @pt="tw"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"nucl"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__pt,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"tw"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__pt,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "nummod"
+		}
+		if node.udPos == "ADP" { // tot tien hommels, not sure what the deprel should be...
+			return "nmod"
+		}
+		if node.udPos == "PROPN" || node.Cat == "np" || node.Cat == "pp" { // Prince zijn eerste album, de advocaat zijn levensgeschiedenis, in totaal negen personen
+			return "nmod"
+		}
+		if node.Cat == "mwu" { // hack , should check for pos of first dependent, or use ExtPos feature -- see case above for incomplete solution
+			return "amod"
+		}
+		return "advmod"
 	}
 	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" { // [detp niet veel] meer
 		// modification of nomimal heads
@@ -3674,6 +3752,82 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) { // added pc 16/2/21
 			return "orphan"
 		}
+		if test(q /* $node[../@cat="ppart" and ../../node[@rel="su" and (@pt or @cat)]] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG: collect__attributes__cat,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"ppart"},
+									arg1: &dCollect{
+										ARG: collect__attributes__cat,
+										arg1: &dCollect{
+											ARG:  collect__parent__type__node,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+							arg2: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG: collect__parent__type__node,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+								},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"su"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dSort{
+											arg1: &dOr{
+												arg1: &dCollect{
+													ARG:  collect__attributes__pt,
+													arg1: &dNode{},
+												},
+												arg2: &dCollect{
+													ARG:  collect__attributes__cat,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // de doelpunten [werden gemaakt] door Fazekas GB 18/2/24
+			return "orphan"
+		}
+
 		if test(q /* $node[../@rel="body" and ../@cat="ssub"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dFilter{
@@ -3995,7 +4149,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 				},
 			},
 		},
-	}) {
+	}) { // mod inside advp covered by case above ?? GB 4/11/24, mod inside det/detp covered by case above -- GB 1-5-25
 		return "amod"
 	}
 
@@ -7091,6 +7245,53 @@ func detLabel(node *nodeType, q *context) string {
 		}) {
 			return "nummod"
 		}
+		if test(q /* $node/node[@rel="hd"]/node[@ud:pos="NUM"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"NUM"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // zo'n 16 000 man
+			return "det" // should be extpos=NUM+rel=nummod but gives validation error as extpos cannot be NUM
+		}
 		if test(q /* $node/node[@rel="hd" and @ud:pos=("NOUN","ADJ")] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -7240,28 +7441,59 @@ func detLabel(node *nodeType, q *context) string {
 	}) {
 		return "nmod"
 	}
-	if test(q /* $node/@cat = ("mwu","smain") */, &xPath{
+	if test(q /* $node[@cat = ("mwu","smain")] */, &xPath{
 		arg1: &dSort{
-			arg1: &dEqual{
-				ARG: equal__is,
-				arg1: &dCollect{
-					ARG: collect__attributes__cat,
-					arg1: &dVariable{
-						VAR: node,
-					},
+			arg1: &dFilter{
+				arg1: &dVariable{
+					VAR: node,
 				},
-				arg2: &dElem{
-					DATA: []interface{}{"mwu", "smain"},
-					arg1: &dCollect{
-						ARG: collect__attributes__cat,
-						arg1: &dVariable{
-							VAR: node,
+				arg2: &dSort{
+					arg1: &dEqual{
+						ARG: equal__is,
+						arg1: &dCollect{
+							ARG:  collect__attributes__cat,
+							arg1: &dNode{},
+						},
+						arg2: &dElem{
+							DATA: []interface{}{"mwu", "smain"},
+							arg1: &dCollect{
+								ARG:  collect__attributes__cat,
+								arg1: &dNode{},
+							},
 						},
 					},
 				},
 			},
 		},
 	}) {
+		if test(q /* $node/node[@ud:pos="NUM"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"NUM"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			return "det" // should be nummod, but gives validation error as extpos cannot be NUM
+		}
 		return "det"
 	}
 	// tussen 5 en 6 ..--> almost all PP cases are with tussen NUM and NUM
@@ -8050,6 +8282,105 @@ func labelVmod(node *nodeType, q *context) string {
 			},
 		})), q); err == nil && aux == "aux:pass" {
 			return "obl:agent"
+		}
+		if aux, err := auxiliary1(n1(find(q /* $node[../@rel="cnj" and ../@cat="ppart"]/../../../node[@rel="hd" and @lemma=("zijn","worden")] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__parent__type__node,
+						arg1: &dCollect{
+							ARG: collect__parent__type__node,
+							arg1: &dCollect{
+								ARG: collect__parent__type__node,
+								arg1: &dFilter{
+									arg1: &dVariable{
+										VAR: node,
+									},
+									arg2: &dSort{
+										arg1: &dAnd{
+											arg1: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG: collect__attributes__rel,
+													arg1: &dCollect{
+														ARG:  collect__parent__type__node,
+														arg1: &dNode{},
+													},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"cnj"},
+													arg1: &dCollect{
+														ARG: collect__attributes__rel,
+														arg1: &dCollect{
+															ARG:  collect__parent__type__node,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+											arg2: &dEqual{
+												ARG: equal__is,
+												arg1: &dCollect{
+													ARG: collect__attributes__cat,
+													arg1: &dCollect{
+														ARG:  collect__parent__type__node,
+														arg1: &dNode{},
+													},
+												},
+												arg2: &dElem{
+													DATA: []interface{}{"ppart"},
+													arg1: &dCollect{
+														ARG: collect__attributes__cat,
+														arg1: &dCollect{
+															ARG:  collect__parent__type__node,
+															arg1: &dNode{},
+														},
+													},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__lemma,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"zijn", "worden"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__lemma,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		})), q); err == nil && aux == "aux:pass" {
+			return "obl:agent" // werd bestuurd door de Spanjaarden en later (bestuurd) door de Fransen -- GB 18/3/24
 		}
 	}
 	/*

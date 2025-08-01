@@ -42,10 +42,13 @@ func universalPosTags(node *nodeType, q *context) string {
 		return "ADJ" // exceptions forced by 2.4 validation
 	}
 	if pt == "bw" {
-		if rel == "crd" {
-			return "CCONJ"
-		}
-		if node.parent.Rel == "det" { // zo min mogelijk, genoeg geld om een ijsje te kopen
+		// case is obsolete, see discussion with Leiden/Gent july 2025
+		// if rel == "crd" {
+	        // 		return "CCONJ"
+		// } 
+		// added rel=hd to avoid matching with 'al' in 'al zijn films' GB 5-11-24,
+		// see also https://github.com/UniversalDependencies/docs/issues/1059#issuecomment-2453407662
+		if node.parent.Rel == "det" && rel == "hd" { // zo min mogelijk, genoeg geld om een ijsje te kopen
 			return "DET"
 		}
 		return "ADV"
@@ -123,8 +126,8 @@ func universalPosTags(node *nodeType, q *context) string {
 		return "PRON"
 	}
 	if pt == "vg" {
-		if rel == "rhd" && node.Lemma == "zoals" {  // 
-			return "ADV" 
+		if rel == "rhd" && node.Lemma == "zoals" { //
+			return "ADV"
 		}
 		if node.Conjtype == "neven" {
 			return "CCONJ" // V2: CONJ ==> CCONJ

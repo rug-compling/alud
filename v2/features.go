@@ -2,6 +2,7 @@ package alud
 
 import (
 	"fmt"
+	"strings"
 )
 
 func addFeatures(q *context) {
@@ -19,6 +20,9 @@ func addFeatures(q *context) {
 			determinerFeatures(node, q)
 		case "X":
 			specialFeatures(node, q)
+		}
+		if node.Rel == "mwp" && node.Spectype != "symb" && node.Spectype != "deeleigen" && node.Ntype != "eigen'" && node.Begin == node.parent.Begin {
+			extpos(node, q)
 		}
 	}
 }
@@ -193,5 +197,65 @@ func specialFeatures(node *nodeType, q *context) {
 		node.udForeign = "Yes"
 	case "afk":
 		node.udAbbr = "Yes"
+	}
+}
+
+func extpos(node *nodeType, q *context) {
+	if node.Frame == "adjective(pred(nonadv))" {
+		if node.parent.Rel == "hd" && node.Word == "in" { // in plaats van
+			node.udExtPos = "ADP"
+		} else {
+			node.udExtPos = "ADJ"
+		}
+	}
+	if node.Frame == "adjective(no_e(adv))" && node.Word == "dicht" { // frame error
+		node.udExtPos = "ADP"
+	}
+	if node.Frame == "adjective(no_e(locadv))" && node.Word == "dicht" { // dicht bij, frame error
+		node.udExtPos = "ADP"
+	}
+	if node.Frame == "adjective(postn_no_e(dir_locadv))" && node.Word == "links" { // links boven ons
+		node.udExtPos = "ADP"
+	}
+	if node.Frame == "pre_num_adv(pl_indef)" && node.Word == "tegen" { // tegen de vier uur
+		node.udExtPos = "DET"
+	}
+	switch node.Frame {
+	case "adverb", "modal_adverb", "modal_adverb(noun_prep)", "intensifier", "loc_adverb", "er_adverb([ter,gelegenheid,van])", "waar_adverb(vanuit)",
+		"post_wh_adverb", "sentence_adverb", "pre_num_adv(both)", "pre_wh_adverb", "adjective(pred(adv))", "adjective(pred(adv),pp(naar))",
+		"tmp_adverb", "pre_num_adv", "adjective(het_st(adv))", "adjective(het_st(adv),subject_sbar)", "adjective(pred(dir_locadv))", "comp_adverb(als)",
+		"adjective(pred(adv),transitive)":
+		node.udExtPos = "ADV"
+	case "complementizer(inf)":
+		node.udExtPos = "SCONJ"
+	case "conj(maar)", "conj('tot en met')", "conj(en)", "etc", "complementizer(np)", "conj('laat staan')":
+		node.udExtPos = "CCONJ"
+	case "adjective(meer)", "adjective(pred(padv))":
+		node.udExtPos = "ADJ"
+	case "complementizer(te)", "pp", "pp(te)", "pp(van)", "particle([af,aan])", "noun(both,both,both)", "preposition(dichtbij)":
+		node.udExtPos = "ADP"
+	case "tmp_np":
+		node.udExtPos = "PRON" // counter intuitive, but avoids validation errors
+	}
+	if strings.Contains(node.Frame, "preposition") {
+		node.udExtPos = "ADP"
+	}
+	if strings.Contains(node.Frame, "pp(van)") {
+		node.udExtPos = "ADP"
+	}
+	if strings.Contains(node.Frame, "fixed_part") {
+		node.udExtPos = "ADP"
+	}
+	if strings.Contains(node.Frame, "proper_name") { // n.b. also ensure rel is flat
+		node.udExtPos = "PROPN"
+	}
+	if strings.Contains(node.Frame, "number") { // n.b. also ensure rel is flat
+		node.udExtPos = "PRON" // value should be NUM but not allowed
+	}
+	if strings.Contains(node.Frame, "pronoun") {
+		node.udExtPos = "PRON"
+	}
+	if node.parent.Rel == "cmp" || node.parent.Rel == "dlink" { // dat wil zeggen
+		node.udExtPos = "SCONJ"
 	}
 }

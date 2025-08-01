@@ -174,6 +174,9 @@ func untrace(r interface{}) string {
 				if a := n.Conjtype; a != "" {
 					fmt.Fprintf(&buf, "  conjtype:%s", a)
 				}
+				if a := n.Frame; a != "" {
+					fmt.Fprintf(&buf, "  frame:%s", a)
+				}
 				if a := n.Genus; a != "" {
 					fmt.Fprintf(&buf, "  genus:%s", a)
 				}

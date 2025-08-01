@@ -382,10 +382,10 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 		}
 		// ordered case below before multiple mod cases, to deal with su [predc _ mod] cases GB 8/1/24
 		if TEST(q, `$node[not(../@rel="su") and ../../node[@rel="su" and (@pt or @cat)]]`) { // a mod in an otherwise empty tree (after fixing heads in conj)
-			return internalHeadPosition(FIND(q, `$node/../../node[@rel="su"]`), q)
+			return internalHeadPositionWithGapping(FIND(q, `$node/../../node[@rel="su"]`), q)
 		}
-		if TEST(q, `$node/../../@cat="ti" and $node/../../../node[@rel="su" and (@pt or @cat)]`) { // an mod in a te-inf VP with a subject GB 20/2/24
-			return internalHeadPosition(FIND(q, `$node/../../../node[@rel="su"]`), q)
+		if TEST(q, `$node/../../@cat="ti" and $node/../../../node[@rel="su" and (@pt or @cat)]`) { // an mod in a te-inf VP with a subject GB 20/2/24 -- added W Gapping GB 18/4/24
+			return internalHeadPositionWithGapping(FIND(q, `$node/../../../node[@rel="su"]`), q)
 		}
 		if TEST(q, `$node[../@cat="ssub" and ../@rel="body" and ../../node[@rel=("whd","rhd") and @pt]]`) {
 			return internalHeadPosition(FIND(q, `$node/../../node[@rel=("whd","rhd")]`), q) // wat cool/mogelijk is en wat niet, GB 24/1/24 added rhd GB 26/2/24

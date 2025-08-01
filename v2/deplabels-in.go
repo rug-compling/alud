@@ -3,6 +3,10 @@
 
 package alud
 
+import (
+	"strings"
+)
+
 // recursive
 func dependencyLabel(node *nodeType, q *context) string {
 
@@ -202,6 +206,12 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/../node[@ud:pos="PROPN"]`) {
 			return "flat"
 		}
+		if strings.Contains(node.Frame, "proper_name") { // using frame from enhanced Alpino annotation GB 28/4/25
+			return "flat"
+		}
+		if first := nLeft(FIND(q, `$node/../node`)); strings.Contains(first.Frame, "proper_name") { // also use flat if first word of MWE is PROPN
+			return "flat"
+		}
 		return "fixed" // v2 mwe-> fixed
 	}
 	if node.Rel == "cnj" {
@@ -252,8 +262,23 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		return dependencyLabel(node.parent, q) // gapping
 	}
+	// if upos is adv, the deprel should also be advmod, see discussion on det-clf-etc on github
+	// so advmod(meer,steeds) and upos of steeds should be adv, not det (error in old conversion)   GB 4-11-24
+	// this causes a validation error for [meer dan NUM] where meer is a PRON. In those cases, return amod (as in the old script) GB 28-4-25
 	if node.Rel == "mod" && node.parent.Rel == "det" { // [ap/det steeds vnw/meer] invloed
-		return "amod"
+		if TEST(q, `$node/node[@rel="nucl" and @pt="tw"]`) {
+			return "nummod"
+		}
+		if node.udPos == "ADP" { // tot tien hommels, not sure what the deprel should be...
+			return "nmod"
+		}
+		if node.udPos == "PROPN" || node.Cat == "np" || node.Cat == "pp" { // Prince zijn eerste album, de advocaat zijn levensgeschiedenis, in totaal negen personen
+			return "nmod"
+		}
+		if node.Cat == "mwu" { // hack , should check for pos of first dependent, or use ExtPos feature -- see case above for incomplete solution
+			return "amod"
+		}
+		return "advmod"
 	}
 	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" { // [detp niet veel] meer
 		// modification of nomimal heads
@@ -294,6 +319,10 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/../node[@rel=("su","obj1","predc","vc","pc") and (@pt or @cat)]`) { // added pc 16/2/21
 			return "orphan"
 		}
+		if TEST(q, `$node[../@cat="ppart" and ../../node[@rel="su" and (@pt or @cat)]]`) { // de doelpunten [werden gemaakt] door Fazekas GB 18/2/24
+			return "orphan"
+		}
+
 		if TEST(q, `$node[../@rel="body" and ../@cat="ssub"]`) { // wat cool is en wat niet GB 24/1/24
 			return "orphan"
 		}
@@ -312,7 +341,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		return dependencyLabel(node.parent, q)
 	}
-	if TEST(q, `$node[@rel="mod" and ../@cat=("detp","advp")]`) {
+	if TEST(q, `$node[@rel="mod" and ../@cat=("detp","advp")]`) { // mod inside advp covered by case above ?? GB 4/11/24, mod inside det/detp covered by case above -- GB 1-5-25
 		return "amod"
 	}
 
@@ -571,6 +600,9 @@ func detLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NUM"]`) {
 			return "nummod"
 		}
+		if TEST(q, `$node/node[@rel="hd"]/node[@ud:pos="NUM"]`) { // zo'n 16 000 man
+			return "det" // should be extpos=NUM+rel=nummod but gives validation error as extpos cannot be NUM
+		}
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos=("NOUN","ADJ")]`) {
 			return "nmod"
 		}
@@ -582,7 +614,10 @@ func detLabel(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat=("np","ap") or @ud:pos=("SYM","ADJ","ADV","NOUN") ]`) {
 		return "nmod"
 	}
-	if TEST(q, `$node/@cat = ("mwu","smain")`) {
+	if TEST(q, `$node[@cat = ("mwu","smain")]`) {
+		if TEST(q, `$node/node[@ud:pos="NUM"]`) {
+			return "det" // should be nummod, but gives validation error as extpos cannot be NUM
+		}
 		return "det"
 	}
 	// tussen 5 en 6 ..--> almost all PP cases are with tussen NUM and NUM
@@ -676,6 +711,9 @@ func labelVmod(node *nodeType, q *context) string {
 	                 ]`) {
 		if aux, err := auxiliary1(n1(FIND(q, `$node/../../node[@rel="hd" and @lemma=("zijn","worden")]`)), q); err == nil && aux == "aux:pass" {
 			return "obl:agent"
+		}
+		if aux, err := auxiliary1(n1(FIND(q, `$node[../@rel="cnj" and ../@cat="ppart"]/../../../node[@rel="hd" and @lemma=("zijn","worden")]`)), q); err == nil && aux == "aux:pass" {
+			return "obl:agent" // werd bestuurd door de Spanjaarden en later (bestuurd) door de Fransen -- GB 18/3/24
 		}
 	}
 	/*

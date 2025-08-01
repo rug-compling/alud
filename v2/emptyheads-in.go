@@ -98,6 +98,7 @@ func reconstructEmptyHead(q *context) bool {
 		//niet: node.udRelation = antenode.udRelation
 		node.udTense = antenode.udTense
 		node.udVerbForm = antenode.udVerbForm
+		node.udExtPos = antenode.udExtPos
 		node.udFirstWordBegin = antenode.udFirstWordBegin
 		node.udERelation = antenode.udERelation
 		node.udEHeadPosition = antenode.udEHeadPosition

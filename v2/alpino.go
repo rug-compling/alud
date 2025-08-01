@@ -255,6 +255,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		node.Ud.Case = feats["Case"]
 		node.Ud.Definite = feats["Definite"]
 		node.Ud.Degree = feats["Degree"]
+		node.Ud.ExtPos = feats["ExtPos"]
 		node.Ud.Foreign = feats["Foreign"]
 		node.Ud.Gender = feats["Gender"]
 		node.Ud.Number = feats["Number"]
@@ -387,8 +388,8 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 }
 
 /*
-  bedoeling:
-  - zorg ervoor dat ",omitempty" werkt
+bedoeling:
+- zorg ervoor dat ",omitempty" werkt
 */
 func minify(alpino *alpino_ds) {
 	if alpino.Metadata != nil && (alpino.Metadata.Meta == nil || len(alpino.Metadata.Meta) == 0) {

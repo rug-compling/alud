@@ -84,6 +84,7 @@ func featuresToString(node *nodeType) string {
 		{node.udCase, "Case"},
 		{node.udDefinite, "Definite"},
 		{node.udDegree, "Degree"},
+		{node.udExtPos, "ExtPos"},
 		{node.udForeign, "Foreign"},
 		{node.udGender, "Gender"},
 		{node.udNumber, "Number"},
