@@ -59,6 +59,11 @@ func VersionID() string {
 	return "ALUD" + version
 }
 
+// Version of alpino_ds.dtd
+func DtdVersion() string {
+	return alpinods.DtdVersion
+}
+
 // Derive Universal Dependencies from parsed sentence in alpino_ds format.
 //
 // If sentid is "" it is derived from the filename.
