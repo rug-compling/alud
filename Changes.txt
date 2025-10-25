@@ -1,5 +1,11 @@
+Version 2.14.2
+2025-10-25
+
+ * bugfix dummy output without comments
+
+
 Version 2.14.1
-2024-10-24
+2025-10-24
 
  * several updates in UD parser
  * corrections to dummy output

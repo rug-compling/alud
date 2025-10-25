@@ -338,16 +338,18 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 
 	var buf bytes.Buffer
 
-	fmt.Fprintf(&buf, `# source = %s
+	if options&OPT_NO_COMMENTS == 0 {
+		fmt.Fprintf(&buf, `# source = %s
 # sent_id = %s
 # error = %s
 # auto = %s
 `, filename, sentid, strings.Split(errin.Error(), "\n")[0], VersionID())
 
-	if options&OPT_NO_METADATA == 0 {
-		if alpino.Metadata != nil && alpino.Metadata.Meta != nil {
-			for _, m := range alpino.Metadata.Meta {
-				fmt.Fprintf(&buf, "# meta_%s = %s\n", m.Name, m.Value)
+		if options&OPT_NO_METADATA == 0 {
+			if alpino.Metadata != nil && alpino.Metadata.Meta != nil {
+				for _, m := range alpino.Metadata.Meta {
+					fmt.Fprintf(&buf, "# meta_%s = %s\n", m.Name, m.Value)
+				}
 			}
 		}
 	}
