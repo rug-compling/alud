@@ -159,11 +159,10 @@ type udNodeType struct {
 }
 
 type udType struct {
-	Id     string `xml:"id,attr,omitempty"`
-	Form   string `xml:"form,attr,omitempty"`
-	ExtPos string `xml:"-"`
-	Lemma  string `xml:"lemma,attr,omitempty"`
-	Upos   string `xml:"upos,attr,omitempty"`
+	Id    string `xml:"id,attr,omitempty"`
+	Form  string `xml:"form,attr,omitempty"`
+	Lemma string `xml:"lemma,attr,omitempty"`
+	Upos  string `xml:"upos,attr,omitempty"`
 	alpinods.Feats
 	Head       string    `xml:"head,attr,omitempty"`
 	Deprel     string    `xml:"deprel,attr,omitempty"`

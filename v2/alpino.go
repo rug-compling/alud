@@ -255,7 +255,6 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		node.Ud.Case = feats["Case"]
 		node.Ud.Definite = feats["Definite"]
 		node.Ud.Degree = feats["Degree"]
-		node.Ud.ExtPos = feats["ExtPos"]
 		node.Ud.Foreign = feats["Foreign"]
 		node.Ud.Gender = feats["Gender"]
 		node.Ud.Number = feats["Number"]
