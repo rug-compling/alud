@@ -1,3 +1,9 @@
+Version 2.14.4
+2025-10-29
+
+ * no attribute extpos in dtd
+
+
 Version 2.14.3
 2025-10-27
 
