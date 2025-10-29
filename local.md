@@ -1,4 +1,5 @@
-updaten:
+Updaten:
+
 - `/net/aistaff/kleiweg/alpino/alpino-api/demo/go.mod`
 - `/net/aistaff/kleiweg/alpinoviewer/go.mod`
 - `/net/aistaff/kleiweg/paqu/src/go.mod`
@@ -13,3 +14,9 @@ updaten:
 - `/net/corpora/LassyDevelopMod/go.mod`
 - `/net/corpora/novelsample_correctedMod/go.mod`
 - `/net/corpora/paqu/go.mod`
+
+Bij updaten van pakketten/programma's die alud gebruiken:
+
+1. in `go.mod` versie aanpassen
+2. als in `go.mod` een regel voor `alpinods` is, die verwijderen
+3. run `go mod tidy`
