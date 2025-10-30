@@ -15,8 +15,8 @@ Updaten:
 - `/net/corpora/novelsample_correctedMod/go.mod`
 - `/net/corpora/paqu/go.mod`
 
-Bij updaten van pakketten/programma's die alud gebruiken:
+Voor updaten van pakketten/programma's die alud gebruiken, run:
 
-1. in `go.mod` versie aanpassen
-2. als in `go.mod` een regel voor `alpinods` is, die verwijderen
-3. run `go mod tidy`
+    go get -u github.com/rug-compling/alud/v2
+    go mod tidy
+
