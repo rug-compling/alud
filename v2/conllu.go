@@ -87,6 +87,7 @@ func featuresToString(node *nodeType) string {
 		{node.udExtPos, "ExtPos"},
 		{node.udForeign, "Foreign"},
 		{node.udGender, "Gender"},
+		{node.udMood, "Mood"},
 		{node.udNumber, "Number"},
 		{node.udPerson, "Person"},
 		{node.udPoss, "Poss"},

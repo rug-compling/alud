@@ -107,10 +107,12 @@ type nodeType struct {
 	udEHeadPosition  int
 	udERelation      string
 	udEnhanced       string
+	udExtPos         string
 	udFirstWordBegin int
 	udForeign        string
 	udGender         string
 	udHeadPosition   int
+	udMood           string
 	udNoSpaceAfter   bool
 	udNumber         string
 	udOldState       *nodeType
@@ -122,7 +124,6 @@ type nodeType struct {
 	udRelation       string
 	udTense          string
 	udVerbForm       string
-	udExtPos         string
 
 	axParent            []interface{}
 	axAncestors         []interface{}

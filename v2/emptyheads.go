@@ -230,9 +230,11 @@ func reconstructEmptyHead(q *context) bool {
 		node.udDefinite = antenode.udDefinite
 		node.udDegree = antenode.udDegree
 		node.udEnhanced = antenode.udEnhanced
+		node.udExtPos = antenode.udExtPos
 		node.udForeign = antenode.udForeign
 		node.udGender = antenode.udGender
 		//niet: node.udHeadPosition = antenode.udHeadPosition
+		node.udMood = antenode.udMood
 		node.udNumber = antenode.udNumber
 		node.udPerson = antenode.udPerson
 		node.udPos = antenode.udPos
@@ -242,7 +244,6 @@ func reconstructEmptyHead(q *context) bool {
 		//niet: node.udRelation = antenode.udRelation
 		node.udTense = antenode.udTense
 		node.udVerbForm = antenode.udVerbForm
-		node.udExtPos = antenode.udExtPos
 		node.udFirstWordBegin = antenode.udFirstWordBegin
 		node.udERelation = antenode.udERelation
 		node.udEHeadPosition = antenode.udEHeadPosition

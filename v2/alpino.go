@@ -159,8 +159,8 @@ func alpinoFormat(alpino *alpino_ds) string {
 			v2 = 0
 		}
 	}
-	if v1 < 1 || (v1 == 1 && v2 < 10) {
-		alpino.Version = "1.10"
+	if v1 < 1 || (v1 == 1 && v2 < 17) {
+		alpino.Version = "1.17"
 	}
 
 	b, _ := xml.MarshalIndent(alpino, "", "  ")
@@ -255,8 +255,10 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		node.Ud.Case = feats["Case"]
 		node.Ud.Definite = feats["Definite"]
 		node.Ud.Degree = feats["Degree"]
+		node.Ud.ExtPos = feats["ExtPos"]
 		node.Ud.Foreign = feats["Foreign"]
 		node.Ud.Gender = feats["Gender"]
+		node.Ud.Mood = feats["Mood"]
 		node.Ud.Number = feats["Number"]
 		node.Ud.Person = feats["Person"]
 		node.Ud.PronType = feats["PronType"]
