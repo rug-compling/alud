@@ -1,5 +1,12 @@
+Version  2.14.0-bis
+2025-11-02
+
+ * new function: DtdVersion()
+ * commands: bugfix option -c
+ * corrections to dummy output
+
 Version 2.14.0
-2024-14.0
+2024-04-24
 
  * UP parser
      * Updates : adding obl:arg relation, better treatment of fixed + copula,

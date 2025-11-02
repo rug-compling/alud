@@ -59,6 +59,11 @@ func VersionID() string {
 	return "ALUD" + version
 }
 
+// Version of alpino_ds.dtd
+func DtdVersion() string {
+	return alpinods.DtdVersion
+}
+
 // Derive Universal Dependencies from parsed sentence in alpino_ds format.
 //
 // If sentid is "" it is derived from the filename.
@@ -333,19 +338,31 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 
 	var buf bytes.Buffer
 
-	fmt.Fprintf(&buf, `# source = %s
+	if options&OPT_NO_COMMENTS == 0 {
+		fmt.Fprintf(&buf, `# source = %s
 # sent_id = %s
 # error = %s
 # auto = %s
 `, filename, sentid, strings.Split(errin.Error(), "\n")[0], VersionID())
 
+		if options&OPT_NO_METADATA == 0 {
+			if alpino.Metadata != nil && alpino.Metadata.Meta != nil {
+				for _, m := range alpino.Metadata.Meta {
+					fmt.Fprintf(&buf, "# meta_%s = %s\n", m.Name, m.Value)
+				}
+			}
+		}
+	}
+
 	if err != nil {
+		if options&OPT_NO_COMMENTS == 0 {
+			fmt.Fprint(&buf, "# text = Fout\n")
+		}
 		deps := "_"
 		if options&OPT_NO_ENHANCED == 0 {
 			deps = "0:root"
 		}
-
-		fmt.Fprintln(&buf, "# text = Fout\n1\tFout\tfout\tX\t_\t_\t0\troot\t"+deps+"\tError=Yes")
+		fmt.Fprint(&buf, "1\tFout\tfout\tX\t_\t_\t0\troot\t"+deps+"\tError=Yes\n\n")
 		return buf.String()
 	}
 
@@ -395,7 +412,9 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 		}), "|")
 	}
 
-	fmt.Fprintf(&buf, "# text = %s\n", q.sentence)
+	if options&OPT_NO_COMMENTS == 0 {
+		fmt.Fprintf(&buf, "# text = %s\n", q.sentence)
+	}
 	for i, node := range q.ptnodes {
 		if i == 1 {
 			head = "1"
@@ -420,6 +439,8 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 			deps,                   // DEPS
 			misc)                   // MISC
 	}
+
+	fmt.Fprintln(&buf)
 
 	return buf.String()
 }

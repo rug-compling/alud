@@ -327,7 +327,11 @@ func doFile(doc []byte, filename, archname, sentid string, options int) (string,
 	if archname != "" && !*opt_c {
 		fmt.Fprintln(&output, "# archive =", archname)
 	}
-	result, err := alud.Ud(doc, filename, sentid, options)
+	opts := options
+	if *opt_s {
+		opts |= alud.OPT_DUMMY_OUTPUT
+	}
+	result, err := alud.Ud(doc, filename, sentid, opts)
 	if err == nil {
 		fmt.Fprint(&output, result)
 	} else {
@@ -337,19 +341,21 @@ func doFile(doc []byte, filename, archname, sentid string, options int) (string,
 		}
 		m := reSentID.FindSubmatch(doc)
 
-		id1 := ""
 		id2 := ""
 		if len(m) == 2 {
 			id := string(m[1])
-			id1 = "# sent_id = " + id + "\n"
 			id2 = "  sentence ID: " + id + "\n"
 		}
 
 		if *opt_s {
-			fmt.Fprintf(&output, "# source = %s\n%s# error = %s\n# auto = %s\n\n", filename, id1, s, alud.VersionID())
+			for _, line := range strings.SplitAfter(result, "\n") {
+				if len(line) > 0 && (line[0] == '#' || line[0] == '\n') {
+					fmt.Fprint(&output, line)
+				}
+			}
 		}
 		if *opt_x {
-			fmt.Fprintln(&output, result)
+			fmt.Fprint(&output, result)
 		}
 		if archname == "" {
 			fmt.Fprintf(&errors, "%s\n%s  error: %v\n", filename, id2, err)
