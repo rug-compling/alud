@@ -110,6 +110,7 @@ func main() {
 	flag.Parse()
 
 	if *opt_v {
+		fmt.Println("release", alud.Release())
 		fmt.Println(alud.VersionID())
 		fmt.Println("alpino_ds.dtd version", alpinods.DtdVersion)
 		major, minor, patch := dbxml.Version()

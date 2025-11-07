@@ -54,7 +54,9 @@ func init() {
 	noNode.parent = noNode
 }
 
-// Version ID string
+// Version ID string of the parser
+//
+// This corresponds with the Universal Dependencies version the parser is targeting
 func VersionID() string {
 	return "ALUD" + version
 }
@@ -62,6 +64,11 @@ func VersionID() string {
 // Version of alpino_ds.dtd
 func DtdVersion() string {
 	return alpinods.DtdVersion
+}
+
+// Software release version
+func Release() string {
+	return "v" + release
 }
 
 // Derive Universal Dependencies from parsed sentence in alpino_ds format.
@@ -101,13 +108,13 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 	}
 
 	if sentid != "" {
-		alpino.Sentence.SentId = sentid
-	} else if alpino.Sentence.SentId == "" {
+		alpino.Sentence.SentID = sentid
+	} else if alpino.Sentence.SentID == "" {
 		id := filepath.Base(filename)
 		if strings.HasSuffix(id, ".xml") {
 			id = id[:len(id)-4]
 		}
-		alpino.Sentence.SentId = id
+		alpino.Sentence.SentID = id
 	}
 
 	// Extra node bovenaan vanwege gedoe met //node
@@ -139,8 +146,8 @@ func udTry(alpino_doc []byte, filename, sentid string, options int) (conllu stri
 	q = &context{
 		alpino:   &alpino,
 		filename: filename,
-		sentence: alpino.Sentence.Sent,
-		sentid:   alpino.Sentence.SentId,
+		sentence: alpino.Sentence.Sentence,
+		sentid:   alpino.Sentence.SentID,
 		varroot:  []interface{}{alpino.Node},
 		swapped:  [][2]*nodeType{},
 	}
@@ -327,7 +334,7 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 	err := xml.Unmarshal(alpino_doc, &alpino)
 
 	if sentid == "" && err == nil {
-		sentid = alpino.Sentence.SentId
+		sentid = alpino.Sentence.SentID
 	}
 	if sentid == "" {
 		sentid = filepath.Base(filename)
@@ -384,8 +391,8 @@ func dummyOutput(alpino_doc []byte, filename, sentid string, options int, errin 
 	q := &context{
 		alpino:   &alpino,
 		filename: filename,
-		sentence: alpino.Sentence.Sent,
-		sentid:   alpino.Sentence.SentId,
+		sentence: alpino.Sentence.Sentence,
+		sentid:   alpino.Sentence.SentID,
 		varroot:  []interface{}{alpino.Node},
 		swapped:  [][2]*nodeType{},
 	}

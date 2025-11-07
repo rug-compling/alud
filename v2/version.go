@@ -2,11 +2,24 @@ package alud
 
 /*
 
-Voorbeeld:
+Dit is de UD-versie van de huidige parser
+Alleen als er veranderingen aan de parser zijn wordt
+dit verhoogd, naar bijvoorbeeld 2.16.1
 
-    version    : 1.2.3
-    github tag : v1.2.3
-    ID-string  : ALUD1.2.3
+    version      :     2.16
+    -> ID-string : ALUD2.16
+*/
+
+const version = "2.17" // parser version
+
+/*
+
+Dit is de versie van de software. Het laatste cijfer
+wordt verhoogd als er iets aan de software verandert,
+zonder dat de parser zelf verandert.
+
+    release    :  2.16.1
+    -> git tag : v2.16.1
 
 Zie:
 
@@ -20,4 +33,4 @@ LET OP:
 
 */
 
-const version = "2.14.4"
+const release = "2.17.0" // software version

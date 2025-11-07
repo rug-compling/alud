@@ -1,27 +1,19 @@
-Version 2.14.4
-2025-10-29
+Version 2.17.0
+2025-11-07
 
- * no attribute extpos in dtd
-
-
-Version 2.14.3
-2025-10-27
-
- * fix version conflict
-
-Version 2.14.2
-2025-10-25
-
- * bugfix dummy output without comments
-
-
-Version 2.14.1
-2025-10-24
-
- * several updates in UD parser
- * corrections to dummy output
- * new function: DtdVersion()
- * commands: bugfix option -c
+ * upgrade to Universal Dependencies version 2.17
+ * upgrade to alpino_ds.dtd version 1.17 (this 17 has no relation to the one
+   above)
+ * library:
+     * new function DtdVersion()
+     * new function Release() returns software version
+     * function VersionID() no longer returns an updated number when the
+       software is updated, unless the results of the parser have
+       changed
+ * commands:
+     * bugfix for option -c
+ * other:
+     * code clean-up
 
 
 Version 2.14.0

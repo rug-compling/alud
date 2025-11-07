@@ -50,7 +50,7 @@ func Alpino(alpino_doc []byte, conllu, auto string) (alpino string, err error) {
 	}
 	var reset func(*nodeType)
 	reset = func(node *nodeType) {
-		node.Ud = &udType{Dep: make([]depType, 0)}
+		node.Ud = &alpinods.Ud{Dep: make([]alpinods.Dep, 0)}
 		if node.Node != nil {
 			for _, n := range node.Node {
 				reset(n)
@@ -58,8 +58,8 @@ func Alpino(alpino_doc []byte, conllu, auto string) (alpino string, err error) {
 		}
 	}
 	reset(alp.Node)
-	alp.UdNodes = []*udNodeType{}
-	alp.Conllu = &conlluType{Conllu: conllu, Auto: auto}
+	alp.Root = []*deprelType{}
+	alp.Conllu = &alpinods.Conllu{Conllu: conllu, Auto: auto}
 	alpinoDo(conllu, &alp)
 	alpino, err = alpinoFormat(&alp), nil
 	return // geen argumenten i.v.m. recover
@@ -101,15 +101,15 @@ func UdAlpino(alpino_doc []byte, filename, sentid string) (alpino string, err er
 		r(alp.Node)
 	}
 
-	if alp.Sentence.SentId == "" {
+	if alp.Sentence.SentID == "" {
 		id := filepath.Base(filename)
 		if strings.HasSuffix(id, ".xml") {
 			id = id[:len(id)-4]
 		}
-		alp.Sentence.SentId = id
+		alp.Sentence.SentID = id
 	}
-	alp.UdNodes = []*udNodeType{}
-	alp.Conllu = &conlluType{
+	alp.Root = []*deprelType{}
+	alp.Conllu = &alpinods.Conllu{
 		Status: "error",
 		Error:  e,
 		Auto:   VersionID(),
@@ -139,13 +139,13 @@ func alpinoRestore(q *context) {
 		}
 	}
 	for _, node := range q.allnodes {
-		node.Ud = &udType{Dep: make([]depType, 0)}
+		node.Ud = &alpinods.Ud{Dep: make([]alpinods.Dep, 0)}
 		node.Begin /= 1000
 		node.End /= 1000
 		node.ID /= 1000
 	}
-	q.alpino.UdNodes = []*udNodeType{}
-	q.alpino.Conllu = &conlluType{Auto: VersionID()}
+	q.alpino.Root = []*deprelType{}
+	q.alpino.Conllu = &alpinods.Conllu{Auto: VersionID()}
 }
 
 func alpinoFormat(alpino *alpino_ds) string {
@@ -159,8 +159,8 @@ func alpinoFormat(alpino *alpino_ds) string {
 			v2 = 0
 		}
 	}
-	if v1 < 1 || (v1 == 1 && v2 < 10) {
-		alpino.Version = "1.10"
+	if v1 < 1 || (v1 == 1 && v2 < 17) {
+		alpino.Version = "1.17"
 	}
 
 	b, _ := xml.MarshalIndent(alpino, "", "  ")
@@ -189,8 +189,8 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		}
 	}
 
-	udNodeList := make([]*udNodeType, 0)
-	eudNodeList := make([]*udNodeType, 0)
+	udNodeList := make([]*deprelType, 0)
+	eudNodeList := make([]*deprelType, 0)
 	nodeDepList := make([]nodeDepType, 0)
 
 	for _, line := range lines {
@@ -220,8 +220,8 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 				if len(dd) > 1 {
 					aux = dd[1]
 				}
-				d := depType{
-					Id:         a[0],
+				d := alpinods.Dep{
+					ID:         a[0],
 					Head:       dep[0],
 					Deprel:     dep[1],
 					DeprelMain: dd[0],
@@ -237,7 +237,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 			continue
 		}
 
-		node.Ud.Id = a[0]
+		node.Ud.ID = a[0]
 		node.Ud.Form = a[1]
 		node.Ud.Lemma = a[2]
 		node.Ud.Upos = noe(a[3])
@@ -258,7 +258,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		node.Ud.ExtPos = feats["ExtPos"]
 		node.Ud.Foreign = feats["Foreign"]
 		node.Ud.Gender = feats["Gender"]
-		// node.Ud.Mood = feats["Mood"]
+		node.Ud.Mood = feats["Mood"]
 		node.Ud.Number = feats["Number"]
 		node.Ud.Person = feats["Person"]
 		node.Ud.PronType = feats["PronType"]
@@ -266,11 +266,11 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		node.Ud.Tense = feats["Tense"]
 		node.Ud.VerbForm = feats["VerbForm"]
 
-		ud := udNodeType{
+		ud := deprelType{
 			recursion: make([]string, 0),
 
 			XMLName:   xml.Name{Local: node.Ud.DeprelMain},
-			Id:        node.Ud.Id,
+			ID:        node.Ud.ID,
 			Form:      node.Ud.Form,
 			Lemma:     node.Ud.Lemma,
 			Upos:      node.Ud.Upos,
@@ -302,7 +302,6 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 				Pvtijd:   node.Pvtijd,
 				Spectype: node.Spectype,
 				Status:   node.Status,
-				// Stype:    node.Stype,
 				Vwtype:   node.Vwtype,
 				Vztype:   node.Vztype,
 				Wvorm:    node.Wvorm,
@@ -316,11 +315,11 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		node := nd.node
 		dep := nd.dep
 
-		ud := udNodeType{
+		ud := deprelType{
 			recursion: make([]string, 0),
 
 			XMLName:   xml.Name{Local: dep.DeprelMain},
-			Id:        dep.Id,
+			ID:        dep.ID,
 			Form:      node.Ud.Form,
 			Lemma:     node.Ud.Lemma,
 			Upos:      node.Ud.Upos,
@@ -352,7 +351,6 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 				Pvtijd:   node.Pvtijd,
 				Spectype: node.Spectype,
 				Status:   node.Status,
-				// Stype:    node.Stype,
 				Vwtype:   node.Vwtype,
 				Vztype:   node.Vztype,
 				Wvorm:    node.Wvorm,
@@ -361,28 +359,28 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		eudNodeList = append(eudNodeList, &ud)
 	}
 
-	alpino.UdNodes = make([]*udNodeType, 0)
+	alpino.Root = make([]*deprelType, 0)
 
 	for _, n := range udNodeList {
 		if n.Head == "0" {
-			alpino.UdNodes = append(alpino.UdNodes, n)
+			alpino.Root = append(alpino.Root, n)
 		}
 	}
 
 	for _, n := range eudNodeList {
 		if n.Head == "0" {
-			alpino.UdNodes = append(alpino.UdNodes, n)
+			alpino.Root = append(alpino.Root, n)
 		}
 	}
 
-	for i, root := range alpino.UdNodes {
-		var items []*udNodeType
+	for i, root := range alpino.Root {
+		var items []*deprelType
 		if i == 0 {
 			items = udNodeList
 		} else {
 			items = eudNodeList
 		}
-		root.UdNodes = make([]*udNodeType, 0)
+		root.Deps = make([]*deprelType, 0)
 		expand(root, items)
 	}
 	minify(alpino)
@@ -401,7 +399,7 @@ func minify(alpino *alpino_ds) {
 	if alpino.Parser != nil && alpino.Parser.Build == "" && alpino.Parser.Date == "" && alpino.Parser.Cats == "" && alpino.Parser.Skips == "" {
 		alpino.Parser = nil
 	}
-	if alpino.Sentence != nil && alpino.Sentence.Sent == "" && alpino.Sentence.SentId == "" {
+	if alpino.Sentence != nil && alpino.Sentence.Sentence == "" && alpino.Sentence.SentID == "" {
 		alpino.Sentence = nil
 	}
 	if alpino.Comments != nil && (alpino.Comments.Comment == nil || len(alpino.Comments.Comment) == 0) {
@@ -415,7 +413,7 @@ func minifyNode(node *nodeType) {
 		return
 	}
 	if node.Ud != nil {
-		if node.Ud.Id == "" {
+		if node.Ud.ID == "" {
 			node.Ud = nil
 		} else {
 			if len(node.Ud.Dep) == 0 {
@@ -468,17 +466,17 @@ func getItems(s string) map[string]string {
 	return m
 }
 
-func expand(udnode *udNodeType, items []*udNodeType) {
+func expand(udnode *deprelType, items []*deprelType) {
 	for _, item := range items {
-		if item.Head == udnode.Id {
-			it := new(udNodeType)
+		if item.Head == udnode.ID {
+			it := new(deprelType)
 			*it = *item
-			it.UdNodes = make([]*udNodeType, 0)
-			it.recursion = append([]string{udnode.Id}, udnode.recursion...)
-			udnode.UdNodes = append(udnode.UdNodes, it)
+			it.Deps = make([]*deprelType, 0)
+			it.recursion = append([]string{udnode.ID}, udnode.recursion...)
+			udnode.Deps = append(udnode.Deps, it)
 		}
 	}
-	for _, un := range udnode.UdNodes {
+	for _, un := range udnode.Deps {
 		if recursionLimit(un.recursion) {
 			un.RecursionLimit = "TOO DEEP"
 		} else {
