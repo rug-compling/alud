@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 package alud
@@ -27,7 +28,7 @@ START:
 	for true {
 		for _, n1 := range q.varallnodes {
 			// FIND op varallnodes niet mogelijk omdat twee keer naar $node wordt verwezen, en dat moet dezelfde node zijn
-				// added mwu as possible hd GB 05/03/24
+			// added mwu as possible hd GB 05/03/24
 			for _, n2 := range FIND(q, `
 $n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and
       @index and

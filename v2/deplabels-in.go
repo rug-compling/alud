@@ -21,8 +21,8 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
 	}
-	if node.parent.Rel == "--" && node.Rel == "hd" && node.Lemma == "begin" { // debugging 
-		return "root"  // begin jaren tachtig leuven yp 330 
+	if node.parent.Rel == "--" && node.Rel == "hd" && node.Lemma == "begin" { // debugging
+		return "root" // begin jaren tachtig leuven yp 330
 	}
 
 	if node.Rel == "app" {
@@ -630,7 +630,7 @@ func detLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NUM"]`) {
 			return "nummod"
 		}
-		if TEST(q, `$node/node[@rel="hd" and @cat="mwu"]/node[(@pt="spec" or @word="zulk")]`) { // flo 3,11 (4,33), zulk een N dat ... 
+		if TEST(q, `$node/node[@rel="hd" and @cat="mwu"]/node[(@pt="spec" or @word="zulk")]`) { // flo 3,11 (4,33), zulk een N dat ...
 			return "nmod" // added spec to avoid interaction with next statement
 		}
 		if TEST(q, `$node/node[@rel="hd"]/node[@ud:pos="NUM"]`) { // zo'n 16 000 man

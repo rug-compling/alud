@@ -31,20 +31,20 @@ START:
 			// FIND op varallnodes niet mogelijk omdat twee keer naar $node wordt verwezen, en dat moet dezelfde node zijn
 			// added mwu as possible hd GB 05/03/24
 			for _, n2 := range find(q, /*
-				$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and
-				      @index and
-				      (@pt or @cat) and
-				      ancestor::node[@rel="cnj"] and
-				      ancestor::node[@cat="conj"]/node[@rel="cnj" and
-				                                       descendant-or-self::node[@rel=("hd","ld","obj1") and
-				                                                                @index=$n1/@index and
-				                                                                not(@cat or @pt) and
-				                                                                ( @begin        = ..//node[@cat or @pt]/@end or
-				                                                                  ( @begin      = ../..//node[@cat or @pt]/@end and ../@cat="pp") or
-				                                                                  @begin - 1000 = ..//node[@cat or @pt]/@end
-				                                                                )
-				                                                               ]
-				                                       ]] */&xPath{
+					$n1[(@rel=("hd","ld") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and
+					      @index and
+					      (@pt or @cat) and
+					      ancestor::node[@rel="cnj"] and
+					      ancestor::node[@cat="conj"]/node[@rel="cnj" and
+					                                       descendant-or-self::node[@rel=("hd","ld","obj1") and
+					                                                                @index=$n1/@index and
+					                                                                not(@cat or @pt) and
+					                                                                ( @begin        = ..//node[@cat or @pt]/@end or
+					                                                                  ( @begin      = ../..//node[@cat or @pt]/@end and ../@cat="pp") or
+					                                                                  @begin - 1000 = ..//node[@cat or @pt]/@end
+					                                                                )
+					                                                               ]
+					                                       ]] */&xPath{
 					arg1: &dSort{
 						arg1: &dFilter{
 							arg1: &dVariable{
@@ -455,12 +455,12 @@ START:
 				node2 := n2.(*nodeType)
 				// added mwu as possible hd GB 05/03/24
 				for _, n3 := range find(q, /*
-					$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and @index and not(@pt or @cat) and
-					                 ancestor::node[@rel="cnj"]  and
-					                                    ( @begin        = ..//node[@cat or @pt]/@end or
-					                                      ( @begin      = ../..//node[@cat or @pt]/@end and ../@cat="pp") or
-					                                      @begin - 1000 = ..//node[@cat or @pt]/@end
-					                                     )] */&xPath{
+						$q.varallnodes[(@rel=("hd","ld","vc") or (@rel="obj1" and ../node[@rel="hd" and (@pt="vz" or (@cat="mwu" and node[@pt="vz"]))])) and @index and not(@pt or @cat) and
+						                 ancestor::node[@rel="cnj"]  and
+						                                    ( @begin        = ..//node[@cat or @pt]/@end or
+						                                      ( @begin      = ../..//node[@cat or @pt]/@end and ../@cat="pp") or
+						                                      @begin - 1000 = ..//node[@cat or @pt]/@end
+						                                     )] */&xPath{
 						arg1: &dSort{
 							arg1: &dFilter{
 								arg1: &dVariable{
