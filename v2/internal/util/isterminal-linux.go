@@ -1,3 +1,4 @@
+//go:build linux
 // +build linux
 
 package util
@@ -11,9 +12,9 @@ import (
 /*
 Examples:
 
-    IsTerminal(os.Stdin)
-    IsTerminal(os.Stdout)
-    IsTerminal(os.Stderr)
+	IsTerminal(os.Stdin)
+	IsTerminal(os.Stdout)
+	IsTerminal(os.Stderr)
 */
 func IsTerminal(file *os.File) bool {
 	var termios syscall.Termios

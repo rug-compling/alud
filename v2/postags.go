@@ -74,9 +74,9 @@ func universalPosTags(node *nodeType, q *context) string {
 			return "CCONJ" // exception needed to avoid validation errors
 		}
 		if node.Rel == "hd" && node.parent.Rel == "det" && node.Spectype == "symb" {
-			return "NUM"  // niet minder dan 47 --> why isnt 47 a tw to begin with?? 
-		} 
-		// case below seems buggy if det is not allowed to have dependents? 
+			return "NUM" // niet minder dan 47 --> why isnt 47 a tw to begin with??
+		}
+		// case below seems buggy if det is not allowed to have dependents?
 		if node.Rel == "det" || node.parent.Rel == "det" { //49% (symb), zes- a zevenduizend (afgebr), the (vreemd) zijn/haar (enof)
 			return "DET" // exception needed to avoid validation errors
 		}
@@ -109,13 +109,13 @@ func universalPosTags(node *nodeType, q *context) string {
 	if pt == "vnw" {
 		if rel == "hd" && node.parent.Cat == "detp" && node.Vwtype != "bez" { // niet veel meer dan
 			// added != bez to account for 'al zijn boeken' GB 03/11/22
-			if node.Lemma == "veel" || node.Word == "minder" || node.Word == "geen" || node.Word == "veel"  || node.Word == "wat" {
+			if node.Lemma == "veel" || node.Word == "minder" || node.Word == "geen" || node.Word == "veel" || node.Word == "wat" {
 				return "ADJ"
 			}
 			if node.Word == "zo'n" { // zo'n behoefte dat ...
 				return "ADV"
 			}
-			if node.Word == "alle" || node.Word == "die"  || node.Word == "dat" || node.Word == "zulke" { // zo goed als alle, van die rare .., van dat heerlijke
+			if node.Word == "alle" || node.Word == "die" || node.Word == "dat" || node.Word == "zulke" { // zo goed als alle, van die rare .., van dat heerlijke
 				return "PRON"
 			}
 			return "DET"
