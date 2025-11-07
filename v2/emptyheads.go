@@ -233,6 +233,7 @@ func reconstructEmptyHead(q *context) bool {
 		node.udForeign = antenode.udForeign
 		node.udGender = antenode.udGender
 		//niet: node.udHeadPosition = antenode.udHeadPosition
+		node.udMood = antenode.udMood
 		node.udNumber = antenode.udNumber
 		node.udPerson = antenode.udPerson
 		node.udPos = antenode.udPos

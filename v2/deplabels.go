@@ -22,6 +22,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
 	}
+	if node.parent.Rel == "--" && node.Rel == "hd" && node.Lemma == "begin" { // debugging
+		return "root" // begin jaren tachtig leuven yp 330
+	}
 
 	if node.Rel == "app" {
 		if test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &xPath{
@@ -970,6 +973,52 @@ func dependencyLabel(node *nodeType, q *context) string {
 					return dependencyLabel(node.parent, q) //
 				}
 				return "advcl"
+			}
+			if test(q /* $node[@cat="cp"]/node[@cat="ssub"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dFilter{
+							arg1: &dVariable{
+								VAR: node,
+							},
+							arg2: &dSort{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"cp"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"ssub"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) { // added to avoid xcomp with a subject (should be invalid) -- see Leiden/Gent discussion
+				return "ccomp"
 			}
 			return "xcomp"
 		}
@@ -2115,6 +2164,74 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}) { // gapping
 			return detLabel(node, q) // was "orphan"
 		}
+		if test(q /* $node[@pt="lid" and ../node[@rel="det" and @pt="tw"]] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__pt,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"lid"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__pt,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dCollect{
+								ARG: collect__child__node,
+								arg1: &dCollect{
+									ARG:  collect__parent__type__node,
+									arg1: &dNode{},
+								},
+								arg2: &dPredicate{
+									arg1: &dAnd{
+										arg1: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"det"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__rel,
+													arg1: &dNode{},
+												},
+											},
+										},
+										arg2: &dEqual{
+											ARG: equal__is,
+											arg1: &dCollect{
+												ARG:  collect__attributes__pt,
+												arg1: &dNode{},
+											},
+											arg2: &dElem{
+												DATA: []interface{}{"tw"},
+												arg1: &dCollect{
+													ARG:  collect__attributes__pt,
+													arg1: &dNode{},
+												},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // zowel de 100 als de 200 meter
+			return detLabel(node, q)
+		}
 		return dependencyLabel(node.parent, q) // gapping
 	}
 	if node.Rel == "obj1" || node.Rel == "me" {
@@ -3235,7 +3352,7 @@ func dependencyLabel(node *nodeType, q *context) string {
 	// so advmod(meer,steeds) and upos of steeds should be adv, not det (error in old conversion)   GB 4-11-24
 	// this causes a validation error for [meer dan NUM] where meer is a PRON. In those cases, return amod (as in the old script) GB 28-4-25
 	if node.Rel == "mod" && node.parent.Rel == "det" { // [ap/det steeds vnw/meer] invloed
-		if test(q /* $node/node[@rel="nucl" and @pt="tw"] */, &xPath{
+		if test(q /* $node/node[@rel=("nucl","dp")] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -3243,22 +3360,61 @@ func dependencyLabel(node *nodeType, q *context) string {
 						VAR: node,
 					},
 					arg2: &dPredicate{
-						arg1: &dAnd{
-							arg1: &dEqual{
-								ARG: equal__is,
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__rel,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"nucl", "dp"},
 								arg1: &dCollect{
 									ARG:  collect__attributes__rel,
 									arg1: &dNode{},
 								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			if test(q /* $node/node[@pt="spec"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__pt,
+									arg1: &dNode{},
+								},
 								arg2: &dElem{
-									DATA: []interface{}{"nucl"},
+									DATA: []interface{}{"spec"},
 									arg1: &dCollect{
-										ARG:  collect__attributes__rel,
+										ARG:  collect__attributes__pt,
 										arg1: &dNode{},
 									},
 								},
 							},
-							arg2: &dEqual{
+						},
+					},
+				},
+			}) { // 7 (v.j. 8,4) -- hack, should check for first daughter
+				return "parataxis"
+			}
+			if test(q /* $node/node[@pt="tw"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
 								ARG: equal__is,
 								arg1: &dCollect{
 									ARG:  collect__attributes__pt,
@@ -3275,8 +3431,11 @@ func dependencyLabel(node *nodeType, q *context) string {
 						},
 					},
 				},
-			},
-		}) {
+			}) {
+				return "nummod"
+			}
+		}
+		if node.udPos == "NUM" {
 			return "nummod"
 		}
 		if node.udPos == "ADP" { // tot tien hommels, not sure what the deprel should be...
@@ -3285,12 +3444,87 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.udPos == "PROPN" || node.Cat == "np" || node.Cat == "pp" { // Prince zijn eerste album, de advocaat zijn levensgeschiedenis, in totaal negen personen
 			return "nmod"
 		}
-		if node.Cat == "mwu" { // hack , should check for pos of first dependent, or use ExtPos feature -- see case above for incomplete solution
-			return "amod"
+		if node.Cat == "mwu" || node.udPos == "VERB" { // hack , should check for pos of first dependent, or use ExtPos feature -- see case above for incomplete solution
+			return "amod" //VERB is for verdomd veel
+		}
+		if node.Cat == "cp" { // naar verluidt achtduizend
+			return "advcl"
 		}
 		return "advmod"
 	}
-	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" { // [detp niet veel] meer
+	// [eind jaren '50] is an advp with nominal head (eind), so treat as modification inside NP
+	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" || test(q /* $node[../@cat="advp" and ../node[@rel="hd" and @pt="n"]] */, &xPath{
+		arg1: &dSort{
+			arg1: &dFilter{
+				arg1: &dVariable{
+					VAR: node,
+				},
+				arg2: &dSort{
+					arg1: &dAnd{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG: collect__attributes__cat,
+								arg1: &dCollect{
+									ARG:  collect__parent__type__node,
+									arg1: &dNode{},
+								},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"advp"},
+								arg1: &dCollect{
+									ARG: collect__attributes__cat,
+									arg1: &dCollect{
+										ARG:  collect__parent__type__node,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+						arg2: &dCollect{
+							ARG: collect__child__node,
+							arg1: &dCollect{
+								ARG:  collect__parent__type__node,
+								arg1: &dNode{},
+							},
+							arg2: &dPredicate{
+								arg1: &dAnd{
+									arg1: &dEqual{
+										ARG: equal__is,
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+										arg2: &dElem{
+											DATA: []interface{}{"hd"},
+											arg1: &dCollect{
+												ARG:  collect__attributes__rel,
+												arg1: &dNode{},
+											},
+										},
+									},
+									arg2: &dEqual{
+										ARG: equal__is,
+										arg1: &dCollect{
+											ARG:  collect__attributes__pt,
+											arg1: &dNode{},
+										},
+										arg2: &dElem{
+											DATA: []interface{}{"n"},
+											arg1: &dCollect{
+												ARG:  collect__attributes__pt,
+												arg1: &dNode{},
+											},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) { // [detp niet veel] meer
 		// modification of nomimal heads
 		// pc and ld occur in nominalizations
 		if test(q /* $node/../node[@rel="hd" and (@pt or @cat)] */, &xPath{
@@ -4052,6 +4286,76 @@ func dependencyLabel(node *nodeType, q *context) string {
 				},
 			},
 		}) {
+			if test(q /* $node[@ud:pos="ADV" or @cat="advp"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dSort{
+							arg1: &dOr{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"ADV"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__ud_3apos,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"advp"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+				return "advmod"
+			}
+			if test(q /* $node[@cat=("pp","np")] */, &xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dSort{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__cat,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"pp", "np"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) { // added this case to solve error noted in Leiden/Gent discussion (oa absolute met constructies)
+				return "nmod"
+			} // added np for cases like 'drie jaar na de oorlog'
 			return "amod"
 		}
 		if test(q /* $node/../node[@rel="hd" and @ud:pos=("ADV","ADP")] */, &xPath{
@@ -4099,7 +4403,50 @@ func dependencyLabel(node *nodeType, q *context) string {
 				},
 			},
 		}) { // daarom dus, vlak voor en tijdens de oorlog --> orphan or advmod?
-			return "advmod"
+			if test(q /* $node[@cat="np" or @ud:pos="NOUN"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dFilter{
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dSort{
+							arg1: &dOr{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"np"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"NOUN"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__ud_3apos,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+				return "nmod"
+			}
+			return "advmod" // also triggered by [enkele maanden daarvoor], where maanden is NOUN, so added case above GB 5/8/25
 		}
 		return dependencyLabel(node.parent, q)
 	}
@@ -6013,8 +6360,8 @@ func subjectLabel(subj *nodeType, q *context) string {
 	// pass (requires pass aux) and outer (requires copula) never co-occur I assume
 	pass := passiveSubject(subj, q)
 	outer := outerSubject(subj, q)
-	if test(q, /* $subj[@cat=("whsub","ssub","ti","cp","oti")] or
-		   $subj[@cat="conj" and node/@cat=("whsub","ssub","ti","cp","oti")] */&xPath{
+	if test(q, /* $subj[@cat=("whsub","ssub","ti","cp","oti","whrel")] or
+		   $subj[@cat="conj" and node/@cat=("whsub","ssub","ti","cp","oti","whrel")] */&xPath{
 			arg1: &dSort{
 				arg1: &dOr{
 					arg1: &dFilter{
@@ -6029,7 +6376,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 									arg1: &dNode{},
 								},
 								arg2: &dElem{
-									DATA: []interface{}{"whsub", "ssub", "ti", "cp", "oti"},
+									DATA: []interface{}{"whsub", "ssub", "ti", "cp", "oti", "whrel"},
 									arg1: &dCollect{
 										ARG:  collect__attributes__cat,
 										arg1: &dNode{},
@@ -6068,7 +6415,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 										},
 									},
 									arg2: &dElem{
-										DATA: []interface{}{"whsub", "ssub", "ti", "cp", "oti"},
+										DATA: []interface{}{"whsub", "ssub", "ti", "cp", "oti", "whrel"},
 										arg1: &dCollect{
 											ARG: collect__attributes__cat,
 											arg1: &dCollect{
@@ -6083,7 +6430,7 @@ func subjectLabel(subj *nodeType, q *context) string {
 					},
 				},
 			},
-		}) {
+		}) { // added whrel cases as Gent/Leiden suggests this, but see remarks there for alternatives.
 		return "csubj" + pass + outer
 	}
 	// weather verbs and other expletive subject verbs
@@ -7245,6 +7592,87 @@ func detLabel(node *nodeType, q *context) string {
 		}) {
 			return "nummod"
 		}
+		if test(q /* $node/node[@rel="hd" and @cat="mwu"]/node[(@pt="spec" or @word="zulk")] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"hd"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"mwu"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+					arg2: &dPredicate{
+						arg1: &dSort{
+							arg1: &dOr{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__pt,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"spec"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__pt,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__word,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"zulk"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__word,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // flo 3,11 (4,33), zulk een N dat ...
+			return "nmod" // added spec to avoid interaction with next statement
+		}
 		if test(q /* $node/node[@rel="hd"]/node[@ud:pos="NUM"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
@@ -7290,9 +7718,9 @@ func detLabel(node *nodeType, q *context) string {
 				},
 			},
 		}) { // zo'n 16 000 man
-			return "det" // should be extpos=NUM+rel=nummod but gives validation error as extpos cannot be NUM
-		}
-		if test(q /* $node/node[@rel="hd" and @ud:pos=("NOUN","ADJ")] */, &xPath{
+			return "nmod" // should be extpos=NUM+rel=nummod but gives validation error as extpos cannot be NUM
+		} // but then this should give a validation error as well? indeed, so changed det to nummod
+		if test(q /* $node/node[@rel="hd" and @ud:pos="NOUN"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -7322,7 +7750,7 @@ func detLabel(node *nodeType, q *context) string {
 									arg1: &dNode{},
 								},
 								arg2: &dElem{
-									DATA: []interface{}{"NOUN", "ADJ"},
+									DATA: []interface{}{"NOUN"},
 									arg1: &dCollect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &dNode{},
@@ -7336,7 +7764,7 @@ func detLabel(node *nodeType, q *context) string {
 		}) {
 			return "nmod"
 		}
-		if test(q /* $node/node[@rel="hd" and @ud:pos="PRON" and @vwtype="bez"] */, &xPath{
+		if test(q /* $node/node[@rel="hd" and @ud:pos="ADJ"] */, &xPath{
 			arg1: &dSort{
 				arg1: &dCollect{
 					ARG: collect__child__node,
@@ -7345,37 +7773,136 @@ func detLabel(node *nodeType, q *context) string {
 					},
 					arg2: &dPredicate{
 						arg1: &dAnd{
-							arg1: &dAnd{
-								arg1: &dEqual{
-									ARG: equal__is,
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
 									arg1: &dCollect{
 										ARG:  collect__attributes__rel,
 										arg1: &dNode{},
 									},
-									arg2: &dElem{
-										DATA: []interface{}{"hd"},
-										arg1: &dCollect{
-											ARG:  collect__attributes__rel,
-											arg1: &dNode{},
-										},
-									},
 								},
-								arg2: &dEqual{
-									ARG: equal__is,
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"ADJ"},
 									arg1: &dCollect{
 										ARG:  collect__attributes__ud_3apos,
 										arg1: &dNode{},
 									},
-									arg2: &dElem{
-										DATA: []interface{}{"PRON"},
-										arg1: &dCollect{
-											ARG:  collect__attributes__ud_3apos,
-											arg1: &dNode{},
-										},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // meer mogelijkheden dan ze benutten: meer=ADJ to avoid validation errors, dan ze benutten is obcomp sister
+			return "amod"
+		}
+		if test(q /* $node/node[@rel="hd" and @ud:pos="ADV"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
 									},
 								},
 							},
 							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"ADV"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // zo'n vrijheid als hier
+			return "advmod"
+		}
+		if test(q /* $node/node[@rel="hd" and @ud:pos="PRON"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"PRON"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) {
+			if test(q /* $node/node[@vwtype="bez"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dEqual{
 								ARG: equal__is,
 								arg1: &dCollect{
 									ARG:  collect__attributes__vwtype,
@@ -7392,9 +7919,10 @@ func detLabel(node *nodeType, q *context) string {
 						},
 					},
 				},
-			},
-		}) {
-			return "nmod:poss"
+			}) {
+				return "nmod:poss"
+			}
+			return "nmod"
 		}
 		return "det"
 	}
@@ -7568,6 +8096,9 @@ func detLabel(node *nodeType, q *context) string {
 	if node.Cat == "cp" { //ik heb boeken gezien [cp/det dan hem] weird...
 		return "nmod"
 	}
+	if node.Cat == "du" { // veel, zeer veel geld
+		return "advmod"
+	}
 	panic("No label det")
 }
 
@@ -7625,8 +8156,8 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	}) {
 		return "acl" // pp containing a clause
 	}
-	// fixing issue noted by Anouck
-	if test(q /* $node[@ud:pos="ADJ" or @cat="ap" or node[@cat="conj" and @begin = node[@ud:pos="ADJ" or @cat="ap"]/@begin ]] */, &xPath{
+	// fixing issue noted by Anouck, and fixing this again, see Gent/Leiden disc
+	if test(q /* $node[@ud:pos="ADJ" or @cat="ap" or (@cat="conj" and @begin = node[@ud:pos="ADJ" or @cat="ap"]/@begin )] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -7664,64 +8195,60 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 								},
 							},
 						},
-						arg2: &dCollect{
-							ARG:  collect__child__node,
-							arg1: &dNode{},
-							arg2: &dPredicate{
-								arg1: &dAnd{
-									arg1: &dEqual{
-										ARG: equal__is,
+						arg2: &dSort{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"conj"},
 										arg1: &dCollect{
 											ARG:  collect__attributes__cat,
 											arg1: &dNode{},
 										},
-										arg2: &dElem{
-											DATA: []interface{}{"conj"},
-											arg1: &dCollect{
-												ARG:  collect__attributes__cat,
-												arg1: &dNode{},
-											},
-										},
 									},
-									arg2: &dEqual{
-										ARG: equal__is,
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__begin,
+										arg1: &dNode{},
+									},
+									arg2: &dCollect{
+										ARG: collect__attributes__begin,
 										arg1: &dCollect{
-											ARG:  collect__attributes__begin,
+											ARG:  collect__child__node,
 											arg1: &dNode{},
-										},
-										arg2: &dCollect{
-											ARG: collect__attributes__begin,
-											arg1: &dCollect{
-												ARG:  collect__child__node,
-												arg1: &dNode{},
-												arg2: &dPredicate{
-													arg1: &dOr{
-														arg1: &dEqual{
-															ARG: equal__is,
+											arg2: &dPredicate{
+												arg1: &dOr{
+													arg1: &dEqual{
+														ARG: equal__is,
+														arg1: &dCollect{
+															ARG:  collect__attributes__ud_3apos,
+															arg1: &dNode{},
+														},
+														arg2: &dElem{
+															DATA: []interface{}{"ADJ"},
 															arg1: &dCollect{
 																ARG:  collect__attributes__ud_3apos,
 																arg1: &dNode{},
 															},
-															arg2: &dElem{
-																DATA: []interface{}{"ADJ"},
-																arg1: &dCollect{
-																	ARG:  collect__attributes__ud_3apos,
-																	arg1: &dNode{},
-																},
-															},
 														},
-														arg2: &dEqual{
-															ARG: equal__is,
+													},
+													arg2: &dEqual{
+														ARG: equal__is,
+														arg1: &dCollect{
+															ARG:  collect__attributes__cat,
+															arg1: &dNode{},
+														},
+														arg2: &dElem{
+															DATA: []interface{}{"ap"},
 															arg1: &dCollect{
 																ARG:  collect__attributes__cat,
 																arg1: &dNode{},
-															},
-															arg2: &dElem{
-																DATA: []interface{}{"ap"},
-																arg1: &dCollect{
-																	ARG:  collect__attributes__cat,
-																	arg1: &dNode{},
-																},
 															},
 														},
 													},
@@ -7847,8 +8374,54 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	}) {
 		return "nummod"
 	}
+
 	if node.Cat == "detp" {
-		return "det" // [detp niet veel] meer error?
+		if test(q /* $node/node[@rel="hd" and @ud:pos="ADJ"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dCollect{
+					ARG: collect__child__node,
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dPredicate{
+						arg1: &dAnd{
+							arg1: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"hd"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+								},
+							},
+							arg2: &dEqual{
+								ARG: equal__is,
+								arg1: &dCollect{
+									ARG:  collect__attributes__ud_3apos,
+									arg1: &dNode{},
+								},
+								arg2: &dElem{
+									DATA: []interface{}{"ADJ"},
+									arg1: &dCollect{
+										ARG:  collect__attributes__ud_3apos,
+										arg1: &dNode{},
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // niet veel meer
+			return "amod"
+		} else {
+			return "det" // [detp niet veel] meer error?
+		}
 	}
 	if node.Cat == "rel" || node.Cat == "whrel" || node.Cat == "ssub" {
 		return "acl:relcl"
@@ -7978,8 +8551,62 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	}) { // added whsub for robustness in automatic parser output
 		return "acl"
 	}
+	if test(q /* $node[@ud:pos= "ADV"] */, &xPath{
+		arg1: &dSort{
+			arg1: &dFilter{
+				arg1: &dVariable{
+					VAR: node,
+				},
+				arg2: &dSort{
+					arg1: &dEqual{
+						ARG: equal__is,
+						arg1: &dCollect{
+							ARG:  collect__attributes__ud_3apos,
+							arg1: &dNode{},
+						},
+						arg2: &dElem{
+							DATA: []interface{}{"ADV"},
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) { // added advmod as an option, see Gent/Leiden discussion
+		return "advmod"
+	}
+	if test(q /* $node[@ud:pos= "ADP"] */, &xPath{
+		arg1: &dSort{
+			arg1: &dFilter{
+				arg1: &dVariable{
+					VAR: node,
+				},
+				arg2: &dSort{
+					arg1: &dEqual{
+						ARG: equal__is,
+						arg1: &dCollect{
+							ARG:  collect__attributes__ud_3apos,
+							arg1: &dNode{},
+						},
+						arg2: &dElem{
+							DATA: []interface{}{"ADP"},
+							arg1: &dCollect{
+								ARG:  collect__attributes__ud_3apos,
+								arg1: &dNode{},
+							},
+						},
+					},
+				},
+			},
+		},
+	}) { // ADP cases (10 mm rondom) raises validation error, case feels wrong though
+		return "case"
+	}
 	// oa zinnen tussen haakjes
-	if test(q /* $node[@ud:pos= ("ADV","ADP","VERB","CCONJ") or @cat="advp"] */, &xPath{
+	if test(q /* $node[@ud:pos= ("VERB","CCONJ") or @cat="advp"] */, &xPath{
 		arg1: &dSort{
 			arg1: &dFilter{
 				arg1: &dVariable{
@@ -7994,7 +8621,7 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 								arg1: &dNode{},
 							},
 							arg2: &dElem{
-								DATA: []interface{}{"ADV", "ADP", "VERB", "CCONJ"},
+								DATA: []interface{}{"VERB", "CCONJ"},
 								arg1: &dCollect{
 									ARG:  collect__attributes__ud_3apos,
 									arg1: &dNode{},
@@ -8019,8 +8646,8 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 				},
 			},
 		},
-	}) {
-		return "amod"
+	}) { // this should also be modified, not sure what? see G/L disc
+		return "amod" //note that advp should be advmod as well (case above), but many advp have NOUN as hd (begin 1879, etc)) and this raises an error
 	}
 	// VERB= aanstormend etc -> amod, ADV = nagenoeg alle prijzen, slechts 4 euro --> amod
 	// CCONJ = opdrachten zoals:   --> amod
@@ -8085,6 +8712,77 @@ func labelVmod(node *nodeType, q *context) string {
 			},
 		},
 	}) {
+		if test(q /* $node[@rel="pc"] */, &xPath{
+			arg1: &dSort{
+				arg1: &dFilter{
+					arg1: &dVariable{
+						VAR: node,
+					},
+					arg2: &dSort{
+						arg1: &dEqual{
+							ARG: equal__is,
+							arg1: &dCollect{
+								ARG:  collect__attributes__rel,
+								arg1: &dNode{},
+							},
+							arg2: &dElem{
+								DATA: []interface{}{"pc"},
+								arg1: &dCollect{
+									ARG:  collect__attributes__rel,
+									arg1: &dNode{},
+								},
+							},
+						},
+					},
+				},
+			},
+		}) { // added case where it is a pc -- see Gent/Leiden discussion
+			if test(q /* $node/node[@rel="vc" and @cat="cp"] */, &xPath{
+				arg1: &dSort{
+					arg1: &dCollect{
+						ARG: collect__child__node,
+						arg1: &dVariable{
+							VAR: node,
+						},
+						arg2: &dPredicate{
+							arg1: &dAnd{
+								arg1: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__rel,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"vc"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__rel,
+											arg1: &dNode{},
+										},
+									},
+								},
+								arg2: &dEqual{
+									ARG: equal__is,
+									arg1: &dCollect{
+										ARG:  collect__attributes__cat,
+										arg1: &dNode{},
+									},
+									arg2: &dElem{
+										DATA: []interface{}{"cp"},
+										arg1: &dCollect{
+											ARG:  collect__attributes__cat,
+											arg1: &dNode{},
+										},
+									},
+								},
+							},
+						},
+					},
+				},
+			}) {
+				return "ccomp"
+			}
+			return "xcomp"
+		}
 		return "advcl"
 	}
 	if test(q, /* $node[ (   node[@rel="hd" and @lemma="door"]
@@ -8797,7 +9495,7 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 				},
 			},
 		}) { // is dit onzin? de head kan een pp met een np inside zijn, maar dat zegt niets over nmod, dit moet gewoon obl zijn GB 17/11/23
-			return "nmod"
+			return "obl:arg" //eindelijk aangepast, zie Gent/Leiden voorbeelden
 		}
 		if test(q /* $head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")] */, &xPath{
 			arg1: &dSort{
