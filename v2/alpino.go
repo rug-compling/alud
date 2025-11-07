@@ -255,8 +255,10 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		node.Ud.Case = feats["Case"]
 		node.Ud.Definite = feats["Definite"]
 		node.Ud.Degree = feats["Degree"]
+		node.Ud.ExtPos = feats["ExtPos"]
 		node.Ud.Foreign = feats["Foreign"]
 		node.Ud.Gender = feats["Gender"]
+		// node.Ud.Mood = feats["Mood"]
 		node.Ud.Number = feats["Number"]
 		node.Ud.Person = feats["Person"]
 		node.Ud.PronType = feats["PronType"]
@@ -300,6 +302,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 				Pvtijd:   node.Pvtijd,
 				Spectype: node.Spectype,
 				Status:   node.Status,
+				// Stype:    node.Stype,
 				Vwtype:   node.Vwtype,
 				Vztype:   node.Vztype,
 				Wvorm:    node.Wvorm,
@@ -349,6 +352,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 				Pvtijd:   node.Pvtijd,
 				Spectype: node.Spectype,
 				Status:   node.Status,
+				// Stype:    node.Stype,
 				Vwtype:   node.Vwtype,
 				Vztype:   node.Vztype,
 				Wvorm:    node.Wvorm,

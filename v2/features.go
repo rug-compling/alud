@@ -24,6 +24,9 @@ func addFeatures(q *context) {
 		if node.Rel == "mwp" && node.Spectype != "symb" && node.Spectype != "deeleigen" && node.Ntype != "eigen'" && node.Begin == node.parent.Begin {
 			extpos(node, q)
 		}
+		if node.Rel == "mwp" && node.Spectype == "symb" && node.Frame == "amount_meas_mod_noun(both,count,bare_meas)" { // flo 1,11 (0,85) miljoen
+			node.udExtPos = "PRON" // hack, note that NOUN or NUM are not allowed for ExtPos
+		}
 	}
 }
 
@@ -100,7 +103,7 @@ func pronounFeatures(node *nodeType, q *context) {
 	case "betr":
 		node.udPronType = "Rel"
 	case "excl": // occurs only once
-		node.udPronType = ""
+		node.udPronType = "Exc"
 	case "":
 		node.udPronType = ""
 	default:
@@ -145,6 +148,14 @@ func verbalFeatures(node *nodeType, q *context) {
 	switch node.Wvorm {
 	case "pv":
 		node.udVerbForm = "Fin"
+		if node.Tense == "subjunctive" {
+			node.udMood = "Sub"
+		}
+		if node.Stype == "imparative" {
+			node.udMood = "Imp"
+		} else {
+			node.udMood = "Ind"
+		}
 	case "inf":
 		node.udVerbForm = "Inf"
 	case "vd", "od":
@@ -189,6 +200,26 @@ func determinerFeatures(node *nodeType, q *context) {
 	default:
 		panic(fmt.Sprintf("Irregular definite for %s:%s : %s", number(node.End), node.Word, node.Lwtype))
 	}
+	switch node.Lemma {
+	case "de", "het", "een":
+		node.udPronType = "Art"
+	case "die", "dit", "deze", "dat":
+		node.udPronType = "Dem"
+	case "geen":
+		node.udPronType = "Neg"
+	case "enig", "enkel", "menig", "sommig", "veel", "weinig", "zo'n":
+		node.udPronType = "Ind"
+	case "welk": // Int or Rel?
+		if node.parent.Rel == "rhd" {
+			node.udPronType = "Rel"
+		} else {
+			node.udPronType = "Int" // includes some dubious cases as well: om het even welke N
+		}
+	case "wie": // wie --> wiens, wier altijd Rel in lassysmall
+		node.udPronType = "Rel"
+	case "al", "beide", "ieder", "elk":
+		node.udPronType = "Tot"
+	}
 }
 
 func specialFeatures(node *nodeType, q *context) {
@@ -200,6 +231,7 @@ func specialFeatures(node *nodeType, q *context) {
 	}
 }
 
+// flo --> symb --> treated in main function above
 func extpos(node *nodeType, q *context) {
 	if node.Frame == "adjective(pred(nonadv))" {
 		if node.parent.Rel == "hd" && node.Word == "in" { // in plaats van
@@ -217,28 +249,37 @@ func extpos(node *nodeType, q *context) {
 	if node.Frame == "adjective(postn_no_e(dir_locadv))" && node.Word == "links" { // links boven ons
 		node.udExtPos = "ADP"
 	}
-	if node.Frame == "pre_num_adv(pl_indef)" && node.Word == "tegen" { // tegen de vier uur
-		node.udExtPos = "DET"
-	}
 	switch node.Frame {
 	case "adverb", "modal_adverb", "modal_adverb(noun_prep)", "intensifier", "loc_adverb", "er_adverb([ter,gelegenheid,van])", "waar_adverb(vanuit)",
-		"post_wh_adverb", "sentence_adverb", "pre_num_adv(both)", "pre_wh_adverb", "adjective(pred(adv))", "adjective(pred(adv),pp(naar))",
+		"post_wh_adverb", "sentence_adverb", "pre_num_adv(both)", "pre_wh_adverb", "adjective(pred(adv))", "adjective(pred(adv),pp(naar))", "adjective(pred(tmpadv))",
 		"tmp_adverb", "pre_num_adv", "adjective(het_st(adv))", "adjective(het_st(adv),subject_sbar)", "adjective(pred(dir_locadv))", "comp_adverb(als)",
-		"adjective(pred(adv),transitive)":
+		"adjective(pred(adv),transitive)", "sbar_pred_adjective(adv)":
 		node.udExtPos = "ADV"
 	case "complementizer(inf)":
 		node.udExtPos = "SCONJ"
 	case "conj(maar)", "conj('tot en met')", "conj(en)", "etc", "complementizer(np)", "conj('laat staan')":
 		node.udExtPos = "CCONJ"
-	case "adjective(meer)", "adjective(pred(padv))":
+	case "adjective(meer)", "adjective(pred(padv))", "adjective(pred(padv),pp(naar))": // oa op zoek
 		node.udExtPos = "ADJ"
 	case "complementizer(te)", "pp", "pp(te)", "pp(van)", "particle([af,aan])", "noun(both,both,both)", "preposition(dichtbij)":
 		node.udExtPos = "ADP"
 	case "tmp_np":
-		node.udExtPos = "PRON" // counter intuitive, but avoids validation errors
+		if node.Word == "tot" { // tot en met, frame errors
+			node.udExtPos = "ADP"
+		} else {
+			node.udExtPos = "PRON" // counter intuitive, but avoids validation errors
+		}
+	case "wh_adjective": // hoe een grote vis,
+		node.udExtPos = "DET"
+	case "determiner(pron,wh)": // Watvoor een dier, wat voor boeken
+		node.udExtPos = "PRON"
 	}
 	if strings.Contains(node.Frame, "preposition") {
-		node.udExtPos = "ADP"
+		if node.parent.Rel == "det" { // tegen de vier uur
+			node.udExtPos = "DET"
+		} else {
+			node.udExtPos = "ADP"
+		}
 	}
 	if strings.Contains(node.Frame, "pp(van)") {
 		node.udExtPos = "ADP"
@@ -251,6 +292,12 @@ func extpos(node *nodeType, q *context) {
 	}
 	if strings.Contains(node.Frame, "number") { // n.b. also ensure rel is flat
 		node.udExtPos = "PRON" // value should be NUM but not allowed
+	}
+	if node.parent.Rel == "det" && (node.udPos == "NUM" || node.udPos == "SYM") { // even more counterintuitive: een of ander, - 8
+		node.udExtPos = "PRON"
+	}
+	if node.parent.Rel == "cnj" && node.Word == "-" { // -8 a - 10 graden
+		node.udExtPos = "PRON"
 	}
 	if strings.Contains(node.Frame, "pronoun") {
 		node.udExtPos = "PRON"

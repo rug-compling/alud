@@ -319,6 +319,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 			                   ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]]`) {
 			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
 		}
+		if TEST(q, `$node[../node[@rel="predc"] and not(../node[@rel="hd"])]`) { // en hij niet eens met de reactie... --> ungrammatical, copula left out
+			return internalHeadPositionWithGapping(FIND(q, `$node/../node[@rel="predc"]`), q)
+		}
 		if TEST(q, `$node/../node[@rel="vc"] and $node/../node[@rel="hd" and
 			                  ( @ud:pos="AUX" or $node/ancestor::node[@rel="top"]//node[@ud:pos="AUX"]/@index = @index ) ]`) {
 			//NP -> half opgelost -> zie TODO
@@ -404,6 +407,9 @@ func externalHeadPosition(nodes []interface{}, q *context) int {
 
 	if node.Rel == "app" || node.Rel == "det" || node.Rel == "me" {
 		if TEST(q, `$node/../node[@rel=("hd","mod") and (@pt or @cat)]`) { // gapping with an app (or a det)! (or me!)
+			return internalHeadPositionWithGapping(node.axParent, q)
+		}
+		if TEST(q, `$node[@pt="lid" and ../node[@pt="tw"]]`) { // zowel de 100 als de 200 meter
 			return internalHeadPositionWithGapping(node.axParent, q)
 		}
 		return externalHeadPosition(node.axParent, q)
@@ -645,6 +651,10 @@ func internalHeadPositionOfGappedConstituent(node []interface{}, q *context) int
 	}
 
 	if n := FIND(q, `$node/node[@rel=("mod","app","me") and descendant-or-self::node/@pt]`); len(n) > 0 { // pick leftmost
+		return internalHeadPositionWithGapping(if1(n), q)
+	}
+
+	if n := FIND(q, `$node/node[@rel="det" and @pt="tw"]`); len(n) > 0 {
 		return internalHeadPositionWithGapping(if1(n), q)
 	}
 

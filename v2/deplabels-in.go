@@ -21,6 +21,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 	if node.parent.Cat == "top" && node.parent.End == 1000 {
 		return "root"
 	}
+	if node.parent.Rel == "--" && node.Rel == "hd" && node.Lemma == "begin" { // debugging 
+		return "root"  // begin jaren tachtig leuven yp 330 
+	}
 
 	if node.Rel == "app" {
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
@@ -89,6 +92,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 					return dependencyLabel(node.parent, q) //
 				}
 				return "advcl"
+			}
+			if TEST(q, `$node[@cat="cp"]/node[@cat="ssub"]`) { // added to avoid xcomp with a subject (should be invalid) -- see Leiden/Gent discussion
+				return "ccomp"
 			}
 			return "xcomp"
 		}
@@ -172,6 +178,9 @@ func dependencyLabel(node *nodeType, q *context) string {
 		}
 		if TEST(q, `$node/../node[@rel="mod" and (@pt or @cat)]`) { // gapping
 			return detLabel(node, q) // was "orphan"
+		}
+		if TEST(q, `$node[@pt="lid" and ../node[@rel="det" and @pt="tw"]]`) { // zowel de 100 als de 200 meter
+			return detLabel(node, q)
 		}
 		return dependencyLabel(node.parent, q) // gapping
 	}
@@ -266,7 +275,15 @@ func dependencyLabel(node *nodeType, q *context) string {
 	// so advmod(meer,steeds) and upos of steeds should be adv, not det (error in old conversion)   GB 4-11-24
 	// this causes a validation error for [meer dan NUM] where meer is a PRON. In those cases, return amod (as in the old script) GB 28-4-25
 	if node.Rel == "mod" && node.parent.Rel == "det" { // [ap/det steeds vnw/meer] invloed
-		if TEST(q, `$node/node[@rel="nucl" and @pt="tw"]`) {
+		if TEST(q, `$node/node[@rel=("nucl","dp")]`) {
+			if TEST(q, `$node/node[@pt="spec"]`) { // 7 (v.j. 8,4) -- hack, should check for first daughter
+				return "parataxis"
+			}
+			if TEST(q, `$node/node[@pt="tw"]`) {
+				return "nummod"
+			}
+		}
+		if node.udPos == "NUM" {
 			return "nummod"
 		}
 		if node.udPos == "ADP" { // tot tien hommels, not sure what the deprel should be...
@@ -275,12 +292,16 @@ func dependencyLabel(node *nodeType, q *context) string {
 		if node.udPos == "PROPN" || node.Cat == "np" || node.Cat == "pp" { // Prince zijn eerste album, de advocaat zijn levensgeschiedenis, in totaal negen personen
 			return "nmod"
 		}
-		if node.Cat == "mwu" { // hack , should check for pos of first dependent, or use ExtPos feature -- see case above for incomplete solution
-			return "amod"
+		if node.Cat == "mwu" || node.udPos == "VERB" { // hack , should check for pos of first dependent, or use ExtPos feature -- see case above for incomplete solution
+			return "amod" //VERB is for verdomd veel
+		}
+		if node.Cat == "cp" { // naar verluidt achtduizend
+			return "advcl"
 		}
 		return "advmod"
 	}
-	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" { // [detp niet veel] meer
+	// [eind jaren '50] is an advp with nominal head (eind), so treat as modification inside NP
+	if (node.Rel == "mod" || node.Rel == "pc" || node.Rel == "ld") && node.parent.Cat == "np" || TEST(q, `$node[../@cat="advp" and ../node[@rel="hd" and @pt="n"]]`) { // [detp niet veel] meer
 		// modification of nomimal heads
 		// pc and ld occur in nominalizations
 		if TEST(q, `$node/../node[@rel="hd" and (@pt or @cat)]`) {
@@ -334,10 +355,19 @@ func dependencyLabel(node *nodeType, q *context) string {
 	}
 	if TEST(q, `$node[@rel="mod" and ../@cat=("pp","part")]`) { // [mod hd/ADP obj1/empty]  --> make mod the external head , added part for automatic parse output GB 31/03/21
 		if TEST(q, `$node/../node[@rel="obj1" and (@pt or @cat)]`) {
+			if TEST(q, `$node[@ud:pos="ADV" or @cat="advp"]`) {
+				return "advmod"
+			}
+			if TEST(q, `$node[@cat=("pp","np")]`) { // added this case to solve error noted in Leiden/Gent discussion (oa absolute met constructies)
+				return "nmod"
+			} // added np for cases like 'drie jaar na de oorlog'
 			return "amod"
 		}
 		if TEST(q, `$node/../node[@rel="hd" and @ud:pos=("ADV","ADP")]`) { // daarom dus, vlak voor en tijdens de oorlog --> orphan or advmod?
-			return "advmod"
+			if TEST(q, `$node[@cat="np" or @ud:pos="NOUN"]`) {
+				return "nmod"
+			}
+			return "advmod" // also triggered by [enkele maanden daarvoor], where maanden is NOUN, so added case above GB 5/8/25
 		}
 		return dependencyLabel(node.parent, q)
 	}
@@ -512,8 +542,8 @@ func subjectLabel(subj *nodeType, q *context) string {
 	// pass (requires pass aux) and outer (requires copula) never co-occur I assume
 	pass := passiveSubject(subj, q)
 	outer := outerSubject(subj, q)
-	if TEST(q, `$subj[@cat=("whsub","ssub","ti","cp","oti")] or
-	            $subj[@cat="conj" and node/@cat=("whsub","ssub","ti","cp","oti")]`) {
+	if TEST(q, `$subj[@cat=("whsub","ssub","ti","cp","oti","whrel")] or
+	            $subj[@cat="conj" and node/@cat=("whsub","ssub","ti","cp","oti","whrel")]`) { // added whrel cases as Gent/Leiden suggests this, but see remarks there for alternatives.
 		return "csubj" + pass + outer
 	}
 	// weather verbs and other expletive subject verbs
@@ -600,14 +630,26 @@ func detLabel(node *nodeType, q *context) string {
 		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NUM"]`) {
 			return "nummod"
 		}
-		if TEST(q, `$node/node[@rel="hd"]/node[@ud:pos="NUM"]`) { // zo'n 16 000 man
-			return "det" // should be extpos=NUM+rel=nummod but gives validation error as extpos cannot be NUM
+		if TEST(q, `$node/node[@rel="hd" and @cat="mwu"]/node[(@pt="spec" or @word="zulk")]`) { // flo 3,11 (4,33), zulk een N dat ... 
+			return "nmod" // added spec to avoid interaction with next statement
 		}
-		if TEST(q, `$node/node[@rel="hd" and @ud:pos=("NOUN","ADJ")]`) {
+		if TEST(q, `$node/node[@rel="hd"]/node[@ud:pos="NUM"]`) { // zo'n 16 000 man
+			return "nmod" // should be extpos=NUM+rel=nummod but gives validation error as extpos cannot be NUM
+		} // but then this should give a validation error as well? indeed, so changed det to nummod
+		if TEST(q, `$node/node[@rel="hd" and @ud:pos="NOUN"]`) {
 			return "nmod"
 		}
-		if TEST(q, `$node/node[@rel="hd" and @ud:pos="PRON" and @vwtype="bez"]`) {
-			return "nmod:poss"
+		if TEST(q, `$node/node[@rel="hd" and @ud:pos="ADJ"]`) { // meer mogelijkheden dan ze benutten: meer=ADJ to avoid validation errors, dan ze benutten is obcomp sister
+			return "amod"
+		}
+		if TEST(q, `$node/node[@rel="hd" and @ud:pos="ADV"]`) { // zo'n vrijheid als hier
+			return "advmod"
+		}
+		if TEST(q, `$node/node[@rel="hd" and @ud:pos="PRON"]`) {
+			if TEST(q, `$node/node[@vwtype="bez"]`) {
+				return "nmod:poss"
+			}
+			return "nmod"
 		}
 		return "det"
 	}
@@ -637,6 +679,9 @@ func detLabel(node *nodeType, q *context) string {
 	if node.Cat == "cp" { //ik heb boeken gezien [cp/det dan hem] weird...
 		return "nmod"
 	}
+	if node.Cat == "du" { // veel, zeer veel geld
+		return "advmod"
+	}
 	panic("No label det")
 }
 
@@ -651,8 +696,8 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat="pp"]/node[@rel="vc"]`) {
 		return "acl" // pp containing a clause
 	}
-	// fixing issue noted by Anouck
-	if TEST(q, `$node[@ud:pos="ADJ" or @cat="ap" or node[@cat="conj" and @begin = node[@ud:pos="ADJ" or @cat="ap"]/@begin ]]`) {
+	// fixing issue noted by Anouck, and fixing this again, see Gent/Leiden disc
+	if TEST(q, `$node[@ud:pos="ADJ" or @cat="ap" or (@cat="conj" and @begin = node[@ud:pos="ADJ" or @cat="ap"]/@begin )]`) {
 		return "amod"
 	}
 	if TEST(q, `$node[@cat=("pp","np","conj","mwu") or @ud:pos=("NOUN","PRON","PROPN","X","PUNCT","SYM","INTJ") ]`) {
@@ -664,8 +709,13 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat="detp"]/node[@rel="hd" and @ud:pos="NUM"]`) {
 		return "nummod"
 	}
+
 	if node.Cat == "detp" {
-		return "det" // [detp niet veel] meer error?
+		if TEST(q, `$node/node[@rel="hd" and @ud:pos="ADJ"]`) { // niet veel meer
+			return "amod"
+		} else {
+			return "det" // [detp niet veel] meer error?
+		}
 	}
 	if node.Cat == "rel" || node.Cat == "whrel" || node.Cat == "ssub" {
 		return "acl:relcl"
@@ -678,9 +728,15 @@ func modLabelInsideNp(node *nodeType, q *context) string {
 	if TEST(q, `$node[@cat=("cp","sv1","smain","ppres","ppart","inf","ti","oti","du","whq", "whsub") or @ud:pos="SCONJ"]`) { // added whsub for robustness in automatic parser output
 		return "acl"
 	}
+	if TEST(q, `$node[@ud:pos= "ADV"]`) { // added advmod as an option, see Gent/Leiden discussion
+		return "advmod"
+	}
+	if TEST(q, `$node[@ud:pos= "ADP"]`) { // ADP cases (10 mm rondom) raises validation error, case feels wrong though
+		return "case"
+	}
 	// oa zinnen tussen haakjes
-	if TEST(q, `$node[@ud:pos= ("ADV","ADP","VERB","CCONJ") or @cat="advp"]`) {
-		return "amod"
+	if TEST(q, `$node[@ud:pos= ("VERB","CCONJ") or @cat="advp"]`) { // this should also be modified, not sure what? see G/L disc
+		return "amod" //note that advp should be advmod as well (case above), but many advp have NOUN as hd (begin 1879, etc)) and this raises an error
 	}
 	// VERB= aanstormend etc -> amod, ADV = nagenoeg alle prijzen, slechts 4 euro --> amod
 	// CCONJ = opdrachten zoals:   --> amod
@@ -702,6 +758,12 @@ func labelVmod(node *nodeType, q *context) string {
 	}()
 
 	if TEST(q, `$node[@cat="pp"]/node[@rel="vc"]`) {
+		if TEST(q, `$node[@rel="pc"]`) { // added case where it is a pc -- see Gent/Leiden discussion
+			if TEST(q, `$node/node[@rel="vc" and @cat="cp"]`) {
+				return "ccomp"
+			}
+			return "xcomp"
+		}
 		return "advcl"
 	}
 	if TEST(q, `$node[ (   node[@rel="hd" and @lemma="door"]
@@ -792,7 +854,7 @@ func nonLocalDependencyLabel(head, gap *nodeType, q *context) string {
 	}
 	if gap.Rel == "pc" || gap.Rel == "ld" {
 		if TEST(q, `$head/node[@rel="obj1"]`) { // is dit onzin? de head kan een pp met een np inside zijn, maar dat zegt niets over nmod, dit moet gewoon obl zijn GB 17/11/23
-			return "nmod"
+			return "obl:arg" //eindelijk aangepast, zie Gent/Leiden voorbeelden
 		}
 		if TEST(q, `$head[@ud:pos=("ADV", "ADP") or @cat=("advp","ap")]`) {
 			return "advmod" // waar precies zit je ..

@@ -57,12 +57,15 @@ func conll(q *context, options int) string {
 			return r == '(' || r == ')' || r == ','
 		}), "|")
 	}
+	lemma := func(s string) string { // remove space from lemma's (avoid validation errors) GB 27/10/25
+		return strings.Replace(s, " ", "_", -1)
+	}
 
 	for _, node := range q.ptnodes {
 		fmt.Fprintf(&buf, "%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n",
 			number(node.End),            // ID
 			node.Word,                   // FORM
-			node.Lemma,                  // LEMMA
+			lemma(node.Lemma),           // LEMMA
 			u(node.udPos),               // UPOS
 			u(postag(node.Postag)),      // XPOS
 			u(featuresToString(node)),   // FEATS
@@ -87,6 +90,7 @@ func featuresToString(node *nodeType) string {
 		{node.udExtPos, "ExtPos"},
 		{node.udForeign, "Foreign"},
 		{node.udGender, "Gender"},
+		{node.udMood, "Mood"},
 		{node.udNumber, "Number"},
 		{node.udPerson, "Person"},
 		{node.udPoss, "Poss"},

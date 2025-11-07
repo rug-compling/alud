@@ -112,6 +112,7 @@ type nodeType struct {
 	udGender         string
 	udHeadPosition   int
 	udNoSpaceAfter   bool
+	udMood	         string
 	udNumber         string
 	udOldState       *nodeType
 	udPerson         string
@@ -161,6 +162,7 @@ type udNodeType struct {
 type udType struct {
 	Id    string `xml:"id,attr,omitempty"`
 	Form  string `xml:"form,attr,omitempty"`
+	ExtPos string `xml:"extpos,attr,omitempty"`
 	Lemma string `xml:"lemma,attr,omitempty"`
 	Upos  string `xml:"upos,attr,omitempty"`
 	alpinods.Feats

@@ -44,16 +44,20 @@ func universalPosTags(node *nodeType, q *context) string {
 	if pt == "bw" {
 		// case is obsolete, see discussion with Leiden/Gent july 2025
 		// if rel == "crd" {
-	        // 		return "CCONJ"
-		// } 
+		// 		return "CCONJ"
+		// }
 		// added rel=hd to avoid matching with 'al' in 'al zijn films' GB 5-11-24,
 		// see also https://github.com/UniversalDependencies/docs/issues/1059#issuecomment-2453407662
+		// but this leads to leaf-det validation errors???
 		if node.parent.Rel == "det" && rel == "hd" { // zo min mogelijk, genoeg geld om een ijsje te kopen
-			return "DET"
+			return "ADV" // was DET but seems error?
 		}
 		return "ADV"
 	}
 	if pt == "lid" {
+		if node.parent.Rel == "det" {
+			return "NUM" // op meer dan een grond ..
+		}
 		return "DET"
 	}
 	if pt == "n" {
@@ -69,6 +73,10 @@ func universalPosTags(node *nodeType, q *context) string {
 		if node.Rel == "crd" { //resp. 33 en 44 %
 			return "CCONJ" // exception needed to avoid validation errors
 		}
+		if node.Rel == "hd" && node.parent.Rel == "det" && node.Spectype == "symb" {
+			return "NUM"  // niet minder dan 47 --> why isnt 47 a tw to begin with?? 
+		} 
+		// case below seems buggy if det is not allowed to have dependents? 
 		if node.Rel == "det" || node.parent.Rel == "det" { //49% (symb), zes- a zevenduizend (afgebr), the (vreemd) zijn/haar (enof)
 			return "DET" // exception needed to avoid validation errors
 		}
@@ -99,11 +107,20 @@ func universalPosTags(node *nodeType, q *context) string {
 		return "ADP" // v2: do not use PART for SVPs and complementizers
 	}
 	if pt == "vnw" {
-		if rel == "det" && node.Vwtype != "bez" {
-			return "DET"
-		}
 		if rel == "hd" && node.parent.Cat == "detp" && node.Vwtype != "bez" { // niet veel meer dan
 			// added != bez to account for 'al zijn boeken' GB 03/11/22
+			if node.Lemma == "veel" || node.Word == "minder" || node.Word == "geen" || node.Word == "veel"  || node.Word == "wat" {
+				return "ADJ"
+			}
+			if node.Word == "zo'n" { // zo'n behoefte dat ...
+				return "ADV"
+			}
+			if node.Word == "alle" || node.Word == "die"  || node.Word == "dat" || node.Word == "zulke" { // zo goed als alle, van die rare .., van dat heerlijke
+				return "PRON"
+			}
+			return "DET"
+		}
+		if rel == "det" && node.Vwtype != "bez" {
 			return "DET"
 		}
 		if rel == "hd" && (node.parent.Rel == "mod" || node.parent.Rel == "rhd") { // heel wat fleuriger, hoe meer ik over deze oorlog hoor,
@@ -112,7 +129,9 @@ func universalPosTags(node *nodeType, q *context) string {
 		if rel == "mod" && node.parent.Rel == "det" { // [detp/det vnw/al deze] stripreeksen] --> al wordt advmod
 			return "ADV"
 		}
-
+		if rel == "dp" && node.parent.Rel == "det" { // veel, heel veel geld
+			return "ADV"
+		}
 		if node.Pdtype == "adv-pron" {
 			if rel == "pobj1" {
 				return "PRON"
