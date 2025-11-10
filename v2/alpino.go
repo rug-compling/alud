@@ -159,8 +159,8 @@ func alpinoFormat(alpino *alpino_ds) string {
 			v2 = 0
 		}
 	}
-	if v1 < 1 || (v1 == 1 && v2 < 17) {
-		alpino.Version = "1.17"
+	if v1 < 1 || (v1 == 1 && v2 < 18) {
+		alpino.Version = "1.18"
 	}
 
 	b, _ := xml.MarshalIndent(alpino, "", "  ")
