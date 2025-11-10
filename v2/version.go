@@ -33,4 +33,4 @@ LET OP:
 
 */
 
-const release = "2.17.0" // software version
+const release = "2.17.1" // software version
