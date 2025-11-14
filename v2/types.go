@@ -57,6 +57,7 @@ type nodeType struct {
 	parent *nodeType
 
 	// als je hier iets aan toevoegt, dan ook toevoegen in emptyheads-in.go in functie reconstructEmptyHead
+	// DEP:DTD:1.8
 	udAbbr           string
 	udCase           string
 	udCopiedFrom     int

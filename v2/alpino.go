@@ -12,6 +12,7 @@ import (
 )
 
 var (
+	// DEP:DTD:1.8
 	reShorted  = regexp.MustCompile(`></(meta|parser|node|data|dep|acl|advcl|advmod|amod|appos|aux|case|cc|ccomp|clf|compound|conj|cop|csubj|det|discourse|dislocated|expl|fixed|flat|goeswith|iobj|list|mark|nmod|nsubj|nummod|obj|obl|orphan|parataxis|punct|ref|reparandum|root|vocative|xcomp)>`)
 	reNoConllu = regexp.MustCompile(`><!\[CDATA\[\s*\]\]></conllu>`)
 
@@ -159,6 +160,7 @@ func alpinoFormat(alpino *alpino_ds) string {
 			v2 = 0
 		}
 	}
+	// DEP:DTD:1.18
 	if v1 < 1 || (v1 == 1 && v2 < 18) {
 		alpino.Version = "1.18"
 	}
@@ -251,6 +253,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 		}
 
 		feats := getItems(a[5])
+		// DEP:DTD:1.8
 		node.Ud.Abbr = feats["Abbr"]
 		node.Ud.Case = feats["Case"]
 		node.Ud.Definite = feats["Definite"]
@@ -282,6 +285,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 			Feats: node.Ud.Feats,
 
 			DeprelAttributes: alpinods.DeprelAttributes{
+				// DEP:DTD:1.8
 				Buiging:  node.Buiging,
 				Conjtype: node.Conjtype,
 				Dial:     node.Dial,
@@ -331,6 +335,7 @@ func alpinoDo(conllu string, alpino *alpino_ds) {
 			Feats: node.Ud.Feats,
 
 			DeprelAttributes: alpinods.DeprelAttributes{
+				// DEP:DTD:1.8
 				Buiging:  node.Buiging,
 				Conjtype: node.Conjtype,
 				Dial:     node.Dial,

@@ -83,6 +83,7 @@ func conll(q *context, options int) string {
 func featuresToString(node *nodeType) string {
 	features := make([]string, 0)
 	for _, f := range [][2]string{
+		// DEP:DTD:1.8
 		{node.udAbbr, "Abbr"},
 		{node.udCase, "Case"},
 		{node.udDefinite, "Definite"},
