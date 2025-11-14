@@ -1,8 +1,8 @@
 wat:
 
-- afhankelijkheden van `alpino_ds.dtd`
-    - zie `rg DEP:DTD`
 - afhankelijkheden van `alpinods`
+    - zie `rg DEP:DTD`
+    - `alpino_ds.dtd`
     - `v2/go.mod`
     - `v2/go.sum`
     - `v2/cmd/alud-dact/go.mod`
