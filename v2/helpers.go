@@ -159,6 +159,7 @@ func untrace(r interface{}) string {
 					number(n.ID),
 					number(n.Begin),
 					number(n.End))
+				// DEP:DTD:1.8
 				if a := n.Word; a != "" {
 					fmt.Fprintf(&buf, "  word:%s", a)
 				}

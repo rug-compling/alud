@@ -223,6 +223,7 @@ func reconstructEmptyHead(q *context) bool {
 		node.udHeadPosition = underscore
 		node.udCopiedFrom = copied
 
+		// DEP:DTD:1.8
 		// kopieer verder alle ud-attributen
 		node.udAbbr = antenode.udAbbr
 		node.udCase = antenode.udCase
